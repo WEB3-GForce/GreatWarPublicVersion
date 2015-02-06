@@ -11,5 +11,9 @@ class Entity
 
 	def initialize(id)
 		@id = id
-	end	
+	end
+	
+	def to_s
+		return "Entity: #{@id}"
+	end
 end
