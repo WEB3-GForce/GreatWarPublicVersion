@@ -18,7 +18,7 @@ class EntityManager
 		# to help distinguish entities created near each other in time.
 		# Since entities are also identified by a timestamp of when they
 		# were created, integeroverflow is not too much of a concern.
-		@entity_count = 0
+		@entity_count = -1
 	end
 	
 #private
@@ -30,10 +30,14 @@ class EntityManager
 	# By using all three, the likelihood of two entities receiving the same
 	# id is slim.
 	def generate_id()
-		old_count = @entity_count
+	# This is for debugging purposes to increment sequentially.
 		@entity_count += 1
-		return old_count.to_s + "-" + rand(100000).to_s + "-" +
-		       Time.now.to_s
+		return @entity_count
+	# This will most likely be the actual code to run after debugging
+	#	old_count = @entity_count
+	#	@entity_count += 1
+	#	return old_count.to_s + "-" + rand(100000).to_s + "-" +
+	#	       Time.now.to_s
 	end
 
 	
