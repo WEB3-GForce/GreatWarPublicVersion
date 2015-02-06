@@ -1,9 +1,16 @@
-class GridComponent
-  
-  attr_reader :grid
-  
+require "./Component.rb"
+
+=begin
+  This class specifies a component for entities that contain a 2d grid.
+=end
+class GridComponent < Component
+
   def initialize(rows, columns)
-    @grid = Array.new(rows) { Array.new(columns) {0} }
+    @grid = Array.new(rows) { Array.new(columns) {nil} }
+  end
+  
+  def [](key)
+    @grid[key]
   end
   
   def to_s
@@ -12,7 +19,9 @@ class GridComponent
   
 end
 
+=begin
 g = GridComponent.new 4, 8
-g.grid[0][0] = 5
-puts g.grid[0][0]
+g[0][0] = 5
+puts g[0][0]
 puts g
+=end
