@@ -1,4 +1,4 @@
-require "Component.rb"
+require_relative "Component.rb"
 
 class OccupiableComponent < Component
   
@@ -13,3 +13,5 @@ class OccupiableComponent < Component
   end
   
 end
+
+puts OccupiableComponent.new()

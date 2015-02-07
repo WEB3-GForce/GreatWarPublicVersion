@@ -1,4 +1,4 @@
-require "./Component.rb"
+require_relative "Component.rb"
 
 =begin
 	This is the class to define the Terrain attribute of game entities.

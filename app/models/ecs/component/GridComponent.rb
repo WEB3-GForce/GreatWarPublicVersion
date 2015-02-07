@@ -1,4 +1,4 @@
-require "./Component.rb"
+require_relative "Component.rb"
 
 =begin
   This class specifies a component for entities that contain a 2d grid.

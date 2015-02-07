@@ -1,4 +1,4 @@
-require "Entity.rb"
+require_relative "Entity.rb"
 
 =begin
 	This class is responsible for managing and maintaining entities. It
