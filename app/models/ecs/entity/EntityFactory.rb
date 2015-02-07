@@ -1,7 +1,10 @@
-require "Entity.rb"
-require "EntityManager.rb"
-require File.expand_path("../../component/PassableComponent.rb", __FILE__)
-
+require_relative "Entity.rb"
+require_relative "EntityManager.rb"
+#Dir["../../component/*.rb"].each {|file| puts file; require_relative file }
+require_relative "../component/TerrainComponent.rb"
+require_relative "../component/OccupiableComponent.rb"
+require_relative "../component/ImpassableComponent.rb"
+require_relative "../component/GridComponent.rb"
 
 =begin
 	This class is a factory for more easily creating entities in an entity
@@ -11,32 +14,38 @@ require File.expand_path("../../component/PassableComponent.rb", __FILE__)
 =end
 class EntityFactory
 
-	def self.tile_flatland(entity_manager)
+private
+	def self.generate_entity(entity_manager, components)
 		entity = entity_manager.create_entity()
-		entity_manager.add_component(entity, TerrainComponent.flatland)
-		entity_manager.add_component(entity, PassableComponent.new)
-		entity_manager.add_component(entity, OccupiableComponent.new)
+		components.each do |component|
+			entity_manager.add_component(entity, component)
+		end
 		return entity
+	end
+
+public
+
+	def self.tile_flatland(entity_manager)
+		return self.generate_entity(entity_manager,
+					    [TerrainComponent.flatland,
+					    OccupiableComponent.new])
 	end
 	
 	def self.tile_mountain(entity_manager)
-		entity = entity_manager.create_entity()
-		entity_manager.add_component(entity, TerrainComponent.mountain)
-		entity_manager.add_component(entity, OccupiableComponent.new)
-		return entity
+		return self.generate_entity(entity_manager,
+					    [TerrainComponent.mountain,
+					    OccupiableComponent.new,
+					    ImpassableComponent.new])
 	end
 	
 	def self.tile_river(entity_manager)
-		entity = entity_manager.create_entity()
-		entity_manager.add_component(entity, TerrainComponent.river)
-		entity_manager.add_component(entity, PassableComponent.new)
-		return entity
+		return self.generate_entity(entity_manager,
+					    [TerrainComponent.river])
 	end
 	
 	def self.board(entity_manager, row, col)
-		entity = entity_manager.create_entity()
-		entity_manager.add_component(entity, GridComponent.new(row, col))
-		return entity
+		return self.generate_entity(entity_manager,
+					    [GridComponent.new(row, col)])
 	end
 
 end
@@ -44,9 +53,9 @@ end
 manager = EntityManager.new
 
 
-EntityFactor.tile_flatland(manager)
-EntityFactor.tile_mountain(manager)
-EntityFactor.tile_river(manager)
-EntityFactor.board(manager)
+EntityFactory.tile_flatland(manager)
+EntityFactory.tile_mountain(manager)
+EntityFactory.tile_river(manager)
+EntityFactory.board(manager, 10, 10)
 
 puts manager
