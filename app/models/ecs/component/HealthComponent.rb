@@ -23,7 +23,7 @@ class HealthComponent < Component
 		@cur_health = [@cur_health + diff, @max_health].min
 	end
 	
-	def alive ; health > 0 ; end
+	def alive? ; health > 0 ; end
 	
 	def to_s ;"Health : #{@cur_health}/#{@max_health}" ; end
 end
