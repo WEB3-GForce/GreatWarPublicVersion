@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var dispatcher = new WebSocketRails('localhost:3000/websocket');
+    var dispatcher = new WebSocketRails(window.location.host + "/websocket");
 
     // subscribe to the channel
     var channel = dispatcher.subscribe('messages');
