@@ -1,7 +1,13 @@
 class SocketController < WebsocketRails::BaseController
-  def test_session
+  before_action { controller_store[:usernames] ||= {} }
+
+  def chat_message
     # perform application setup here
-    p 'hello'
-    controller_store[:message_count] = 0
+    name = controller_store[:usernames][client_id]
+    WebsocketRails[:messages].trigger(:new, "#{name}: #{message["text"]}")
+  end
+
+  def set_name
+    controller_store[:usernames][client_id] = message["name"]
   end
 end
