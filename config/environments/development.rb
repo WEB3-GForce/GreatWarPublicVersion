@@ -43,4 +43,5 @@ Rails.application.configure do
   # told me to
   config.middleware.delete Rack::Lock
 
+  config.middleware.use Rack::LiveReload
 end
