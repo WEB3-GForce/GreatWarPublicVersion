@@ -38,10 +38,29 @@ group :development, :test do
 
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2.0'
+
+  # development
+  gem 'rack-livereload'
+  gem 'better_errors'
+  gem 'binding_of_caller'
+
+  # testing
+  gem 'rspec-rails'
+  gem 'database_cleaner'
+  gem 'spork-rails'
+  gem 'fuubar'
+  gem 'factory_girl_rails'
+  
+  # guard
+  gem 'guard-rspec'
+  gem 'guard-livereload', require: false
+  gem 'guard-spork'
+  gem 'guard-bundler'
+  gem 'guard-rails'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-
 gem 'websocket-rails'
+gem 'phaser-rails'
