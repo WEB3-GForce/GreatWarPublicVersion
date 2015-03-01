@@ -9,8 +9,21 @@
 	we would need to create a whole new suite of system for each game.
 =end
 class System
-	def update(entity_manager)
+	def self.update(entity_manager)
 		raise NotImplementedError
 	end
 end
 
+=begin instance-based implementation
+class System
+	attr_accessor :entity_manager
+	
+	def initialize(entity_manager)
+		@entity_manager = entity_manager
+	end
+	
+	def update
+		raise NotImplementedError
+	end
+end
+=end
