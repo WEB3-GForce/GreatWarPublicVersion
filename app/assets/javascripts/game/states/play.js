@@ -6,9 +6,7 @@ function Play() {
 Play.prototype = {
 
     create: function() {
-
         game.world.setBounds(0, 0, width, height); // size of world, as opposed to window
-
         this.gameGroup = new GameGroup(this.game);
     },
 
@@ -16,10 +14,6 @@ Play.prototype = {
         // Panning:
         this.moveCameraByPointer(game.input.mousePointer);
         this.moveCameraByPointer(game.input.pointer1);
-    },
-
-    clickListener: function() {
-	   
     },
 
     moveCameraByPointer: function (pointer) {
