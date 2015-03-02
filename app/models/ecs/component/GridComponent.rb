@@ -5,6 +5,8 @@ require_relative "Component.rb"
 =end
 class GridComponent < Component
 
+  attr_accessor :grid
+    
   def initialize(rows, columns)
     @grid = Array.new(rows) { Array.new(columns) {nil} }
   end
