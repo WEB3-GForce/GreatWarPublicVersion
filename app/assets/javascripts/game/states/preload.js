@@ -24,7 +24,7 @@ Preload.prototype = {
     },
     update: function() {
 		if(!!this.ready) {
-		    this.game.state.start('menu');
+		    this.game.state.start('menu'); // toggle between menu and play for testing
 		}
     },
     onLoadComplete: function() {

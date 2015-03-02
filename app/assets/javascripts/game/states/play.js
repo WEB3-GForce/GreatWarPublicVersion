@@ -18,10 +18,6 @@ Play.prototype = {
         this.moveCameraByPointer(game.input.pointer1);
     },
 
-    clickListener: function() {
-	   
-    },
-
     moveCameraByPointer: function (pointer) {
         if (!pointer.timeDown) { return; }
         if (pointer.isDown && !pointer.targetObject) {
