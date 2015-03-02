@@ -5,15 +5,10 @@
 	and functionality will be implemented in Components and Systems
 	respectively.
 =end
-class Entity
-
-	attr_reader :id
+class Entity < String
 
 	def initialize(id)
-		@id = id
+		super(id.to_s)
 	end
 	
-	def to_s
-		return "Entity: #{@id}"
-	end
 end

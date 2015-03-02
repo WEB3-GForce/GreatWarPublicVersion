@@ -130,7 +130,7 @@ public
 		string += "  Entity Count = " + @entity_count.to_s + "\n"
 		string += "  Entity Hash:\n"
 		@entity_hash.each do |key, value|
-		    string += "    " + key.to_s + " :\n"
+            string += "    " + key.to_s + " :\n"
 		    string += "      ["
 		    value.each do |item|
 		    	string += item.to_s + ",\n       "
