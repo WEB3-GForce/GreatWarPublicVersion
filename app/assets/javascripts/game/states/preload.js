@@ -13,10 +13,10 @@ Preload.prototype = {
 		this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
 		this.load.setPreloadSprite(this.asset);
 
-		this.load.tilemap('tileset', 'json/tiledTest.json', null, Phaser.Tilemap.TILED_JSON);
-		this.load.image('tiles', '/images/tmw_desert_spacing.png'); // tileset used
-		this.load.image('infantry_right', '/images/AW_infantry.png');
-		this.load.image('infantry_left', '/images/AW_infantry_mirror.png');
+		this.load.tilemap('tileset', '/assets/tiledTest.json', null, Phaser.Tilemap.TILED_JSON);
+		this.load.image('tiles', '/assets/tmw_desert_spacing.png'); // tileset used
+		this.load.image('infantry_right', '/assets/AW_infantry.png');
+		this.load.image('infantry_left', '/assets/AW_infantry_mirror.png');
 
     },
     create: function() {

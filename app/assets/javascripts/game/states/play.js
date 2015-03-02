@@ -4,18 +4,46 @@ function Play() {
 }
 
 Play.prototype = {
+
     create: function() {
-	this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
-	this.yeoman = new Yeoman(this.game, this.game.width/2, this.game.height/2);
-	this.game.add.existing(this.yeoman);
+        game.world.setBounds(0, 0, width, height); // size of world, as opposed to window
 
-	this.yeoman.events.onInputDown.add(this.clickListener, this);
+        game_group = game.add.group();
+        UI_group = game.add.group();
+        UI_group.fixedToCamera = true;
+
+        var board = game.add.tilemap('tileset');
+        board.addTilesetImage('tmw_desert_spacing', // tileset name, findable in the json 
+            'tiles'
+        );
+
+        var backgroundLayer = board.createLayer('boardLayer'); // saved name of the layer
+        game_group.add(backgroundLayer);
+
+        // Adding units
+        var unit1 = game_group.create(tile_size * trench_x, tile_size * trench_y, 'infantry_right');
     },
+
     update: function() {
-
+        // Panning:
+        this.moveCameraByPointer(game.input.mousePointer);
+        this.moveCameraByPointer(game.input.pointer1);
     },
+
     clickListener: function() {
-	this.game.state.start('gameover');
+	   
+    },
+
+    moveCameraByPointer: function (pointer) {
+        if (!pointer.timeDown) { return; }
+        if (pointer.isDown && !pointer.targetObject) {
+            if (play_camera) {
+                game.camera.x += play_camera.x - pointer.position.x;
+                game.camera.y += play_camera.y - pointer.position.y;
+            }
+            play_camera = pointer.position.clone();
+        }
+        if (pointer.isUp) { play_camera = null; }
     }
 };
