@@ -9,20 +9,7 @@ Play.prototype = {
 
         game.world.setBounds(0, 0, width, height); // size of world, as opposed to window
 
-        game_group = game.add.group();
-        UI_group = game.add.group();
-        UI_group.fixedToCamera = true;
-
-        var board = game.add.tilemap('tileset');
-        board.addTilesetImage('tmw_desert_spacing', // tileset name, findable in the json 
-            'tiles'
-        );
-
-        var backgroundLayer = board.createLayer('boardLayer'); // saved name of the layer
-        game_group.add(backgroundLayer);
-
-        // Adding units
-        var unit1 = game_group.create(tile_size * trench_x, tile_size * trench_y, 'infantry_right');
+        this.gameGroup = new GameGroup(this.game);
     },
 
     update: function() {
