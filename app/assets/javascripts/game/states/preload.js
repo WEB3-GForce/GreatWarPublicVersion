@@ -14,9 +14,8 @@ Preload.prototype = {
 		this.load.setPreloadSprite(this.asset);
 
 		this.load.tilemap('tileset', '/assets/tiledTest.json', null, Phaser.Tilemap.TILED_JSON);
-		this.load.image('tiles', '/assets/tmw_desert_spacing.png'); // tileset used
-		this.load.image('infantry_right', '/assets/AW_infantry.png');
-		this.load.image('infantry_left', '/assets/AW_infantry_mirror.png');
+		this.load.image('tmw_desert_spacing', '/assets/tmw_desert_spacing.png'); // tileset used
+		this.load.image('units', '/assets/infantry.png');
 
     },
     create: function() {
