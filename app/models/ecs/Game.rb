@@ -83,8 +83,7 @@ class Game
 	
 	def move_entity(id, row, col)
         squares = Hash.new 
-        p id, row, col
-        posComp = @entity_manager.get_components("11", PositionComponent)
+        posComp = @entity_manager.get_components(id, PositionComponent)
         motComp = @entity_manager.get_components(id, MotionComponent)
         
         return squares if motComp == [] or posComp == []
@@ -104,9 +103,10 @@ class Game
             'col' => posComp[0].col,
             'unit' => nil
         }
-
+        
         posComp[0].row = row
         posComp[0].col = col
+        # motComp[0].cur_movement -= (cur_row - row).abs + (cur_col - col).abs
         
         occ = @entity_manager.get_components(grid[posComp[0].row][posComp[0].col], OccupiableComponent)[0]
         occ.occupier = id
@@ -115,6 +115,8 @@ class Game
             'col' => posComp[0].col,
             'unit' => id
         }
+        
+        squares
         
 	end
 	
@@ -160,10 +162,13 @@ puts
 puts g.get_board()
 puts
 puts g.select_entity("11")
-puts
-puts g.move_entity("ll", 2, 2)
-puts g.move_entity("ll", 0, 1)
+puts 
+puts g.move_entity("11", 2, 2)
+puts 
+puts g.move_entity("11", 0, 1)
 puts g.move_entity("11", 1, 1)
 puts g.move_entity("11", 1, 2)
+puts
+puts g.move_entity("11", 2, 2)
 puts
 puts g.get_board()
