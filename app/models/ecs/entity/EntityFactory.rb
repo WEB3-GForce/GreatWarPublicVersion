@@ -1,3 +1,5 @@
+require "enumerable/standard_deviation"
+require "rubystats"
 require_relative "Entity.rb"
 require_relative "EntityManager.rb"
 #Dir["../../component/*.rb"].each {|file| puts file; require_relative file }
@@ -43,18 +45,40 @@ public
 	end
 	
 
-	def self.board1(entity_manager)	
+	def self.board1(entity_manager, clutter=0.25)	
 		0.upto(n-1).each {|i|
 			0.upto(n-1).each {|j|
 				entity_manager.board[i][j] = self.tile_flatland(entity_manager)
 			}
 		}
 
-		# Now we populate the board with random numbers
 		r = Random.new
-		randomi = r.rand(entity_manager.rows)
-		randomj = r.rand(entity_manager.columns)
+		# We define probability 0 to be "no clutter", vs. n to be
+		# "completely cluttered"
+		n = max(entity_manager.rows, entity_manager.columns)
+		gen = Rubystats::BinomialDistribution.new(n, clutter)
+		gen.times {
+			# Now we populate the board with random numbers
+			randomi = r.rand(entity_manager.rows)
+			randomj = r.rand(entity_manager.columns)
+
+			random_Component = get_random()
+
+			entity_manager.board[randomi][randomj].type = random_Component
+		}
+
+
+
+
+
 	end
+
+	def get_random()
+	  case rand(100) + 1
+	    when  1..50   then TerrainComponent.mountain
+	    when 50..100   then TerrainComponent.river
+	end
+end
 
 end
 
