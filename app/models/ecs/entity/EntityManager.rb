@@ -19,45 +19,46 @@ end
 class EntityManager < Hash
 
 	# Initialize a new EntityManager
-    def initialize()
-        @components = Hash.new
-        super { |hash, key| hash[key] = ComponentBag.new }
-    end
+	def initialize()
+		@id = 0
+		@components = Hash.new
+		super { |hash, key| hash[key] = ComponentBag.new }
+	end
 	
 	# Generates a new, unique, and random id for an entity
-    def generate_id()
-        Entity.new(@id = @id ? @id + 1 : 0) # debug
-        #Entity.new(SecureRandom.uuid)
-    end
+	def generate_id()
+		Entity.new(@id += 1) # debug
+		#Entity.new(SecureRandom.uuid)
+   	 end
 	
 	# Adds entity with value to manager. 
 	# A new, unique, random entity is generated if not specified.
-    #
-    # Returns:
-    # 	Added entity's components
-    def []=(entity=nil, value)
-        entity ||= generate_id()
-        super
-    end
+  	#
+  	# Returns:
+  	# 	Added entity's components
+	def []=(entity=nil, value)
+		entity ||= generate_id()
+		super
+	end
 
-    # Retrieves an entity.
-    # If the entity does not exist, creates it and adds it to the manager.
-    # A new, unique, random entity is used if not specified (creating it).
-    #
-    # Returns:
-    # 	Retrieved entity's components
-    def [](entity=nil)
-        entity ||= generate_id()
-        super
-    end
-
+	# Retrieves an entity.
+	# If the entity does not exist, creates it and adds it to the manager.
+	# A new, unique, random entity is used if not specified (creating it).
+	#
+	# Returns:
+	# 	Retrieved entity's components
+	def [](entity=nil)
+		entity ||= generate_id()
+		super
+	end
+    
 	# Creates a new entity and inserts it into the hash table.
 	# 
 	# Returns:
 	#   The newly created entity object
 	def create_entity()
 		id = generate_id()
-		self[id]
+		self[id] = []
 		id
 	end
 

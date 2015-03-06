@@ -34,18 +34,12 @@ public
 	def self.tile_mountain(entity_manager)
 		return self.generate_entity(entity_manager,
 					    [TerrainComponent.mountain,
-					    OccupiableComponent.new,
 					    ImpassableComponent.new])
 	end
 	
 	def self.tile_river(entity_manager)
 		return self.generate_entity(entity_manager,
 					    [TerrainComponent.river])
-	end
-	
-	def self.board(entity_manager, row, col)
-		return self.generate_entity(entity_manager,
-					    [GridComponent.new(row, col)])
 	end
 
 end
