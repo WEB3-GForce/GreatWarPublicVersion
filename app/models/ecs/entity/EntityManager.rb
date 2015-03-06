@@ -2,11 +2,16 @@ require "securerandom"
 
 require_relative "Entity.rb"
 
-class ComponentBag < Array
+class ComponentBag < Hash
 
-    def each_type(class_name)
-        self.each { |elem| yield elem if elem.is_a?(class_name) }
-    end
+	def initialize()
+		super { [] }
+	end
+
+	def []=(key=nil, value)
+		key ||= value.class
+		super
+	end
 end
 
 =begin
@@ -21,15 +26,15 @@ class EntityManager < Hash
 	attr_accessor :board, :rows, :columns
 
 	# Initialize a new EntityManager
-	def initialize()
-		@id = 0
-		@components = Hash.new
-		@board = Array.new(rows) { Array.new(columns) {nil} }
-		super { |hash, key| hash[key] = ComponentBag.new }
-	end
+    def initialize()
+        @components = Hash.new
+		#@board = Array.new(rows) { Array.new(columns) {nil} }
+        #super { |hash, key| hash[key] = ComponentBag.new }
+    end
 	
 	# Generates a new, unique, and random id for an entity
 	def generate_id()
+		@id ||= 0;
 		Entity.new(@id += 1) # debug
 		#Entity.new(SecureRandom.uuid)
    	 end
@@ -43,17 +48,6 @@ class EntityManager < Hash
 		entity ||= generate_id()
 		super
 	end
-
-	# Retrieves an entity.
-	# If the entity does not exist, creates it and adds it to the manager.
-	# A new, unique, random entity is used if not specified (creating it).
-	#
-	# Returns:
-	# 	Retrieved entity's components
-	def [](entity=nil)
-		entity ||= generate_id()
-		super
-	end
     
 	# Creates a new entity and inserts it into the hash table.
 	# 
@@ -61,7 +55,7 @@ class EntityManager < Hash
 	#   The newly created entity object
 	def create_entity()
 		id = generate_id()
-		self[id]
+		self[id] = ComponentBag.new
 		id
 	end
 
@@ -90,7 +84,7 @@ class EntityManager < Hash
 		if !self.has_key?(entity)
 			return false
 		end
-		self[entity].push(component)
+		self[entity][component.class].push(component)
 		return true
 	end
 
@@ -106,10 +100,8 @@ class EntityManager < Hash
 	#
 	def get_components(entity, component_class)
 		comp_array = []
-		self[entity].each do |comp|
-			if comp.class == component_class
-				comp_array.push(comp)
-			end
+		self[entity][component_class].each do |comp|
+			comp_array.push(comp)
 		end
 		return comp_array
 	end
@@ -123,19 +115,21 @@ class EntityManager < Hash
 	#   An array (possibly empty) of all the arrays that have the specified
 	#   component
 	#
-	def get_entities_with_components(component_class)
+	def get_entities_with_components(*component_classes)
 		entity_array = []
 		self.each do |key, value|
-			value.each do |comp|
-				if comp.class == component_class
-					entity_array.push(key)
-					break
-				end
-			end
+			entity_array.push(key) if component_classes.all? { |comp|
+				value.has_key?(comp)
+			}
 		end
 		return entity_array
 	end
 
+	def each_entity(*classes)
+		self.each { |id, components|
+			yield id, components if classes.all? { |c| components.include?(c) }
+		}
+	end
 
 	# For debugging purposes, converts the manager to a string
 	def to_s()
@@ -159,7 +153,6 @@ end
 Debugging/testing code.
 
 TODO: Make a formal test suite.
-=end
 
 manager = EntityManager.new
 ent1 = manager.create_entity()
@@ -223,4 +216,4 @@ manager.get_entities_with_components(Entity).each do |result|
 	puts result
 end
 
-#=end
+=end
