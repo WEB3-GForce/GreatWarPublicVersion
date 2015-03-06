@@ -49,6 +49,11 @@ public
 				entity_manager.board[i][j] = self.tile_flatland(entity_manager)
 			}
 		}
+
+		# Now we populate the board with random numbers
+		r = Random.new
+		randomi = r.rand(entity_manager.rows)
+		randomj = r.rand(entity_manager.columns)
 	end
 
 end

@@ -18,7 +18,7 @@ end
 =end
 class EntityManager < Hash
 
-	attr_accessor :board
+	attr_accessor :board, :rows, :columns
 
 	# Initialize a new EntityManager
 	def initialize()
