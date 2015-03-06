@@ -61,7 +61,7 @@ class EntityManager < Hash
 	#   The newly created entity object
 	def create_entity()
 		id = generate_id()
-		self[id] = []
+		self[id]
 		id
 	end
 
