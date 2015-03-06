@@ -1,4 +1,13 @@
+require "securerandom"
+
 require_relative "Entity.rb"
+
+class ComponentBag < Array
+
+    def each_type(class_name)
+        self.each { |elem| yield elem if elem.is_a?(class_name) }
+    end
+end
 
 =begin
 	This class is responsible for managing and maintaining entities. It
@@ -7,50 +16,49 @@ require_relative "Entity.rb"
 	this class manages all the data for the game, saving and loading games
 	simply consists of saving and loading the EntityManager.
 =end
-class EntityManager
+class EntityManager < Hash
 
 	# Initialize a new EntityManager
-	def initialize()
-		# This has maps entities to an array of components.
-		@entity_hash = Hash.new
-
-		# This is used to keep track of the current number of entities
-		# to help distinguish entities created near each other in time.
-		# Since entities are also identified by a timestamp of when they
-		# were created, integeroverflow is not too much of a concern.
-		@entity_count = -1
-	end
+    def initialize()
+        @components = Hash.new
+        super { |hash, key| hash[key] = ComponentBag.new }
+    end
 	
-#private
-	# Generates a new id for an entity
-	#
-	# An entity id is composed of three parts:
-	#    EntityCount-RandomNumber-CurrentTime
-	# 
-	# By using all three, the likelihood of two entities receiving the same
-	# id is slim.
-	def generate_id()
-	# This is for debugging purposes to increment sequentially.
-		@entity_count += 1
-		return @entity_count
-	# This will most likely be the actual code to run after debugging
-	#	old_count = @entity_count
-	#	@entity_count += 1
-	#	return old_count.to_s + "-" + rand(100000).to_s + "-" +
-	#	       Time.now.to_s
-	end
-
+	# Generates a new, unique, and random id for an entity
+    def generate_id()
+        Entity.new(@id = @id ? @id + 1 : 0) # debug
+        #Entity.new(SecureRandom.uuid)
+    end
 	
-public	
+	# Adds entity with value to manager. 
+	# A new, unique, random entity is generated if not specified.
+    #
+    # Returns:
+    # 	Added entity's components
+    def []=(entity=nil, value)
+        entity ||= generate_id()
+        super
+    end
+
+    # Retrieves an entity.
+    # If the entity does not exist, creates it and adds it to the manager.
+    # A new, unique, random entity is used if not specified (creating it).
+    #
+    # Returns:
+    # 	Retrieved entity's components
+    def [](entity=nil)
+        entity ||= generate_id()
+        super
+    end
 
 	# Creates a new entity and inserts it into the hash table.
 	# 
 	# Returns:
 	#   The newly created entity object
 	def create_entity()
-		new_entity = Entity.new(self.generate_id)
-		@entity_hash[new_entity] = []
-		return new_entity
+		id = generate_id()
+		self[id]
+		id
 	end
 
 	# Removes an entity from the manager
@@ -62,7 +70,7 @@ public
 	#   The entity is removed from the hash if it was there.
 	#
 	def delete_entity(entity)
-		@entity_hash.delete(entity)
+		self.delete(entity)
 	end
 
 	# Adds a component to an entity.
@@ -75,10 +83,10 @@ public
 	#   Whether the add succeeded (whether the entity is in the hash)
 	#
 	def add_component(entity, component)
-		if !@entity_hash.has_key?(entity)
+		if !self.has_key?(entity)
 			return false
 		end
-		@entity_hash[entity].push(component)
+		self[entity].push(component)
 		return true
 	end
 
@@ -94,7 +102,7 @@ public
 	#
 	def get_components(entity, component_class)
 		comp_array = []
-		@entity_hash[entity].each do |comp|
+		self[entity].each do |comp|
 			if comp.class == component_class
 				comp_array.push(comp)
 			end
@@ -113,7 +121,7 @@ public
 	#
 	def get_entities_with_components(component_class)
 		entity_array = []
-		@entity_hash.each do |key, value|
+		self.each do |key, value|
 			value.each do |comp|
 				if comp.class == component_class
 					entity_array.push(key)
@@ -129,7 +137,7 @@ public
 		string = "EntityManager {\n"
 		string += "  Entity Count = " + @entity_count.to_s + "\n"
 		string += "  Entity Hash:\n"
-		@entity_hash.each do |key, value|
+		self.each do |key, value|
             string += "    " + key.to_s + " :\n"
 		    string += "      ["
 		    value.each do |item|
@@ -146,6 +154,7 @@ end
 Debugging/testing code.
 
 TODO: Make a formal test suite.
+=end
 
 manager = EntityManager.new
 ent1 = manager.create_entity()
@@ -208,4 +217,5 @@ puts "Entities rock!"
 manager.get_entities_with_components(Entity).each do |result|
 	puts result
 end
-=end
+
+#=end
