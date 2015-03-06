@@ -18,10 +18,13 @@ end
 =end
 class EntityManager < Hash
 
+	attr_accessor :board
+
 	# Initialize a new EntityManager
 	def initialize()
 		@id = 0
 		@components = Hash.new
+		@board = Array.new(rows) { Array.new(columns) {nil} }
 		super { |hash, key| hash[key] = ComponentBag.new }
 	end
 	
@@ -132,6 +135,7 @@ class EntityManager < Hash
 		end
 		return entity_array
 	end
+
 
 	# For debugging purposes, converts the manager to a string
 	def to_s()

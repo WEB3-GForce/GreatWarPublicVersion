@@ -41,6 +41,15 @@ public
 		return self.generate_entity(entity_manager,
 					    [TerrainComponent.river])
 	end
+	
+
+	def self.board1(entity_manager)	
+		0.upto(n-1).each {|i|
+			0.upto(n-1).each {|j|
+				entity_manager.board[i][j] = self.tile_flatland(entity_manager)
+			}
+		}
+	end
 
 end
 
