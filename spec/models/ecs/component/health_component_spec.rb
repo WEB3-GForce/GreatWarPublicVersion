@@ -87,13 +87,18 @@ describe HealthComponent do
 		end
 	end
 
-	it "should be alive" do
-		expect(basicHealth.alive?).to be true
+	context "when cur_health > 0" do
+		it "should be alive" do
+			expect(basicHealth.alive?).to be true
+		end
 	end
 
-	it "should be dead" do
-		basicHealth.cur_health = 0
-		expect(basicHealth.alive?).to be false
+	context "when cur_health == 0" do
+
+		it "should be dead" do
+			basicHealth.cur_health = 0
+			expect(basicHealth.alive?).to be false
+		end
 	end
 
 	it "should have implemented to_s" do
