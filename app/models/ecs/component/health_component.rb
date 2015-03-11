@@ -62,9 +62,13 @@ class HealthComponent < Component
 	end
 	
 	# Returns whether or not the entity is alive
-	def alive? ; cur_health > 0 ; end
+	def alive?
+		cur_health > 0
+	end
 	
 	# Returns a string representation of the component
-	def to_s ;"Health : #{@cur_health}/#{@max_health}" ; end
+	def to_s
+		"Health : #{@cur_health}/#{@max_health}"
+	end
 end
 

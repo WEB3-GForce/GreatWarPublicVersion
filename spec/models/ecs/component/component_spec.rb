@@ -6,7 +6,7 @@ describe Component do
 		expect(comp.class).to equal(Component)
 	end
 
-	it "should have implement to_s" do
+	it "should have implemented to_s" do
 		comp = Component.new
 		expect(comp).to respond_to :to_s	
 		expect(comp.to_s.class).to eq(String)

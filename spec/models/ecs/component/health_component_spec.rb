@@ -96,7 +96,7 @@ describe HealthComponent do
 		expect(basicHealth.alive?).to be false
 	end
 
-	it "should have implement to_s" do
+	it "should have implemented to_s" do
 		expect(basicHealth).to respond_to :to_s
 		
 		expect(basicHealth.to_s.class).to eq(String)
