@@ -9,9 +9,14 @@ require_relative "./component.rb"
 	For this game, TerrainComponent objects will be static. One river will
 	not differ substantially from another. Hence, the initialization
 	function is made private and objects representing the different types of
-	terrain are provided as class variables. Developers wishing to
+	terrain are provided as class instance variables. Developers wishing to
 	include TerrainComponent's to entities should simply include the class
 	variables provided.
+	
+	Note: it is preferred to use class instance variables over class
+	variables. See the following article for more info:
+
+	http://4thmouse.com/index.php/2011/03/20/why-class-variables-in-ruby-are-a-bad-idea/
 =end
 class TerrainComponent < Component
 
@@ -33,16 +38,16 @@ public
 	# These are the static terrain objects. If a TerrainComponent is needed,
 	# these should be used. Since they are static, DO NOT MODIFY THESE
 	# OUTSIDE THIS FILE.
-	@@flatland = TerrainComponent.new(:flatland)
-	@@mountain = TerrainComponent.new(:mountain)
-	@@trench   = TerrainComponent.new(:trench)
-	@@river    = TerrainComponent.new(:river)
+	@flatland = TerrainComponent.new(:flatland)
+	@mountain = TerrainComponent.new(:mountain)
+	@trench   = TerrainComponent.new(:trench)
+	@river    = TerrainComponent.new(:river)
 
 	# Getter methods for the class variables
-	def self.flatland ; @@flatland ; end
-	def self.mountain ; @@mountain ; end
-	def self.trench   ; @@trench   ; end
-	def self.river    ; @@river    ; end
+	def self.flatland ; @flatland ; end
+	def self.mountain ; @mountain ; end
+	def self.trench   ; @trench   ; end
+	def self.river    ; @river    ; end
 
 	# Default to_string method
 	def to_s
