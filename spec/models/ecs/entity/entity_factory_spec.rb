@@ -56,5 +56,17 @@ describe EntityFactory do
 			}
 		}
 	end
+
+	it "should create a new human player" do
+		entity = EntityFactory.human_player(manager, "David")
+		expect(manager[entity][NameComponent][0].name).to eq("David")
+		expect(manager[entity][HumanComponent].size).to eq(1)
+	end
+
+	it "should create a new ai player" do
+		entity = EntityFactory.ai_player(manager)
+		expect(manager[entity][AIComponent].size).to eq(1)
+	end
+
 end
 

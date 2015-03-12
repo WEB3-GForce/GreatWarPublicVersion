@@ -130,6 +130,34 @@ public
 		}
 	end
 
+	# This function creates a new human player entity. These entities
+	# represent the humans players of the game.
+	#
+	# Arguments
+	#   entity_manager = the entity manager to add the new entity to
+	#   name           = the in game name of the player
+	#
+	# Returns
+	#   the newly created Human Player Entity
+	def self.human_player(entity_manager, name)
+		return self.create_entity(entity_manager,
+					  [NameComponent.new(name),
+					   HumanComponent.new])
+	end
+
+	# This function creates a new AI player entities. These entities
+	# represent the players that are controlled by artifical intelligence
+	#
+	# Arguments
+	#   entity_manager = the entity manager to add the new entity to
+	#
+	# Returns
+	#   the newly created AI Player Entity
+	def self.ai_player(entity_manager)
+		return self.create_entity(entity_manager,
+					  [AIComponent.new])
+	end
+
 =begin
 	// TODO Talk with Vance and David about code so we can write tests for it
 	
