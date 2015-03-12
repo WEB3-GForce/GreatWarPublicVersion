@@ -19,6 +19,10 @@ describe TerrainComponent do
 		expect(TerrainComponent.mountain.type).to eq(:mountain)
 	end
 
+	it "should have a hill terrain" do
+		expect(TerrainComponent.hill.type).to eq(:hill)
+	end
+
 	it "should have a trench terrain" do
 		expect(TerrainComponent.trench.type).to eq(:trench)
 	end

@@ -40,12 +40,14 @@ public
 	# OUTSIDE THIS FILE.
 	@flatland = TerrainComponent.new(:flatland)
 	@mountain = TerrainComponent.new(:mountain)
+	@hill     = TerrainComponent.new(:hill)
 	@trench   = TerrainComponent.new(:trench)
 	@river    = TerrainComponent.new(:river)
 
 	# Getter methods for the class variables
 	def self.flatland ; @flatland ; end
 	def self.mountain ; @mountain ; end
+	def self.hill     ; @hill     ; end
 	def self.trench   ; @trench   ; end
 	def self.river    ; @river    ; end
 
