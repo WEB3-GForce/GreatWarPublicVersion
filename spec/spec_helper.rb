@@ -14,6 +14,20 @@
 # users commonly want.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+
+require_relative "../app/models/ecs/component/ai_component.rb"
+require_relative "../app/models/ecs/component/component.rb"
+require_relative "../app/models/ecs/component/health_component.rb"
+require_relative "../app/models/ecs/component/human_component.rb"
+require_relative "../app/models/ecs/component/impassable_component.rb"
+require_relative "../app/models/ecs/component/melee_attack_component.rb"
+require_relative "../app/models/ecs/component/motion_component.rb"
+require_relative "../app/models/ecs/component/name_component.rb"
+require_relative "../app/models/ecs/component/occupiable_component.rb"
+require_relative "../app/models/ecs/component/owned_component.rb"
+require_relative "../app/models/ecs/component/position_component.rb"
+require_relative "../app/models/ecs/component/range_attack_immunity_component.rb"
+
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
