@@ -1,12 +1,11 @@
 require_relative '../../../spec_helper'
 
 describe Entity do
-	it "should be able to be initialized" do
-		entity = Entity.new
-		expect(entity).to eq("")
-		
-		entity = Entity.new("Luke Skywalker")
-		expect(entity).to eq("Luke Skywalker")
+
+	it "should produce uuid's when initialized" do
+		entity1 = Entity.new
+		entity2 = Entity.new
+		expect(entity1).to_not eq(entity2)
 	end
 
 	it "should be a subclass of string" do

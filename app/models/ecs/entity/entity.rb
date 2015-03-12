@@ -15,8 +15,13 @@ require "securerandom"
 	string with a uuid. Hence, it guarentees that each entity will be
 	uniquely identifiable.
 =end
-class Entity < String	
+class Entity < String
 
+	# Initializes a new Entity
+	#
+	# Postcondition
+	#  A new entity is created. It is represented as a uuid string to ensure
+	#  that each entity is uniquely identifiable.
 	def initialize
 		super SecureRandom.uuid
 	end
