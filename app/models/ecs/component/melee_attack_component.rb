@@ -6,7 +6,7 @@ require_relative "./component.rb"
 	MeleeAttackComponent that will specify the amount of damage the entity's
 	attack will do.
 =end
-class MeleeAttackComponent
+class MeleeAttackComponent < Component
   
 	attr_reader :attack
 

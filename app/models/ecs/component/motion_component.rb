@@ -9,7 +9,7 @@ require_relative "./component.rb"
 	based on status boosts; base movement is used to return the movement
 	to normal.
 =end
-class MotionComponent
+class MotionComponent < Component
 
 	attr_reader :base_movement, :cur_movement
 

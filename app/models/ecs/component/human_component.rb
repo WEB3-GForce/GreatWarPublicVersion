@@ -5,5 +5,5 @@ require_relative "./component.rb"
 	a human. For example, this component could be given to a player
 	entity to denote that the entity is a controlled by a human player.
 =end
-class HumanComponent
+class HumanComponent < Component
 end
