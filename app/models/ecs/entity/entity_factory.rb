@@ -131,7 +131,7 @@ public
 	end
 
 	# This function creates a new human player entity. These entities
-	# represent the humans players of the game.
+	# represent the human players of the game.
 	#
 	# Arguments
 	#   entity_manager = the entity manager to add the new entity to
@@ -145,7 +145,7 @@ public
 					   HumanComponent.new])
 	end
 
-	# This function creates a new AI player entities. These entities
+	# This function creates a new AI player etity. These entities
 	# represent the players that are controlled by artifical intelligence
 	#
 	# Arguments
@@ -156,6 +156,60 @@ public
 	def self.ai_player(entity_manager)
 		return self.create_entity(entity_manager,
 					  [AIComponent.new])
+	end
+
+	# This function creates a new AI player etity. These entities
+	# represent the players that are controlled by artifical intelligence
+	#
+	# Arguments
+	#   entity_manager = the entity manager to add the new entity to
+	#
+	# Returns
+	#   the newly created AI Player Entity
+	def self.infantry(entity_manager, owner)
+		return self.create_entity(entity_manager,
+					  [UnitComponent.infantry,
+					   HealthComponent.new(10),
+					   MotionComponent.new(5),
+					   MeleeAttackComponent.new(10),
+					   RangeAttackComponent.new(10, 1, 4),
+					   OwnedComponent.new(owner)])
+	end
+
+	# This function creates a new AI player etity. These entities
+	# represent the players that are controlled by artifical intelligence
+	#
+	# Arguments
+	#   entity_manager = the entity manager to add the new entity to
+	#
+	# Returns
+	#   the newly created AI Player Entity
+	def self.machine_gun(entity_manager, owner)
+		return self.create_entity(entity_manager,
+					  [UnitComponent.machine_gun,
+					   HealthComponent.new(20),
+					   MotionComponent.new(3),
+					   MeleeAttackComponent.new(10),
+					   RangeAttackComponent.new(10, 3, 7),
+					   OwnedComponent.new(owner)])
+	end
+
+	# This function creates a new AI player etity. These entities
+	# represent the players that are controlled by artifical intelligence
+	#
+	# Arguments
+	#   entity_manager = the entity manager to add the new entity to
+	#
+	# Returns
+	#   the newly created AI Player Entity
+	def self.artillery(entity_manager, owner)
+		return self.create_entity(entity_manager,
+					  [UnitComponent.artillery,
+					   HealthComponent.new(10),
+					   MotionComponent.new(1),
+					   MeleeAttackComponent.new(0),
+					   RangeAttackComponent.new(20, 5, 15),
+					   OwnedComponent.new(owner)])
 	end
 
 =begin

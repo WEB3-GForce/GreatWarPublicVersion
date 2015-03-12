@@ -68,5 +68,73 @@ describe EntityFactory do
 		expect(manager[entity][AIComponent].size).to eq(1)
 	end
 
+	it "should create a new infantry unit" do
+		owner = EntityFactory.human_player(manager, "David")
+		entity = EntityFactory.infantry(manager, owner)
+		
+		unit_comp   = manager[entity][UnitComponent][0]
+		health_comp = manager[entity][HealthComponent][0]
+		motion_comp = manager[entity][MotionComponent][0]
+		melee_comp  = manager[entity][MeleeAttackComponent][0]
+		range_comp  = manager[entity][RangeAttackComponent][0]
+		owned_comp  = manager[entity][OwnedComponent][0]
+		
+		expect(unit_comp.type).to eq(:infantry)
+		expect(health_comp.cur_health).to eq(10)
+		expect(health_comp.max_health).to eq(10)
+		expect(motion_comp.cur_movement).to eq(5)
+		expect(motion_comp.base_movement).to eq(5)
+		expect(melee_comp.attack).to eq(10)
+		expect(range_comp.attack).to eq(10)
+		expect(range_comp.min_range).to eq(1)
+		expect(range_comp.max_range).to eq(4)
+		expect(owned_comp.owner).to eq(owner)
+	end
+
+	it "should create a new machine gun unit" do
+		owner = EntityFactory.human_player(manager, "David")
+		entity = EntityFactory.machine_gun(manager, owner)
+		
+		unit_comp   = manager[entity][UnitComponent][0]
+		health_comp = manager[entity][HealthComponent][0]
+		motion_comp = manager[entity][MotionComponent][0]
+		melee_comp  = manager[entity][MeleeAttackComponent][0]
+		range_comp  = manager[entity][RangeAttackComponent][0]
+		owned_comp  = manager[entity][OwnedComponent][0]
+		
+		expect(unit_comp.type).to eq(:machine_gun)
+		expect(health_comp.cur_health).to eq(20)
+		expect(health_comp.max_health).to eq(20)
+		expect(motion_comp.cur_movement).to eq(3)
+		expect(motion_comp.base_movement).to eq(3)
+		expect(melee_comp.attack).to eq(10)
+		expect(range_comp.attack).to eq(10)
+		expect(range_comp.min_range).to eq(3)
+		expect(range_comp.max_range).to eq(7)
+		expect(owned_comp.owner).to eq(owner)
+	end
+
+	it "should create a new artillery unit" do
+		owner = EntityFactory.human_player(manager, "David")
+		entity = EntityFactory.artillery(manager, owner)
+		
+		unit_comp   = manager[entity][UnitComponent][0]
+		health_comp = manager[entity][HealthComponent][0]
+		motion_comp = manager[entity][MotionComponent][0]
+		melee_comp  = manager[entity][MeleeAttackComponent][0]
+		range_comp  = manager[entity][RangeAttackComponent][0]
+		owned_comp  = manager[entity][OwnedComponent][0]
+		
+		expect(unit_comp.type).to eq(:artillery)
+		expect(health_comp.cur_health).to eq(10)
+		expect(health_comp.max_health).to eq(10)
+		expect(motion_comp.cur_movement).to eq(1)
+		expect(motion_comp.base_movement).to eq(1)
+		expect(melee_comp.attack).to eq(0)
+		expect(range_comp.attack).to eq(20)
+		expect(range_comp.min_range).to eq(5)
+		expect(range_comp.max_range).to eq(15)
+		expect(owned_comp.owner).to eq(owner)
+	end
 end
 
