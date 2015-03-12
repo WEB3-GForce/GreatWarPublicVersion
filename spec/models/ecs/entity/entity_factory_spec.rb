@@ -2,7 +2,7 @@ require_relative '../../../spec_helper'
 
 describe EntityFactory do
 
-	let(:manager) {EntityManager.new}
+	let(:manager) {EntityManager.new(10, 10)}
 	let(:ai)      {AIComponent.new}
 	let(:ai)      {AIComponent.new}
 	let(:human)   {HumanComponent.new}
@@ -46,6 +46,15 @@ describe EntityFactory do
 		expect(manager[entity][TerrainComponent][0]).to eq(TerrainComponent.river)
 		expect(manager[entity][ImpassableComponent].size).to eq(0)
 		expect(manager[entity][OccupiableComponent].size).to eq(0)
+	end
+
+	it "should create a new board with flatland squares" do
+		entity = EntityFactory.create_board_basic(manager)
+		manager.board.each { |row|
+			row.each { |col|
+				expect(manager[col][TerrainComponent][0]).to eq(TerrainComponent.flatland)
+			}
+		}
 	end
 end
 

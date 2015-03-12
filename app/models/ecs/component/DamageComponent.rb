@@ -1,4 +1,4 @@
-require_relative "Component.rb"
+require_relative "./component.rb"
 
 =begin
     This class is used to specific a componenet's position on the board.

@@ -14,6 +14,24 @@ require_relative "./component_bag.rb"
 =end
 class EntityManager < Hash
 
+	attr_reader(:board, :row, :col)
+
+	# Initializes a new EntityManager
+	#
+	# Arguments
+	#   row = the number of rows that the board will have
+	#   col = the number of columns that the board will have
+	#
+	# Postcondition
+	#   the EntityManager is properly initialized
+	def initialize(row, col)	
+		@row   = row
+		@col   = col
+		@board = Array.new(row) {Array.new(col)}
+		super()
+	end
+
+
 	# Access the value of a given hash creating a new entry if the key
 	# is undefined
 	#

@@ -2,7 +2,7 @@ require_relative '../../../spec_helper'
 
 describe EntityManager do
 
-	let(:manager) {EntityManager.new}
+	let(:manager) {EntityManager.new(10,10)}
 	let(:entity)  {Entity.new}
 	let(:entity2) {Entity.new}
 	let(:entity3) {Entity.new}
@@ -14,6 +14,17 @@ describe EntityManager do
 
 	it "should be a subclass of Hash" do
 		expect(EntityManager < Hash).to be true
+	end
+
+	it "should properly initialize itself" do
+		new_manager = EntityManager.new(10, 20)
+		expect(new_manager.row).to eq(10)
+		expect(new_manager.col).to eq(20)
+		expect(new_manager.board.size).to eq(10)
+		expect(new_manager.board[0].size).to eq(20)
+		new_manager.board.each { |row|
+			row.each { |col| expect(col).to eq(nil) }
+		}
 	end
 
 	context "when accessing a new key" do

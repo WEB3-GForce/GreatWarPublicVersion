@@ -115,7 +115,21 @@ public
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.river])
 	end
-	
+
+	# This function populates the board in the most basic way possible. It
+	# fills each row and column with a flatland square.
+	#
+	# Arguments
+	#   entity_manager = the entity manager to add the new entity to
+	#
+	# Returns
+	#   the newly created Square Entity
+	def self.create_board_basic(entity_manager)
+		entity_manager.board.map! { |row|
+			row.map { |col| self.flatland_square(entity_manager)}
+		}
+	end
+
 =begin
 	// TODO Talk with Vance and David about code so we can write tests for it
 	
