@@ -10,6 +10,10 @@ require "securerandom"
 	attributes. Entities will be given components, which are the "columns"
 	of the "database table". In short, an entity is simply a key that maps
 	to its list of attributes (components).
+
+	To create a new entity, simply call Entity.new . This will create a
+	string with a uuid. Hence, it guarentees that each entity will be
+	uniquely identifiable.
 =end
 class Entity < String	
 
