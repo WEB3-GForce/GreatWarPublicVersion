@@ -1,3 +1,5 @@
+require "securerandom"
+
 =begin
 	Entities are the "rows" of the ecs "database table". They are the
 	objects of OOP. When the game needs to create a new object such as a
@@ -10,4 +12,8 @@
 	to its list of attributes (components).
 =end
 class Entity < String	
+
+	def initialize
+		super SecureRandom.uuid
+	end
 end
