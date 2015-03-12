@@ -26,6 +26,7 @@ require_relative "../app/models/ecs/component/name_component.rb"
 require_relative "../app/models/ecs/component/occupiable_component.rb"
 require_relative "../app/models/ecs/component/owned_component.rb"
 require_relative "../app/models/ecs/component/position_component.rb"
+require_relative "../app/models/ecs/component/range_attack_component.rb"
 require_relative "../app/models/ecs/component/range_attack_immunity_component.rb"
 
 RSpec.configure do |config|
