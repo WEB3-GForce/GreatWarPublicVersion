@@ -4,6 +4,10 @@ describe OwnedComponent do
 
 	let(:basic_owned) {OwnedComponent.new("Marcus")}
 
+	it "should be a subclass of Component" do
+		expect(OwnedComponent < Component).to be true
+	end
+
 	it "should properly initialize itself" do
 		owned_comp = OwnedComponent.new("Joe")
 		expect(owned_comp.owner).to eq("Joe")

@@ -4,6 +4,10 @@ describe MeleeAttackComponent do
 
 	let(:basic_melee) {MeleeAttackComponent.new(10)}
 
+	it "should be a subclass of Component" do
+		expect(MeleeAttackComponent < Component).to be true
+	end
+
 	it "should properly initialize itself" do
 		melee_comp = MeleeAttackComponent.new(10)
 		expect(melee_comp.attack).to eq(10)

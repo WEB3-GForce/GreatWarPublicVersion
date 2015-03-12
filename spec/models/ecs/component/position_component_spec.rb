@@ -4,6 +4,10 @@ describe PositionComponent do
 
 	let(:basic_position) {PositionComponent.new(10, 20)}
 
+	it "should be a subclass of Component" do
+		expect(PositionComponent < Component).to be true
+	end
+
 	it "should properly initialize itself" do
 		position_comp = PositionComponent.new(5, 10)
 		expect(position_comp.row).to eq(5)

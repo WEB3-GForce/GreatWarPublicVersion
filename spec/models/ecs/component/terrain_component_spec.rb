@@ -2,6 +2,10 @@ require_relative '../../../spec_helper'
 
 describe TerrainComponent do
 
+	it "should be a subclass of Component" do
+		expect(TerrainComponent < Component).to be true
+	end
+
 	it "should properly initialize itself" do
 		terrain_comp = TerrainComponent.new("land")
 		expect(terrain_comp.type).to eq("land")

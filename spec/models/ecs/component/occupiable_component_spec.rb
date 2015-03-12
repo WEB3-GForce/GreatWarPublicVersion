@@ -1,6 +1,11 @@
 require_relative '../../../spec_helper'
 
 describe OccupiableComponent do
+
+	it "should be a subclass of Component" do
+		expect(OccupiableComponent < Component).to be true
+	end
+
 	it "should be able to be initialized" do
 		comp = OccupiableComponent.new
 		expect(comp.class).to equal(OccupiableComponent)

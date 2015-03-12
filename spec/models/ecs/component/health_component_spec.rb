@@ -4,6 +4,10 @@ describe HealthComponent do
 
 	let(:basic_health) {HealthComponent.new(10)}
 
+	it "should be a subclass of Component" do
+		expect(HealthComponent < Component).to be true
+	end
+
 	context "when initializing" do
 
 		it "should succeed when given only max_health" do

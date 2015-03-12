@@ -4,6 +4,10 @@ describe NameComponent do
 
 	let(:basic_name) {NameComponent.new("Stan Lee")}
 
+	it "should be a subclass of Component" do
+		expect(NameComponent < Component).to be true
+	end
+
 	it "should properly initialize itself" do
 		name_comp = NameComponent.new("Thomas")
 		expect(name_comp.name).to eq("Thomas")

@@ -4,6 +4,10 @@ describe MotionComponent do
 
 	let(:basic_motion) {MotionComponent.new(10)}
 
+	it "should be a subclass of Component" do
+		expect(MotionComponent < Component).to be true
+	end
+
 	context "when initializing" do
 
 		it "should succeed when given only base_movement" do

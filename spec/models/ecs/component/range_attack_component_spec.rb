@@ -4,6 +4,10 @@ describe RangeAttackComponent do
 
 	let(:basic_rattack) {RangeAttackComponent.new(10, 3, 7)}
 
+	it "should be a subclass of Component" do
+		expect(RangeAttackComponent < Component).to be true
+	end
+
 	context "when initializing" do
 
 		it "should initialize itself properly" do
