@@ -30,6 +30,11 @@ require_relative "../app/models/ecs/component/range_attack_component.rb"
 require_relative "../app/models/ecs/component/range_attack_immunity_component.rb"
 require_relative "../app/models/ecs/component/terrain_component.rb"
 
+require_relative "../app/models/ecs/entity/component_bag.rb"
+require_relative "../app/models/ecs/entity/entity.rb"
+require_relative "../app/models/ecs/entity/entity_manager.rb"
+
+
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
