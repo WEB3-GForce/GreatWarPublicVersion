@@ -163,12 +163,13 @@ public
 	#
 	# Arguments
 	#   entity_manager = the entity manager to add the new entity to
+	#   owner          = the player entity this piece belongs to
 	#
 	# Returns
 	#   the newly created AI Player Entity
 	def self.infantry(entity_manager, owner)
 		return self.create_entity(entity_manager,
-					  [UnitComponent.infantry,
+					  [PieceComponent.infantry,
 					   HealthComponent.new(10),
 					   MotionComponent.new(5),
 					   MeleeAttackComponent.new(10),
@@ -181,12 +182,13 @@ public
 	#
 	# Arguments
 	#   entity_manager = the entity manager to add the new entity to
+	#   owner          = the player entity this piece belongs to
 	#
 	# Returns
 	#   the newly created AI Player Entity
 	def self.machine_gun(entity_manager, owner)
 		return self.create_entity(entity_manager,
-					  [UnitComponent.machine_gun,
+					  [PieceComponent.machine_gun,
 					   HealthComponent.new(20),
 					   MotionComponent.new(3),
 					   MeleeAttackComponent.new(10),
@@ -199,16 +201,35 @@ public
 	#
 	# Arguments
 	#   entity_manager = the entity manager to add the new entity to
+	#   owner          = the player entity this piece belongs to
 	#
 	# Returns
 	#   the newly created AI Player Entity
 	def self.artillery(entity_manager, owner)
 		return self.create_entity(entity_manager,
-					  [UnitComponent.artillery,
+					  [PieceComponent.artillery,
 					   HealthComponent.new(10),
 					   MotionComponent.new(1),
 					   MeleeAttackComponent.new(0),
 					   RangeAttackComponent.new(20, 5, 15),
+					   OwnedComponent.new(owner)])
+	end
+
+	# This function creates a new command bunker entity. These entities
+	# represent the command base of a player. A player will lose if the
+	# opposing army is able to capture the command bunker.
+	#
+	# Arguments
+	#   entity_manager = the entity manager to add the new entity to
+	#   owner          = the player entity this piece belongs to
+	#
+	# Returns
+	#   the newly created Command Bunker Entity
+	def self.command_bunker(entity_manager, owner)
+		return self.create_entity(entity_manager,
+					  [PieceComponent.command_bunker,
+					   HealthComponent.new(30),
+					   RangeAttackImmunityComponent.new,
 					   OwnedComponent.new(owner)])
 	end
 

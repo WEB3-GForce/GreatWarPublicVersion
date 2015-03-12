@@ -68,11 +68,11 @@ describe EntityFactory do
 		expect(manager[entity][AIComponent].size).to eq(1)
 	end
 
-	it "should create a new infantry unit" do
+	it "should create a new infantry piece" do
 		owner = EntityFactory.human_player(manager, "David")
 		entity = EntityFactory.infantry(manager, owner)
 		
-		unit_comp   = manager[entity][UnitComponent][0]
+		unit_comp   = manager[entity][PieceComponent][0]
 		health_comp = manager[entity][HealthComponent][0]
 		motion_comp = manager[entity][MotionComponent][0]
 		melee_comp  = manager[entity][MeleeAttackComponent][0]
@@ -91,11 +91,11 @@ describe EntityFactory do
 		expect(owned_comp.owner).to eq(owner)
 	end
 
-	it "should create a new machine gun unit" do
+	it "should create a new machine gun piece" do
 		owner = EntityFactory.human_player(manager, "David")
 		entity = EntityFactory.machine_gun(manager, owner)
 		
-		unit_comp   = manager[entity][UnitComponent][0]
+		unit_comp   = manager[entity][PieceComponent][0]
 		health_comp = manager[entity][HealthComponent][0]
 		motion_comp = manager[entity][MotionComponent][0]
 		melee_comp  = manager[entity][MeleeAttackComponent][0]
@@ -114,11 +114,11 @@ describe EntityFactory do
 		expect(owned_comp.owner).to eq(owner)
 	end
 
-	it "should create a new artillery unit" do
+	it "should create a new artillery piece" do
 		owner = EntityFactory.human_player(manager, "David")
 		entity = EntityFactory.artillery(manager, owner)
 		
-		unit_comp   = manager[entity][UnitComponent][0]
+		unit_comp   = manager[entity][PieceComponent][0]
 		health_comp = manager[entity][HealthComponent][0]
 		motion_comp = manager[entity][MotionComponent][0]
 		melee_comp  = manager[entity][MeleeAttackComponent][0]
@@ -134,6 +134,22 @@ describe EntityFactory do
 		expect(range_comp.attack).to eq(20)
 		expect(range_comp.min_range).to eq(5)
 		expect(range_comp.max_range).to eq(15)
+		expect(owned_comp.owner).to eq(owner)
+	end
+
+	it "should create a new command_bunker piece" do
+		owner  = EntityFactory.human_player(manager, "David")
+		entity = EntityFactory.command_bunker(manager, owner)
+		
+		unit_comp      = manager[entity][PieceComponent][0]
+		health_comp    = manager[entity][HealthComponent][0]
+		immunity_comp  = manager[entity][RangeAttackImmunityComponent][0]
+		owned_comp     = manager[entity][OwnedComponent][0]
+		
+		expect(unit_comp.type).to eq(:command_bunker)
+		expect(health_comp.cur_health).to eq(30)
+		expect(health_comp.max_health).to eq(30)
+		expect(immunity_comp.class).to eq(RangeAttackImmunityComponent)
 		expect(owned_comp.owner).to eq(owner)
 	end
 end
