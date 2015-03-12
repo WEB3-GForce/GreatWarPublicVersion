@@ -28,6 +28,7 @@ require_relative "../app/models/ecs/component/owned_component.rb"
 require_relative "../app/models/ecs/component/position_component.rb"
 require_relative "../app/models/ecs/component/range_attack_component.rb"
 require_relative "../app/models/ecs/component/range_attack_immunity_component.rb"
+require_relative "../app/models/ecs/component/terrain_component.rb"
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate

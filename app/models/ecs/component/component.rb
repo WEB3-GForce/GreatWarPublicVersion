@@ -1,7 +1,7 @@
 =begin
 	This is the base class for ecs components. 
 	
-	Components can be considered the "columns" of the ecs "database table".
+	Components can be considered as "columns" of the ecs "database table".
 	Components encapsulate different attributes and features that an entity
 	can have. For example, there might be a HealthComponent for entities
 	that have health, a MotionComponent for entities that can move, or an

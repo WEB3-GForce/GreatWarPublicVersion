@@ -2,15 +2,15 @@ require_relative '../../../spec_helper'
 
 describe OwnedComponent do
 
-	let(:basicOwned) {OwnedComponent.new("Marcus")}
+	let(:basic_owned) {OwnedComponent.new("Marcus")}
 
 	it "should properly initialize itself" do
-		ownedComp = OwnedComponent.new("Joe")
-		expect(ownedComp.owner).to eq("Joe")
+		owned_comp = OwnedComponent.new("Joe")
+		expect(owned_comp.owner).to eq("Joe")
 	end
 
 	it "should have implemented to_s" do
-		expect(basicOwned).to respond_to :to_s
-		expect(basicOwned.to_s.class).to eq(String)
+		expect(basic_owned).to respond_to :to_s
+		expect(basic_owned.to_s.class).to eq(String)
 	end
 end

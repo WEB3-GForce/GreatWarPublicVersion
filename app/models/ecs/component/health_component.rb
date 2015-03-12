@@ -26,8 +26,6 @@ class HealthComponent < Component
 	def initialize(max_health, cur_health=max_health)
 		@max_health = 0
 		@cur_health = 0
-		# Use the setter methods to make sure max and cur health are
-		# set properly.
 		self.max_health = max_health
 		self.cur_health = cur_health
 	end

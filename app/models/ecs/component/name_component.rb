@@ -5,7 +5,6 @@ require_relative "./component.rb"
 	a NameComponent might be given to a player entity to denote the player's
 	in game name.
 =end
-
 class NameComponent < Component
   
 	attr_reader :name
