@@ -259,6 +259,111 @@ public
 					   OwnedComponent.new(owner)])
 	end
 
+	# This function creates a new army for a player.
+	#
+	# Arguments
+	#   entity_manager = the entity manager to add the new entity to
+	#   owner          = the player entity that owns the army
+	#
+	# Returns
+	#   an array of the army pieces
+	def self.create_army(entity_manager, owner)
+		army_array = []
+		army_array.push self.command_bunker(entity_manager, owner)
+		3.times  {army_array.push self.artillery(entity_manager, owner)}
+		7.times  {army_array.push self.machine_gun(entity_manager, owner)}
+		14.times {army_array.push self.infantry(entity_manager, owner)}
+		return army_array
+	end
+
+	# This function places a piece on the board
+	#
+	# Arguments
+	#   entity_manager = the entity manager to add the new entity to
+	#   piece          = the entity to place on the board
+	#   row            = the row of the board
+	#   col            = the col of the board
+	#
+	# Postcondition
+	#   the piece has been placed on the board
+	def self.place_piece(entity_manager, piece, row, col)
+		entity_manager.add_component(piece,
+			PositionComponent.new(row, col))
+		entity_manager.board[row][col][1].push piece
+	end
+
+	# This function places an army in the 5x5 top left corner
+	#
+	# Arguments
+	#   entity_manager = the entity manager to add the new entity to
+	#   army_array     = the army to place on the board
+	#
+	# Postcondition
+	#   the army has been placed on the board
+	def self.place_army_top_left(entity_manager, army_array)
+		army = army_array.dup
+		(0...5).each {|row|
+			(0...5).each { |col|
+				self.place_piece(entity_manager, army.shift, row, col)
+			}
+		}
+	end
+
+	# This function places an army in the 5x5 bottom left corner
+	#
+	# Arguments
+	#   entity_manager = the entity manager to add the new entity to
+	#   army_array     = the army to place on the board
+	#
+	# Postcondition
+	#   the army has been placed on the board
+	def self.place_army_bottom_left(entity_manager, army_array)
+		army = army_array.dup
+		max_row  = entity_manager.row - 1
+		max_row.step(max_row-4, -1).each {|row|
+			(0...5).each { |col|
+				self.place_piece(entity_manager, army.shift, row, col)
+			}
+		}
+	end
+
+	# This function places an army in the 5x5 top right corner
+	#
+	# Arguments
+	#   entity_manager = the entity manager to add the new entity to
+	#   army_array     = the army to place on the board
+	#
+	# Postcondition
+	#   the army has been placed on the board
+	def self.place_army_top_right(entity_manager, army_array)
+		army    = army_array.dup
+		max_col = entity_manager.col - 1
+		(0...5).each {|row|
+			max_col.step(max_col-4, -1).each { |col|
+				self.place_piece(entity_manager, army.shift, row, col)
+			}
+		}
+	end
+
+	# This function places an army in the 5x5 bottom right corner
+	#
+	# Arguments
+	#   entity_manager = the entity manager to add the new entity to
+	#   army_array     = the army to place on the board
+	#
+	# Postcondition
+	#   the army has been placed on the board
+	def self.place_army_bottom_right(entity_manager, army_array)
+		army    = army_array.dup
+		max_row  = entity_manager.row - 1
+		max_col = entity_manager.col - 1
+		max_row.step(max_row-4, -1).each {|row|
+			max_col.step(max_col-4, -1).each { |col|
+				self.place_piece(entity_manager, army.shift, row, col)
+			}
+		}
+	end
+
 =begin
 	// TODO Talk with Vance and David about code so we can write tests for it
 	

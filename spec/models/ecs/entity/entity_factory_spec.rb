@@ -2,7 +2,7 @@ require_relative '../../../spec_helper'
 
 describe EntityFactory do
 
-	let(:manager) {EntityManager.new(10, 10)}
+	let(:manager) {EntityManager.new(15, 15)}
 	let(:ai)      {AIComponent.new}
 	let(:ai)      {AIComponent.new}
 	let(:human)   {HumanComponent.new}
@@ -175,6 +175,103 @@ describe EntityFactory do
 		expect(health_comp.max_health).to eq(30)
 		expect(immunity_comp.class).to eq(RangeAttackImmunityComponent)
 		expect(owned_comp.owner).to eq(owner)
+	end
+
+	it "should create a new army" do
+		owner  = EntityFactory.human_player(manager, "David")
+		army   = EntityFactory.create_army(manager, owner)
+		
+		expect(army.size).to eq(25)
+		
+		expect(manager[army[0]][PieceComponent][0].type).to eq(:command_bunker)
+		
+		(1..3).each {|i|
+			expect(manager[army[i]][PieceComponent][0].type).to eq(:artillery)
+		}
+		
+		(4..10).each {|i|
+			expect(manager[army[i]][PieceComponent][0].type).to eq(:machine_gun)
+		}
+		(11..24).each {|i|
+			expect(manager[army[i]][PieceComponent][0].type).to eq(:infantry)
+		}
+	end
+
+	it "should place a piece on a board" do
+		EntityFactory.create_board_basic(manager)
+		owner    = EntityFactory.human_player(manager, "David")
+		infantry = EntityFactory.infantry(manager, owner)
+		
+		row = 5
+		col = 13
+		EntityFactory.place_piece(manager, infantry, row, col)
+		
+		expect(manager.board[row][col][1]).to eq([infantry])
+
+		pos_comp = manager[infantry][PositionComponent][0]
+
+		expect(pos_comp.row).to eq(row)
+		expect(pos_comp.col).to eq(col)
+	end
+
+	it "should place an army on the top left corner of the board" do
+		EntityFactory.create_board_basic(manager)
+		owner  = EntityFactory.human_player(manager, "David")
+		army   = EntityFactory.create_army(manager, owner)
+		EntityFactory.place_army_top_left(manager, army)
+
+		(0..4).each { |row|
+			(0..4).each { |col|
+				expect(manager.board[row][col][1]).to eq([army.shift])
+			}
+		}
+		expect(army.size).to eq(0)
+	end
+
+	it "should place an army on the bottom left corner of the board" do
+		EntityFactory.create_board_basic(manager)
+		owner  = EntityFactory.human_player(manager, "David")
+		army   = EntityFactory.create_army(manager, owner)	
+		EntityFactory.place_army_bottom_left(manager, army)
+	
+		max_row = manager.row - 1
+		max_row.step(max_row-4, -1).each { |row|
+			(0..4).each { |col|
+				expect(manager.board[row][col][1]).to eq([army.shift])
+			}
+		}
+		expect(army.size).to eq(0)
+	end
+
+	it "should place an army on the top right corner of the board" do
+		EntityFactory.create_board_basic(manager)
+		owner  = EntityFactory.human_player(manager, "David")
+		army   = EntityFactory.create_army(manager, owner)
+		EntityFactory.place_army_top_right(manager, army)
+		
+		max_col = manager.col - 1
+		(0..4).each { |row|
+			max_col.step(max_col-4, -1).each { |col|
+				expect(manager.board[row][col][1]).to eq([army.shift])
+			}
+		}
+		expect(army.size).to eq(0)
+	end
+
+	it "should place an army on the bottom right corner of the board" do
+		EntityFactory.create_board_basic(manager)
+		owner  = EntityFactory.human_player(manager, "David")
+		army   = EntityFactory.create_army(manager, owner)
+		EntityFactory.place_army_bottom_right(manager, army)
+	
+		max_row = manager.row - 1
+		max_col = manager.col - 1
+		max_row.step(max_row-4, -1).each { |row|
+			max_col.step(max_col-4, -1).each { |col|
+				expect(manager.board[row][col][1]).to eq([army.shift])
+			}
+		}
+		expect(army.size).to eq(0)
 	end
 end
 
