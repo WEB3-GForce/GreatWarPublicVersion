@@ -128,6 +128,10 @@ class EntityManager < Hash
 		self.each { |key, value|
 			string += "\t#{key} => #{value}\n"
 		}
+		string += "\tBoard =>\n"
+		@board.each {|row|
+			string += "\t\t#{row}\n"
+		}
 		string += "}\n"
 	end
 end

@@ -50,9 +50,15 @@ describe EntityFactory do
 
 	it "should create a new board with flatland squares" do
 		entity = EntityFactory.create_board_basic(manager)
-		manager.board.each { |row|
-			row.each { |col|
-				expect(manager[col][TerrainComponent][0]).to eq(TerrainComponent.flatland)
+		puts manager
+		manager.board.each_with_index { |ele, row|
+			ele.each_with_index { |_, col|
+				square = manager.board[row][col]
+				pos_comp = manager[square][PositionComponent][0]
+				ter_comp = manager[square][TerrainComponent][0]
+				expect(ter_comp).to eq(TerrainComponent.flatland)
+				expect(pos_comp.row).to eq(row)
+				expect(pos_comp.col).to eq(col)
 			}
 		}
 	end

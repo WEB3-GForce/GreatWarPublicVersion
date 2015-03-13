@@ -122,11 +122,16 @@ public
 	# Arguments
 	#   entity_manager = the entity manager to add the new entity to
 	#
-	# Returns
-	#   the newly created Square Entity
+	# Postcondition
+	#   the board is properly created
 	def self.create_board_basic(entity_manager)
-		entity_manager.board.map! { |row|
-			row.map { |col| self.flatland_square(entity_manager)}
+		entity_manager.board.each_with_index { |ele, row|
+			ele.each_with_index { |_, col|
+				square = self.flatland_square(entity_manager)
+				entity_manager.add_component(square,
+					PositionComponent.new(row, col))
+				entity_manager.board[row][col] = square
+			}
 		}
 	end
 
