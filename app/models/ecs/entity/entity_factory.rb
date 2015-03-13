@@ -364,6 +364,53 @@ public
 		}
 	end
 
+	# This function creates all the entities needed for a new basic game
+	#
+	# Arguments
+	#   entity_manager = the entity manager to add the new entities to
+	#   player_anmes   = the names of the players to have (max 4)
+	#
+	# Returns
+	#   an array of the following entities:
+	#
+	#   [turn_entity, 
+	#    [ [player1_entity, [entities_in_player1's_army]],
+	#      [player2_entity, [entities_in_player2's_army]],
+	#      ...
+	#    ]
+	#   ]
+	#
+	# Note
+	#   it is the responsiblity of the caller to make sure
+	#   number_of_players <= 4
+	#
+	#   The basic game uses a plain board only with flatlands  
+	#
+	#   When initializing a new game, this is the only method that needs
+	#   to be called.     
+	def self.create_game_basic(entity_manager, player_names)
+
+		self.create_board_basic(entity_manager)
+		
+		place_methods = [EntityFactory.method(:place_army_top_left),
+				 EntityFactory.method(:place_army_bottom_right),
+				 EntityFactory.method(:place_army_top_right),
+				 EntityFactory.method(:place_army_bottom_left)]
+		
+		players = []
+		players_and_army = []
+		player_names.each_with_index { |name, name_index|
+			player = self.human_player(entity_manager, name)
+			army   = self.create_army(entity_manager, player)
+			players.push player
+			players_and_army.push [player, army]
+			place_methods[name_index].call(entity_manager, army)
+		}
+		
+		turn = self.turn_entity(entity_manager, players)
+		return [turn, players_and_army]
+	end
+
 =begin
 	// TODO Talk with Vance and David about code so we can write tests for it
 	

@@ -1,5 +1,53 @@
 require_relative '../../../spec_helper'
 
+def place_top_left_helper(manager, army, owner)
+	(0..4).each { |row|
+		(0..4).each { |col|
+			unit = army.shift
+			expect(manager.board[row][col][1]).to eq([unit])
+			expect(manager[unit][OwnedComponent][0].owner).to eq(owner)
+		}
+	}
+	expect(army.size).to eq(0)
+end
+
+def place_bottom_left_helper(manager, army, owner)
+	max_row = manager.row - 1
+	max_row.step(max_row-4, -1).each { |row|
+		(0..4).each { |col|
+			unit = army.shift
+			expect(manager.board[row][col][1]).to eq([unit])
+			expect(manager[unit][OwnedComponent][0].owner).to eq(owner)
+		}
+	}
+	expect(army.size).to eq(0)
+end
+
+def place_top_right_helper(manager, army, owner)
+	max_col = manager.col - 1
+	(0..4).each { |row|
+		max_col.step(max_col-4, -1).each { |col|
+			unit = army.shift
+			expect(manager.board[row][col][1]).to eq([unit])
+			expect(manager[unit][OwnedComponent][0].owner).to eq(owner)
+		}
+	}
+	expect(army.size).to eq(0)
+end
+
+def place_bottom_right_helper(manager, army, owner)
+	max_row = manager.row - 1
+	max_col = manager.col - 1
+	max_row.step(max_row-4, -1).each { |row|
+		max_col.step(max_col-4, -1).each { |col|
+			unit = army.shift
+			expect(manager.board[row][col][1]).to eq([unit])
+			expect(manager[unit][OwnedComponent][0].owner).to eq(owner)
+		}
+	}
+	expect(army.size).to eq(0)
+end
+
 describe EntityFactory do
 
 	let(:manager) {EntityManager.new(15, 15)}
@@ -219,13 +267,7 @@ describe EntityFactory do
 		owner  = EntityFactory.human_player(manager, "David")
 		army   = EntityFactory.create_army(manager, owner)
 		EntityFactory.place_army_top_left(manager, army)
-
-		(0..4).each { |row|
-			(0..4).each { |col|
-				expect(manager.board[row][col][1]).to eq([army.shift])
-			}
-		}
-		expect(army.size).to eq(0)
+		place_top_left_helper(manager, army, owner)
 	end
 
 	it "should place an army on the bottom left corner of the board" do
@@ -233,14 +275,7 @@ describe EntityFactory do
 		owner  = EntityFactory.human_player(manager, "David")
 		army   = EntityFactory.create_army(manager, owner)	
 		EntityFactory.place_army_bottom_left(manager, army)
-	
-		max_row = manager.row - 1
-		max_row.step(max_row-4, -1).each { |row|
-			(0..4).each { |col|
-				expect(manager.board[row][col][1]).to eq([army.shift])
-			}
-		}
-		expect(army.size).to eq(0)
+		place_bottom_left_helper(manager, army, owner)
 	end
 
 	it "should place an army on the top right corner of the board" do
@@ -248,14 +283,7 @@ describe EntityFactory do
 		owner  = EntityFactory.human_player(manager, "David")
 		army   = EntityFactory.create_army(manager, owner)
 		EntityFactory.place_army_top_right(manager, army)
-		
-		max_col = manager.col - 1
-		(0..4).each { |row|
-			max_col.step(max_col-4, -1).each { |col|
-				expect(manager.board[row][col][1]).to eq([army.shift])
-			}
-		}
-		expect(army.size).to eq(0)
+		place_top_right_helper(manager, army, owner)
 	end
 
 	it "should place an army on the bottom right corner of the board" do
@@ -263,15 +291,113 @@ describe EntityFactory do
 		owner  = EntityFactory.human_player(manager, "David")
 		army   = EntityFactory.create_army(manager, owner)
 		EntityFactory.place_army_bottom_right(manager, army)
+		place_bottom_right_helper(manager, army, owner)
+	end
+
+	it "should create a new basic game with 1 player" do
+		game_bundle = EntityFactory.create_game_basic(manager, ["David"])
+		turn_comp   = manager[game_bundle[0]][TurnComponent][0]
+		player1     = game_bundle[1][0][0]
+		army1       = game_bundle[1][0][1]
 	
-		max_row = manager.row - 1
-		max_col = manager.col - 1
-		max_row.step(max_row-4, -1).each { |row|
-			max_col.step(max_col-4, -1).each { |col|
-				expect(manager.board[row][col][1]).to eq([army.shift])
-			}
-		}
-		expect(army.size).to eq(0)
+		expect(turn_comp.current_turn).to eq(player1)
+		expect(turn_comp.next_turn).to eq(player1)
+		expect(turn_comp.current_turn).to eq(player1)
+		
+		expect(manager[player1][NameComponent][0].name).to eq("David")
+		
+		place_top_left_helper(manager, army1, player1)
+	end
+
+	it "should create a new basic game with 2 player" do
+		game_bundle = EntityFactory.create_game_basic(manager, ["David", "Charlie"])
+		turn_comp   = manager[game_bundle[0]][TurnComponent][0]
+		player1     = game_bundle[1][0][0]
+		army1       = game_bundle[1][0][1]
+		player2     = game_bundle[1][1][0]
+		army2       = game_bundle[1][1][1]
+
+		expect(turn_comp.current_turn).to eq(player1)
+		
+		expect(turn_comp.next_turn).to eq(player2)
+		expect(turn_comp.current_turn).to eq(player2)
+
+		expect(turn_comp.next_turn).to eq(player1)
+		expect(turn_comp.current_turn).to eq(player1)		
+
+		expect(manager[player1][NameComponent][0].name).to eq("David")
+		expect(manager[player2][NameComponent][0].name).to eq("Charlie")
+
+		place_top_left_helper(manager, army1, player1)
+		place_bottom_right_helper(manager, army2, player2)
+	end
+
+	it "should create a new basic game with 3 player" do
+		game_bundle = EntityFactory.create_game_basic(manager, ["David", "Charlie", "Jack"])
+		turn_comp   = manager[game_bundle[0]][TurnComponent][0]
+		player1     = game_bundle[1][0][0]
+		army1       = game_bundle[1][0][1]
+		player2     = game_bundle[1][1][0]
+		army2       = game_bundle[1][1][1]
+		player3     = game_bundle[1][2][0]
+		army3       = game_bundle[1][2][1]
+
+		expect(turn_comp.current_turn).to eq(player1)
+		
+		expect(turn_comp.next_turn).to eq(player2)
+		expect(turn_comp.current_turn).to eq(player2)
+
+		expect(turn_comp.next_turn).to eq(player3)
+		expect(turn_comp.current_turn).to eq(player3)		
+
+		expect(turn_comp.next_turn).to eq(player1)
+		expect(turn_comp.current_turn).to eq(player1)		
+
+
+		expect(manager[player1][NameComponent][0].name).to eq("David")
+		expect(manager[player2][NameComponent][0].name).to eq("Charlie")
+		expect(manager[player3][NameComponent][0].name).to eq("Jack")
+
+		place_top_left_helper(manager, army1, player1)
+		place_bottom_right_helper(manager, army2, player2)
+		place_top_right_helper(manager, army3, player3)
+	end
+
+	it "should create a new basic game with 4 player" do
+		game_bundle = EntityFactory.create_game_basic(manager, ["David", "Charlie", "Jack", "Steve"])
+		turn_comp   = manager[game_bundle[0]][TurnComponent][0]
+		player1     = game_bundle[1][0][0]
+		army1       = game_bundle[1][0][1]
+		player2     = game_bundle[1][1][0]
+		army2       = game_bundle[1][1][1]
+		player3     = game_bundle[1][2][0]
+		army3       = game_bundle[1][2][1]
+		player4     = game_bundle[1][3][0]
+		army4       = game_bundle[1][3][1]
+
+		expect(turn_comp.current_turn).to eq(player1)
+		
+		expect(turn_comp.next_turn).to eq(player2)
+		expect(turn_comp.current_turn).to eq(player2)
+
+		expect(turn_comp.next_turn).to eq(player3)
+		expect(turn_comp.current_turn).to eq(player3)		
+
+		expect(turn_comp.next_turn).to eq(player4)
+		expect(turn_comp.current_turn).to eq(player4)		
+
+		expect(turn_comp.next_turn).to eq(player1)
+		expect(turn_comp.current_turn).to eq(player1)
+
+		expect(manager[player1][NameComponent][0].name).to eq("David")
+		expect(manager[player2][NameComponent][0].name).to eq("Charlie")
+		expect(manager[player3][NameComponent][0].name).to eq("Jack")
+		expect(manager[player4][NameComponent][0].name).to eq("Steve")
+
+		place_top_left_helper(manager, army1, player1)
+		place_bottom_right_helper(manager, army2, player2)
+		place_top_right_helper(manager, army3, player3)
+		place_bottom_left_helper(manager, army4, player4)
 	end
 end
 
