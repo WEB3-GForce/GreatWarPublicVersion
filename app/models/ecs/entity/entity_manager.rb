@@ -129,8 +129,12 @@ class EntityManager < Hash
 			string += "\t#{key} => #{value}\n"
 		}
 		string += "\tBoard =>\n"
-		@board.each {|row|
-			string += "\t\t#{row}\n"
+		@board.each_with_index {|row, index|
+			string += "\t\t[Row##{index}\n"
+			row.each_with_index {|col, col_index|
+				string += "\t\t\tColumn##{col_index} => #{col}\n"
+			}
+			string += "\t\t]\n"
 		}
 		string += "}\n"
 	end

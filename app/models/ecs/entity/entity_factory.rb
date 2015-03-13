@@ -126,13 +126,16 @@ public
 	#
 	# Postcondition
 	#   the board is properly created
+	#
+	# Note
+	#   Each 
 	def self.create_board_basic(entity_manager)
-		entity_manager.board.each_with_index { |ele, row|
-			ele.each_with_index { |_, col|
+		(0...entity_manager.row).each { |row|
+			(0...entity_manager.col).each { |col|
 				square = self.flatland_square(entity_manager)
 				entity_manager.add_component(square,
 					PositionComponent.new(row, col))
-				entity_manager.board[row][col] = square
+				entity_manager.board[row][col] = [square, []]
 			}
 		}
 	end

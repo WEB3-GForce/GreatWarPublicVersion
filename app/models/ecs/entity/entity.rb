@@ -18,7 +18,7 @@ require "securerandom"
 class Entity < String
 
 	# This class variable is used for debugging purposes only. It produces
-	# a simpler id that is easier to track.
+	# a simpler id that is easier to read.
 	@debug_id = -1
 
 	# Initializes a new Entity
