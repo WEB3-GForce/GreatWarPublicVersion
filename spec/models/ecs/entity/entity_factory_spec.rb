@@ -76,6 +76,22 @@ describe EntityFactory do
 		expect(manager[entity][AIComponent].size).to eq(1)
 	end
 
+	it "should create a new turn entity" do
+		players = ["Player1", "Player2", "Player3"]
+		entity = EntityFactory.turn_entity(manager, players)
+		turn_comp = manager[entity][TurnComponent][0]
+		expect(turn_comp.current_turn).to eq("Player1")
+		
+		expect(turn_comp.next_turn).to eq("Player2")
+		expect(turn_comp.current_turn).to eq("Player2")
+
+		expect(turn_comp.next_turn).to eq("Player3")
+		expect(turn_comp.current_turn).to eq("Player3")
+
+		expect(turn_comp.next_turn).to eq("Player1")
+		expect(turn_comp.current_turn).to eq("Player1")
+	end
+
 	it "should create a new infantry piece" do
 		owner = EntityFactory.human_player(manager, "David")
 		entity = EntityFactory.infantry(manager, owner)

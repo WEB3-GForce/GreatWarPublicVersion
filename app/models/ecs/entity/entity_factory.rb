@@ -155,7 +155,7 @@ public
 					   HumanComponent.new])
 	end
 
-	# This function creates a new AI player etity. These entities
+	# This function creates a new AI player entity. These entities
 	# represent the players that are controlled by artifical intelligence
 	#
 	# Arguments
@@ -166,6 +166,22 @@ public
 	def self.ai_player(entity_manager)
 		return self.create_entity(entity_manager,
 					  [AIComponent.new])
+	end
+
+	# This function creates a new turn entity. These entities are responsible
+	# for managing information about the current turn of the game such as
+	# which player's turn it currently is and what entities of the player
+	# have done actions thus far.
+	#
+	# Arguments
+	#   entity_manager = the entity manager to add the new entity to
+	#   players        = a list of the game's player entities
+	#
+	# Returns
+	#   the newly created Turn Entity
+	def self.turn_entity(entity_manager, players)
+		return self.create_entity(entity_manager,
+					  [TurnComponent.new(players)])
 	end
 
 	# This function creates a new AI player etity. These entities
