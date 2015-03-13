@@ -27,7 +27,9 @@ private
 	# Returns
 	#   the newly created Entity 
 	def self.create_entity(entity_manager, components)
-		entity = Entity.new
+		# The first uses production entities, the second debugging ones.
+		#entity = Entity.new
+		entity = Entity.debug_entity
 		components.each do |component|
 			entity_manager.add_component(entity, component)
 		end

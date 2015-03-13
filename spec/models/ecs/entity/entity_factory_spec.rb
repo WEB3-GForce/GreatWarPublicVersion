@@ -50,7 +50,6 @@ describe EntityFactory do
 
 	it "should create a new board with flatland squares" do
 		entity = EntityFactory.create_board_basic(manager)
-		puts manager
 		manager.board.each_with_index { |ele, row|
 			ele.each_with_index { |_, col|
 				square = manager.board[row][col]
