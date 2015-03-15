@@ -9,7 +9,7 @@ require_relative "./System.rb"
     The system can process multiple damage components per entity,
     but it assumes an entity has only one health component.
 =end
-class DamageSystem
+class DamageSystem < System
     def self.update(entity_manager)
         entity_manager.each_entity(
                 HealthComponent, DamageComponent).each { |id, components|
