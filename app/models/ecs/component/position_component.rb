@@ -23,6 +23,10 @@ class PositionComponent < Component
 		@col = col
 	end
 
+	def distance_to(other_position)
+		(@row - other_position.row).abs + (@col - other_position.col).abs
+	end
+
   	# Returns a string representation of the component 
 	def to_s
 		"Position <#{@row}, #{@col}>"
