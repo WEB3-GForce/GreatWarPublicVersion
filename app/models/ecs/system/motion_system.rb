@@ -127,6 +127,8 @@ private
 	#    results  = an empty array
 	#    path     = an empty array
 	#
+	# This also includes the square the entity is currently standing on.
+	# Delete this square if it is not desired.
 	def self.determine_locations(entity_manager, mover_owner, row, col, movement, results, path)
 
 		if !self.valid_move?(entity_manager, row, col, movement)
@@ -262,6 +264,9 @@ public
 		self.determine_locations(entity_manager, own_comp.owner, pos_comp.row,
 					 pos_comp.col, motion_comp.cur_movement,
 					 result, [])
+
+		# Don't include the square the entity is currently standing on.
+		result.delete entity_manager.board[pos_comp.row][pos_comp.col][0]
 		return result
 	end
 	

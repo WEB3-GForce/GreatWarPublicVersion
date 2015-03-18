@@ -378,8 +378,41 @@ describe MotionSystem do
 			manager.add_component(infantry, PositionComponent.new(1, 1))
 
 			result = MotionSystem.moveable_locations(manager, infantry)
-			answer = [flatland00, flatland02, flatland11, flatland20]
+			answer = [flatland00, flatland02, flatland20]
 			expect(result.sort).to eq answer.sort
+		end
+
+		it "should properly return more correct squares" do
+			set_simple()
+			manager.add_component(flatland12, ImpassableComponent.new)
+			manager[flatland01].delete OccupiableComponent
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+
+			result = MotionSystem.moveable_locations(manager, infantry)
+			answer = [flatland00, flatland10, flatland02,
+				  flatland20, flatland21, flatland22]
+			expect(result.sort).to eq answer.sort
+		end
+
+		it "should properly return all squares except the current position" do
+			set_simple()
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			result = MotionSystem.moveable_locations(manager, infantry)
+
+			flat_array.delete(flatland11)
+			expect(result.sort).to eq flat_array.sort
+		end
+
+		it "should return any squares if an infantry is pinned in" do
+			set_simple()
+			manager.board[0][1][1].push foe1
+			manager.board[1][0][1].push foe1
+			manager.board[1][2][1].push foe1
+			manager.board[2][1][1].push foe1
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+
+			result = MotionSystem.moveable_locations(manager, infantry)
+			expect(result.empty?).to be true
 		end
 
 	end
@@ -401,8 +434,10 @@ describe MotionSystem do
 
 
 		it "should fail if new_square is not a board square" do
+			set_intermediate()
 			manager[infantry].delete MotionComponent
 			manager.add_component(infantry, PositionComponent.new(1, 1))
+			manager.board[1][1][1].push infantry
 			result = MotionSystem.make_move(manager, infantry, "Bad")
 			
 			expect(result).to eq(nil)
@@ -411,6 +446,7 @@ describe MotionSystem do
 		it "should fail if new_square is already occupied" do
 			set_intermediate()
 			manager.add_component(infantry, PositionComponent.new(0, 0))
+			manager.board[0][0][1].push infantry
 			manager.add_component(infantry2, PositionComponent.new(1, 1))
 			manager.board[1][1][1].push infantry2
 			result = MotionSystem.make_move(manager, infantry, flatland11)
@@ -421,6 +457,7 @@ describe MotionSystem do
 		it "should fail if there is no path to new_square" do
 			set_intermediate()
 			manager.add_component(infantry, PositionComponent.new(1, 1))
+			manager.board[1][1][1].push infantry
 			result = MotionSystem.make_move(manager, infantry, flatland22)
 			
 			expect(result).to eq(nil)
@@ -430,6 +467,7 @@ describe MotionSystem do
 		it "should properly move to a new square" do
 			set_intermediate()
 			manager.add_component(infantry, PositionComponent.new(1, 1))
+			manager.board[1][1][1].push infantry
 			result = MotionSystem.make_move(manager, infantry, flatland02)
 			
 			answer = [flatland11, flatland01, flatland02]
@@ -446,6 +484,7 @@ describe MotionSystem do
 		it "should properly move to another new square" do
 			set_intermediate()
 			manager.add_component(infantry, PositionComponent.new(1, 1))
+			manager.board[1][1][1].push infantry
 			result = MotionSystem.make_move(manager, infantry, flatland20)
 			
 			answer = [flatland11, flatland10, flatland20]
@@ -457,6 +496,14 @@ describe MotionSystem do
 			pos_comp = manager[infantry][PositionComponent].first
 			expect(pos_comp.row).to eq(2)
 			expect(pos_comp.col).to eq(0)
+		end
+
+		it "should return nil if the entity tries to moves to where it is standing" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			manager.board[1][1][1].push infantry
+			result = MotionSystem.make_move(manager, infantry, flatland11)
+			expect(result).to eq(nil)
 		end
 	end
 end
