@@ -94,6 +94,9 @@ describe EntityType do
 	context "when calling moveable_entity?" do
 
 		it "should properly identify moveable entities" do
+			manager.add_component(infantry_entity, PositionComponent.new(1, 2))
+			manager.add_component(machine_gun_entity, PositionComponent.new(2, 2))
+			manager.add_component(artillery_entity, PositionComponent.new(3, 2))
 			expect(EntityType.moveable_entity?(manager, infantry_entity)).to be true
 			expect(EntityType.moveable_entity?(manager, machine_gun_entity)).to be true
 			expect(EntityType.moveable_entity?(manager, artillery_entity)).to be true
