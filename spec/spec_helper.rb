@@ -16,11 +16,7 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 Dir[File.dirname(__FILE__) + '/../app/models/ecs/component/*.rb'].each {|file| require_relative file }
-
-require_relative "../app/models/ecs/entity/component_bag.rb"
-require_relative "../app/models/ecs/entity/entity.rb"
-require_relative "../app/models/ecs/entity/entity_factory.rb"
-require_relative "../app/models/ecs/entity/entity_manager.rb"
+Dir[File.dirname(__FILE__) + '/../app/models/ecs/entity/*.rb'].each {|file| require_relative file }
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate

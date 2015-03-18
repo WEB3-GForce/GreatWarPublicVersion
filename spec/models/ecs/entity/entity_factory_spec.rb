@@ -120,7 +120,8 @@ describe EntityFactory do
 	end
 
 	it "should create a new ai player" do
-		entity = EntityFactory.ai_player(manager)
+		entity = EntityFactory.ai_player(manager, "CPU 1")
+		expect(manager[entity][NameComponent][0].name).to eq("CPU 1")
 		expect(manager[entity][AIComponent].size).to eq(1)
 	end
 
@@ -190,19 +191,19 @@ describe EntityFactory do
 		owner = EntityFactory.human_player(manager, "David")
 		entity = EntityFactory.artillery(manager, owner)
 		
-		unit_comp   = manager[entity][PieceComponent][0]
-		health_comp = manager[entity][HealthComponent][0]
-		motion_comp = manager[entity][MotionComponent][0]
-		melee_comp  = manager[entity][MeleeAttackComponent][0]
-		range_comp  = manager[entity][RangeAttackComponent][0]
-		owned_comp  = manager[entity][OwnedComponent][0]
+		unit_comp      = manager[entity][PieceComponent][0]
+		health_comp    = manager[entity][HealthComponent][0]
+		motion_comp    = manager[entity][MotionComponent][0]
+		has_melee_comp = manager[entity].has_key? MeleeAttackComponent
+		range_comp     = manager[entity][RangeAttackComponent][0]
+		owned_comp     = manager[entity][OwnedComponent][0]
 		
 		expect(unit_comp.type).to eq(:artillery)
 		expect(health_comp.cur_health).to eq(10)
 		expect(health_comp.max_health).to eq(10)
 		expect(motion_comp.cur_movement).to eq(1)
 		expect(motion_comp.base_movement).to eq(1)
-		expect(melee_comp.attack).to eq(0)
+		expect(has_melee_comp).to be false
 		expect(range_comp.attack).to eq(20)
 		expect(range_comp.min_range).to eq(5)
 		expect(range_comp.max_range).to eq(15)

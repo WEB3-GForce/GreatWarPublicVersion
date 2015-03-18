@@ -84,6 +84,37 @@ describe EntityManager do
 		end
 	end
 
+	context "when calling has_component" do
+
+		it "should return true if the entity has the components" do
+			manager.add_component(entity, ai1)
+			result = manager.has_components(entity, [AIComponent])
+			expect(result).to be true
+		end
+		
+		it "should return false if the entity doesn't have the components" do
+			manager.add_component(entity, human1)
+			result = manager.has_components(entity, [AIComponent])
+			expect(result).to be false
+		end
+
+		it "should not add any new entries to the manager" do
+			manager.add_component(entity, human1)
+			manager.has_components(entity, [AIComponent])
+			expect(manager[entity].has_key?(AIComponent)).to be false
+		end
+
+
+		it "should succeed with multiple components specified" do
+			manager.add_component(entity, ai1)
+			manager.add_component(entity, human1)
+			result = manager.has_components(entity,
+				[AIComponent, HumanComponent])
+			expect(result).to be true
+		end
+	end
+
+
 	context "when calling get_entities_with_components" do
 
 		it "should return the proper entities" do
