@@ -72,6 +72,23 @@ class EntityManager < Hash
 		self[entity][component.class].push(component)
 	end
 
+	# Returns whether an entity has a list of components
+	#
+	# Arguments:
+	#	entity          = the entity to check
+	#	components      = the list of component classes the entity should have
+	# 
+	# Returns:
+	#   Whether the entity has all of the components
+	#
+	def has_components(entity, components)
+		components.all? { |comp_class|
+			self[entity].has_key?(comp_class) and
+			self[entity][comp_class].size >= 1
+		}
+	end
+
+
 	# Gets the components of an entity of a specific class.
 	#
 	# Arguments:
@@ -88,7 +105,7 @@ class EntityManager < Hash
 	def get_components(entity, component_class)
 		self[entity][component_class]
 	end
-	
+
 	# Returns all entities that contain a given component.
 	#
 	# Arguments:

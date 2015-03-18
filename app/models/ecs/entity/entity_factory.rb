@@ -160,12 +160,14 @@ public
 	#
 	# Arguments
 	#   entity_manager = the entity manager to add the new entity to
+	#   name           = the name of the computer entity
 	#
 	# Returns
 	#   the newly created AI Player Entity
-	def self.ai_player(entity_manager)
+	def self.ai_player(entity_manager, name)
 		return self.create_entity(entity_manager,
-					  [AIComponent.new])
+					  [NameComponent.new(name),
+					   AIComponent.new])
 	end
 
 	# This function creates a new turn entity. These entities are responsible
@@ -236,7 +238,6 @@ public
 					  [PieceComponent.artillery,
 					   HealthComponent.new(10),
 					   MotionComponent.new(1),
-					   MeleeAttackComponent.new(0),
 					   RangeAttackComponent.new(20, 5, 15),
 					   OwnedComponent.new(owner)])
 	end
