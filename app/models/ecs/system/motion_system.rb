@@ -59,7 +59,8 @@ private
 		# by the owner of the current piece. Pieces can not move through
 		# enemy troops.
 		occupants.each {|occupant|
-			occ_owner = entity_manager.get_components(occupant, OwnedComponent).first
+			occ_owner = entity_manager.get_components(occupant,
+				OwnedComponent).first
 			return false if occ_owner.owner != mover_owner
 		}
 		
@@ -78,6 +79,28 @@ private
 	def self.occupy_square?(entity_manager, square, occupants)
 		return entity_manager.has_components(square, [OccupiableComponent]) &&
 			occupants.empty?
+	end
+
+	# Moves an entity from its old position to its new position
+	#
+	# Arguments
+	#   entity_manager = the manager and holder of all entity data
+	#   entity         = the entity to move
+	#   start_pos      = the PositionComponent of the entity
+	#   end_pos        = the PositionComponent of the destination square
+	#
+	# Postcondition
+	#   the entity has been moved
+	def self.move_entity(entity_manager, entity, start_pos, end_pos)
+		# Update the board so that the entity now occupies the new
+		# square and no longer the old.		
+		entity_manager.board[start_pos.row][start_pos.col][1].delete(entity)
+		entity_manager.board[end_pos.row][end_pos.col][1].push(entity)
+		
+		# Update the entity's PositionComponent to be the new square
+		entity_manager[entity][PositionComponent].delete(start_pos)
+		entity_manager.add_component(entity,
+			PositionComponent.new(end_pos.row, end_pos.col))
 	end
 
 	# This private method determines the locations an entity can move to
@@ -241,7 +264,49 @@ public
 					 result, [])
 		return result
 	end
+	
+	# Moves an entity from its original location to a new square
+	#
+	# Arguments
+	#   entity_manager = the manager of entities
+	#   entity         = the entity to be moved
+	#   new_square     = the new location for the entity to move to
+	#
+	# Returns
+	#   the path the entity took to move to the new location or nil if
+	#   the move was invalid
+	#
+	# Note
+	#   the function does sanity checks such as making sure the entity is
+	#   moveable, new_square is actually a square_entity, the entity can
+	#   indeed reach the new_square, the new_square is not occupied, etc.
+	def self.make_move(entity_manager, entity, new_square)
+		if !EntityType.moveable_entity?(entity_manager, entity) ||
+		   !EntityType.square_entity?(entity_manager, new_square)
+			return nil
+		end
 
+		end_pos   = entity_manager.get_components(new_square, PositionComponent).first
+		occupants = entity_manager.board[end_pos.row][end_pos.col][1]
+		
+		if !self.occupy_square?(entity_manager, new_square, occupants)
+			return nil
+		end
+
+		motion_comp = entity_manager.get_components(entity, MotionComponent).first
+		pos_comp    = entity_manager.get_components(entity, PositionComponent).first
+		own_comp    = entity_manager.get_components(entity, OwnedComponent).first
+		
+		path = self.determine_path(entity_manager, own_comp.owner, pos_comp.row,
+			pos_comp.col, end_pos.row, end_pos.col, motion_comp.cur_movement, [])
+			
+		if path == []
+			return nil
+		end
+
+		self.move_entity(entity_manager, entity, pos_comp, end_pos)			
+		return path
+	end
 end
 
 

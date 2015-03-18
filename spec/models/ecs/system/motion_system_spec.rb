@@ -36,6 +36,15 @@ describe MotionSystem do
 		}             
 	end
 
+	
+	def set_intermediate
+		set_simple()
+		manager.board[1][0][1].push friend1
+		manager.board[2][1][1].push foe1
+		manager.add_component(flatland12, ImpassableComponent.new)
+		manager[flatland01].delete OccupiableComponent
+	end
+
 
 	it "should be a subclass of System" do
 		expect(MotionSystem < System).to be true
@@ -274,19 +283,10 @@ describe MotionSystem do
 		end
 	end
 
-	
-	def set_simple_placed
-		set_simple()
-		manager.board[1][0][1].push friend1
-		manager.board[2][1][1].push foe1
-		manager.add_component(flatland12, ImpassableComponent.new)
-		manager[flatland01].delete OccupiableComponent
-	end
-	
 	context "when calling determine_path with a simple board" do
 
 		it "should be able to reach a reachable square" do
-			set_simple_placed()
+			set_intermediate()
 
 			result = MotionSystem.determine_path(manager, human1,
 			                                     1, 1, 0, 2, 10, [])
@@ -295,7 +295,7 @@ describe MotionSystem do
 		end
 
 		it "should be able to reach another reachable square" do
-			set_simple_placed()
+			set_intermediate()
 			result = MotionSystem.determine_path(manager, human1,
 			                                     1, 1, 2, 0, 10, [])
 			answer = [flatland11, flatland10, flatland20]
@@ -303,7 +303,7 @@ describe MotionSystem do
 		end
 
 		it "should be able to reach a square occupied by an ally" do
-			set_simple_placed()
+			set_intermediate()
 			result = MotionSystem.determine_path(manager, human1,
 			                                     1, 1, 0, 1, 10, [])
 			answer = [flatland11, flatland01]
@@ -311,7 +311,7 @@ describe MotionSystem do
 		end
 
 		it "should not be able to reach squares beyond its range" do
-			set_simple_placed()
+			set_intermediate()
 
 			result = MotionSystem.determine_path(manager, human1,
 			                                     1, 1, 0, 2, 1, [])
@@ -319,24 +319,43 @@ describe MotionSystem do
 		end	
 
 		it "should not be able to reach unreachable squares" do
-			set_simple_placed()
+			set_intermediate()
 			result = MotionSystem.determine_path(manager, human1,
 			                                     1, 1, 2, 2, 10, [])
 			expect(result).to eq []
 		end
 
 		it "should not be able to reach an enemy square" do
-			set_simple_placed()
+			set_intermediate()
 			result = MotionSystem.determine_path(manager, human1,
 			                                     1, 1, 1, 2, 10, [])
 			expect(result).to eq []
 		end
 	end
 
+	context "when calling move_entity" do
+
+		it "should properly move an entity to another new square" do
+			set_intermediate()
+			start_pos = PositionComponent.new(1, 1)
+			manager.add_component(infantry, start_pos)
+			
+			end_pos = manager.get_components(flatland20, PositionComponent).first
+			
+			MotionSystem.move_entity(manager, infantry, start_pos, end_pos)
+						
+			expect(manager.board[1][1][1]).to eq([])
+			expect(manager.board[2][0][1]).to eq([infantry])
+			
+			pos_comp = manager[infantry][PositionComponent].first
+			expect(pos_comp.row).to eq(2)
+			expect(pos_comp.col).to eq(0)
+		end
+	end
+
 	context "when calling moveable_locations" do
 	
 		it "should fail if the entity is not moveable (no PositionComponent)" do
-			manager[infantry].delete PositionComponent
 			result = MotionSystem.moveable_locations(manager, infantry)
 			
 			expect(result.empty?).to eq true
@@ -344,6 +363,7 @@ describe MotionSystem do
 
 		it "should fail if the entity is not moveable (no MotionComponent)" do
 			manager[infantry].delete MotionComponent
+			manager.add_component(infantry, PositionComponent.new(1, 1))
 			result = MotionSystem.moveable_locations(manager, infantry)
 			
 			expect(result.empty?).to eq true
@@ -364,4 +384,79 @@ describe MotionSystem do
 
 	end
 
+	context "when calling make_move" do
+	
+		it "should fail if the entity is not moveable (no PositionComponent)" do
+			result = MotionSystem.make_move(manager, infantry, flatland00)
+			expect(result).to eq(nil)
+		end
+
+		it "should fail if the entity is not moveable (no MotionComponent)" do
+			manager[infantry].delete MotionComponent
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			result = MotionSystem.make_move(manager, infantry, flatland00)
+			
+			expect(result).to eq(nil)
+		end
+
+
+		it "should fail if new_square is not a board square" do
+			manager[infantry].delete MotionComponent
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			result = MotionSystem.make_move(manager, infantry, "Bad")
+			
+			expect(result).to eq(nil)
+		end
+
+		it "should fail if new_square is already occupied" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(0, 0))
+			manager.add_component(infantry2, PositionComponent.new(1, 1))
+			manager.board[1][1][1].push infantry2
+			result = MotionSystem.make_move(manager, infantry, flatland11)
+			
+			expect(result).to eq(nil)
+		end
+
+		it "should fail if there is no path to new_square" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			result = MotionSystem.make_move(manager, infantry, flatland22)
+			
+			expect(result).to eq(nil)
+		end
+
+
+		it "should properly move to a new square" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			result = MotionSystem.make_move(manager, infantry, flatland02)
+			
+			answer = [flatland11, flatland01, flatland02]
+			expect(result).to eq(answer)
+			
+			expect(manager.board[1][1][1]).to eq([])
+			expect(manager.board[0][2][1]).to eq([infantry])
+			
+			pos_comp = manager[infantry][PositionComponent].first
+			expect(pos_comp.row).to eq(0)
+			expect(pos_comp.col).to eq(2)
+		end
+
+		it "should properly move to another new square" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			result = MotionSystem.make_move(manager, infantry, flatland20)
+			
+			answer = [flatland11, flatland10, flatland20]
+			expect(result).to eq(answer)
+			
+			expect(manager.board[1][1][1]).to eq([])
+			expect(manager.board[2][0][1]).to eq([infantry])
+			
+			pos_comp = manager[infantry][PositionComponent].first
+			expect(pos_comp.row).to eq(2)
+			expect(pos_comp.col).to eq(0)
+		end
+	end
 end
