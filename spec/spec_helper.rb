@@ -18,6 +18,8 @@
 Dir[File.dirname(__FILE__) + '/../app/models/ecs/component/*.rb'].each {|file| require_relative file }
 Dir[File.dirname(__FILE__) + '/../app/models/ecs/entity/*.rb'].each {|file| require_relative file }
 
+require_relative '../app/models/ecs/system/system.rb'
+
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
