@@ -1,4 +1,6 @@
 require_relative "./system.rb"
+require_relative "./motion_system.rb"
+require_relative "../entity/entity_type.rb"
 
 =begin
 	The KillSystem is responsible for removing entities from the game once
