@@ -539,4 +539,61 @@ describe MotionSystem do
 		end
 	end
 
+	context "when calling adjacent?" do
+
+		it "should return false if entity1 is not placed" do
+			set_intermediate()
+			manager.add_component(infantry2, PositionComponent.new(2, 2))
+			result = MotionSystem.adjacent?(manager, infantry, infantry2)
+			expect(result).to be false
+		end
+
+		it "should return false if entity2 is not placed" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(2, 2))
+			result = MotionSystem.adjacent?(manager, infantry, infantry2)
+			expect(result).to be false
+		end
+
+		it "should return false if the entities are not adjacent" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			manager.add_component(infantry2, PositionComponent.new(2, 2))
+			result = MotionSystem.adjacent?(manager, infantry, infantry2)
+			expect(result).to be false
+		end
+
+		it "should return true if the entities are north adjacent" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			manager.add_component(infantry2, PositionComponent.new(0, 1))
+			result = MotionSystem.adjacent?(manager, infantry, infantry2)
+			expect(result).to be true
+		end
+
+		it "should return true if the entities are south adjacent" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			manager.add_component(infantry2, PositionComponent.new(2, 1))
+			result = MotionSystem.adjacent?(manager, infantry, infantry2)
+			expect(result).to be true
+		end
+
+		it "should return true if the entities are east adjacent" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			manager.add_component(infantry2, PositionComponent.new(1, 0))
+			result = MotionSystem.adjacent?(manager, infantry, infantry2)
+			expect(result).to be true
+		end
+
+		it "should return true if the entities are west adjacent" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			manager.add_component(infantry2, PositionComponent.new(1, 2))
+			result = MotionSystem.adjacent?(manager, infantry, infantry2)
+			expect(result).to be true
+		end
+	end
+
 end

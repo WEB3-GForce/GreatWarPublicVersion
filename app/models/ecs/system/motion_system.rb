@@ -339,6 +339,31 @@ public
 		entity_manager[entity].delete PositionComponent
 		return true
 	end
+
+	# Determines whether two entities are adjacent to each other on the
+	# board. Only the cardinal directions are considered adjacent.
+	#
+	# Arguments
+	#   entity_manager = the manager of entities
+	#   entity         = the first entity to check
+	#   entity         = the second entity to check
+	#
+	# Returns
+	#   true if the entities are adjacent, false otherwise
+	#
+	# Note
+	#   In order for the entities to be adjacent, the difference between
+	#   their position on the board has to be exactly 1.
+	#
+	def self.adjacent?(entity_manager, entity, entity2)
+		if !EntityType.placed_entity?(entity_manager, entity) ||
+		   !EntityType.placed_entity?(entity_manager, entity2)  
+			return false
+		end
+		pos1 = entity_manager.get_components(entity, PositionComponent).first
+		pos2 = entity_manager.get_components(entity2, PositionComponent).first
+		return (pos1.row - pos2.row).abs + (pos1.col - pos2.col).abs == 1
+	end
 end
 
 

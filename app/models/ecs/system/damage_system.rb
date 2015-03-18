@@ -1,5 +1,4 @@
 require_relative "./kill_system.rb"
-require_relative "./motion_system.rb"
 require_relative "./system.rb"
 require_relative "../entity/entity_type.rb"
 
