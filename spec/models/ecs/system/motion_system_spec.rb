@@ -41,6 +41,111 @@ describe MotionSystem do
 		expect(MotionSystem < System).to be true
 	end
 
+	context "when calling valid_move?" do
+	
+		it "should accept a valid move" do
+			result = MotionSystem.valid_move?(manager, 1, 1, 1)
+			expect(result).to be true
+		end
+	
+		it "should terminate if movement < 0" do
+			result = MotionSystem.valid_move?(manager, 1, 1, -1)
+			expect(result).to be false
+		end
+
+		it "should terminate if 0 > row" do
+			result = MotionSystem.valid_move?(manager, -1, 1, 1)
+			expect(result).to be false
+		end	
+
+		it "should terminate if row >= manager.row" do
+		
+			result = MotionSystem.valid_move?(manager, manager.row,
+							  1, 1)
+			expect(result).to be false
+		end	
+
+		it "should terminate if 0 > col" do
+		
+			result = MotionSystem.valid_move?(manager, 1, -1, 1)
+			expect(result).to be false
+		end	
+
+		it "should terminate if col >= manager.col" do
+		
+			result =MotionSystem.valid_move?(manager, 1, manager.col, 1)
+			expect(result).to be false
+		end
+
+	end
+
+	context "when calling pass_over_square?" do
+
+		it "should be able to pass over an unoccupied passable square" do
+			set_simple()
+			manager[flatland01].delete OccupiableComponent
+			result = MotionSystem.pass_over_square?(manager, flatland01,
+							 [], human1)
+			expect(result).to eq true
+		end
+
+		it "should not be able to pass over an impassable squares" do
+			set_simple()
+			manager.add_component(flatland01, ImpassableComponent.new)
+			result = MotionSystem.pass_over_square?(manager, flatland01,
+							 [], human1)
+			expect(result).to eq false
+		end
+
+		it "should be able to pass over squares occupied by friends" do
+			set_simple()
+			result = MotionSystem.pass_over_square?(manager, flatland01,
+							 [friend1], human1)
+			expect(result).to eq true
+		end
+
+		it "should be able to pass over squares occupied by a foe" do
+			set_simple()
+			result = MotionSystem.pass_over_square?(manager, flatland01,
+							 [foe1], human1)
+			expect(result).to eq false
+		end
+
+
+		it "should be able to pass over squares occupied by any foe" do
+			set_simple()
+			result = MotionSystem.pass_over_square?(manager, flatland01,
+							 [friend1, foe1], human1)
+			expect(result).to eq false
+		end
+	end
+
+	context "when calling occupy_square?" do
+
+		it "should be able to occupy an unoccupied occupiable square" do
+			set_simple()
+			result = MotionSystem.occupy_square?(manager, flatland01,
+							    [])
+			expect(result).to eq true
+		end
+
+		it "should not be able to occupy an unoccupiable square" do
+			set_simple()
+			manager[flatland01].delete OccupiableComponent
+			result = MotionSystem.occupy_square?(manager, flatland01,
+							    [])
+			expect(result).to eq false
+		end
+
+		it "should not be able to occupy an occupied square" do
+			set_simple()
+			manager[flatland01].delete OccupiableComponent
+			result = MotionSystem.occupy_square?(manager, flatland01,
+							    [friend1])
+			expect(result).to eq false
+		end
+	end
+
 	context "when calling deterimine_locations at the base case" do
 	
 		it "should terminate if movement < 0" do
