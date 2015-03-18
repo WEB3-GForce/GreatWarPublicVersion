@@ -84,6 +84,19 @@ class EntityType
 		entity_manager.has_components(entity, [PieceComponent])
 	end
 
+	# Determines whether the entity is placed on the board. Namely it needs
+	# to have a position.
+	#
+	# Arguments
+	#   entity_manager = the manager that holds the entities
+	#   entity         = the entity to check
+	#
+	# Returns
+	#   whether the entity is a placed entity
+	def self.placed_entity?(entity_manager, entity)
+		entity_manager.has_components(entity, [PositionComponent])
+	end
+
 	# Determines whether the entity can move. Namely, it needs to
 	# have both a position on the board and a MotionComponent specifying
 	# how it can move.
@@ -93,7 +106,7 @@ class EntityType
 	#   entity         = the entity to check
 	#
 	# Returns
-	#   whether the entity is a moveable entty
+	#   whether the entity is a moveable entity
 	def self.moveable_entity?(entity_manager, entity)
 		entity_manager.has_components(entity, [MotionComponent,
 		                                       PositionComponent])

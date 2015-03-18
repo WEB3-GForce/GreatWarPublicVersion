@@ -91,6 +91,26 @@ describe EntityType do
 		end
 	end
 
+	context "when calling placed_entity?" do
+
+		it "should properly identify placed entities" do
+			manager.add_component(infantry_entity, PositionComponent.new(1, 2))
+			manager.add_component(machine_gun_entity, PositionComponent.new(2, 2))
+			manager.add_component(artillery_entity, PositionComponent.new(3, 2))
+			manager.add_component(command_bunker_entity, PositionComponent.new(3, 3))
+			manager.add_component(flatland_entity, PositionComponent.new(3, 3))
+			expect(EntityType.placed_entity?(manager, infantry_entity)).to be true
+			expect(EntityType.placed_entity?(manager, machine_gun_entity)).to be true
+			expect(EntityType.placed_entity?(manager, artillery_entity)).to be true
+			expect(EntityType.placed_entity?(manager, command_bunker_entity)).to be true
+			expect(EntityType.placed_entity?(manager, flatland_entity)).to be true
+		end
+
+		it "should properly not produce false positives" do
+			expect(EntityType.placed_entity?(manager, ai_entity)).to be false
+		end
+	end
+
 	context "when calling moveable_entity?" do
 
 		it "should properly identify moveable entities" do

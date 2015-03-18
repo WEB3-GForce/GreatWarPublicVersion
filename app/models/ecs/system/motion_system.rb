@@ -4,6 +4,7 @@ require_relative "../component/occupiable_component.rb"
 require_relative "../component/owned_component.rb"
 require_relative "../component/position_component.rb"
 require_relative "../entity/entity_type.rb"
+require_relative "./system.rb"
 
 =begin
 	The MotionSystem defines several useful methods for handling the
@@ -311,6 +312,32 @@ public
 
 		self.move_entity(entity_manager, entity, pos_comp, end_pos)			
 		return path
+	end
+
+	# Removes a piece from the board
+	#
+	# Arguments
+	#   entity_manager = the manager of entities
+	#   entity         = the piece to remove from the board
+	#
+	# Returns
+	#   true if the piece was removed, false otherwise
+	#
+	# Note
+	#   The piece is removed from the occupant array of the board and all
+	#   of its PositionComponent's are destroyed.
+	#
+	# TODO If entities can ever have multiple positions, this must be expanded.
+	#
+	def self.remove_piece(entity_manager, entity)
+		if !EntityType.placed_entity?(entity_manager, entity) ||
+		   !EntityType.piece_entity?(entity_manager, entity)  
+			return false
+		end
+		pos = entity_manager.get_components(entity, PositionComponent).first
+		entity_manager.board[pos.row][pos.col][1].delete(entity)
+		entity_manager[entity].delete PositionComponent
+		return true
 	end
 end
 

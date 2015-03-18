@@ -506,4 +506,37 @@ describe MotionSystem do
 			expect(result).to eq(nil)
 		end
 	end
+
+	context "when calling remove_piece" do
+
+		it "should fail if the entity is not placed" do
+			set_intermediate()
+			result = MotionSystem.remove_piece(manager, infantry)
+			expect(result).to be false
+		end
+
+
+		it "should fail if the entity is not a piece" do
+			set_intermediate()
+			result = MotionSystem.remove_piece(manager, flatland00)
+			expect(result).to be false
+		end
+
+
+		it "should properly remove the piece" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			manager.add_component(infantry, PositionComponent.new(2, 2))
+			manager.board[1][1][1].push infantry
+			result = MotionSystem.remove_piece(manager, infantry)
+			
+			expect(result).to be true
+			
+			expect(manager.board[1][1][1]).to eq([])
+			
+			result = manager[infantry].has_key? PositionComponent 
+			expect(result).to be false
+		end
+	end
+
 end
