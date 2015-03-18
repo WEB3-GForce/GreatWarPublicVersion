@@ -273,7 +273,66 @@ describe MotionSystem do
 			expect(result1.sort).to eq answer.sort
 		end
 	end
+
 	
+	def set_simple_placed
+		set_simple()
+		manager.board[1][0][1].push friend1
+		manager.board[2][1][1].push foe1
+		manager.add_component(flatland12, ImpassableComponent.new)
+		manager[flatland01].delete OccupiableComponent
+	end
+	
+	context "when calling determine_path with a simple board" do
+
+		it "should be able to reach a reachable square" do
+			set_simple_placed()
+
+			result = MotionSystem.determine_path(manager, human1,
+			                                     1, 1, 0, 2, 10, [])
+			answer = [flatland11, flatland01, flatland02]
+			expect(result).to eq answer
+		end
+
+		it "should be able to reach another reachable square" do
+			set_simple_placed()
+			result = MotionSystem.determine_path(manager, human1,
+			                                     1, 1, 2, 0, 10, [])
+			answer = [flatland11, flatland10, flatland20]
+			expect(result).to eq answer
+		end
+
+		it "should be able to reach a square occupied by an ally" do
+			set_simple_placed()
+			result = MotionSystem.determine_path(manager, human1,
+			                                     1, 1, 0, 1, 10, [])
+			answer = [flatland11, flatland01]
+			expect(result).to eq answer
+		end
+
+		it "should not be able to reach squares beyond its range" do
+			set_simple_placed()
+
+			result = MotionSystem.determine_path(manager, human1,
+			                                     1, 1, 0, 2, 1, [])
+			expect(result).to eq []
+		end	
+
+		it "should not be able to reach unreachable squares" do
+			set_simple_placed()
+			result = MotionSystem.determine_path(manager, human1,
+			                                     1, 1, 2, 2, 10, [])
+			expect(result).to eq []
+		end
+
+		it "should not be able to reach an enemy square" do
+			set_simple_placed()
+			result = MotionSystem.determine_path(manager, human1,
+			                                     1, 1, 1, 2, 10, [])
+			expect(result).to eq []
+		end
+	end
+
 	context "when calling moveable_locations" do
 	
 		it "should fail if the entity is not moveable (no PositionComponent)" do

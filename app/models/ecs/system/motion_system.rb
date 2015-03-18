@@ -134,15 +134,84 @@ private
 
 		# Recursively check the square in the cardinal directions.
 		new_movement = movement-1
+		new_pos = [[row-1, col], [row+1, col], [row, col-1],[row, col+1]]
 		
-		self.determine_locations(entity_manager, mover_owner, row-1, col,
-					new_movement, results, path.dup)
-		self.determine_locations(entity_manager, mover_owner, row+1, col,
-					new_movement, results, path.dup)
-		self.determine_locations(entity_manager, mover_owner, row, col-1,
-					new_movement, results, path.dup)
-		self.determine_locations(entity_manager, mover_owner, row, col+1,
-					new_movement, results, path.dup)
+		new_pos.each { |row, col|
+			self.determine_locations(entity_manager, mover_owner,
+						 row, col, new_movement,
+						 results, path.dup)
+		}
+	end
+
+	# Akin to determine_location, this function determines if there is a path
+	# from one square to another.
+	#
+	# Arguments
+	#   mover_owner = the owner of the entity that is moving
+	#   row         = the row that is currently being checked.
+	#   col         = the column that is currently being checked
+	#   end_row     = the row of the destination
+	#   end_col     = the column of the destination
+	#   movement    = the amount of movement points of the entity left
+	#   path        = the path from the origin square to the current square
+	#
+	# Returns
+	#   the path from the origin to the destination or nil if there is none
+	#
+	# When calling this function for the first time within other methods like
+	# moveable_locations:
+	#
+	#    path = an empty array
+	#
+	# Note:
+	#   Although a path may exist form one point to another, this does not
+	#   necessarily mean that the destination is occupiable.
+	def self.determine_path(entity_manager, mover_owner, row, col, end_row, end_col, movement, path)
+
+		if !self.valid_move?(entity_manager, row, col, movement)
+			return []
+		end
+
+		# Retreive the information about the square and occupants
+		tile      = entity_manager.board[row][col]
+		square    = tile[0]
+		occupants = tile[1]
+		
+		# If this square has already been traversed in the path, abort.
+		# Otherwise, augment it to the path
+		if path.include? square 
+			return []
+		else 
+			path.push square
+		end
+
+		if !self.pass_over_square?(entity_manager, square, occupants, mover_owner)
+			return []
+		end
+		
+		# If the current square is the desire square, a path has been
+		# found
+		if row == end_row && col == end_col
+			return path
+		end
+
+		# Recursively check the square in the cardinal directions.
+		new_movement = movement-1
+		new_pos = [[row-1, col], [row+1, col], [row, col-1],[row, col+1]]
+		
+		answer = []
+		new_pos.each { |row, col|
+		
+			new_path = self.determine_path(entity_manager, mover_owner,
+						       row, col, end_row, end_col,
+						       new_movement, path.dup)	 
+
+			if (answer.empty? || answer.size > new_path.size) &&
+			   !new_path.empty?		     
+				answer = new_path
+			end
+		}
+		return answer
 	end
 
 public
