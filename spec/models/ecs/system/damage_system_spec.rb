@@ -37,7 +37,9 @@ describe DamageSystem do
 			manager.add_component(infantry,
 					      PositionComponent.new(row, col))
 			result = DamageSystem.update(manager, infantry, 10)
-			expect(result).to eq [[infantry, 10], [infantry, true, human1]]
+			expect(result.size).to eq 2
+			expect(result[0]).to eq [infantry, 10]
+			expect(result[1][0]).to eq "kill"
 		end
 	end
 end

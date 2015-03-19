@@ -81,6 +81,7 @@ describe MeleeSystem do
 			result = MeleeSystem.perform_attack(manager, infantry, infantry2)
 			expect(result.size).to eq 2
 			expect(result[0][0]).to eq "melee"
+			expect(result[1][0]).to eq "kill"
 		end
 	end
 
@@ -126,6 +127,7 @@ describe MeleeSystem do
 				result = MeleeSystem.update(manager, infantry, infantry2)
 				expect(result.size).to eq 2
 				expect(result[0][0]).to eq "melee"
+				expect(result[1][0]).to eq "kill"
 			end
 		end
 
@@ -153,6 +155,7 @@ describe MeleeSystem do
 				expect(result.size).to eq 3
 				expect(result[0][0]).to eq "melee"
 				expect(result[1][0]).to eq "melee"
+				expect(result[2][0]).to eq "kill"
 			end
 		end
 	end

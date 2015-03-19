@@ -22,7 +22,7 @@ class KillSystem < System
 	# Returns
 	#   [] if the entity can't die or is still alive
 	#   A tuple of the form if successful
-	#      [[entity_id, whether_removed_from_board, owner_if_it_has_one]]
+	#      [["kill", entity_id, whether_removed_from_board, owner_if_it_has_one]]
 	def self.update(entity_manager, entity)
 	
 		# Entities that can't be damaged can't die.
@@ -44,7 +44,7 @@ class KillSystem < System
 		end
 		
 		entity_manager.delete(entity)
-		return [[entity, removed, owner]]
+		return [["kill", entity, removed, owner]]
 	end
 
 end

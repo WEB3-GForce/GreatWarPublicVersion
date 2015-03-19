@@ -37,7 +37,7 @@ describe KillSystem do
 				health = manager.get_components(infantry, HealthComponent).first
 				health.cur_health = 0
 				result = KillSystem.update(manager, infantry)
-				expect(result).to eq [[infantry, false, nil]]
+				expect(result).to eq [["kill", infantry, false, nil]]
 			end
 
 			it "should remove the entity from the board" do
@@ -49,7 +49,7 @@ describe KillSystem do
 				health = manager.get_components(infantry, HealthComponent).first
 				health.cur_health = 0
 				result = KillSystem.update(manager, infantry)
-				expect(result).to eq [[infantry, true, nil]]
+				expect(result).to eq [["kill", infantry, true, nil]]
 			end
 
 			it "should record the entity's owner" do
@@ -60,7 +60,7 @@ describe KillSystem do
 				health = manager.get_components(infantry, HealthComponent).first
 				health.cur_health = 0
 				result = KillSystem.update(manager, infantry)
-				expect(result).to eq [[infantry, true, human1]]
+				expect(result).to eq [["kill", infantry, true, human1]]
 			end
 		end
 	end
