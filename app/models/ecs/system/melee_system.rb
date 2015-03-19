@@ -18,18 +18,18 @@ private
 	# Determines if it is valid for two entities to melee attack each other.
 	#
 	# Arguments
-	#   entity_manager = the manager of entities
-	#   entity1        = the entity attacking
-	#   entity2        = the entity being attacked
+	#   entity_manager   = the manager of entities
+	#   attacking_entity = the entity attacking
+	#   attacked_entity  = the entity being attacked
 	#
 	# Return
-	#   true if entity1 can melee attack, entity2 can be damaged, and they
-	#      are adjacent to each other.
+	#   true if attacking_entity can melee attack, attacked_entity can be
+	#      damaged, and they are adjacent to each other.
 	#   false otherwise.
-	def self.valid_melee?(entity_manager, entity1, entity2)
-		return EntityType.melee_entity?(entity_manager, entity1) &&
-		   EntityType.damageable_entity?(entity_manager, entity2) &&
-		   MotionSystem.adjacent?(entity_manager, entity1, entity2)
+	def self.valid_melee?(entity_manager, attacking_entity, attacked_entity)
+		return EntityType.melee_entity?(entity_manager,  attacking_entity) &&
+		   EntityType.damageable_entity?(entity_manager, attacked_entity) &&
+		   MotionSystem.adjacent?(entity_manager, attacking_entity, attacked_entity)
 	end
 
 	# This function is an internal helper responsible for actually applying
@@ -38,8 +38,8 @@ private
 	#
 	# Arguments
 	#   entity_manager = the manager of entities
-	#   entity1        = the entity attacking
-	#   entity2        = the entity being attacked
+	#   attacking_entity = the entity attacking
+	#   attacked_entity  = the entity being attacked
 	#
 	# Returns
 	#    The result of DamageSystem.update
@@ -47,9 +47,9 @@ private
 	#    If damage is applied, the damage return array will be of the form:
 	#
 	#	[["melee", damage_info], ...]
-	def self.perform_attack(entity_manager, entity1, entity2)
-		mattack = entity_manager.get_components(entity1, MeleeAttackComponent).first
-		result  = DamageSystem.update(entity_manager, entity2, mattack.attack)
+	def self.perform_attack(entity_manager, attacking_entity, attacked_entity)
+		mattack = entity_manager.get_components(attacking_entity, MeleeAttackComponent).first
+		result  = DamageSystem.update(entity_manager, attacked_entity, mattack.attack)
 		result[0].unshift "melee" if !result.empty?
 		return result
 	end
@@ -87,8 +87,7 @@ public
 		# If entity2 can melee attack and isn't dead, make it attack.
 		if self.valid_melee?(entity_manager, entity2, entity1) &&
 		   result.size != 2
-		   	result2 = self.perform_attack(entity_manager, entity2, entity1)
-			result.concat result2
+		   	result.concat self.perform_attack(entity_manager, entity2, entity1)
 		end
 		
 		return result
