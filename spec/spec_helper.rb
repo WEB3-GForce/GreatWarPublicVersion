@@ -19,6 +19,7 @@ Dir[File.dirname(__FILE__) + '/../app/models/ecs/component/*.rb'].each {|file| r
 Dir[File.dirname(__FILE__) + '/../app/models/ecs/entity/*.rb'].each {|file| require_relative file }
 
 require_relative '../app/models/ecs/system/system.rb'
+require_relative '../app/models/ecs/system/melee_system.rb'
 require_relative '../app/models/ecs/system/motion_system.rb'
 require_relative '../app/models/ecs/system/kill_system.rb'
 require_relative '../app/models/ecs/system/damage_system.rb'

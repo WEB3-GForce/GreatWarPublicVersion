@@ -14,30 +14,34 @@ class DamageSystem < System
 	#
 	# Arguments
 	#   entity_manager = the manager of entities
-	#   enitty         = the entity to apply damage to
+	#   entity         = the entity to apply damage to
 	#   damage         = the amount of damage to apply
 	#
 	# Returns
-	#   nil if the entity is not damageable.
+	#   [] if the entity is not damageable.
 	#   otherwise, returns one of two tuples:
         #
         #       [[entity_damaged, damage_amount]] if entity is alive
         #       [[entity_damaged, damage_amount], [kill_info]] if entity is dead
         #
+        # Note
+        #   The damage return array should ultimately be of the form:
+        #
+        #	[[type_of_attack, entity_damaged, damage_amount]]
+        #
+        #    Other systems that call the DamageSystem (like the MeleeSystem)
+        #    should add the type of attack by calling:
+        #
+        #	result[0].unshift type_of_attack if !result.empty?
 	def self.update(entity_manager, entity, damage)
 		if !EntityType.damageable_entity?(entity_manager, entity)
-			return nil
+			return []
 		end
 		
 		health = entity_manager.get_components(entity, HealthComponent).first
 		health.cur_health -= damage
 		
 		result = KillSystem.update(entity_manager, entity)
-	
-		if result == nil
-			return [[entity, damage]]
-		end
-	
-		return [[entity, damage], result]
+		return [[entity, damage]].concat result
 	end
 end

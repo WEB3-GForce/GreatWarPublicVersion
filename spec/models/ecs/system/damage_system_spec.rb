@@ -21,9 +21,9 @@ describe DamageSystem do
 
 	context "when calling update" do
 	
-		it "should return nil if the entity is not damageable" do
+		it "should return [] if the entity is not damageable" do
 			result = DamageSystem.update(manager, flatland, 5)
-			expect(result).to be nil
+			expect(result).to eq []
 		end
 
 		it "should return the proper array for live damageable entities" do

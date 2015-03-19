@@ -1,0 +1,97 @@
+require_relative "./system.rb"
+require_relative "./damage_system.rb"
+require_relative "./motion_system.rb"
+require_relative "../entity/entity_type.rb"
+
+=begin
+	The MeleeSystem is responsible for coordinating melee attacks. It ensures
+	that the entities can properly do battle, that they are within the
+	valid range for melee attacks, and then adminsters the damage.
+	
+	For melee attacks, the entity attacked will return damage if it is
+	still alive and can do so.
+=end
+class MeleeSystem < System
+
+private
+
+	# Determines if it is valid for two entities to melee attack each other.
+	#
+	# Arguments
+	#   entity_manager = the manager of entities
+	#   entity1        = the entity attacking
+	#   entity2        = the entity being attacked
+	#
+	# Return
+	#   true if entity1 can melee attack, entity2 can be damaged, and they
+	#      are adjacent to each other.
+	#   false otherwise.
+	def self.valid_melee?(entity_manager, entity1, entity2)
+		return EntityType.melee_entity?(entity_manager, entity1) &&
+		   EntityType.damageable_entity?(entity_manager, entity2) &&
+		   MotionSystem.adjacent?(entity_manager, entity1, entity2)
+	end
+
+	# This function is an internal helper responsible for actually applying
+	# the damage to the entities and updating the returned damage array to
+	# reflect that a melee attack occurred.
+	#
+	# Arguments
+	#   entity_manager = the manager of entities
+	#   entity1        = the entity attacking
+	#   entity2        = the entity being attacked
+	#
+	# Returns
+	#    The result of DamageSystem.update
+	#
+	#    If damage is applied, the damage return array will be of the form:
+	#
+	#	[["melee", damage_info], ...]
+	def self.perform_attack(entity_manager, entity1, entity2)
+		mattack = entity_manager.get_components(entity1, MeleeAttackComponent).first
+		result  = DamageSystem.update(entity_manager, entity2, mattack.attack)
+		result[0].unshift "melee" if !result.empty?
+		return result
+	end
+
+public
+
+	# This function performs a melee attack. Entity1 attacks entity2. If
+	# entity2 is still alive, it will also attack back.
+	#
+	# Arguments
+	#   entity_manager = the manager of entities
+	#   entity1        = the entity attacking
+	#   entity2        = the entity being attacked
+	#
+	# Returns
+	#   [] if nothing happens
+	#   an array of the form
+	#
+	#	1. if entity1 only attacks
+	#	2. if entity1 kills entity2
+	#	3. if entity1 and entity2 both attack and live
+	#	4. if entity1 and entity2 both attack and entity1 dies
+	#
+	#	1. [["melee", entity2_damage_info]]
+	#	2. [["melee", entity2_damage_info], [entity2_kill_info]]
+	#	3. [["melee", entity2_damage_info], ["melee", entity1_damage_info]]
+	#	4. [["melee", entity2_damage_info], ["melee", entity1_damage_info], [entity1_kill_info]]
+	def self.update(entity_manager, entity1, entity2)
+		if !self.valid_melee?(entity_manager, entity1, entity2)
+			return []
+		end
+		
+		result = self.perform_attack(entity_manager, entity1, entity2)
+	
+		# If entity2 can melee attack and isn't dead, make it attack.
+		if self.valid_melee?(entity_manager, entity2, entity1) &&
+		   result.size != 2
+		   	result2 = self.perform_attack(entity_manager, entity2, entity1)
+			result.concat result2
+		end
+		
+		return result
+	end
+
+end

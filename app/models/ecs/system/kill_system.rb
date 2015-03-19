@@ -20,20 +20,20 @@ class KillSystem < System
 	#   entity         = the entity to check
 	#
 	# Returns
-	#   nil if the entity can't die or is still alive
+	#   [] if the entity can't die or is still alive
 	#   A tuple of the form if successful
-	#      [entity_id, whether_removed_from_board, owner_if_it_has_one]
+	#      [[entity_id, whether_removed_from_board, owner_if_it_has_one]]
 	def self.update(entity_manager, entity)
 	
 		# Entities that can't be damaged can't die.
 		if !EntityType.damageable_entity?(entity_manager, entity)
-			return nil
+			return []
 		end
 		
 		health_comp = entity_manager.get_components(entity, HealthComponent).first
 		
 		if health_comp.alive?
-			return nil
+			return []
 		end
 	
 		removed = MotionSystem.remove_piece(entity_manager, entity)
@@ -44,7 +44,7 @@ class KillSystem < System
 		end
 		
 		entity_manager.delete(entity)
-		return [entity, removed, owner]
+		return [[entity, removed, owner]]
 	end
 
 end
