@@ -5,8 +5,11 @@ var GameGroup = function(game, parent) {
 
     this.board = this.game.add.tilemap('tileset');
     this.board.addTilesetImage('tmw_desert_spacing', // tileset name, findable in the json 
-			  'tiles'
-			 );
+			       'tmw_desert_spacing'
+			      );
+    this.board.addTilesetImage('units', // tileset name, findable in the json 
+			       'units'
+			      );
 
     this.backgroundLayer = this.board.createLayer('boardLayer'); // saved name of the layer
     this.add(this.backgroundLayer);
@@ -18,6 +21,24 @@ var GameGroup = function(game, parent) {
 
     // draw the grid lines on the board
     this.drawLines();
+
+    this.highlightLayer = this.board.createBlankLayer('highlightLayer', this.backgroundLayer.layer.width, this.backgroundLayer.layer.height, this.backgroundLayer.tileWidth, this.backgroundLayer.tileHeight, this);
+    this.add(this.highlightLayer);
+    this.highlight = this.game.add.graphics(0, 0);
+    this.highlight.beginFill(0x00ff00, 0.2);
+    this.highlight.drawRect(this.backgroundLayer.tileWidth * 5, this.backgroundLayer.tileHeight * 5, this.backgroundLayer.tileWidth, this.backgroundLayer.tileHeight);
+    this.highlight.endFill;
+    this.highlightLayer.addChild(this.highlight);
+    this.highlightLayer.fixedToCamera = false;
+    console.log(this);
+    console.log(this.highlightLayer);
+    console.log(this.highlightLayer.fixedToCamera);
+
+
+    this.unitLayer = this.board.createLayer('unitLayer'); // saved name of the layer
+    this.add(this.unitLayer);
+    this.board.putTile(49, 5, 5, this.unitLayer);
+
 };
 
 GameGroup.prototype = Object.create(Phaser.Group.prototype);

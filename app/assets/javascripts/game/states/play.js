@@ -6,9 +6,7 @@ function Play() {
 Play.prototype = {
 
     create: function() {
-
         game.world.setBounds(0, 0, width, height); // size of world, as opposed to window
-
         this.gameGroup = new GameGroup(this.game);
     },
 
