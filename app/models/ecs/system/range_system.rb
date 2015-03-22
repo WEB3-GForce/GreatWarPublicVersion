@@ -55,7 +55,8 @@ public
 	# TODO change return to target unit entities?
 	#
 	def self.attackable_locations(entity_manager, entity)
-		if !EntityType.range_entity?(entity_manager, entity)
+		if !EntityType.range_entity?(entity_manager, entity) or 
+				!EntityType.placed_entity?(entity_manager, entity)
 			return []
 		end
 		
