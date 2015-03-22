@@ -8,6 +8,8 @@ class SocketController < WebsocketRails::BaseController
   end
 
   def set_name
-    controller_store[:usernames][client_id] = message["name"]
+    # controller_store[:usernames][client_id] = message["name"]
+
+    trigger_success({ tiles: [[1, 2, 3], [4, 5, 6], [7, 8, 9]] })
   end
 end
