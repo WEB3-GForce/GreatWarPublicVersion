@@ -1,0 +1,4 @@
+david:
+  name: David Marcano
+  email: david.marcano@yale.edu
+  password_digest: <%= User.digest('password') %>
