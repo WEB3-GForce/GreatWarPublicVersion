@@ -24,6 +24,7 @@ require_relative '../app/models/ecs/system/motion_system.rb'
 require_relative '../app/models/ecs/system/kill_system.rb'
 require_relative '../app/models/ecs/system/damage_system.rb'
 require_relative '../app/models/ecs/system/range_system.rb'
+require_relative '../app/models/ecs/system/turn_system.rb'
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
