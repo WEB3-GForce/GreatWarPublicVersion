@@ -14,6 +14,9 @@ Play.prototype = {
         // Panning:
         this.moveCameraByPointer(game.input.mousePointer);
         this.moveCameraByPointer(game.input.pointer1);
+
+        // Moving the marker:
+        this.gameGroup.gameBoard.updateMarker(); 
     },
 
     moveCameraByPointer: function (pointer) {
