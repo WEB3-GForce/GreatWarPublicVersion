@@ -86,8 +86,8 @@ public
 	
 		# If entity2 can melee attack and isn't dead, make it attack.
 		if self.valid_melee?(entity_manager, entity2, entity1) &&
-		   result.size != 2
-		   	result.concat self.perform_attack(entity_manager, entity2, entity1)
+				result.size != 2
+			result.concat self.perform_attack(entity_manager, entity2, entity1)
 		end
 		
 		return result

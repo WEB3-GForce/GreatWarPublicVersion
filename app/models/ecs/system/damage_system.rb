@@ -20,19 +20,19 @@ class DamageSystem < System
 	# Returns
 	#   [] if the entity is not damageable.
 	#   otherwise, returns one of two tuples:
-        #
-        #       [[entity_damaged, damage_amount]] if entity is alive
-        #       [[entity_damaged, damage_amount], [kill_info]] if entity is dead
-        #
-        # Note
-        #   The damage return array should ultimately be of the form:
-        #
-        #	[[type_of_attack, entity_damaged, damage_amount]]
-        #
-        #    Other systems that call the DamageSystem (like the MeleeSystem)
-        #    should add the type of attack by calling:
-        #
-        #	result[0].unshift type_of_attack if !result.empty?
+	#
+	#       [[entity_damaged, damage_amount]] if entity is alive
+	#       [[entity_damaged, damage_amount], [kill_info]] if entity is dead
+	#
+	# Note
+	#   The damage return array should ultimately be of the form:
+	#
+	#       [[type_of_attack, entity_damaged, damage_amount]]
+	#
+	#   Other systems that call the DamageSystem (like the MeleeSystem)
+	#   should add the type of attack by calling:
+	#
+	#        result[0].unshift type_of_attack if !result.empty?
 	def self.update(entity_manager, entity, damage)
 		if !EntityType.damageable_entity?(entity_manager, entity)
 			return []
