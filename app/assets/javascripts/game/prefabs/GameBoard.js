@@ -39,7 +39,12 @@ GameBoard.prototype.unhighlight = function(x, y) {
 	this.removeTile(x, y, this.highlightLayer);
 }
 
-GameBoard.prototype.updateMarker = function() {
+GameBoard.prototype.update = function() {
+	// moving the marker
 	this.marker.x = this.highlightLayer.getTileX(this.game.input.activePointer.worldX) * 32;
     this.marker.y = this.highlightLayer.getTileY(this.game.input.activePointer.worldY) * 32;
+
+    if (this.game.input.mousePointer.isDown) {
+    	this.highlight(this.marker.x/32, this.marker.y/32);
+    }
 }
