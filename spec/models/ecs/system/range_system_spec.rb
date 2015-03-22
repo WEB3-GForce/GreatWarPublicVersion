@@ -39,7 +39,7 @@ describe RangeSystem do
     context "when calling in_range?" do
 
         it "should return false if entity2 is too far from entity1" do
-            range = manager[infantry1][RangeAttackComponent].first.max_range
+            range = manager[infantry][RangeAttackComponent].first.max_range
             manager[infantry2].delete PositionComponent
             manager.add_component(infantry2,
                       PositionComponent.new(row+range, col+1))
@@ -48,7 +48,7 @@ describe RangeSystem do
         end
 
         it "should return false if entity2 is too close to entity1" do
-            manager[infantry1][RangeAttackComponent].first.min_range = 2
+            manager[infantry][RangeAttackComponent].first.min_range = 2
             manager[infantry2].delete PositionComponent
             manager.add_component(infantry2,
                       PositionComponent.new(row, col+1))
@@ -57,7 +57,7 @@ describe RangeSystem do
         end
 
         it "should return true if entity2 is in entity1's range" do
-            range = manager[infantry1][RangeAttackComponent].first.max_range
+            range = manager[infantry][RangeAttackComponent].first.max_range
             manager[infantry2].delete PositionComponent
             manager.add_component(infantry2,
                       PositionComponent.new(row+range-1, col+1))
@@ -95,7 +95,7 @@ describe RangeSystem do
         end
 
         it "should fail if the entities are too close" do
-            manager[infantry1][RangeAttackComponent].first.min_range = 2
+            manager[infantry][RangeAttackComponent].first.min_range = 2
             manager[infantry2].delete PositionComponent
             manager.add_component(infantry2,
                       PositionComponent.new(row, col+1))
@@ -149,6 +149,12 @@ describe RangeSystem do
             expect(result.empty?).to eq true
         end
 
+        it "should not fail on out-of-board locations" do
+            manager[infantry].delete PositionComponent
+            manager.add_component(infantry, PositionComponent.new(0,0))
+            RangeSystem.attackable_locations(manager, infantry)
+        end
+
         it "should return correct square" do
             result = RangeSystem.attackable_locations(manager, infantry)
             answer = [flatland2]
@@ -167,7 +173,7 @@ describe RangeSystem do
             expect(result.sort).to eq answer.sort
         end
 
-        it "should not return incorrect squares" do            
+        it "should not return own unit squares" do            
             manager.add_component(infantry3,
                           PositionComponent.new(row+1, col+1))
             manager.add_component(flatland3,
@@ -175,6 +181,20 @@ describe RangeSystem do
             manager.board[row+1][col+1] = [flatland3, [infantry3]]
 
             manager[infantry3][OwnedComponent].first.owner = human1
+
+            result = RangeSystem.attackable_locations(manager, infantry)
+            answer = [flatland2]
+            expect(result.sort).to eq answer.sort
+        end
+
+        it "should not return too close squares" do            
+            manager.add_component(infantry3,
+                          PositionComponent.new(row, col+1))
+            manager.add_component(flatland3,
+                          PositionComponent.new(row, col+1))
+            manager.board[row][col+1] = [flatland3, [infantry3]]
+
+            manager[infantry][RangeAttackComponent].first.min_range = 2
 
             result = RangeSystem.attackable_locations(manager, infantry)
             answer = [flatland2]
@@ -206,7 +226,7 @@ describe RangeSystem do
             end
 
             it "should return [] if the entities too close" do
-                manager[infantry1][RangeAttackComponent].first.min_range = 2
+                manager[infantry][RangeAttackComponent].first.min_range = 2
                 manager[infantry2].delete PositionComponent
                 manager.add_component(infantry2,
                         PositionComponent.new(row, col+1))
