@@ -356,7 +356,7 @@ public
 	#   their position on the board has to be exactly 1.
 	#
 	def self.adjacent?(entity_manager, entity, entity2)
-		return self.distance(entity, entity2) == 1
+		return self.distance(entity_manager, entity, entity2) == 1
 	end
 
 	# Gets the (Manhattan) distance between two entities on the board.

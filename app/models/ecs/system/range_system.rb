@@ -14,7 +14,7 @@ private
 
 	# Determines if an attacked entity is within attack range of an attacker.
 	def self.in_range?(entity_manager, attacking_entity, attacked_entity)
-		distance = MotionSystem.distance(attacking_entity, attacked_entity)
+		distance = MotionSystem.distance(entity_manager, attacking_entity, attacked_entity)
 
 		range_comp = entity_manager.get_components(attacking_entity, RangeAttackComponent).first
 		min_range = range_comp.min_range
@@ -36,7 +36,7 @@ private
 	def self.perform_attack(entity_manager, attacking_entity, attacked_entity)
 		rattack = entity_manager.get_components(attacking_entity, RangeAttackComponent).first
 		result  = DamageSystem.update(entity_manager, attacked_entity, rattack.attack)
-		result[0].unshift "ranged" if !result.empty?
+		result[0].unshift "range" if !result.empty?
 		return result
 	end
 
@@ -76,9 +76,9 @@ public
 				row = pos_comp.row + row_diff
 				col = pos_comp.col + col_diff
 
-				tile      = entity_manager.board[row][col]
-				square    = tile[0]
-				occupants = tile[1]
+				(square, occupants) = entity_manager.board[row][col]
+
+				next if square == nil and occupants == nil
 
 				occupants.each { |occ|
 					occ_own_comp = entity_manager.get_components(occ, OwnedComponent).first
@@ -87,7 +87,7 @@ public
 			}
 		}
 
-		return result
+		return results
 	end
 
 	# Executes a ranged attack from entity1 onto entity2.
@@ -104,7 +104,7 @@ public
 	#   [["ranged", entity2_damage_info], [entity2_kill_info]] if it does kill.
 	#
 	def self.update(entity_manager, entity1, entity2)
-		if !self.valid_range?(entity_manager, entity1, entity2)
+		if !self.valid_attack?(entity_manager, entity1, entity2)
 			return []
 		end
 		
