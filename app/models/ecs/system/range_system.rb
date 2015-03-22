@@ -3,11 +3,16 @@ require_relative "./damage_system.rb"
 require_relative "./motion_system.rb"
 require_relative "../entity/entity_type.rb"
 
+=begin
+	The RangeSystem is responsible for ranged attacks. It finds potential
+	targets for units with ranged attack, and validate/execute a ranged attack.
+=end
 class RangeSystem < System
 	
 #===============================================================================
 private
 
+	# Determines if an attacked entity is within attack range of an attacker.
 	def self.in_range?(entity_manager, attacking_entity, attacked_entity)
 		distance = MotionSystem.distance(attacking_entity, attacked_entity)
 
@@ -18,6 +23,7 @@ private
 		return distance >= min_range && distance <= max_range
 	end
 
+	# Determines if an attack by one entity on another is valid.
 	def self.valid_attack?(entity_manager, attacking_entity, attacked_entity)
 		return EntityType.range_entity?(entity_manager,  attacking_entity) &&
 		   EntityType.damageable_entity?(entity_manager, attacked_entity) &&
@@ -25,6 +31,8 @@ private
 		   self.in_range?(entity_manager, attacking_entity, attacked_entity)
 	end
 
+	# Executes a ranged attack.
+	# Returns array of form [["ranged", damage_info], ...] if successful
 	def self.perform_attack(entity_manager, attacking_entity, attacked_entity)
 		rattack = entity_manager.get_components(attacking_entity, RangeAttackComponent).first
 		result  = DamageSystem.update(entity_manager, attacked_entity, rattack.attack)
@@ -35,6 +43,17 @@ private
 #===============================================================================
 public
 
+	# Get locations that an entity can range attack.
+	#
+	# Arguments
+	#   entity_manager = the manager of the entities
+	#   entity         = the entity
+	#
+	# Returns
+	#   An array of square entities the entity can range attack
+	#
+	# TODO change return to target unit entities?
+	#
 	def self.attackable_locations(entity_manager, entity)
 		if !EntityType.range_entity?(entity_manager, entity)
 			return []
@@ -70,6 +89,19 @@ public
 		return result
 	end
 
+	# Executes a ranged attack from entity1 onto entity2.
+	#
+	# Arguments
+	#   entity_manager = the manager of entities
+	#   entity1        = the entity attacking
+	#   entity2        = the entity being attacked
+	#
+	# Returns
+	#   [] if nothing happens
+	#   Else an array of the form [["ranged", entity2_damage_info]] for an
+	#   attack that succeeds but does not kill, and
+	#   [["ranged", entity2_damage_info], [entity2_kill_info]] if it does kill.
+	#
 	def self.update(entity_manager, entity1, entity2)
 		if !self.valid_range?(entity_manager, entity1, entity2)
 			return []
