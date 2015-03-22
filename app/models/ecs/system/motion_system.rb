@@ -346,7 +346,7 @@ public
 	# Arguments
 	#   entity_manager = the manager of entities
 	#   entity         = the first entity to check
-	#   entity         = the second entity to check
+	#   entity2        = the second entity to check
 	#
 	# Returns
 	#   true if the entities are adjacent, false otherwise
@@ -356,13 +356,27 @@ public
 	#   their position on the board has to be exactly 1.
 	#
 	def self.adjacent?(entity_manager, entity, entity2)
+		return self.distance(entity, entity2) == 1
+	end
+
+	# Gets the (Manhattan) distance between two entities on the board.
+	#
+	# Arguments
+	#   entity_manager = the manager of entities
+	#   entity         = the first entity to check
+	#   entity2        = the second entity to check
+	#
+	# Returns
+	#   The Manhattan distance between the entities if both exist, else -1
+	#
+	def self.distance(entity_manager, entity, entity2)
 		if !EntityType.placed_entity?(entity_manager, entity) ||
 		   !EntityType.placed_entity?(entity_manager, entity2)  
-			return false
+			return -1
 		end
 		pos1 = entity_manager.get_components(entity, PositionComponent).first
 		pos2 = entity_manager.get_components(entity2, PositionComponent).first
-		return (pos1.row - pos2.row).abs + (pos1.col - pos2.col).abs == 1
+		return (pos1.row - pos2.row).abs + (pos1.col - pos2.col).abs
 	end
 end
 
