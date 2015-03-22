@@ -30,10 +30,6 @@ var GameGroup = function(game, parent) {
     this.highlight.endFill;
     this.highlightLayer.addChild(this.highlight);
     this.highlightLayer.fixedToCamera = false;
-    console.log(this);
-    console.log(this.highlightLayer);
-    console.log(this.highlightLayer.fixedToCamera);
-
 
     this.unitLayer = this.board.createLayer('unitLayer'); // saved name of the layer
     this.add(this.unitLayer);
