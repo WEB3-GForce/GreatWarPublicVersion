@@ -8,39 +8,52 @@ describe MotionComponent do
 		expect(MotionComponent < Component).to be true
 	end
 
+	it "should include USES_ENERGY" do
+		expect(MotionComponent < USES_ENERGY).to be true
+	end
+	
 	context "when initializing" do
 
-		it "should succeed when given only base_movement" do
+		it "should succeed when given only max_movement" do
 			motion_comp = MotionComponent.new(10)
 			expect(motion_comp.cur_movement).to eq(10)
-			expect(motion_comp.base_movement).to eq(10)
+			expect(motion_comp.max_movement).to eq(10)
+			expect(motion_comp.energy_cost).to eq(1)
 		end
 
-		it "should succeed when given base_movement and cur_movement" do
+		it "should succeed when given max_movement and cur_movement" do
 			motion_comp = MotionComponent.new(20, 10)
 			expect(motion_comp.cur_movement).to eq(10)
-			expect(motion_comp.base_movement).to eq(20)
+			expect(motion_comp.max_movement).to eq(20)
+			expect(motion_comp.energy_cost).to eq(1)
+		end
+
+		it "should succeed when given max_movement, cur_movement, and energy_cost" do
+			motion_comp = MotionComponent.new(20, 10, 2)
+			expect(motion_comp.cur_movement).to eq(10)
+			expect(motion_comp.max_movement).to eq(20)
+			expect(motion_comp.energy_cost).to eq(2)
 		end
 
 		it "should ensure max_health > 0 and cur_health > 0" do
 			motion_comp = MotionComponent.new(-10, -10)
 			expect(motion_comp.cur_movement).to eq(0)
-			expect(motion_comp.base_movement).to eq(0)
+			expect(motion_comp.max_movement).to eq(0)
 		end
 	end
 
-	context "when setting base_movement" do
+	context "when setting max_movement" do
 
-		it "should set base_movement to the given movement" do
-			basic_motion.base_movement = 5
-			expect(basic_motion.base_movement).to eq(5)			
-			basic_motion.base_movement = 0
-			expect(basic_motion.base_movement).to eq(0)
+		it "should set max_movement to the given movement" do
+			basic_motion.max_movement = 5
+			expect(basic_motion.max_movement).to eq(5)			
+			basic_motion.max_movement = 0
+			expect(basic_motion.max_movement).to eq(0)
 		end
 
-		it "should ensure 0 <= base_movement" do
-			basic_motion.base_movement = -20
-			expect(basic_motion.base_movement).to eq(0)
+		it "should ensure 0 <= max_movement" do
+			basic_motion.max_movement = -20
+			expect(basic_motion.max_movement).to eq(0)
 		end
 	end
 
