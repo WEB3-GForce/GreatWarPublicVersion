@@ -155,7 +155,6 @@ describe EntityFactory do
 		expect(unit_comp.type).to eq(:infantry)
 		expect(health_comp.cur_health).to eq(10)
 		expect(health_comp.max_health).to eq(10)
-		expect(motion_comp.cur_movement).to eq(5)
 		expect(motion_comp.max_movement).to eq(5)
 		expect(melee_comp.attack).to eq(10)
 		expect(range_comp.attack).to eq(10)
@@ -178,7 +177,6 @@ describe EntityFactory do
 		expect(unit_comp.type).to eq(:machine_gun)
 		expect(health_comp.cur_health).to eq(20)
 		expect(health_comp.max_health).to eq(20)
-		expect(motion_comp.cur_movement).to eq(3)
 		expect(motion_comp.max_movement).to eq(3)
 		expect(melee_comp.attack).to eq(10)
 		expect(range_comp.attack).to eq(10)
@@ -201,7 +199,6 @@ describe EntityFactory do
 		expect(unit_comp.type).to eq(:artillery)
 		expect(health_comp.cur_health).to eq(10)
 		expect(health_comp.max_health).to eq(10)
-		expect(motion_comp.cur_movement).to eq(1)
 		expect(motion_comp.max_movement).to eq(1)
 		expect(has_melee_comp).to be false
 		expect(range_comp.attack).to eq(20)

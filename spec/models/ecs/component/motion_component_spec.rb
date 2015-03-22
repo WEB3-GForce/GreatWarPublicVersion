@@ -14,30 +14,20 @@ describe MotionComponent do
 	
 	context "when initializing" do
 
-		it "should succeed when given only max_movement" do
+		it "should succeed when given max_movement" do
 			motion_comp = MotionComponent.new(10)
-			expect(motion_comp.cur_movement).to eq(10)
 			expect(motion_comp.max_movement).to eq(10)
 			expect(motion_comp.energy_cost).to eq(1)
 		end
 
-		it "should succeed when given max_movement and cur_movement" do
-			motion_comp = MotionComponent.new(20, 10)
-			expect(motion_comp.cur_movement).to eq(10)
-			expect(motion_comp.max_movement).to eq(20)
-			expect(motion_comp.energy_cost).to eq(1)
-		end
-
-		it "should succeed when given max_movement, cur_movement, and energy_cost" do
-			motion_comp = MotionComponent.new(20, 10, 2)
-			expect(motion_comp.cur_movement).to eq(10)
+		it "should succeed when given max_movement and energy_cost" do
+			motion_comp = MotionComponent.new(20, 2)
 			expect(motion_comp.max_movement).to eq(20)
 			expect(motion_comp.energy_cost).to eq(2)
 		end
 
-		it "should ensure max_health > 0 and cur_health > 0" do
+		it "should ensure max_health > 0" do
 			motion_comp = MotionComponent.new(-10, -10)
-			expect(motion_comp.cur_movement).to eq(0)
 			expect(motion_comp.max_movement).to eq(0)
 		end
 	end
@@ -57,33 +47,17 @@ describe MotionComponent do
 		end
 	end
 
-	context "when setting cur_movement" do
-
-		it "should set cur_movement to the given movement" do
-			basic_motion.cur_movement = 5
-			expect(basic_motion.cur_movement).to eq(5)			
-			basic_motion.cur_movement = 0
-			expect(basic_motion.cur_movement).to eq(0)
-		end
-
-
-		it "should ensure 0 <= cur_movement" do
-			basic_motion.cur_movement = -20
-			expect(basic_motion.cur_movement).to eq(0)
-		end
-	end
-
-	context "when cur_movement > 0" do
+	context "when ,ax_movement > 0" do
 
 		it "should be able to move" do
 			expect(basic_motion.can_move?).to be true
 		end
 	end
 
-	context "when cur_movement == 0" do
+	context "when max_movement == 0" do
 
 		it "should not be able to move" do
-			basic_motion.cur_movement = 0
+			basic_motion.max_movement = 0
 			expect(basic_motion.can_move?).to be false
 		end
 	end

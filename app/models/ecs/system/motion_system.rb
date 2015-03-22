@@ -263,7 +263,7 @@ public
 		
 		result = []
 		self.determine_locations(entity_manager, own_comp.owner, pos_comp.row,
-					 pos_comp.col, motion_comp.cur_movement,
+					 pos_comp.col, motion_comp.max_movement,
 					 result, [])
 
 		# Don't include the square the entity is currently standing on.
@@ -304,7 +304,7 @@ public
 		own_comp    = entity_manager.get_components(entity, OwnedComponent).first
 		
 		path = self.determine_path(entity_manager, own_comp.owner, pos_comp.row,
-			pos_comp.col, end_pos.row, end_pos.col, motion_comp.cur_movement, [])
+			pos_comp.col, end_pos.row, end_pos.col, motion_comp.max_movement, [])
 			
 		if path == []
 			return nil
