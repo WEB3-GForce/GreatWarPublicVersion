@@ -596,4 +596,85 @@ describe MotionSystem do
 		end
 	end
 
+	context "when calling distance" do
+
+		it "should return -1 if entity1 is not placed" do
+			set_intermediate()
+			manager.add_component(infantry2, PositionComponent.new(2, 2))
+			result = MotionSystem.distance(manager, infantry, infantry2)
+			expect(result).to be -1
+		end
+
+		it "should return -1 if entity2 is not placed" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(2, 2))
+			result = MotionSystem.distance(manager, infantry, infantry2)
+			expect(result).to be -1
+		end
+
+		it "should return 0 if the entities are same position" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			manager.add_component(infantry2, PositionComponent.new(1, 1))
+			result = MotionSystem.distance(manager, infantry, infantry2)
+			expect(result).to be 0
+		end
+
+		it "should return 1 if the entities are north adjacent" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			manager.add_component(infantry2, PositionComponent.new(0, 1))
+			result = MotionSystem.adjacent?(manager, infantry, infantry2)
+			expect(result).to be 1
+		end
+
+		it "should return 1 if the entities are south adjacent" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			manager.add_component(infantry2, PositionComponent.new(2, 1))
+			result = MotionSystem.adjacent?(manager, infantry, infantry2)
+			expect(result).to be 1
+		end
+
+		it "should return 1 if the entities are east adjacent" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			manager.add_component(infantry2, PositionComponent.new(1, 0))
+			result = MotionSystem.adjacent?(manager, infantry, infantry2)
+			expect(result).to be 1
+		end
+
+		it "should return 1 if the entities are west adjacent" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			manager.add_component(infantry2, PositionComponent.new(1, 2))
+			result = MotionSystem.adjacent?(manager, infantry, infantry2)
+			expect(result).to be 1
+		end
+
+		it "should return 2 if the entities are diagonally adjacent" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			manager.add_component(infantry2, PositionComponent.new(2, 2))
+			result = MotionSystem.distance(manager, infantry, infantry2)
+			expect(result).to be 2
+		end
+
+		it "should return 3 if the entities are knight move apart" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(0, 0))
+			manager.add_component(infantry2, PositionComponent.new(1, 2))
+			result = MotionSystem.distance(manager, infantry, infantry2)
+			expect(result).to be 3
+		end
+
+		it "should return 4 if the entities are 2 diagonally apart" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(0, 0))
+			manager.add_component(infantry2, PositionComponent.new(2, 2))
+			result = MotionSystem.distance(manager, infantry, infantry2)
+			expect(result).to be 4
+		end
+	end
+
 end

@@ -186,6 +186,16 @@ public
 					  [TurnComponent.new(players)])
 	end
 
+	# ;)
+	def self.goliath(entity_manager, owner)
+		return self.create_entity(entity_manager,
+					  [PieceComponent.infantry,
+					   HealthComponent.new(30),
+					   MotionComponent.new(1),
+					   MeleeAttackComponent.new(20),
+					   OwnedComponent.new(owner)])
+	end
+
 	# This function creates a new AI player etity. These entities
 	# represent the players that are controlled by artifical intelligence
 	#
