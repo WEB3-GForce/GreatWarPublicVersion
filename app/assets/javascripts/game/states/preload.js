@@ -20,6 +20,8 @@ Preload.prototype = {
 
 		this.load.image('unit', '/assets/infantry.png');
 
+		this.load.spritesheet('trainer', '/assets/trainer.png', 32, 32); // hardcoded
+
     },
     create: function() {
 		this.asset.cropEnabled = false;
