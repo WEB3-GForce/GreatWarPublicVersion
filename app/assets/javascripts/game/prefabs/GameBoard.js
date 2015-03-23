@@ -13,10 +13,11 @@ var GameBoard = function(game) {
     this.fogLayer = this.createLayer('fogLayer');
     this.highlightLayer = this.createLayer('highlightLayer');
 
+    this.drawGrid();
+
     this.marker = this.game.add.graphics();
     this.marker.lineStyle(2, 0x000000, 1);
-    this.marker.drawRect(0, 0, 32, 32);
-
+    this.marker.drawRect(0, 0, 32, 32); // THIS IS HARDCODED
 };
 
 GameBoard.prototype = Object.create(Phaser.Tilemap.prototype);
@@ -47,4 +48,19 @@ GameBoard.prototype.update = function() {
 
 GameBoard.prototype.onClick = function() {
     this.highlight(this.marker.x/32, this.marker.y/32);
+}
+
+GameBoard.prototype.drawGrid = function() {
+	this.grid = this.game.add.graphics();
+    this.grid.lineStyle(1, 0xA9A9A9, 0.5);
+    // draw vertical lines:
+    for (var x = 0; x < this.width * 32; x += 32) {
+    	this.grid.moveTo(x, 0);
+    	this.grid.lineTo(x, this.height * 32)
+    }
+    // horizontal lines:
+    for (var y = 0; y < this.height * 32; y += 32) {
+    	this.grid.moveTo(0, y);
+    	this.grid.lineTo(this.width * 32, y);
+    }
 }
