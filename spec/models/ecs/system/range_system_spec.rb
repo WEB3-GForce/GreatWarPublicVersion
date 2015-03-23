@@ -27,6 +27,18 @@ describe RangeSystem do
         manager.board[row][col] = [flatland1, [infantry]]
         manager.board[row+2][col+2] = [flatland2, [infantry2]]
     end
+
+    def setup_location_in_range
+        (0...manager.row).each { |row|
+            (0...manager.col).each { |col|
+                square = [row, col]
+                manager[square].delete PositionComponent
+                manager.add_component(square,
+                    PositionComponent.new(row, col))
+                manager.board[row][col] = [square, []]
+            }
+        }
+    end
     
     before(:each) do
         setup()
@@ -34,6 +46,28 @@ describe RangeSystem do
 
     it "should be a subclass of System" do
         expect(RangeSystem < System).to be true
+    end
+
+    context "when calling locations_in_range" do
+
+        it "should return correct squares" do
+            setup_location_in_range()
+            manager[infantry].delete PositionComponent
+            manager.add_component(infantry,
+                      PositionComponent.new(2, 2))
+            result = []
+            RangeSystem.locations_in_range(manager, infantry, 1, 3) {
+                    |square, occupants|
+                result.push(square)
+            }
+            answer = [       [0,1], [0,2], [0,3],
+                      [1,0], [1,1], [1,2], [1,3], [1,4],
+                      [2,0], [2,1],        [2,3], [2,4], [2,5],
+                      [3,0], [3,1], [3,2], [3,3], [3,4],
+                             [4,1], [4,2], [4,3],
+                                    [5,2]                      ]
+            expect(result.sort).to eq answer.sort
+        end
     end
 
     context "when calling in_range?" do
@@ -235,23 +269,96 @@ describe RangeSystem do
             end
         end
 
-        context "when entity1 attacks w/o killing entity2" do
-            it "should return valid array" do
-                manager[infantry][RangeAttackComponent].first.attack = 1
-                result = RangeSystem.update(manager, infantry, infantry2)
-                expect(result.size).to eq 1
-                expect(result[0][0]).to eq "range"
+        context "when attacking without splash damage" do
+
+            context "when entity1 attacks w/o killing entity2" do
+                it "should return valid array" do
+                    manager[infantry][RangeAttackComponent].first.attack = 1
+                    result = RangeSystem.update(manager, infantry, infantry2)
+                    expect(result.size).to eq 1
+                    expect(result[0][0]).to eq "range"
+                end
             end
+
+            context "when entity1 attacks and kills entity2" do
+                it "should return valid array" do
+                    manager[infantry][RangeAttackComponent].first.attack = 100
+                    result = RangeSystem.update(manager, infantry, infantry2)
+                    expect(result.size).to eq 2
+                    expect(result[0][0]).to eq "range"
+                    expect(result[1][0]).to eq "kill"
+                end
+            end
+
         end
 
-        context "when entity1 attacks and kills entity2" do
-            it "should return valid array" do
-                manager[infantry][RangeAttackComponent].first.attack = 100
-                result = RangeSystem.update(manager, infantry, infantry2)
-                expect(result.size).to eq 2
-                expect(result[0][0]).to eq "range"
-                expect(result[1][0]).to eq "kill"
+        context "when attacking with splash damage" do
+
+            context "when entity1 attacks w/o killing entity2" do
+                it "should return valid array" do
+                    manager[infantry][RangeAttackComponent].first.attack = 1
+                    manager[infantry][RangeAttackComponent].first.splash << 1.0
+                    manager.add_component(infantry3,
+                          PositionComponent.new(row+1, col+2))
+                    manager.add_component(flatland3,
+                          PositionComponent.new(row+1, col+2))
+                    manager.board[row+1][col+2] = [flatland3, [infantry3]]
+                    result = RangeSystem.update(manager, infantry, infantry2)
+                    expect(result.size).to eq 1
+                    expect(result[0].size).to eq 5
+                    expect(result[0][0]).to eq "range"
+                end
+
+                it "should not hurt friendly units" do
+                    manager[infantry][RangeAttackComponent].first.attack = 1
+                    manager[infantry][RangeAttackComponent].first.splash << 1.0
+                    manager.add_component(infantry3,
+                          PositionComponent.new(row+1, col+2))
+                    manager.add_component(flatland3,
+                          PositionComponent.new(row+1, col+2))
+                    manager.board[row+1][col+2] = [flatland3, [infantry3]]
+                    manager[infantry3][OwnedComponent].first.owner = human1
+                    result = RangeSystem.update(manager, infantry, infantry2)
+                    expect(result.size).to eq 1
+                    expect(result[0].size).to eq 3
+                    expect(result[0][0]).to eq "range"
+                end
             end
+
+            context "when entity1 attacks and kills entity2" do
+                it "should return valid array" do
+                    manager[infantry][RangeAttackComponent].first.attack = 100
+                    manager[infantry][RangeAttackComponent].first.splash << 1.0
+                    manager.add_component(infantry3,
+                          PositionComponent.new(row+1, col+2))
+                    manager.add_component(flatland3,
+                          PositionComponent.new(row+1, col+2))
+                    manager.board[row+1][col+2] = [flatland3, [infantry3]]
+                    result = RangeSystem.update(manager, infantry, infantry2)
+                    expect(result.size).to eq 3
+                    expect(result[0][0]).to eq "range"
+                    expect(result[0].size).to eq 5
+                    expect(result[1][0]).to eq "kill"
+                    expect(result[2][0]).to eq "kill"
+                end
+
+                it "should not hurt friendly units" do
+                    manager[infantry][RangeAttackComponent].first.attack = 100
+                    manager[infantry][RangeAttackComponent].first.splash << 1.0
+                    manager.add_component(infantry3,
+                          PositionComponent.new(row+1, col+2))
+                    manager.add_component(flatland3,
+                          PositionComponent.new(row+1, col+2))
+                    manager.board[row+1][col+2] = [flatland3, [infantry3]]
+                    manager[infantry3][OwnedComponent].first.owner = human1
+                    result = RangeSystem.update(manager, infantry, infantry2)
+                    expect(result.size).to eq 2
+                    expect(result[0][0]).to eq "range"
+                    expect(result[0].size).to eq 3
+                    expect(result[1][0]).to eq "kill"
+                end
+            end
+            
         end
     end
 end

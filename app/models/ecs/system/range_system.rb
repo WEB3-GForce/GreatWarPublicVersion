@@ -12,6 +12,27 @@ class RangeSystem < System
 #===============================================================================
 private
 
+	# Generates entities within a certain range of an entity's position.
+	def self.locations_in_range(entity_manager, entity, min_range, max_range)
+		pos_comp = entity_manager.get_components(entity, PositionComponent).first
+		(-max_range..max_range).each { |col_diff|
+			min_diff = [min_range - col_diff.abs, 0].max
+			max_diff = max_range - col_diff.abs
+			[*(-max_diff..-min_diff), *(min_diff..max_diff)].uniq.each {
+					|row_diff|
+				row = pos_comp.row + row_diff
+				col = pos_comp.col + col_diff
+
+				next if row < 0 or row >= entity_manager.row
+				next if col < 0 or col >= entity_manager.col
+
+				(square, occupants) = entity_manager.board[row][col]
+
+				yield square, occupants
+			}
+		}
+	end
+	
 	# Determines if an attacked entity is within attack range of an attacker.
 	def self.in_range?(entity_manager, attacking_entity, attacked_entity)
 		distance = MotionSystem.distance(entity_manager, attacking_entity, attacked_entity)
@@ -32,12 +53,38 @@ private
 	end
 
 	# Executes a ranged attack.
-	# Returns array of form [["ranged", damage_info], ...] if successful
+	# Returns array of form [["ranged", damage_info, ...], kill_info...] if successful
+	# TODO update tests
 	def self.perform_attack(entity_manager, attacking_entity, attacked_entity)
 		rattack = entity_manager.get_components(attacking_entity, RangeAttackComponent).first
-		result  = DamageSystem.update(entity_manager, attacked_entity, rattack.attack)
-		result[0].unshift "range" if !result.empty?
-		return result
+
+		splash = rattack.splash
+		damages = splash.collect { |n| n * rattack.attack }
+
+		own_comp = entity_manager.get_components(attacking_entity, OwnedComponent).first
+		damage_info = []
+		kill_info = []
+
+		# Execute damage on targets within ranged attack's splash.
+		# Process direct target last in case it is removed via damage system.
+		damages.to_enum.with_index.reverse_each { |damage, dist|
+			self.locations_in_range(entity_manager, attacked_entity, dist, dist) {
+					|square, occupants|
+				next unless occupants.respond_to? :each
+				occupants.each { |occ|
+					occ_own_comp = entity_manager.get_components(occ, OwnedComponent).first
+					next if occ_own_comp.owner == own_comp.owner
+					result = DamageSystem.update(entity_manager, occ, damage)
+					next if result.empty?
+					damage_info.concat result[0]
+					kill_info.push result[1] if result[1] != nil
+				}
+			}
+		}
+
+		return [] if damage_info.empty?		
+
+		return [damage_info.unshift("range")].concat kill_info
 	end
 
 #===============================================================================
@@ -61,29 +108,17 @@ public
 		end
 		
 		range_comp = entity_manager.get_components(entity, RangeAttackComponent).first
-		pos_comp   = entity_manager.get_components(entity, PositionComponent).first
 		own_comp   = entity_manager.get_components(entity, OwnedComponent).first		
 		
 		results = []
 
-		min_range = range_comp.min_range
-		max_range = range_comp.max_range
-		(-max_range..max_range).each { |col_diff|
-			min_diff = [min_range - col_diff.abs, 0].max
-			max_diff = max_range - col_diff.abs
-			[*(-max_diff..-min_diff), *(min_diff..max_diff)].uniq.each {
-					|row_diff|
-				row = pos_comp.row + row_diff
-				col = pos_comp.col + col_diff
+		self.locations_in_range(entity_manager, entity, 
+			range_comp.min_range, range_comp.max_range) { |square, occupants|
 
-				(square, occupants) = entity_manager.board[row][col]
-
-				next if square == nil and occupants == nil
-
-				occupants.each { |occ|
-					occ_own_comp = entity_manager.get_components(occ, OwnedComponent).first
-					results.push square if occ_own_comp.owner != own_comp.owner
-				}
+			next unless occupants.respond_to? :each
+			occupants.each { |occ|
+				occ_own_comp = entity_manager.get_components(occ, OwnedComponent).first
+				results.push square if occ_own_comp.owner != own_comp.owner
 			}
 		}
 

@@ -10,7 +10,7 @@ require_relative "./component.rb"
 =end
 class RangeAttackComponent < Component
 
-	attr_reader(:attack, :min_range, :max_range)
+	attr_reader(:attack, :min_range, :max_range, :splash)
 
 	# Initializes a new RangeAttackComponent object
 	#
@@ -21,12 +21,13 @@ class RangeAttackComponent < Component
 	#
 	# Postcondtion
 	#   The RangeAttackComponent object is properly initialized
-	def initialize(attack, min_range, max_range)
+	def initialize(attack, min_range, max_range, splash=[1.0])
 		@min_range = 0
 		@max_range = 0
 		self.attack    = attack
 		self.min_range = min_range
 		self.max_range = max_range
+		@splash = splash
 	end
 	
 	# Sets attack to a new attack
