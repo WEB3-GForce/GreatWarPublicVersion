@@ -9,17 +9,13 @@ Play.prototype = {
         game.world.setBounds(0, 0, width, height); // size of world, as opposed to window
         this.gameGroup = new GameGroup(this.game);
 
-	this.game.input.onUp.add(function() {
-	    var xDiff = Math.abs(this.game.input.mousePointer.positionDown.x -
-		this.game.input.mousePointer.positionUp.x);
-	    var yDiff = Math.abs(this.game.input.mousePointer.positionDown.y -
-		this.game.input.mousePointer.positionUp.y);
-	    if (xDiff <= 5 && yDiff <= 5) {
-		console.log("clicked");
-		// click stuff
-		this.gameGroup.gameBoard.onClick();
-	    }
-	}, this);
+        // deciding dragging vs. clicking: 
+    	this.game.input.onUp.add(function() {
+    	    if (this.game.input.mousePointer.positionDown.x == this.game.input.mousePointer.position.x && 
+                this.game.input.mousePointer.positionDown.y == this.game.input.mousePointer.position.y) {
+        		  this.gameGroup.gameBoard.onClick();
+    	    }
+    	}, this);
     },
 
     update: function() {
