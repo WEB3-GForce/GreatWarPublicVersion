@@ -8,17 +8,29 @@ Play.prototype = {
     create: function() {
         game.world.setBounds(0, 0, width, height); // size of world, as opposed to window
         this.gameGroup = new GameGroup(this.game);
+
+	this.game.input.onUp.add(function() {
+	    var xDiff = Math.abs(this.game.input.mousePointer.positionDown.x -
+		this.game.input.mousePointer.positionUp.x);
+	    var yDiff = Math.abs(this.game.input.mousePointer.positionDown.y -
+		this.game.input.mousePointer.positionUp.y);
+	    if (xDiff <= 5 && yDiff <= 5) {
+		console.log("clicked");
+		// click stuff
+		this.gameGroup.gameBoard.onClick();
+	    }
+	}, this);
     },
 
     update: function() {
         // Panning:
-        this.moveCameraByPointer(game.input.mousePointer);
+        this.moveCameraByPointer(this.game.input.mousePointer);
 
         // Updating the gameBoard
         this.gameGroup.gameBoard.update(); 
     },
 
-    moveCameraByPointer: function (pointer) {
+    moveCameraByPointer: function(pointer) {
         if (!pointer.timeDown) { return; }
         if (pointer.isDown && !pointer.targetObject) {
             if (play_camera) {

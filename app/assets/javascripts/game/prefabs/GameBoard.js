@@ -23,28 +23,28 @@ GameBoard.prototype = Object.create(Phaser.Tilemap.prototype);
 GameBoard.prototype.constructor = GameBoard;
 
 GameBoard.prototype.addFog = function(x, y) {
-	var fogIndex = 50; // this is the index into the tilesheet and is a
-					   // terrible way to do this
-	this.putTile(fogIndex, x, y, this.fogLayer);
+    var fogIndex = 50; // this is the index into the tilesheet and is a
+    // terrible way to do this
+    this.putTile(fogIndex, x, y, this.fogLayer);
 }
 GameBoard.prototype.revealFog = function(x, y) {
-	this.removeTile(x, y, this.fogLayer);
+    this.removeTile(x, y, this.fogLayer);
 }
 
 GameBoard.prototype.highlight = function(x, y) {
-	var highlightIndex = 51; 
-	this.putTile(highlightIndex, x, y, this.highlightLayer);
+    var highlightIndex = 51; 
+    this.putTile(highlightIndex, x, y, this.highlightLayer);
 }
 GameBoard.prototype.unhighlight = function(x, y) {
-	this.removeTile(x, y, this.highlightLayer);
+    this.removeTile(x, y, this.highlightLayer);
 }
 
 GameBoard.prototype.update = function() {
-	// moving the marker
-	this.marker.x = this.highlightLayer.getTileX(this.game.input.activePointer.worldX) * 32;
+    // moving the marker
+    this.marker.x = this.highlightLayer.getTileX(this.game.input.activePointer.worldX) * 32;
     this.marker.y = this.highlightLayer.getTileY(this.game.input.activePointer.worldY) * 32;
+}
 
-    if (this.game.input.mousePointer.isDown) {
-    	this.highlight(this.marker.x/32, this.marker.y/32);
-    }
+GameBoard.prototype.onClick = function() {
+    this.highlight(this.marker.x/32, this.marker.y/32);
 }
