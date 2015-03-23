@@ -32,8 +32,36 @@
          "width":30,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":30,
+         "name":"unitLayer",
+         "objects":[
+                {
+                 "gid":49,
+                 "height":0,
+                 "id":1,
+                 "name":"",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":640,
+                 "y":160
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":30,
+         "x":0,
+         "y":0
         }],
- "nextobjectid":1,
+ "nextobjectid":3,
  "orientation":"orthogonal",
  "properties":
     {

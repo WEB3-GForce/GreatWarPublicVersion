@@ -15,9 +15,10 @@ Preload.prototype = {
 
 		this.load.tilemap('tileset', '/assets/tiledTest.json', null, Phaser.Tilemap.TILED_JSON);
 		this.load.image('tmw_desert_spacing', '/assets/tmw_desert_spacing.png'); // tileset used
-		this.load.image('units', '/assets/infantry.png');
 		this.load.image('fog', '/assets/fog.png');
 		this.load.image('highlight', '/assets/highlight.png');
+
+		this.load.image('unit', '/assets/infantry.png');
 
     },
     create: function() {
