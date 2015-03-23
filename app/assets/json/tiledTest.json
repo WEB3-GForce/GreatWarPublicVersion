@@ -34,20 +34,17 @@
          "y":0
         }, 
         {
-         "draworder":"topdown",
          "height":30,
          "name":"unitLayer",
          "objects":[
                 {
                  "gid":49,
                  "height":0,
-                 "id":1,
                  "name":"",
                  "properties":
                     {
-
+                     "HP":"12"
                     },
-                 "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":0,
@@ -61,13 +58,11 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":3,
  "orientation":"orthogonal",
  "properties":
     {
 
     },
- "renderorder":"right-down",
  "tileheight":32,
  "tilesets":[
         {
@@ -126,7 +121,7 @@
         }, 
         {
          "firstgid":51,
-         "image":"..\/images\/highlight2.png",
+         "image":"..\/images\/highlight.png",
          "imageheight":32,
          "imagewidth":96,
          "margin":0,

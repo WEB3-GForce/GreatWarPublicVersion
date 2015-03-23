@@ -15,8 +15,9 @@ var GameBoard = function(game) {
 
     this.drawGrid();
 
-    this.createFromObjects('unitLayer', 49, 'unit');
-
+    this.unitGroup = this.game.add.group();
+    this.createFromObjects('unitLayer', 49, 'unit', 0, true, false, this.unitGroup, Infantry);
+    console.log(this.unitGroup.children[0]);
 
     this.marker = this.game.add.graphics();
     this.marker.lineStyle(2, 0x000000, 1);
