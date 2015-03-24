@@ -161,7 +161,8 @@ class EntityType
 	# Returns
 	#   whether the entity is a range attack entity
 	def self.range_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [RangeAttackComponent])
+		entity_manager.has_components(entity, [EnergyComponent,
+		                                       RangeAttackComponent])
 	end
 
 	# Determines whether the entity is impervious to range attacks
