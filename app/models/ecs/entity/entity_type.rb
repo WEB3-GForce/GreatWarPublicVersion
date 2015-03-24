@@ -84,6 +84,19 @@ class EntityType
 		entity_manager.has_components(entity, [PieceComponent])
 	end
 
+	# Determines whether the entity uses energy. Energy is used to control
+	# movement, attack, etc.
+	#
+	# Arguments
+	#   entity_manager = the manager that holds the entities
+	#   entity         = the entity to check
+	#
+	# Returns
+	#   whether the entity uses energy
+	def self.energy_entity?(entity_manager, entity)
+		entity_manager.has_components(entity, [EnergyComponent])
+	end
+
 	# Determines whether the entity is placed on the board. Namely it needs
 	# to have a position.
 	#

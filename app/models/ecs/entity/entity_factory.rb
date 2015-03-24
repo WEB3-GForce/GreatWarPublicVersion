@@ -193,6 +193,7 @@ public
 					   HealthComponent.new(30),
 					   MotionComponent.new(1),
 					   MeleeAttackComponent.new(20),
+					   EnergyComponent.new(1),
 					   OwnedComponent.new(owner)])
 	end
 
@@ -209,6 +210,7 @@ public
 		return self.create_entity(entity_manager,
 					  [PieceComponent.infantry,
 					   HealthComponent.new(10),
+					   EnergyComponent.new(10),
 					   MotionComponent.new(5),
 					   MeleeAttackComponent.new(10),
 					   RangeAttackComponent.new(10, 1, 4),
@@ -228,6 +230,7 @@ public
 		return self.create_entity(entity_manager,
 					  [PieceComponent.machine_gun,
 					   HealthComponent.new(20),
+					   EnergyComponent.new(10),
 					   MotionComponent.new(3),
 					   MeleeAttackComponent.new(10),
 					   RangeAttackComponent.new(10, 3, 7),
@@ -247,6 +250,7 @@ public
 		return self.create_entity(entity_manager,
 					  [PieceComponent.artillery,
 					   HealthComponent.new(10),
+					   EnergyComponent.new(10),
 					   MotionComponent.new(1),
 					   RangeAttackComponent.new(20, 5, 15),
 					   OwnedComponent.new(owner)])
@@ -266,6 +270,7 @@ public
 		return self.create_entity(entity_manager,
 					  [PieceComponent.command_bunker,
 					   HealthComponent.new(30),
+					   EnergyComponent.new(10),
 					   RangeAttackImmunityComponent.new,
 					   OwnedComponent.new(owner)])
 	end

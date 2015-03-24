@@ -128,6 +128,20 @@ describe EntityType do
 		end
 	end
 
+	context "when calling energy_entity?" do
+
+		it "should properly identify energy entities" do
+			expect(EntityType.energy_entity?(manager, infantry_entity)).to be true
+			expect(EntityType.energy_entity?(manager, machine_gun_entity)).to be true
+			expect(EntityType.energy_entity?(manager, artillery_entity)).to be true
+			expect(EntityType.energy_entity?(manager, command_bunker_entity)).to be true
+		end
+
+		it "should properly not produce false positives" do
+			expect(EntityType.energy_entity?(manager, ai_entity)).to be false
+		end
+	end
+
 	context "when calling melee_entity?" do
 
 		it "should properly identify melee entities" do
