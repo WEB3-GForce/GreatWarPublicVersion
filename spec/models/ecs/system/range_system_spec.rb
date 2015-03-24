@@ -2,7 +2,7 @@ require_relative '../../../spec_helper'
 
 describe RangeSystem do
 
-    let(:manager)    {EntityManager.new(6, 6)}
+    let(:manager)    {EntityManager.new(7, 7)}
     let(:human1)     {EntityFactory.human_player(manager, "David")}
     let(:human2)     {EntityFactory.human_player(manager, "Goliath")}
     let(:infantry)   {EntityFactory.infantry(manager, human1)}
@@ -68,6 +68,44 @@ describe RangeSystem do
                                     [5,2]                      ]
             expect(result.sort).to eq answer.sort
         end
+
+        it "should return correct squares" do
+            setup_location_in_range()
+            manager[infantry].delete PositionComponent
+            manager.add_component(infantry,
+                      PositionComponent.new(0, 0))
+            result = []
+            RangeSystem.locations_in_range(manager, infantry, 1, 3) {
+                    |square, occupants|
+                result.push(square)
+            }
+            answer = [       [0,1], [0,2], [0,3],
+                      [1,0], [1,1], [1,2],
+                      [2,0], [2,1],
+                      [3,0]                      ]
+            expect(result.sort).to eq answer.sort
+        end
+
+        it "should return correct squares" do
+            setup_location_in_range()
+            manager[infantry].delete PositionComponent
+            manager.add_component(infantry,
+                      PositionComponent.new(3, 3))
+            result = []
+            RangeSystem.locations_in_range(manager, infantry, 1, 3) {
+                    |square, occupants|
+                result.push(square)
+            }
+             answer = [             [0,3],
+                             [1,2], [1,3], [1,4],
+                      [2,1], [2,2], [2,3], [2,4], [2,5],
+               [3,0], [3,1], [3,2],        [3,4], [3,5], [3,6],
+                      [4,1], [4,2], [4,3], [4,4], [4,5],
+                             [5,2], [5,3], [5,4],
+                                    [6,3]                      ]
+            expect(result.sort).to eq answer.sort
+        end
+
     end
 
     context "when calling in_range?" do
