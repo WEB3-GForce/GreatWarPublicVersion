@@ -81,8 +81,13 @@ public
 		if !self.valid_melee?(entity_manager, entity1, entity2)
 			return []
 		end
-		
+	
+		melee_comp = entity_manager.get_components(entity1, MeleeAttackComponent).first
+		if !EnergySystem.enough_energy?(entity_manager, entity1, melee_comp.energy_cost)
+			return []
+		end
 		result = self.perform_attack(entity_manager, entity1, entity2)
+		EnergySystem.consume_energy(entity_manager, entity1, melee_comp.energy_cost)
 	
 		# If entity2 can melee attack and isn't dead, make it attack.
 		if self.valid_melee?(entity_manager, entity2, entity1) &&

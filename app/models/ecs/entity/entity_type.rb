@@ -136,7 +136,8 @@ class EntityType
 	# Returns
 	#   whether the entity is a melee entity
 	def self.melee_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [MeleeAttackComponent])
+		entity_manager.has_components(entity, [EnergyComponent,
+		                                       MeleeAttackComponent])
 	end
 
 	# Determines whether the entity can take damage (aka be attacked)
