@@ -306,11 +306,15 @@ public
 		path = self.determine_path(entity_manager, own_comp.owner, pos_comp.row,
 			pos_comp.col, end_pos.row, end_pos.col, motion_comp.max_movement, [])
 			
-		if path == []
+		# The path includes the starting square. This won't count in the cost.
+		cost = (path.size-1) * motion_comp.energy_cost
+			
+		if path == [] || !EnergySystem.enough_energy?(entity_manager, entity, cost)
 			return nil
 		end
 
-		self.move_entity(entity_manager, entity, pos_comp, end_pos)			
+		self.move_entity(entity_manager, entity, pos_comp, end_pos)
+		EnergySystem.consume_energy(entity_manager, entity, cost)			
 		return path
 	end
 

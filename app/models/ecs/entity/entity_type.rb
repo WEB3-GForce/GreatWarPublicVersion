@@ -121,7 +121,8 @@ class EntityType
 	# Returns
 	#   whether the entity is a moveable entity
 	def self.moveable_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [MotionComponent,
+		entity_manager.has_components(entity, [EnergyComponent,
+		                                       MotionComponent,
 		                                       PositionComponent])
 	end
 
