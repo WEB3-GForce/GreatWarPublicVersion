@@ -15,6 +15,13 @@ describe MeleeAttackComponent do
 	it "should properly initialize itself" do
 		melee_comp = MeleeAttackComponent.new(10)
 		expect(melee_comp.attack).to eq(10)
+		expect(melee_comp.energy_cost).to eq(1)
+	end
+
+	it "should properly initialize itself with cost" do
+		melee_comp = MeleeAttackComponent.new(10,5)
+		expect(melee_comp.attack).to eq(10)
+		expect(melee_comp.energy_cost).to eq(5)
 	end
 
 	context "when setting attack" do
