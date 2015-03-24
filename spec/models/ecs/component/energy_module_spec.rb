@@ -1,10 +1,10 @@
 require_relative '../../../spec_helper'
 
 class Test
-	include USES_ENERGY
+	include ENERGY_COST
 end
 
-describe USES_ENERGY do
+describe ENERGY_COST do
 
 	let(:energy_user) {Test.new}
 

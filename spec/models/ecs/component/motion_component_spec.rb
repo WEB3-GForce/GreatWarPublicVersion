@@ -8,8 +8,8 @@ describe MotionComponent do
 		expect(MotionComponent < Component).to be true
 	end
 
-	it "should include USES_ENERGY" do
-		expect(MotionComponent < USES_ENERGY).to be true
+	it "should include ENERGY_COST" do
+		expect(MotionComponent < ENERGY_COST).to be true
 	end
 	
 	context "when initializing" do

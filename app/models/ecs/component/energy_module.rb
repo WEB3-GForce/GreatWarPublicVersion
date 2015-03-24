@@ -3,7 +3,7 @@
 	Any component that describes an action that requires energy should
 	include this module.
 =end
-module USES_ENERGY
+module ENERGY_COST
 	attr_reader :energy_cost
 
   	# Sets the energy cost to a new cost

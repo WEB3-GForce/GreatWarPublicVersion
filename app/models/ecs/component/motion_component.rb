@@ -1,4 +1,5 @@
 require_relative "./component.rb"
+require_relative "./energy_module.rb"
 
 =begin
 	The MotionComponent handles stats necessary for movement. In particular,
@@ -6,7 +7,7 @@ require_relative "./component.rb"
 =end
 class MotionComponent < Component
 	
-	include USES_ENERGY
+	include ENERGY_COST
 
 	attr_reader :max_movement
 
