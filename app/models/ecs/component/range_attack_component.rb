@@ -1,4 +1,5 @@
 require_relative "./component.rb"
+require_relative "./energy_module.rb"
 
 =begin
 	The RangeAttackComponent is responsible for keeping stats pertaining
@@ -10,6 +11,8 @@ require_relative "./component.rb"
 =end
 class RangeAttackComponent < Component
 
+	include ENERGY_COST
+	
 	attr_reader(:attack, :min_range, :max_range, :splash)
 
 	# Initializes a new RangeAttackComponent object
@@ -21,13 +24,17 @@ class RangeAttackComponent < Component
 	#
 	# Postcondtion
 	#   The RangeAttackComponent object is properly initialized
-	def initialize(attack, min_range, max_range, splash=[1.0])
+	def initialize(attack, min_range, max_range, splash=[1.0], energy_cost=1)
 		@min_range = 0
 		@max_range = 0
+
 		self.attack    = attack
 		self.min_range = min_range
 		self.max_range = max_range
+
 		@splash = splash
+
+		self.energy_cost = energy_cost
 	end
 	
 	# Sets attack to a new attack

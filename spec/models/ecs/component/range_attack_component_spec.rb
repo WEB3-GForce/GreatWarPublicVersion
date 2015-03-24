@@ -8,6 +8,10 @@ describe RangeAttackComponent do
 		expect(RangeAttackComponent < Component).to be true
 	end
 
+	it "should include ENERGY_COST" do
+		expect(RangeAttackComponent < ENERGY_COST).to be true
+	end
+
 	context "when initializing" do
 
 		it "should initialize itself properly" do

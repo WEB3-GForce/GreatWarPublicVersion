@@ -8,6 +8,10 @@ describe MeleeAttackComponent do
 		expect(MeleeAttackComponent < Component).to be true
 	end
 
+	it "should include ENERGY_COST" do
+		expect(MeleeAttackComponent < ENERGY_COST).to be true
+	end
+
 	it "should properly initialize itself" do
 		melee_comp = MeleeAttackComponent.new(10)
 		expect(melee_comp.attack).to eq(10)

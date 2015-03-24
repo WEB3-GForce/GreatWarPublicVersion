@@ -1,4 +1,5 @@
 require_relative "./component.rb"
+require_relative "./energy_module.rb"
 
 =begin
 	The MeleeAttackComponent manages stats concerning melee attacks.
@@ -7,7 +8,9 @@ require_relative "./component.rb"
 	attack will do.
 =end
 class MeleeAttackComponent < Component
-  
+
+	include ENERGY_COST
+
 	attr_reader :attack
 
 	# Initializes a new MeleeAttackComponent object
@@ -17,8 +20,9 @@ class MeleeAttackComponent < Component
 	#
 	# Postcondtion
 	#   The MeleeAttackComponent object is properly initialized
-	def initialize(attack)
-		self.attack = attack
+	def initialize(attack, energy_cost=1)
+		self.attack      = attack
+		self.energy_cost = energy_cost
 	end
   
 	# Sets the melee attack to a new attack
