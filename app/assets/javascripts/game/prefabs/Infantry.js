@@ -34,22 +34,68 @@ Infantry.prototype.moveAdjacent = function(orientation) {
     var update;
     switch (orientation) {
     case "down":
-	update = {y: this.y + 32};
-	break;
+		update = {y: this.y + 32};
+		break;
     case "left":
-	update = {x: this.x - 32};
-	break;
+		update = {x: this.x - 32};
+		break;
     case "right":
-	update = {x: this.x + 32};
-	break;
+		update = {x: this.x + 32};
+		break;
     case "up":
-	update = {y: this.y - 32};
-	break;
+		update = {y: this.y - 32};
+		break;
     }
-    return this.game.add.tween(this).to(update, 500, Phaser.Easing.Linear.None, true);
+    return this.game.add.tween(this).to(update, 500, Phaser.Easing.Linear.None);
 }
 
 Infantry.prototype.stop = function() {
     this.animations.stop();
     this.frame = ORIENTATION_MAP[this.orientation];
 }
+
+Infantry.prototype.moveTo = function(x, y) {
+	var tweens = [];
+	if (this.x/32 < x) {
+		for (var pos = 0; pos < x - this.x/32; pos++) {
+			tweens.push(this.moveAdjacent("right"));
+		}
+	}
+	if (this.x/32 > x) {
+		for (var pos = 0; pos < this.x/32 - x; pos++) {
+			tweens.push(this.moveAdjacent("left"));
+		}
+	}
+
+	if (this.y/32 < y) {
+		for (var pos = 0; pos < y - this.y/32; pos++) {
+			tweens.push(this.moveAdjacent("down"));
+		}
+	}
+	if (this.y/32 > y) {
+		for (var pos = 0; pos < this.y/32 - y; pos++) {
+			tweens.push(this.moveAdjacent("up"));
+		}
+	}
+	console.log(tweens);
+	if (tweens.length > 0) {
+		tweens[0].chain.apply(tweens.slice(1));
+		tweens[0].start();
+		tweens[0].onComplete.add(function() {
+			this.stop();
+		}, this);
+	}
+
+	// this.selected.moveAdjacent("right").onComplete.add(function() {
+	// 		this.selected.moveAdjacent("right");
+	// 		this.selected = null;
+	// }, this);
+}
+
+
+
+
+
+
+
+
