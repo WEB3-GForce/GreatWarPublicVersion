@@ -4,10 +4,16 @@ function Play() {
 }
 
 Play.prototype = {
-
     create: function() {
-        game.world.setBounds(0, 0, width, height); // size of world, as opposed to window
+        this.game.world.setBounds(0, 0, width, height); // size of world, as opposed to window
+
         this.gameGroup = new GameGroup(this.game);
+
+	this.game.receiver.bind('rpc', (function(data) {
+	    this.gameGroup.gameBoard[data.action].apply(this.gameGroup.gameBoard, data.arguments);
+	}).bind(this));
+
+	this.game.dispatcher.trigger("test");
 
         // deciding dragging vs. clicking: 
     	this.game.input.onUp.add(function() {
