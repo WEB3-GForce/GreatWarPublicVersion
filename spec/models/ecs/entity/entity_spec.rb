@@ -19,4 +19,9 @@ describe Entity do
 	it "should be a subclass of string" do
 		expect(Entity < String).to be true
 	end
+
+	it "should initialize with string arg" do
+		entity = Entity.new "entity#0"
+		expect(entity).to eq "entity#0"
+	end
 end
