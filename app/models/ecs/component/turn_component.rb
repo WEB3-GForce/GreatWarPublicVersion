@@ -13,16 +13,13 @@ class TurnComponent < Component
 	# Initializes a new TurnComponent object
 	#
 	# Arguments
-	#   players = an array of player entities
+	#   player_entities = an array of player entities
 	#
 	# Postcondtion
 	#   The TurnComponent object is properly initialized
-	def initialize(players)
+	def initialize(player_entities)
 		@turn     = 0
-		@players  = players
-		@moved    = Hash.new {false}
-		@attacked = Hash.new {false}
-		@special  = Hash.new {false}
+		@players  = player_entities
 	end
 
 	# Returns the player entity whose turn it currently is
@@ -37,86 +34,13 @@ class TurnComponent < Component
 	#   The old player's turn is ended and the new player now has a turn.
 	#   The moved, attacked, and special hashes are reset for the new player
 	def next_turn()
-		@turn     = (@turn + 1) % @players.size
-		@moved    = Hash.new {false}
-		@attacked = Hash.new {false}
-		@special  = Hash.new {false}
+		@turn = (@turn + 1) % @players.size
 		self.current_turn
 	end
 
-	# Denote to the turn entity that a given piece entity has made its move
-	#
-	# Arguments
-	#   entity = the piece that moved
-	#
-	# Postcondtion
-	#   The entity is marked as having moved
-	def moved(entity)
-		@moved[entity] = true
-	end
-
-	# Denote to the turn entity that a given piece entity has attacked
-	#
-	# Arguments
-	#   entity = the piece that attacked
-	#
-	# Postcondtion
-	#   The entity is marked as having attacked
-	def attacked(entity)
-		@attacked[entity] = true
-	end
-
-	# Denote to the turn entity that a given piece has done a special action
-	# like digging a trench.
-	#
-	# Arguments
-	#   entity = the piece that made the special action
-	#
-	# Postcondtion
-	#   The entity is marked as having done a special action
-	def done_special(entity)
-		@special[entity] = true
-	end
-
-	# Whether a piece entity has moved
-	#
-	# Arguments
-	#   entity = the entity to examine
-	#
-	# Return
-	#   True if the piece has already moved, false otherwise
-	def has_moved?(entity)
-		@moved[entity]
-	end
-
-	# Whether a piece entity has attacked
-	#
-	# Arguments
-	#   entity = the entity to examine
-	#
-	# Return
-	#   True if the piece has already attacked, false otherwise
-	def has_attacked?(entity)
-		@attacked[entity]
-	end
-
-	# Whether a piece entity has done a special action like digging trenches
-	#
-	# Arguments
-	#   entity = the entity to examine
-	#
-	# Return
-	#   True if the piece has already done a special action, false otherwise
-	def has_done_special?(entity)
-		@special[entity]
-	end
-
-
   	# Returns a string representation of the component 
 	def to_s
-		string = "Turn => #{self.current_turn}, Players => #{@players}, "
-		string += "Moved => #{@moved.keys}, Attacked => #{@attacked.keys}, "
-		string += "DoneSpecial => #{@special.keys}"
+		return "Turn => #{self.current_turn}, Players => #{@players}, "
 	end
 end
 

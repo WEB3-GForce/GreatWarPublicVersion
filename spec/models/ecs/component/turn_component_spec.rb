@@ -24,59 +24,7 @@ describe TurnComponent do
 		expect(basic_turn.current_turn).to eq(player1)
 	end
 
-	it "should properly make pieces move" do
-		basic_turn.moved(piece1)
-		expect(basic_turn.has_moved?(piece1)).to eq(true)
-	end
-
-	it "should properly make pieces attack" do
-		basic_turn.attacked(piece1)
-		expect(basic_turn.has_attacked?(piece1)).to eq(true)
-	end
-
-	it "should properly make pieces do special movements" do
-		basic_turn.done_special(piece1)
-		expect(basic_turn.has_done_special?(piece1)).to eq(true)
-	end
-
-	it "should properly keep track of pieces that moved" do
-		expect(basic_turn.has_moved?(piece1)).to eq(false)
-		basic_turn.moved(piece1)
-		expect(basic_turn.has_moved?(piece1)).to eq(true)
-	end
-
-	it "should properly keep track of pieces that attacked" do
-		expect(basic_turn.has_attacked?(piece1)).to eq(false)
-		basic_turn.attacked(piece1)
-		expect(basic_turn.has_attacked?(piece1)).to eq(true)
-	end
-
-	it "should properly keep track of pieces that did special actions" do
-		expect(basic_turn.has_done_special?(piece1)).to eq(false)
-		basic_turn.done_special(piece1)
-		expect(basic_turn.has_done_special?(piece1)).to eq(true)
-	end
-
 	context "when moving to the next turn" do
-
-		it "should properly reset its hashes and change turn" do
-			basic_turn.moved(piece1)
-			basic_turn.moved(piece2)
-			basic_turn.attacked(piece2)
-			basic_turn.attacked(piece3)
-			basic_turn.done_special(piece1)
-			basic_turn.done_special(piece3)
-			new_player = basic_turn.next_turn
-
-			expect(new_player).to eq(player2)
-			expect(basic_turn.current_turn).to eq(player2)
-			expect(basic_turn.has_moved?(piece1)).to eq(false)
-			expect(basic_turn.has_moved?(piece2)).to eq(false)
-			expect(basic_turn.has_attacked?(piece2)).to eq(false)
-			expect(basic_turn.has_attacked?(piece3)).to eq(false)
-			expect(basic_turn.has_attacked?(piece1)).to eq(false)
-			expect(basic_turn.has_attacked?(piece3)).to eq(false)
-		end
 
 		it "should properly cycle through each player" do
 			expect(basic_turn.next_turn).to eq(player2)
