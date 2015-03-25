@@ -11,9 +11,6 @@ var Infantry = function(game, x, y) {
 
     this.inputEnabled = true;
     this.input.useHandCursor = true;
-    this.events.onInputDown.add(function() {
-	console.log("hi");
-    }, this);
 };
 
 Infantry.prototype = Object.create(Phaser.Sprite.prototype);

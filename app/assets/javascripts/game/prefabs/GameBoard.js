@@ -15,9 +15,6 @@ var GameBoard = function(game) {
 
     this.drawGrid();
 
-    this.unitGroup = this.game.add.group();
-    this.unitGroup.add(new Infantry(this.game, 2, 2));
-
     this.marker = this.game.add.graphics();
     this.marker.lineStyle(2, 0x000000, 1);
     this.marker.drawRect(0, 0, 32, 32); // THIS IS HARDCODED

@@ -7,22 +7,23 @@ Play.prototype = {
     create: function() {
         this.game.world.setBounds(0, 0, width, height); // size of world, as opposed to window
 
-        this.gameGroup = new GameGroup(this.game);
+        this.game.gameGroup = new GameGroup(this.game);
 
-	this.game.receiver.bind('rpc', (function(data) {
-	    this.gameGroup.gameBoard[data.action].apply(this.gameGroup.gameBoard, data.arguments);
-	}).bind(this));
+    	this.game.receiver.bind('rpc', (function(data) {
+    	    this.game.gameGroup.gameBoard[data.action].apply(this.game.gameGroup.gameBoard, data.arguments);
+    	}).bind(this));
 
-	this.game.dispatcher.trigger("test");
+    	this.game.dispatcher.trigger("test");
 
         // deciding dragging vs. clicking: 
     	this.game.input.onUp.add(function() {
     	    if (this.game.input.mousePointer.positionDown.x == this.game.input.mousePointer.position.x && 
                 this.game.input.mousePointer.positionDown.y == this.game.input.mousePointer.position.y) {
-		if (this.game.input.mousePointer.targetObject === null)
-        	    this.gameGroup.gameBoard.onClick();
-    	    }
+    	           this.game.gameGroup.onClick(this.game.input.mousePointer.targetObject);
+    	   }
     	}, this);
+
+        this.game.gameGroup.addUnit(2, 2);
     },
 
     update: function() {
@@ -30,7 +31,7 @@ Play.prototype = {
         this.moveCameraByPointer(this.game.input.mousePointer);
 
         // Updating the gameBoard
-        this.gameGroup.gameBoard.update(); 
+        this.game.gameGroup.gameBoard.update(); 
     },
 
     moveCameraByPointer: function(pointer) {
