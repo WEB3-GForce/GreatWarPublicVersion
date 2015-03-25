@@ -4,7 +4,7 @@
 var game;
 
 var width = 960;
-var height = 640;
+var height = 960;
 var cameraWidth = width/1.5;
 var cameraHeight = width/1.5;
 var play_camera;
