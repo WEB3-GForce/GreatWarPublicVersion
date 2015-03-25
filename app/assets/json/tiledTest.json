@@ -32,37 +32,14 @@
          "width":30,
          "x":0,
          "y":0
-        }, 
-        {
-         "height":30,
-         "name":"unitLayer",
-         "objects":[
-                {
-                 "gid":49,
-                 "height":0,
-                 "name":"",
-                 "properties":
-                    {
-                     "HP":"12"
-                    },
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":640,
-                 "y":160
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "width":30,
-         "x":0,
-         "y":0
         }],
+ "nextobjectid":2,
  "orientation":"orthogonal",
  "properties":
     {
 
     },
+ "renderorder":"right-down",
  "tileheight":32,
  "tilesets":[
         {
