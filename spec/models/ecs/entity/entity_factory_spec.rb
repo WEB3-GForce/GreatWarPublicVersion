@@ -151,10 +151,13 @@ describe EntityFactory do
 		melee_comp  = manager[entity][MeleeAttackComponent][0]
 		range_comp  = manager[entity][RangeAttackComponent][0]
 		owned_comp  = manager[entity][OwnedComponent][0]
+		energy_comp  = manager[entity][EnergyComponent][0]
 		
 		expect(unit_comp.type).to eq(:infantry)
 		expect(health_comp.cur_health).to eq(10)
 		expect(health_comp.max_health).to eq(10)
+		expect(energy_comp.cur_energy).to eq(10)
+		expect(energy_comp.max_energy).to eq(10)
 		expect(motion_comp.max_movement).to eq(5)
 		expect(melee_comp.attack).to eq(10)
 		expect(range_comp.attack).to eq(10)
@@ -173,10 +176,12 @@ describe EntityFactory do
 		melee_comp  = manager[entity][MeleeAttackComponent][0]
 		range_comp  = manager[entity][RangeAttackComponent][0]
 		owned_comp  = manager[entity][OwnedComponent][0]
+		energy_comp  = manager[entity][EnergyComponent][0]
 		
 		expect(unit_comp.type).to eq(:machine_gun)
 		expect(health_comp.cur_health).to eq(20)
 		expect(health_comp.max_health).to eq(20)
+		expect(energy_comp.cur_energy).to eq(10)
 		expect(motion_comp.max_movement).to eq(3)
 		expect(melee_comp.attack).to eq(10)
 		expect(range_comp.attack).to eq(10)
@@ -195,10 +200,13 @@ describe EntityFactory do
 		has_melee_comp = manager[entity].has_key? MeleeAttackComponent
 		range_comp     = manager[entity][RangeAttackComponent][0]
 		owned_comp     = manager[entity][OwnedComponent][0]
+		energy_comp  = manager[entity][EnergyComponent][0]
 		
 		expect(unit_comp.type).to eq(:artillery)
 		expect(health_comp.cur_health).to eq(10)
 		expect(health_comp.max_health).to eq(10)
+		expect(energy_comp.cur_energy).to eq(10)
+		expect(energy_comp.max_energy).to eq(10)
 		expect(motion_comp.max_movement).to eq(1)
 		expect(has_melee_comp).to be false
 		expect(range_comp.attack).to eq(20)
@@ -215,10 +223,13 @@ describe EntityFactory do
 		health_comp    = manager[entity][HealthComponent][0]
 		immunity_comp  = manager[entity][RangeAttackImmunityComponent][0]
 		owned_comp     = manager[entity][OwnedComponent][0]
+		energy_comp  = manager[entity][EnergyComponent][0]
 		
 		expect(unit_comp.type).to eq(:command_bunker)
 		expect(health_comp.cur_health).to eq(30)
 		expect(health_comp.max_health).to eq(30)
+		expect(energy_comp.cur_energy).to eq(10)
+		expect(energy_comp.max_energy).to eq(10)
 		expect(immunity_comp.class).to eq(RangeAttackImmunityComponent)
 		expect(owned_comp.owner).to eq(owner)
 	end

@@ -463,11 +463,22 @@ describe MotionSystem do
 			expect(result).to eq(nil)
 		end
 
+		it "should fail if the entity doesn't have enough energy to move" do
+			set_intermediate()
+			manager.add_component(infantry, PositionComponent.new(1, 1))
+			manager.board[1][1][1].push infantry
+			manager[infantry][EnergyComponent].first.cur_energy = 0
+			result = MotionSystem.make_move(manager, infantry, flatland02)
+			
+			answer = [flatland11, flatland01, flatland02]
+			expect(result).to eq(nil)
+		end
 
 		it "should properly move to a new square" do
 			set_intermediate()
 			manager.add_component(infantry, PositionComponent.new(1, 1))
 			manager.board[1][1][1].push infantry
+			manager[infantry][EnergyComponent].first.cur_energy = 10
 			result = MotionSystem.make_move(manager, infantry, flatland02)
 			
 			answer = [flatland11, flatland01, flatland02]
@@ -479,12 +490,16 @@ describe MotionSystem do
 			pos_comp = manager[infantry][PositionComponent].first
 			expect(pos_comp.row).to eq(0)
 			expect(pos_comp.col).to eq(2)
+			
+			energy_comp = manager[infantry][EnergyComponent].first
+			expect(energy_comp.cur_energy).to eq(8)
 		end
 
 		it "should properly move to another new square" do
 			set_intermediate()
 			manager.add_component(infantry, PositionComponent.new(1, 1))
 			manager.board[1][1][1].push infantry
+			manager[infantry][EnergyComponent].first.cur_energy = 10
 			result = MotionSystem.make_move(manager, infantry, flatland20)
 			
 			answer = [flatland11, flatland10, flatland20]
@@ -496,6 +511,9 @@ describe MotionSystem do
 			pos_comp = manager[infantry][PositionComponent].first
 			expect(pos_comp.row).to eq(2)
 			expect(pos_comp.col).to eq(0)
+	
+			energy_comp = manager[infantry][EnergyComponent].first
+			expect(energy_comp.cur_energy).to eq(8)
 		end
 
 		it "should return nil if the entity tries to moves to where it is standing" do

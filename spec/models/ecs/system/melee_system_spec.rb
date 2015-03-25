@@ -109,25 +109,41 @@ describe MeleeSystem do
 			end
 		end
 
+		context "when entity does not have enough energy" do
+			it "should return []" do
+				manager[infantry][MeleeAttackComponent].first.energy_cost = 100
+				manager[infantry][EnergyComponent].first.cur_energy = 0
+				result = MeleeSystem.update(manager, infantry, infantry2)
+				expect(result).to eq []
+			end
+		end
+
 		context "when only entity1 attacks" do
 			it "should return valid array" do
 				manager[infantry2].delete MeleeAttackComponent
 				manager[infantry].delete MeleeAttackComponent
 				manager.add_component(infantry,
-				      MeleeAttackComponent.new(5))
+				      MeleeAttackComponent.new(5, 2))
+				manager[infantry][EnergyComponent].first.cur_energy = 10
 				result = MeleeSystem.update(manager, infantry, infantry2)
 				expect(result.size).to eq 1
 				expect(result[0][0]).to eq "melee"
+				expect(manager[infantry][EnergyComponent].first.cur_energy ).to eq 8
 			end
 		end
 
 		context "when only entity1 attacks and kills entity2" do
 			it "should return valid array" do
 				manager[infantry2].delete MeleeAttackComponent
+				manager[infantry].delete MeleeAttackComponent
+				manager.add_component(infantry,
+				      MeleeAttackComponent.new(10, 2))
+				manager[infantry][EnergyComponent].first.cur_energy = 10
 				result = MeleeSystem.update(manager, infantry, infantry2)
 				expect(result.size).to eq 2
 				expect(result[0][0]).to eq "melee"
 				expect(result[1][0]).to eq "kill"
+				expect(manager[infantry][EnergyComponent].first.cur_energy ).to eq 8
 			end
 		end
 
@@ -135,14 +151,16 @@ describe MeleeSystem do
 			it "should return valid array" do
 				manager[infantry2].delete MeleeAttackComponent
 				manager.add_component(infantry2,
-				      MeleeAttackComponent.new(5))
+				      MeleeAttackComponent.new(5, 2))
 				manager[infantry].delete MeleeAttackComponent
 				manager.add_component(infantry,
-				      MeleeAttackComponent.new(5))
+				      MeleeAttackComponent.new(5, 2))
+				manager[infantry][EnergyComponent].first.cur_energy = 10
 				result = MeleeSystem.update(manager, infantry, infantry2)
 				expect(result.size).to eq 2
 				expect(result[0][0]).to eq "melee"
 				expect(result[1][0]).to eq "melee"
+				expect(manager[infantry][EnergyComponent].first.cur_energy ).to eq 8
 			end
 		end
 
@@ -150,7 +168,7 @@ describe MeleeSystem do
 			it "should return valid array" do
 				manager[infantry].delete MeleeAttackComponent
 				manager.add_component(infantry,
-				      MeleeAttackComponent.new(5))
+				      MeleeAttackComponent.new(5, 2))
 				result = MeleeSystem.update(manager, infantry, infantry2)
 				expect(result.size).to eq 3
 				expect(result[0][0]).to eq "melee"

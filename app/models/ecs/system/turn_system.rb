@@ -1,5 +1,5 @@
 require_relative "./system.rb"
-#require_relative "./energy_system.rb"
+require_relative "./energy_system.rb"
 
 =begin
 	The TurnSystem is responsible for handling turn-related issues. It keeps
@@ -14,7 +14,7 @@ private
     # Gets current turn component from an entity manager.
     def self.turn_component(entity_manager)
         turn = entity_manager.get_entities_with_components(TurnComponent).first
-        return turn[TurnComponent].first
+        return entity_manager[turn][TurnComponent].first
     end
 
     # Gets the entity for the current player from an entity manager.
@@ -68,7 +68,7 @@ public
     #
     def self.current_turn_entities(entity_manager)        
         entities = []
-        self.current_turn_entities_each { |entity|
+        self.current_turn_entities_each(entity_manager) { |entity|
             entities << entity
         }
         return entities
@@ -84,7 +84,7 @@ public
     #   whose turn it is after this method's call.
     #
     def self.update(entity_manager)
-        #EnergySystem.reset_energy(entity_manager)
+        EnergySystem.reset_energy(entity_manager)
         return ["turn", self.next_turn(entity_manager)]
     end
 end

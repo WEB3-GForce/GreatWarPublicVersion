@@ -84,6 +84,19 @@ class EntityType
 		entity_manager.has_components(entity, [PieceComponent])
 	end
 
+	# Determines whether the entity uses energy. Energy is used to control
+	# movement, attack, etc.
+	#
+	# Arguments
+	#   entity_manager = the manager that holds the entities
+	#   entity         = the entity to check
+	#
+	# Returns
+	#   whether the entity uses energy
+	def self.energy_entity?(entity_manager, entity)
+		entity_manager.has_components(entity, [EnergyComponent])
+	end
+
 	# Determines whether the entity is placed on the board. Namely it needs
 	# to have a position.
 	#
@@ -108,7 +121,8 @@ class EntityType
 	# Returns
 	#   whether the entity is a moveable entity
 	def self.moveable_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [MotionComponent,
+		entity_manager.has_components(entity, [EnergyComponent,
+		                                       MotionComponent,
 		                                       PositionComponent])
 	end
 
@@ -122,7 +136,8 @@ class EntityType
 	# Returns
 	#   whether the entity is a melee entity
 	def self.melee_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [MeleeAttackComponent])
+		entity_manager.has_components(entity, [EnergyComponent,
+		                                       MeleeAttackComponent])
 	end
 
 	# Determines whether the entity can take damage (aka be attacked)
@@ -146,7 +161,8 @@ class EntityType
 	# Returns
 	#   whether the entity is a range attack entity
 	def self.range_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [RangeAttackComponent])
+		entity_manager.has_components(entity, [EnergyComponent,
+		                                       RangeAttackComponent])
 	end
 
 	# Determines whether the entity is impervious to range attacks

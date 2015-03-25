@@ -2,7 +2,7 @@ require_relative '../../../spec_helper'
 
 describe RangeSystem do
 
-    let(:manager)    {EntityManager.new(6, 6)}
+    let(:manager)    {EntityManager.new(7, 7)}
     let(:human1)     {EntityFactory.human_player(manager, "David")}
     let(:human2)     {EntityFactory.human_player(manager, "Goliath")}
     let(:infantry)   {EntityFactory.infantry(manager, human1)}
@@ -68,6 +68,44 @@ describe RangeSystem do
                                     [5,2]                      ]
             expect(result.sort).to eq answer.sort
         end
+
+        it "should return correct squares" do
+            setup_location_in_range()
+            manager[infantry].delete PositionComponent
+            manager.add_component(infantry,
+                      PositionComponent.new(0, 0))
+            result = []
+            RangeSystem.locations_in_range(manager, infantry, 1, 3) {
+                    |square, occupants|
+                result.push(square)
+            }
+            answer = [       [0,1], [0,2], [0,3],
+                      [1,0], [1,1], [1,2],
+                      [2,0], [2,1],
+                      [3,0]                      ]
+            expect(result.sort).to eq answer.sort
+        end
+
+        it "should return correct squares" do
+            setup_location_in_range()
+            manager[infantry].delete PositionComponent
+            manager.add_component(infantry,
+                      PositionComponent.new(3, 3))
+            result = []
+            RangeSystem.locations_in_range(manager, infantry, 1, 3) {
+                    |square, occupants|
+                result.push(square)
+            }
+             answer = [             [0,3],
+                             [1,2], [1,3], [1,4],
+                      [2,1], [2,2], [2,3], [2,4], [2,5],
+               [3,0], [3,1], [3,2],        [3,4], [3,5], [3,6],
+                      [4,1], [4,2], [4,3], [4,4], [4,5],
+                             [5,2], [5,3], [5,4],
+                                    [6,3]                      ]
+            expect(result.sort).to eq answer.sort
+        end
+
     end
 
     context "when calling in_range?" do
@@ -267,26 +305,38 @@ describe RangeSystem do
                 result = RangeSystem.update(manager, infantry, infantry2)
                 expect(result).to eq []
             end
+
+            it "should return [] if not enough energy remains" do
+                    manager[infantry][EnergyComponent].first.cur_energy = 0
+                    result = RangeSystem.update(manager, infantry, infantry2)
+                    expect(result).to eq []
+            end
         end
 
         context "when attacking without splash damage" do
 
             context "when entity1 attacks w/o killing entity2" do
                 it "should return valid array" do
+                    manager[infantry][EnergyComponent].first.cur_energy = 10
                     manager[infantry][RangeAttackComponent].first.attack = 1
                     result = RangeSystem.update(manager, infantry, infantry2)
                     expect(result.size).to eq 1
                     expect(result[0][0]).to eq "range"
+                    expect(manager[infantry][EnergyComponent].first.cur_energy).to eq(
+                    	10 - manager[infantry][RangeAttackComponent].first.energy_cost)
                 end
             end
 
             context "when entity1 attacks and kills entity2" do
                 it "should return valid array" do
+                    manager[infantry][EnergyComponent].first.cur_energy = 10
                     manager[infantry][RangeAttackComponent].first.attack = 100
                     result = RangeSystem.update(manager, infantry, infantry2)
                     expect(result.size).to eq 2
                     expect(result[0][0]).to eq "range"
                     expect(result[1][0]).to eq "kill"
+                    expect(manager[infantry][EnergyComponent].first.cur_energy).to eq(
+                    	10 - manager[infantry][RangeAttackComponent].first.energy_cost)
                 end
             end
 
@@ -296,6 +346,7 @@ describe RangeSystem do
 
             context "when entity1 attacks w/o killing entity2" do
                 it "should return valid array" do
+                    manager[infantry][EnergyComponent].first.cur_energy = 10
                     manager[infantry][RangeAttackComponent].first.attack = 1
                     manager[infantry][RangeAttackComponent].first.splash << 1.0
                     manager.add_component(infantry3,
@@ -307,9 +358,12 @@ describe RangeSystem do
                     expect(result.size).to eq 1
                     expect(result[0].size).to eq 5
                     expect(result[0][0]).to eq "range"
+                    expect(manager[infantry][EnergyComponent].first.cur_energy).to eq(
+                    	10 - manager[infantry][RangeAttackComponent].first.energy_cost)
                 end
 
                 it "should not hurt friendly units" do
+                    manager[infantry][EnergyComponent].first.cur_energy = 10
                     manager[infantry][RangeAttackComponent].first.attack = 1
                     manager[infantry][RangeAttackComponent].first.splash << 1.0
                     manager.add_component(infantry3,
@@ -322,11 +376,14 @@ describe RangeSystem do
                     expect(result.size).to eq 1
                     expect(result[0].size).to eq 3
                     expect(result[0][0]).to eq "range"
+                    expect(manager[infantry][EnergyComponent].first.cur_energy).to eq(
+                    	10 - manager[infantry][RangeAttackComponent].first.energy_cost)
                 end
             end
 
             context "when entity1 attacks and kills entity2" do
                 it "should return valid array" do
+                    manager[infantry][EnergyComponent].first.cur_energy = 10
                     manager[infantry][RangeAttackComponent].first.attack = 100
                     manager[infantry][RangeAttackComponent].first.splash << 1.0
                     manager.add_component(infantry3,
@@ -340,9 +397,12 @@ describe RangeSystem do
                     expect(result[0].size).to eq 5
                     expect(result[1][0]).to eq "kill"
                     expect(result[2][0]).to eq "kill"
+                    expect(manager[infantry][EnergyComponent].first.cur_energy).to eq(
+                    	10 - manager[infantry][RangeAttackComponent].first.energy_cost)
                 end
 
                 it "should not hurt friendly units" do
+                    manager[infantry][EnergyComponent].first.cur_energy = 10
                     manager[infantry][RangeAttackComponent].first.attack = 100
                     manager[infantry][RangeAttackComponent].first.splash << 1.0
                     manager.add_component(infantry3,
@@ -356,6 +416,8 @@ describe RangeSystem do
                     expect(result[0][0]).to eq "range"
                     expect(result[0].size).to eq 3
                     expect(result[1][0]).to eq "kill"
+                    expect(manager[infantry][EnergyComponent].first.cur_energy).to eq(
+                    	10 - manager[infantry][RangeAttackComponent].first.energy_cost)
                 end
             end
             

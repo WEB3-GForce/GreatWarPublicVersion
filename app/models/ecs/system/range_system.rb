@@ -142,8 +142,14 @@ public
 		if !self.valid_attack?(entity_manager, entity1, entity2)
 			return []
 		end
-		
-		return self.perform_attack(entity_manager, entity1, entity2)
+
+		range_comp = entity_manager.get_components(entity1, RangeAttackComponent).first
+		if !EnergySystem.enough_energy?(entity_manager, entity1, range_comp.energy_cost)
+			return []
+		end
+		result = self.perform_attack(entity_manager, entity1, entity2)
+		EnergySystem.consume_energy(entity_manager, entity1, range_comp.energy_cost)	
+		return result
 	end
 
 end
