@@ -26,3 +26,4 @@ GameGroup.prototype.onClick = function(targetObject) {
 GameGroup.prototype.addUnit = function(x, y) {
 	this.unitGroup.add(new Infantry(this.game, x, y));
 }
+
