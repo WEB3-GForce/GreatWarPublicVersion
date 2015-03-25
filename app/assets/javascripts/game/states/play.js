@@ -13,7 +13,8 @@ Play.prototype = {
     	this.game.input.onUp.add(function() {
     	    if (this.game.input.mousePointer.positionDown.x == this.game.input.mousePointer.position.x && 
                 this.game.input.mousePointer.positionDown.y == this.game.input.mousePointer.position.y) {
-        		  this.gameGroup.gameBoard.onClick();
+		if (this.game.input.mousePointer.targetObject === null)
+        	    this.gameGroup.gameBoard.onClick();
     	    }
     	}, this);
     },

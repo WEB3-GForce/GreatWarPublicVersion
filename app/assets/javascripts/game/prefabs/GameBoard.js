@@ -54,7 +54,7 @@ GameBoard.prototype.onClick = function() {
 }
 
 GameBoard.prototype.drawGrid = function() {
-	this.grid = this.game.add.graphics();
+    this.grid = this.game.add.graphics();
     this.grid.lineStyle(1, 0xA9A9A9, 0.5);
     // draw vertical lines:
     for (var x = 0; x < this.width * 32; x += 32) {
