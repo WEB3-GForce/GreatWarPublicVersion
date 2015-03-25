@@ -1,6 +1,6 @@
 module SessionsHelper
-	def log_in (user)
-		user.logged = true
+	def log_in(user)
+		user.update_attribute :logged, true
 		session[:user_id] = user.id
 	end
 
@@ -13,7 +13,8 @@ module SessionsHelper
 		!current_user.nil?
 	end
 
-	def log_out
+	def log_out (user)
+		user.update_attribute :logged, false
 		session.delete(:user_id)
 		@current_user = nil
 	end

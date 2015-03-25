@@ -15,7 +15,6 @@ class UsersController < ApplicationController
 		@user = User.new(user_params)
 		if @user.save
 			log_in @user
-			@user[:logged] = true
 			flash[:success] = "Welcome to the Great War!"
 			redirect_to @user
 		else
