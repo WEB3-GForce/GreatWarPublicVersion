@@ -16,10 +16,11 @@ GameGroup.prototype.onClick = function(targetObject) {
 		this.selected = targetObject.sprite;
 	}
 	if (targetObject === null && this.selected) {
-		this.selected.x = this.gameBoard.marker.x;
-		this.selected.y = this.gameBoard.marker.y;
-
+	    console.log("moving");
+	    this.selected.moveAdjacent("right").onComplete.add(function() {
+		this.selected.moveAdjacent("right");
 		this.selected = null;
+	    }, this);
 	}
 }
 
