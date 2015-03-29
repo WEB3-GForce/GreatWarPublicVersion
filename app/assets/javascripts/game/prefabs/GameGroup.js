@@ -27,6 +27,11 @@ GameGroup.prototype.update = function() {
 					     this.gameBoard.terrainLayer);
 
     this.ui.setTile(currentTile);
+
+    if (this.game.input.mousePointer.targetObject)
+	this.ui.setUnit(this.game.input.mousePointer.targetObject.sprite);
+    else
+	this.ui.setUnit(null);
 }
 
 GameGroup.prototype.onClick = function(targetObject) {

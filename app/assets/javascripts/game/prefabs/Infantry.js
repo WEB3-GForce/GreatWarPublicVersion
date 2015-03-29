@@ -7,6 +7,13 @@ var ORIENTATION_MAP = {
     up: 10
 }
 
+var DEFAULT_STATS = {
+    HP: 100,
+    MAX_HP: 100,
+    ATK: 10,
+    DEF: 10
+}
+
 var Infantry = function(game, x, y) {
     Phaser.Sprite.call(this, game, x*32, y*32, 'trainer', 1);
     this.orientation = "down";
@@ -18,6 +25,8 @@ var Infantry = function(game, x, y) {
 
     this.inputEnabled = true;
     this.input.useHandCursor = true;
+
+    this.stats = DEFAULT_STATS;
 };
 
 Infantry.prototype = Object.create(Phaser.Sprite.prototype);
