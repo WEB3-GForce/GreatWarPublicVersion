@@ -31,7 +31,7 @@ Play.prototype = {
         this.moveCameraByPointer(this.game.input.mousePointer);
 
         // Updating the gameBoard
-        this.gameGroup.gameBoard.update(); 
+        this.gameGroup.update(); 
     },
 
     moveCameraByPointer: function(pointer) {

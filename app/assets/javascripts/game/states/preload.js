@@ -24,7 +24,7 @@ Preload.prototype = {
 	this.load.image('unit', '/assets/infantry.png');
 
 	this.load.spritesheet('trainer', '/assets/trainer.png', 32, 32); // hardcoded
-
+	this.load.spritesheet('terrain', '/assets/tmw_desert_spacing.png', 32, 32, -1, 1, 1); // hardcoded
     },
     create: function() {
 	this.asset.cropEnabled = false;

@@ -14,10 +14,6 @@ var GameBoard = function(game) {
     this.highlightLayer = this.createLayer('highlightLayer');
 
     this.drawGrid();
-
-    this.marker = this.game.add.graphics();
-    this.marker.lineStyle(2, 0x000000, 1);
-    this.marker.drawRect(0, 0, 32, 32); // THIS IS HARDCODED
 };
 
 GameBoard.prototype = Object.create(Phaser.Tilemap.prototype);
@@ -38,16 +34,6 @@ GameBoard.prototype.highlight = function(x, y) {
 }
 GameBoard.prototype.unhighlight = function(x, y) {
     this.removeTile(x, y, this.highlightLayer);
-}
-
-GameBoard.prototype.update = function() {
-    // moving the marker
-    this.marker.x = this.highlightLayer.getTileX(this.game.input.activePointer.worldX) * 32;
-    this.marker.y = this.highlightLayer.getTileY(this.game.input.activePointer.worldY) * 32;
-}
-
-GameBoard.prototype.onClick = function() {
-    this.highlight(this.marker.x/32, this.marker.y/32);
 }
 
 GameBoard.prototype.drawGrid = function() {
