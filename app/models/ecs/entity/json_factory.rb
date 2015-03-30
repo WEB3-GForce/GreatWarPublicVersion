@@ -222,6 +222,18 @@ class JsonFactory
 		        "path"     => path_array}
 	end
 
+	# This function is used to return a response to a moveable_locations
+	# request. In particular, it contains the list of locations that the
+	# specified entity can move to.
+	#
+	# Argumetns
+	#   entity_manager = the manager that contains the entities
+	#   moving_entity  = the entity that wishes to move.
+	#   locations      = an array of square entities denoting the possible
+	#                  squares that can be moved to
+	#
+	# Returns
+	#   A hash that is ready to be jsoned	
 	def self.moveable_locations(entity_manager,  moving_entity, locations)
 		locations_array = []
 		locations.each { |square|
