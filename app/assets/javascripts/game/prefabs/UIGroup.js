@@ -42,6 +42,22 @@ var UIGroup = function(game, parent) {
 				       smallerFont,
 				       this.unitInfo);
     this.unitInfo.alpha = 0;
+
+    this.actionMenu = this.game.add.group();
+    var actions = ['move', 'ranged', 'melee'];
+    for (var i = 0; i < actions.length; i++) {
+	var name = actions[i] + 'Button';
+	this[name] = this.game.add.button(0, 0, 'action-' + actions[i]);
+	this[name].inputEnabled = true;
+	this[name].input.useHandCursor = true;
+	this[name].anchor.setTo(0.5, 0.5);
+	this.actionMenu.add(this[name]);
+	var angle = 2*Math.PI / actions.length * i - Math.PI/2;
+	var r = 48;
+	this[name].x = r*Math.cos(angle);
+	this[name].y = r*Math.sin(angle);
+    }
+    this.actionMenu.alpha = 0;
 };
 
 UIGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -61,4 +77,14 @@ UIGroup.prototype.setUnit = function(unit) {
     } else {
 	this.unitInfo.alpha = 0;
     }
+}
+
+UIGroup.prototype.showMenu = function(unit) {
+    this.actionMenu.x = unit.x + 16;
+    this.actionMenu.y = unit.y + 16;
+    this.actionMenu.alpha = 0.7;
+}
+
+UIGroup.prototype.hideMenu = function() {
+    this.actionMenu.alpha = 0;
 }
