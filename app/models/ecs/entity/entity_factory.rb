@@ -384,16 +384,14 @@ public
 	#
 	# Arguments
 	#   entity_manager = the entity manager to add the new entities to
-	#   player_anmes   = the names of the players to have (max 4)
+	#   player_names   = the names of the players to have (max 4)
 	#
 	# Returns
 	#   an array of the following entities:
 	#
 	#   [turn_entity, 
-	#    [ [player1_entity, [entities_in_player1's_army]],
-	#      [player2_entity, [entities_in_player2's_army]],
-	#      ...
-	#    ]
+	#    [player_entity1, player_entity2, ...],
+	#    [piece_entity1, piece_entity2, piece_entity3, ....]
 	#   ]
 	#
 	# Note
@@ -414,17 +412,17 @@ public
 				 EntityFactory.method(:place_army_bottom_left)]
 		
 		players = []
-		players_and_army = []
+		pieces = []
 		player_names.each_with_index { |name, name_index|
 			player = self.human_player(entity_manager, name)
 			army   = self.create_army(entity_manager, player)
 			players.push player
-			players_and_army.push [player, army]
+			pieces.concat army
 			place_methods[name_index].call(entity_manager, army)
 		}
 		
 		turn = self.turn_entity(entity_manager, players)
-		return [turn, players_and_army]
+		return [players, turn, pieces]
 	end
 
 =begin

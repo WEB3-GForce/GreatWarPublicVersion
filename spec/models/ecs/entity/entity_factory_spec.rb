@@ -305,9 +305,9 @@ describe EntityFactory do
 
 	it "should create a new basic game with 1 player" do
 		game_bundle = EntityFactory.create_game_basic(manager, ["David"])
-		turn_comp   = manager[game_bundle[0]][TurnComponent][0]
-		player1     = game_bundle[1][0][0]
-		army1       = game_bundle[1][0][1]
+		turn_comp   = manager[game_bundle[1]][TurnComponent][0]
+		player1     = game_bundle[0][0]
+		army1       = game_bundle[2][0...25]
 	
 		expect(turn_comp.current_turn).to eq(player1)
 		expect(turn_comp.next_turn).to eq(player1)
@@ -320,11 +320,11 @@ describe EntityFactory do
 
 	it "should create a new basic game with 2 player" do
 		game_bundle = EntityFactory.create_game_basic(manager, ["David", "Charlie"])
-		turn_comp   = manager[game_bundle[0]][TurnComponent][0]
-		player1     = game_bundle[1][0][0]
-		army1       = game_bundle[1][0][1]
-		player2     = game_bundle[1][1][0]
-		army2       = game_bundle[1][1][1]
+		turn_comp   = manager[game_bundle[1]][TurnComponent][0]
+		player1     = game_bundle[0][0]
+		army1       = game_bundle[2][0...25]
+		player2     = game_bundle[0][1]
+		army2       = game_bundle[2][25...50]
 
 		expect(turn_comp.current_turn).to eq(player1)
 		
@@ -343,13 +343,13 @@ describe EntityFactory do
 
 	it "should create a new basic game with 3 player" do
 		game_bundle = EntityFactory.create_game_basic(manager, ["David", "Charlie", "Jack"])
-		turn_comp   = manager[game_bundle[0]][TurnComponent][0]
-		player1     = game_bundle[1][0][0]
-		army1       = game_bundle[1][0][1]
-		player2     = game_bundle[1][1][0]
-		army2       = game_bundle[1][1][1]
-		player3     = game_bundle[1][2][0]
-		army3       = game_bundle[1][2][1]
+		turn_comp   = manager[game_bundle[1]][TurnComponent][0]
+		player1     = game_bundle[0][0]
+		army1       = game_bundle[2][0...25]
+		player2     = game_bundle[0][1]
+		army2       = game_bundle[2][25...50]
+		player3     = game_bundle[0][2]
+		army3       = game_bundle[2][50...75]
 
 		expect(turn_comp.current_turn).to eq(player1)
 		
@@ -374,15 +374,15 @@ describe EntityFactory do
 
 	it "should create a new basic game with 4 player" do
 		game_bundle = EntityFactory.create_game_basic(manager, ["David", "Charlie", "Jack", "Steve"])
-		turn_comp   = manager[game_bundle[0]][TurnComponent][0]
-		player1     = game_bundle[1][0][0]
-		army1       = game_bundle[1][0][1]
-		player2     = game_bundle[1][1][0]
-		army2       = game_bundle[1][1][1]
-		player3     = game_bundle[1][2][0]
-		army3       = game_bundle[1][2][1]
-		player4     = game_bundle[1][3][0]
-		army4       = game_bundle[1][3][1]
+		turn_comp   = manager[game_bundle[1]][TurnComponent][0]
+		player1     = game_bundle[0][0]
+		army1       = game_bundle[2][0...25]
+		player2     = game_bundle[0][1]
+		army2       = game_bundle[2][25...50]
+		player3     = game_bundle[0][2]
+		army3       = game_bundle[2][50...75]
+		player4     = game_bundle[0][3]
+		army4       = game_bundle[2][75...100]
 
 		expect(turn_comp.current_turn).to eq(player1)
 		
