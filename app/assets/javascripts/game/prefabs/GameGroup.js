@@ -38,9 +38,9 @@ GameGroup.prototype.update = function() {
 }
 
 GameGroup.prototype.onClick = function(targetObject) {
+    var currentX = this.marker.x/32;
+    var currentY = this.marker.y/32;
     if (targetObject === null) {
-	var currentX = this.marker.x/32;
-	var currentY = this.marker.y/32;
 	// tile
 	if (this.selected) {
 	    if (this.gameBoard.hasTile(currentX, currentY,
@@ -62,12 +62,21 @@ GameGroup.prototype.onClick = function(targetObject) {
 	}
     } else {
 	if (targetObject.sprite instanceof Infantry) {
+	    if (this.gameBoard.hasTile(currentX, currentY,
+				       this.gameBoard.highlightLayer)) {
+		if ((this.action === 'ranged' || this.action === 'melee') &&
+		    targetObject.sprite !== this.selected) {
+		    this.selected.attack(targetObject.sprite, this.action);
+		    this.selected = null;
+		}
+	    } else {
+		this.selected = targetObject.sprite;
+		this.ui.showMenu(this.selected);
+	    }
 	    if (this.action) {
 		this.gameBoard.unhighlightAll();
 		this.action = null;
 	    }
-	    this.selected = targetObject.sprite;
-	    this.ui.showMenu(this.selected);
 	} else if (targetObject.sprite instanceof Phaser.Button) {
 	    this.action = targetObject.sprite.key.replace('action-', '');
 	    this.ui.hideMenu();
@@ -95,4 +104,8 @@ GameGroup.prototype.onClick = function(targetObject) {
 
 GameGroup.prototype.addUnit = function(x, y) {
     this.unitGroup.add(new Infantry(this.game, x, y));
+}
+
+GameGroup.prototype.resetMenu = function() {
+
 }
