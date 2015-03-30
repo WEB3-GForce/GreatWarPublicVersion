@@ -41,7 +41,7 @@ var UIGroup = function(game, parent) {
     this.unitDEF = this.game.add.text(8, 88, "DEF: 20",
 				       smallerFont,
 				       this.unitInfo);
-    this.unitInfo.alpha = 0;
+    this.unitInfo.visible = false;
 
     this.actionMenu = this.game.add.group();
     var actions = ['move', 'ranged', 'melee'];
@@ -57,7 +57,8 @@ var UIGroup = function(game, parent) {
 	this[name].x = r*Math.cos(angle);
 	this[name].y = r*Math.sin(angle);
     }
-    this.actionMenu.alpha = 0;
+    this.actionMenu.alpha = 0.7;
+    this.actionMenu.visible = false;
 };
 
 UIGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -73,18 +74,18 @@ UIGroup.prototype.setUnit = function(unit) {
 	this.unitHP.text = "HP: " + unit.stats.HP + "/" + unit.stats.MAX_HP;
 	this.unitATK.text = "ATK: " + unit.stats.ATK;
 	this.unitDEF.text = "DEF: " + unit.stats.DEF;
-	this.unitInfo.alpha = 1;
+	this.unitInfo.visible = true;
     } else {
-	this.unitInfo.alpha = 0;
+	this.unitInfo.visible = false;
     }
 }
 
 UIGroup.prototype.showMenu = function(unit) {
     this.actionMenu.x = unit.x + 16;
     this.actionMenu.y = unit.y + 16;
-    this.actionMenu.alpha = 0.7;
+    this.actionMenu.visible = true;
 }
 
 UIGroup.prototype.hideMenu = function() {
-    this.actionMenu.alpha = 0;
+    this.actionMenu.visible = false;
 }

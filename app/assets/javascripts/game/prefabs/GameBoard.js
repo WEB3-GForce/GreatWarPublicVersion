@@ -21,9 +21,6 @@ var GameBoard = function(game) {
 
     this.drawGrid();
     this.unhighlightAll();
-    this.highlight(0, 0, "blue");
-    this.highlight(0, 1, "red");
-    this.highlight(0, 2, "green");
 };
 
 GameBoard.prototype = Object.create(Phaser.Tilemap.prototype);
@@ -48,6 +45,17 @@ GameBoard.prototype.unhighlightAll = function() {
     for (var i = 0; i < this.width; i++)
 	for (var j = 0; j < this.height; j++)
 	    this.unhighlight(i, j);
+}
+GameBoard.prototype.highlightRange = function(x, y, type, range) {
+    if (range < 0 ||
+	x < 0 || x >= this.width ||
+	y < 0 || y >= this.height)
+	return;
+    this.highlight(x, y, type);
+    this.highlightRange(x-1, y, type, range-1);
+    this.highlightRange(x+1, y, type, range-1);
+    this.highlightRange(x, y-1, type, range-1);
+    this.highlightRange(x, y+1, type, range-1);
 }
 
 GameBoard.prototype.drawGrid = function() {

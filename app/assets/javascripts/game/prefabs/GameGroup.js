@@ -39,19 +39,56 @@ GameGroup.prototype.update = function() {
 
 GameGroup.prototype.onClick = function(targetObject) {
     if (targetObject === null) {
+	var currentX = this.marker.x/32;
+	var currentY = this.marker.y/32;
 	// tile
 	if (this.selected) {
-	    this.selected.moveTo(this.marker.x/32, this.marker.y/32);
+	    if (this.gameBoard.hasTile(currentX, currentY,
+				       this.gameBoard.highlightLayer)) {
+		switch (this.action) {
+		case 'move':
+		    this.selected.moveTo(currentX, currentY);
+		    break;
+		case 'ranged':
+		    break;
+		case 'melee':
+		    break;
+		}
+	    }
 	    this.ui.hideMenu();
 	    this.selected = null;
+	    this.action = null;
+	    this.gameBoard.unhighlightAll();
 	}
     } else {
 	if (targetObject.sprite instanceof Infantry) {
+	    if (this.action) {
+		this.gameBoard.unhighlightAll();
+		this.action = null;
+	    }
 	    this.selected = targetObject.sprite;
 	    this.ui.showMenu(this.selected);
 	} else if (targetObject.sprite instanceof Phaser.Button) {
 	    this.action = targetObject.sprite.key.replace('action-', '');
 	    this.ui.hideMenu();
+
+	    var highlightType, range;
+	    switch (this.action) {
+	    case 'move':
+		highlightType = 'blue';
+		range = this.selected.stats.MOV;
+		break;
+	    case 'ranged':
+		highlightType = 'red';
+		range = this.selected.stats.RNG;
+		break;
+	    case 'melee':
+		highlightType = 'red';
+		range = this.selected.stats.MEL;
+		break;
+	    }
+	    this.gameBoard.highlightRange(this.selected.x/32, this.selected.y/32,
+					  highlightType, range);
 	}
     }
 }

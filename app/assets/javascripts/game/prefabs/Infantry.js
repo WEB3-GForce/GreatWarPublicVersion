@@ -11,7 +11,10 @@ var DEFAULT_STATS = {
     HP: 100,
     MAX_HP: 100,
     ATK: 10,
-    DEF: 10
+    DEF: 10,
+    MOV: 2,
+    RNG: 3,
+    MEL: 1
 }
 
 var Infantry = function(game, x, y) {
