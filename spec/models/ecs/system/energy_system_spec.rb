@@ -9,8 +9,8 @@ describe EnergySystem do
 	let(:flatland)              {EntityFactory.flatland_square(manager)}
 	let(:infantry)              {EntityFactory.infantry(manager, human)}
 	let(:infantry2)             {EntityFactory.infantry(manager, human)}
-	let(:foe)                   {EntityFactory.infantry(manager, human)}
-	let(:foe2)                  {EntityFactory.infantry(manager, human)}
+	let(:foe)                   {EntityFactory.infantry(manager, human2)}
+	let(:foe2)                  {EntityFactory.infantry(manager, human2)}
 
 	it "should be a subclass of System" do
 		expect(EnergySystem < System).to be true
@@ -70,34 +70,36 @@ describe EnergySystem do
 			EnergySystem.consume_energy(manager, infantry2, 10)
 			EnergySystem.consume_energy(manager, foe, 10)
 			EnergySystem.consume_energy(manager, foe2, 10)
-			expect(manager[infantry][EnergyComponent].first.cur_energy).to be 0
-			expect(manager[infantry2][EnergyComponent].first.cur_energy).to be 0
-			expect(manager[foe][EnergyComponent].first.cur_energy).to be 0
-			expect(manager[foe2][EnergyComponent].first.cur_energy).to be 0
+			expect(manager[infantry][EnergyComponent].first.cur_energy).to eq 0
+			expect(manager[infantry2][EnergyComponent].first.cur_energy).to eq 0
+			expect(manager[foe][EnergyComponent].first.cur_energy).to eq 0
+			expect(manager[foe2][EnergyComponent].first.cur_energy).to eq 0
 		end
 	
 		it "should not fail but skip over owned entities without energy" do
 			manager.add_component(flatland, OwnedComponent.new(human))
+			manager[turn_entity][TurnComponent].first
 			EnergySystem.reset_energy(manager)
 		end
 	
 		it "should update the appropriate entities for player 1" do
 			setup
+			manager[turn_entity][TurnComponent].first
 			EnergySystem.reset_energy(manager)
-			expect(manager[infantry][EnergyComponent].first.cur_energy).to be 10
-			expect(manager[infantry2][EnergyComponent].first.cur_energy).to be 10
-			expect(manager[foe][EnergyComponent].first.cur_energy).to be 0
-			expect(manager[foe2][EnergyComponent].first.cur_energy).to be 0
+			expect(manager[infantry][EnergyComponent].first.cur_energy).to eq 10
+			expect(manager[infantry2][EnergyComponent].first.cur_energy).to eq 10
+			expect(manager[foe][EnergyComponent].first.cur_energy).to eq 0
+			expect(manager[foe2][EnergyComponent].first.cur_energy).to eq 0
 		end
 
 		it "should update the appropriate entities for player 2" do
 			setup
 			manager[turn_entity][TurnComponent].first.next_turn
-			EnergySystem.reset_energy(manager)
-			expect(manager[infantry][EnergyComponent].first.cur_energy).to be 10
-			expect(manager[infantry2][EnergyComponent].first.cur_energy).to be 10
-			expect(manager[foe][EnergyComponent].first.cur_energy).to be 0
-			expect(manager[foe2][EnergyComponent].first.cur_energy).to be 0
+			EnergySystem.reset_energy(manager) 
+			expect(manager[infantry][EnergyComponent].first.cur_energy).to eq 0
+			expect(manager[infantry2][EnergyComponent].first.cur_energy).to eq 0
+			expect(manager[foe][EnergyComponent].first.cur_energy).to eq 10
+			expect(manager[foe2][EnergyComponent].first.cur_energy).to eq 10
 		end
 	end
 
