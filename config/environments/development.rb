@@ -38,4 +38,10 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  # https://github.com/websocket-rails/websocket-rails/wiki/Installation-and-Setup
+  # told me to
+  config.middleware.delete Rack::Lock
+
+  config.middleware.use Rack::LiveReload
 end
