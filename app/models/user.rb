@@ -48,6 +48,7 @@ class User < ActiveRecord::Base
 
 
 	def authenticated?(remember_token)
+		return false if remember_hash.nil?
 		BCrypt::Password.new(remember_hash).is_password?(remember_token)
 	end
 
