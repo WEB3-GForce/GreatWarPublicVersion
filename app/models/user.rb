@@ -51,4 +51,9 @@ class User < ActiveRecord::Base
 		BCrypt::Password.new(remember_hash).is_password?(remember_token)
 	end
 
+
+	def forget
+		update_attribute(:remember_hash, nil)
+	end
+
 end
