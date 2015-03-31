@@ -12,6 +12,8 @@ var GameGroup = function(game, parent) {
     this.marker.drawRect(0, 0, 32, 32); // THIS IS HARDCODE
 
     this.ui = new UIGroup(this.game);
+
+    this.action = null;
 };
 
 GameGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -28,7 +30,9 @@ GameGroup.prototype.update = function() {
 
     this.ui.setTile(currentTile);
 
-    if (this.game.input.mousePointer.targetObject && !this.selected) {
+    if (this.game.input.mousePointer.targetObject && 
+    	this.game.input.mousePointer.targetObject.sprite instanceof Infantry && 
+    	!this.selected) {
 		this.ui.setUnit(this.game.input.mousePointer.targetObject.sprite);
     } else if (!this.selected) {
  		this.ui.setUnit(null);
@@ -36,26 +40,74 @@ GameGroup.prototype.update = function() {
 }
 
 GameGroup.prototype.onClick = function(targetObject) {
-	if (targetObject === null && this.selected || targetObject.sprite === this.selected) {
-	    this.selected.moveTo(this.marker.x/32, this.marker.y/32);
-	    this.selected = null;
-	    this.gameBoard.unhighlightAll();
-	} else if (targetObject) {
-		this.selected = targetObject.sprite;
-		this.ui.setUnit(this.selected);
-		var range = 4;
-		// highlight
-		for (var i = -1 * range + 1; i < range; i++) {
-			for (var j = -1 * range + 1; j < range; j++) {
-				if (i * i + j * j < (range - 1) * (range - 1) - 1 || i == 0 || j == 0) {
-					this.gameBoard.highlight(this.selected.x/32 + i, this.selected.y/32 + j, 'blue');
+    var currentX = this.marker.x/32;
+    var currentY = this.marker.y/32;
+    if (targetObject === null) {
+		// tile
+		if (this.selected) {
+		    if (this.gameBoard.hasTile(currentX, currentY,
+					       this.gameBoard.highlightLayer)) {
+				switch (this.action) {
+				case 'move':
+				    this.selected.moveTo(currentX, currentY);
+				    break;
+				case 'ranged':
+				    break;
+				case 'melee':
+				    break;
 				}
-			}
+			    }
+		    this.ui.hideMenu();
+		    this.selected = null;
+		    this.action = null;
+		    this.gameBoard.unhighlightAll();
 		}
-	}
+    } else {
+		if (targetObject.sprite instanceof Infantry) {
+		    if (this.gameBoard.hasTile(currentX, currentY,
+					       this.gameBoard.highlightLayer)) {
+				if ((this.action === 'ranged' || this.action === 'melee') &&
+				    targetObject.sprite !== this.selected) {
+				    this.selected.attack(targetObject.sprite, this.action);
+				    this.selected = null;
+				}
+		    } else {
+				this.selected = targetObject.sprite;
+				this.ui.showMenu(this.selected);
+		    }
+		    if (this.action) {
+				this.gameBoard.unhighlightAll();
+				this.action = null;
+		    }
+		} else if (targetObject.sprite instanceof Phaser.Button) {
+		    this.action = targetObject.sprite.key.replace('action-', '');
+		    this.ui.hideMenu();
+
+		    var highlightType, range;
+		    switch (this.action) {
+		    case 'move':
+			highlightType = 'blue';
+			range = this.selected.stats.MOV;
+			break;
+		    case 'ranged':
+			highlightType = 'red';
+			range = this.selected.stats.RNG;
+			break;
+		    case 'melee':
+			highlightType = 'red';
+			range = this.selected.stats.MEL;
+			break;
+		    }
+		    this.gameBoard.highlightRange(this.selected.x/32, this.selected.y/32,
+						  highlightType, range);
+		}
+    }
 }
 
 GameGroup.prototype.addUnit = function(x, y) {
-	this.unitGroup.add(new Infantry(this.game, x, y));
+    this.unitGroup.add(new Infantry(this.game, x, y));
 }
 
+GameGroup.prototype.resetMenu = function() {
+
+}

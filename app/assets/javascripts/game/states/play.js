@@ -23,7 +23,9 @@ Play.prototype = {
     	   }
     	}, this);
 
-        this.gameGroup.addUnit(2, 2);
+	for (var i = 0; i < 3; i++)
+            this.gameGroup.addUnit(Math.floor(Math.random() * 30),
+				   Math.floor(Math.random() * 30));
     },
 
     update: function() {

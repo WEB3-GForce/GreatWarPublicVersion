@@ -10,8 +10,11 @@ var ORIENTATION_MAP = {
 var DEFAULT_STATS = {
     HP: 100,
     MAX_HP: 100,
-    ATK: 10,
-    DEF: 10
+    ATK: 30,
+    DEF: 10,
+    MOV: 2,
+    RNG: 3,
+    MEL: 1
 }
 
 var Infantry = function(game, x, y) {
@@ -26,7 +29,7 @@ var Infantry = function(game, x, y) {
     this.inputEnabled = true;
     this.input.useHandCursor = true;
 
-    this.stats = DEFAULT_STATS;
+    this.stats = JSON.parse(JSON.stringify(DEFAULT_STATS));
 };
 
 Infantry.prototype = Object.create(Phaser.Sprite.prototype);
@@ -90,4 +93,22 @@ Infantry.prototype.moveTo = function(x, y) {
 	return;
     }
     this.stop();
+}
+
+Infantry.prototype.attack = function(unit, type) {
+    var givenDamage = type === 'melee' ? this.stats.ATK * 2 : this.stats.ATK;
+    var receivedDamage = type === 'melee' ? unit.stats.ATK * 2 : unit.stats.ATK;
+    if (!unit.damage(givenDamage))
+	this.damage(receivedDamage);
+}
+
+// returns whether unit died
+Infantry.prototype.damage = function(atk) {
+    this.stats.HP -= atk - this.stats.DEF;
+    if (this.stats.HP <= 0) {
+	this.destroy();
+	return true;
+    } else {
+	return false;
+    }
 }

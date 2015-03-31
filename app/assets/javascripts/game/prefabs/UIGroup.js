@@ -23,27 +23,44 @@ var UIGroup = function(game, parent) {
     this.tileTitle.anchor.setTo(0, 0.5);
 
     this.unitInfo = this.game.add.group();
-    this.unitInfo.y = 8;
     this.unitInfo.x = this.game.width - 128 - 8;
+    this.unitInfo.y = 8;
     this.unitInfo.fixedToCamera = true;
 
     this.unitGraphics = this.game.add.graphics(0, 0, this.unitInfo);
     this.unitGraphics.beginFill(0x000000, 0.3);
     this.unitGraphics.drawRect(0, 0, 128, 128);
 
-    this.unitType = this.game.add.text(8, 8, "Infantry",
+    this.unitType = this.game.add.text(8, 8, "",
 				       font,
 				       this.unitInfo);
-    this.unitHP = this.game.add.text(8, 40, "HP: 12/18",
+    this.unitHP = this.game.add.text(8, 40, "",
 				       smallerFont,
 				       this.unitInfo);
-    this.unitATK = this.game.add.text(8, 64, "ATK: 10",
+    this.unitATK = this.game.add.text(8, 64, "",
 				       smallerFont,
 				       this.unitInfo);
-    this.unitDEF = this.game.add.text(8, 88, "DEF: 20",
+    this.unitDEF = this.game.add.text(8, 88, "",
 				       smallerFont,
 				       this.unitInfo);
-    this.unitInfo.alpha = 0;
+    this.unitInfo.visible = false;
+
+    this.actionMenu = this.game.add.group();
+    var actions = ['move', 'ranged', 'melee'];
+    for (var i = 0; i < actions.length; i++) {
+	var name = actions[i] + 'Button';
+	this[name] = this.game.add.button(0, 0, 'action-' + actions[i]);
+	this[name].inputEnabled = true;
+	this[name].input.useHandCursor = true;
+	this[name].anchor.setTo(0.5, 0.5);
+	this.actionMenu.add(this[name]);
+	var angle = 2*Math.PI / actions.length * i - Math.PI/2;
+	var r = 48;
+	this[name].x = r*Math.cos(angle);
+	this[name].y = r*Math.sin(angle);
+    }
+    this.actionMenu.alpha = 0.7;
+    this.actionMenu.visible = false;
 };
 
 UIGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -59,8 +76,18 @@ UIGroup.prototype.setUnit = function(unit) {
     	this.unitHP.text = "HP: " + unit.stats.HP + "/" + unit.stats.MAX_HP;
     	this.unitATK.text = "ATK: " + unit.stats.ATK;
     	this.unitDEF.text = "DEF: " + unit.stats.DEF;
-    	this.unitInfo.alpha = 1;
+    	this.unitInfo.visible = true;
     } else {
-	   this.unitInfo.alpha = 0;
+	    this.unitInfo.visible = false;
     }
+}
+
+UIGroup.prototype.showMenu = function(unit) {
+    this.actionMenu.x = unit.x + 16;
+    this.actionMenu.y = unit.y + 16;
+    this.actionMenu.visible = true;
+}
+
+UIGroup.prototype.hideMenu = function() {
+    this.actionMenu.visible = false;
 }
