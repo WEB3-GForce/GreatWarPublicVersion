@@ -56,6 +56,36 @@ private
 
 public
 
+	# Gets the locations that an entity can melee attack
+	# TODO testing/documentation
+	def self.attack_locations(entity_manager, entity)
+		if !EntityType.melee_entity?(entity_manager, entity) or 
+				!EntityType.placed_entity?(entity_manager, entity)
+			return []
+		end
+
+		results = []
+
+		pos_comp = entity_manager.get_components(entity, PositionComponent).first
+		[[-1, 0], [1, 0], [0, -1], [0, 1]].each { |row_diff, col_diff|
+			row = pos_comp.row + row_diff
+			col = pos_comp.col + col_diff
+
+			next if row < 0 or row >= entity_manager.row
+			next if col < 0 or col >= entity_manager.col
+
+			(square, occupants) = entity_manager.board[row][col]
+
+			next unless occupants.respond_to? :each
+			occupants.each { |occ|
+				occ_own_comp = entity_manager.get_components(occ, OwnedComponent).first
+				results.push square if occ_own_comp.owner != own_comp.owner
+			}
+		}
+
+		return results
+	end
+
 	# This function performs a melee attack. Entity1 attacks entity2. If
 	# entity2 is still alive, it will also attack back.
 	#
