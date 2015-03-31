@@ -21,9 +21,6 @@ var GameBoard = function(game) {
 
     this.drawGrid();
     this.unhighlightAll();
-    this.highlight(0, 0, "blue");
-    this.highlight(0, 1, "red");
-    this.highlight(0, 2, "green");
 };
 
 GameBoard.prototype = Object.create(Phaser.Tilemap.prototype);

@@ -36,13 +36,22 @@ GameGroup.prototype.update = function() {
 }
 
 GameGroup.prototype.onClick = function(targetObject) {
-	if (targetObject) {
-		this.selected = targetObject.sprite;
-		this.ui.setUnit(this.selected);
-	}
-	if (targetObject === null && this.selected) {
+	if (targetObject === null && this.selected || targetObject.sprite === this.selected) {
 	    this.selected.moveTo(this.marker.x/32, this.marker.y/32);
 	    this.selected = null;
+	    this.gameBoard.unhighlightAll();
+	} else if (targetObject) {
+		this.selected = targetObject.sprite;
+		this.ui.setUnit(this.selected);
+		var range = 4;
+		// highlight
+		for (var i = -1 * range + 1; i < range; i++) {
+			for (var j = -1 * range + 1; j < range; j++) {
+				if (i * i + j * j < (range - 1) * (range - 1) - 1 || i == 0 || j == 0) {
+					this.gameBoard.highlight(this.selected.x/32 + i, this.selected.y/32 + j, 'blue');
+				}
+			}
+		}
 	}
 }
 
