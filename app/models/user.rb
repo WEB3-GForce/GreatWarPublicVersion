@@ -45,4 +45,10 @@ class User < ActiveRecord::Base
 		self.remember_token = User.new_token
 		update_attributes(:remember_hash, User.digest(remember_token))
 	end
+
+
+	def authenticated?(remember_token)
+		BCrypt::Password.new(remember_hash).is_password?
+	end
+
 end
