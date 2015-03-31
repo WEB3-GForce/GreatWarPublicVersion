@@ -63,4 +63,10 @@ class UserTest < ActiveSupport::TestCase
     	assert_not @user.valid?
  	end
 
+
+  # A test to check that a authenticate returns false if we have already logged out
+  test "autenticated? returns false for a user with a nil remember_hash" do
+    assert_not @user.authenticated?('')
+  end
+
 end

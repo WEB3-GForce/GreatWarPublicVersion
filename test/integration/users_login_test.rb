@@ -29,6 +29,9 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
 		delete logout_path
 		assert_not is_logged_in?
 		assert_redirected_to root_url
+		# a second delete path is required to control for
+		# logging out a second time out of the application
+		delete logout_path
 		follow_redirect!
 		assert_select "a[href=?]", login_path
 		assert_select "a[href=?]", logout_path,      count: 0
