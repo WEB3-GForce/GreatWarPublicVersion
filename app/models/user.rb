@@ -32,4 +32,17 @@ class User < ActiveRecord::Base
 	                                          BCrypt::Engine.cost
 		BCrypt::Password.create(string, cost: cost)
 	end
+
+	# Now that we're using a string (token) to remember a User's session,
+	# we generate the token through Rails urlsafe_base64 method:
+	def User.new_token
+		SecureRandom.urlsafe_base64
+	end
+
+	# We create a new token and store it's hash into the database so that 
+	# a user persists
+	def remember
+		self.remember_token = User.new_token
+		update_attributes(:remember_hash, User.digest(remember_token))
+	end
 end
