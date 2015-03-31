@@ -6,6 +6,7 @@ var UIGroup = function(game, parent) {
     this.tileInfo = this.game.add.group();
     this.tileInfo.x = 8;
     this.tileInfo.y = 8;
+    this.tileInfo.fixedToCamera = true;
 
     this.tileGraphics = this.game.add.graphics(0, 0, this.tileInfo);
     this.tileGraphics.beginFill(0x000000, 0.3);
@@ -24,6 +25,7 @@ var UIGroup = function(game, parent) {
     this.unitInfo = this.game.add.group();
     this.unitInfo.y = 8;
     this.unitInfo.x = this.game.width - 128 - 8;
+    this.unitInfo.fixedToCamera = true;
 
     this.unitGraphics = this.game.add.graphics(0, 0, this.unitInfo);
     this.unitGraphics.beginFill(0x000000, 0.3);
