@@ -106,7 +106,7 @@ private
 
 	# This private method determines the locations an entity can move to
 	# taking into account the type of squares, the movement range of the
-	# entity, other occupants of squares, etc.
+	# entity, other occupants o squares, etc.
 	#
 	# Arguments
 	#   mover_owner = the owner of the entity to find the moveable locations of
