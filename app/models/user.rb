@@ -53,6 +53,7 @@ class User < ActiveRecord::Base
 
 
 	def forget
+		update_attribute :logged, false
 		update_attribute(:remember_hash, nil)
 	end
 

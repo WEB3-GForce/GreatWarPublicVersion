@@ -18,7 +18,7 @@ class UsersController < ApplicationController
 			flash[:success] = "Welcome to the Great War!"
 			redirect_to @user
 		else
-		render 'new'
+			render 'new'
 		end
 	end
 
