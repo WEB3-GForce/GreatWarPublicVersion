@@ -56,11 +56,11 @@ UIGroup.prototype.setTile = function(tile) {
 
 UIGroup.prototype.setUnit = function(unit) {
     if (unit) {
-	this.unitHP.text = "HP: " + unit.stats.HP + "/" + unit.stats.MAX_HP;
-	this.unitATK.text = "ATK: " + unit.stats.ATK;
-	this.unitDEF.text = "DEF: " + unit.stats.DEF;
-	this.unitInfo.alpha = 1;
+    	this.unitHP.text = "HP: " + unit.stats.HP + "/" + unit.stats.MAX_HP;
+    	this.unitATK.text = "ATK: " + unit.stats.ATK;
+    	this.unitDEF.text = "DEF: " + unit.stats.DEF;
+    	this.unitInfo.alpha = 1;
     } else {
-	this.unitInfo.alpha = 0;
+	   this.unitInfo.alpha = 0;
     }
 }

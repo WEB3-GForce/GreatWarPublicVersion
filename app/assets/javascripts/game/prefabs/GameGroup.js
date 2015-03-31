@@ -28,15 +28,17 @@ GameGroup.prototype.update = function() {
 
     this.ui.setTile(currentTile);
 
-    if (this.game.input.mousePointer.targetObject)
-	this.ui.setUnit(this.game.input.mousePointer.targetObject.sprite);
-    else
-	this.ui.setUnit(null);
+    if (this.game.input.mousePointer.targetObject && !this.selected) {
+		this.ui.setUnit(this.game.input.mousePointer.targetObject.sprite);
+    } else if (!this.selected) {
+ 		this.ui.setUnit(null);
+ 	}
 }
 
 GameGroup.prototype.onClick = function(targetObject) {
 	if (targetObject) {
 		this.selected = targetObject.sprite;
+		this.ui.setUnit(this.selected);
 	}
 	if (targetObject === null && this.selected) {
 	    this.selected.moveTo(this.marker.x/32, this.marker.y/32);
