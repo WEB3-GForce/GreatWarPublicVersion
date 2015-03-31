@@ -5,17 +5,53 @@ function Play() {
 
 Play.prototype = {
     create: function() {
-	this.game.physics.startSystem(Phaser.Physics.ARCADE);
+        this.game.world.setBounds(0, 0, width, height); // size of world, as opposed to window
 
-	this.yeoman = new Yeoman(this.game, this.game.width/2, this.game.height/2);
-	this.game.add.existing(this.yeoman);
+        this.gameGroup = new GameGroup(this.game);
 
-	this.yeoman.events.onInputDown.add(this.clickListener, this);
+    	this.game.receiver.bind('rpc', (function(data) {
+    	    this.gameGroup.gameBoard[data.action].apply(this.gameGroup.gameBoard, data.arguments);
+    	}).bind(this));
+
+    	this.game.dispatcher.trigger("test");
+
+        // deciding dragging vs. clicking: 
+    	this.game.input.onUp.add(function() {
+    	    if (this.game.input.mousePointer.positionDown.x == this.game.input.mousePointer.position.x && 
+                this.game.input.mousePointer.positionDown.y == this.game.input.mousePointer.position.y) {
+    	           this.gameGroup.onClick(this.game.input.mousePointer.targetObject);
+    	   }
+    	}, this);
+
+	this.gameGroup.addUnit(2, 2, true);
+	this.gameGroup.addUnit(2, 3, true);
+	this.gameGroup.addUnit(2, 4, true);
+	this.gameGroup.addUnit(4, 2, false);
+	this.gameGroup.addUnit(4, 3, false);
+	this.gameGroup.addUnit(4, 4, false);
+	// for (var i = 0; i < 10; i++)
+        //     this.gameGroup.addUnit(Math.floor(Math.random() * 30),
+	// 			   Math.floor(Math.random() * 30),
+	// 			   Math.random() > 0.5 ? true : false);
     },
+
     update: function() {
+        // Panning:
+        this.moveCameraByPointer(this.game.input.mousePointer);
 
+        // Updating the gameBoard
+        this.gameGroup.update(); 
     },
-    clickListener: function() {
-	this.game.state.start('gameover');
+
+    moveCameraByPointer: function(pointer) {
+        if (!pointer.timeDown) { return; }
+        if (pointer.isDown && !pointer.targetObject) {
+            if (play_camera) {
+                game.camera.x += play_camera.x - pointer.position.x;
+                game.camera.y += play_camera.y - pointer.position.y;
+            }
+            play_camera = pointer.position.clone();
+        }
+        if (pointer.isUp) { play_camera = null; }
     }
 };
