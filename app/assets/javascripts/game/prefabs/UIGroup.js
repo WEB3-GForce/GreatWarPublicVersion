@@ -14,11 +14,6 @@ var UIGroup = function(game, parent) {
 UIGroup.prototype = Object.create(Phaser.Group.prototype);
 UIGroup.prototype.constructor = UIGroup;
 
-UIGroup.prototype.setTile = function(tile) {
-    this.currentTile.frame = tile.index - 1;
-    this.tileTitle.text = "tile #" + tile.index;
-}
-
 UIGroup.prototype.initTileInfoUI = function() {
     this.tileInfo = this.game.add.group();
     this.tileInfo.x = 8;
@@ -80,6 +75,11 @@ UIGroup.prototype.initActionMenu = function() {
     }
     this.actionMenu.alpha = 0.7;
     this.actionMenu.visible = false;
+}
+
+UIGroup.prototype.setTile = function(tile) {
+    this.currentTile.frame = tile.index - 1;
+    this.tileTitle.text = "tile #" + tile.index;
 }
 
 UIGroup.prototype.setUnit = function(unit) {
