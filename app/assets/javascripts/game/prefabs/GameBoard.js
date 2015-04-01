@@ -4,7 +4,11 @@ var HIGHLIGHT_TYPES = {
     blue: 51,
     red: 52,
     green: 53
-}
+};
+
+var TILE_MAP  = {
+    flatland: 30
+};
 
 var GameBoard = function(game) {
     Phaser.Tilemap.call(this, game, 'tileset');
@@ -75,4 +79,8 @@ GameBoard.prototype.drawGrid = function() {
     	this.grid.moveTo(0, y);
     	this.grid.lineTo(this.width * 32, y);
     }
+}
+
+GameBoard.prototype.setTile = function(x, y, type) {
+    this.putTile(TILE_MAP[type], x, y, this.terrainLayer);
 }

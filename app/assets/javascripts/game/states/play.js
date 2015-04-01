@@ -10,7 +10,6 @@ Play.prototype = {
         this.gameGroup = new GameGroup(this.game);
 
     	this.game.dispatcher.bind('rpc', (function(data) {
-	    console.log(data);
     	    this.gameGroup[data.action].apply(this.gameGroup, data.arguments);
     	}).bind(this));
 
@@ -23,17 +22,6 @@ Play.prototype = {
     	           this.gameGroup.onClick(this.game.input.mousePointer.targetObject);
     	   }
     	}, this);
-
-	this.gameGroup.addUnit(2, 2, true);
-	this.gameGroup.addUnit(2, 3, true);
-	this.gameGroup.addUnit(2, 4, true);
-	this.gameGroup.addUnit(4, 2, false);
-	this.gameGroup.addUnit(4, 3, false);
-	this.gameGroup.addUnit(4, 4, false);
-	// for (var i = 0; i < 10; i++)
-        //     this.gameGroup.addUnit(Math.floor(Math.random() * 30),
-	// 			   Math.floor(Math.random() * 30),
-	// 			   Math.random() > 0.5 ? true : false);
     },
 
     update: function() {

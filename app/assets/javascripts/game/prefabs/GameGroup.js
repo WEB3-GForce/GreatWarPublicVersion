@@ -141,5 +141,14 @@ GameGroup.prototype.buttonClicked = function(button) {
 }
 
 GameGroup.prototype.init_game = function(board, players, turn, pieces) {
-    console.log(board, players, turn, pieces);
+    var square;
+    for (var i = 0; i < board.squares.length; i++) {
+	square = board.squares[i];
+	this.gameBoard.setTile(i % board.row , Math.floor(i / board.col), square.terrain);
+    }
+    var unit;
+    for (var i = 0; i < pieces.length; i++) {
+	unit = pieces[i];
+	this.addUnit(unit.position.row, unit.position.col, true);
+    }
 }
