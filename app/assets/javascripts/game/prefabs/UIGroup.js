@@ -31,7 +31,7 @@ var UIGroup = function(game, parent) {
     this.unitGraphics.beginFill(0x000000, 0.3);
     this.unitGraphics.drawRect(0, 0, 128, 128);
 
-    this.unitType = this.game.add.text(8, 8, "",
+    this.unitType = this.game.add.text(8, 8, "Infantry",
 				       font,
 				       this.unitInfo);
     this.unitHP = this.game.add.text(8, 40, "",

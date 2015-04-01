@@ -35,6 +35,10 @@ GameBoard.prototype.revealFog = function(x, y) {
     this.removeTile(x, y, this.fogLayer);
 }
 
+GameBoard.prototype.isHighlighted = function(x, y) {
+    return this.hasTile(x, y,
+			this.highlightLayer);
+}
 GameBoard.prototype.highlight = function(x, y, type) {
     this.putTile(HIGHLIGHT_TYPES[type], x, y, this.highlightLayer);
 }
