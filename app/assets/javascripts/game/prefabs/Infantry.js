@@ -17,7 +17,7 @@ var DEFAULT_STATS = {
     MEL: 1
 }
 
-var Infantry = function(game, x, y) {
+var Infantry = function(game, x, y, mine) {
     Phaser.Sprite.call(this, game, x*32, y*32, 'trainer', 1);
     this.orientation = "down";
 
@@ -30,6 +30,8 @@ var Infantry = function(game, x, y) {
     this.input.useHandCursor = true;
 
     this.stats = JSON.parse(JSON.stringify(DEFAULT_STATS));
+
+    this.mine = mine;
 };
 
 Infantry.prototype = Object.create(Phaser.Sprite.prototype);

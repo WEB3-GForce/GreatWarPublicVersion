@@ -15,6 +15,8 @@ var GameGroup = function(game, parent) {
     this.ui = new UIGroup(this.game);
 
     this.action = null;
+
+    this.myTurn = true;
 };
 
 GameGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -50,11 +52,13 @@ GameGroup.prototype.onClick = function(targetObject) {
     }
 }
 
-GameGroup.prototype.addUnit = function(x, y) {
-    this.unitGroup.add(new Infantry(this.game, x, y));
+GameGroup.prototype.addUnit = function(x, y, mine) {
+    this.unitGroup.add(new Infantry(this.game, x, y, mine));
 }
 
 GameGroup.prototype.tileClicked = function() {
+    if (!this.myTurn)
+	return;
     // tile
     if (this.selected) {
 	if (this.gameBoard.isHighlighted(this.tile.x, this.tile.y)) {
@@ -77,19 +81,40 @@ GameGroup.prototype.tileClicked = function() {
 
 
 GameGroup.prototype.unitClicked = function(unit) {
-    if (this.gameBoard.isHighlighted(this.tile.x, this.tile.y)) {
-	// selected a different unit inside the highlighted area
-	if ((this.action === 'ranged' || this.action === 'melee') &&
-	    unit !== this.selected) {
-	    this.selected.attack(unit, this.action);
-	    this.selected = null;
-	}
+    if (!this.myTurn)
+	return;
+
+    if (this.action) {
+	this.interact(unit);
     } else {
+	this.select(unit);
+    }
+}
+
+GameGroup.prototype.interact = function(unit) {
+    if (this.gameBoard.isHighlighted(this.tile.x, this.tile.y)) {
+	if (unit.mine) {
+	    // maybe later we have within team interaction
+	    this.select(unit);
+	} else {
+	    // selected enemy unit
+	    if ((this.action === 'ranged' || this.action === 'melee')) {
+		this.selected.attack(unit, this.action);
+		this.selected = null;
+	    }
+	}
+	this.gameBoard.unhighlightAll();
+	this.action = null;
+    }
+}
+
+GameGroup.prototype.select = function(unit) {
+    if (unit.mine) {
 	this.selected = unit;
 	this.ui.showMenu(this.selected);
+	this.gameBoard.unhighlightAll();
+	this.action = null;
     }
-    this.gameBoard.unhighlightAll();
-    this.action = null;
 }
 
 GameGroup.prototype.buttonClicked = function(button) {
