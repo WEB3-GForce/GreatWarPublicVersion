@@ -24,6 +24,7 @@ module SessionsHelper
 
 	def log_out
 		forget(current_user)
+		@current_user.update_attribute :logged, false
 		session.delete(:user_id)
 		@current_user = nil
 	end
@@ -31,7 +32,7 @@ module SessionsHelper
 	def remember(user)
 		user.remember
 		cookies.permanent.signed[:user_id] = user.id
-		cookies.permanent[:remember_token] = remember_token
+		cookies.permanent[:remember_token] = user.remember_token
 	end
 
 	def forget(user)

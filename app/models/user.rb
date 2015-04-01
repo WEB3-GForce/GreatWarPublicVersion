@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+	attr_accessor :remember_token
 	# We save all emails as downcased versions to ensure uniqueness
 	before_save { self.email = email.downcase }
 	validates :name,  presence: true, length: { maximum: 50 }
@@ -43,7 +44,7 @@ class User < ActiveRecord::Base
 	# a user persists
 	def remember
 		self.remember_token = User.new_token
-		update_attributes(:remember_hash, User.digest(remember_token))
+		update_attribute(:remember_hash, User.digest(remember_token))
 	end
 
 
@@ -54,7 +55,6 @@ class User < ActiveRecord::Base
 
 
 	def forget
-		update_attribute :logged, false
 		update_attribute(:remember_hash, nil)
 	end
 
