@@ -11,6 +11,7 @@ var UNIT_MAP = {
     'artillery':
     {
         NAME: 'Artillery',
+        IMAGE: 'trainer',
         HP: 50,
         MAX_HP: 50,
         ATK: 100,
@@ -22,6 +23,7 @@ var UNIT_MAP = {
     'command_bunker': 
     {
         NAME: 'Bunker',
+        IMAGE: 'trainer',
         HP: 10,
         MAX_HP: 10,
         ATK: 0,
@@ -33,6 +35,7 @@ var UNIT_MAP = {
     'infantry': 
     {
         NAME: 'Infantry',
+        IMAGE: 'trainer',
         HP: 100,
         MAX_HP: 100,
         ATK: 30,
@@ -44,6 +47,7 @@ var UNIT_MAP = {
     'machine_gun':
     { 
         NAME: 'Machine Gun',
+        IMAGE: 'trainer',
         HP: 100,
         MAX_HP: 100,
         ATK: 50,
@@ -55,7 +59,7 @@ var UNIT_MAP = {
 }
 
 var Unit = function(game, type, x, y, mine) {
-    Phaser.Sprite.call(this, game, x*32, y*32, 'trainer', 1);
+    Phaser.Sprite.call(this, game, x*32, y*32, UNIT_MAP[type].IMAGE, 1);
     this.orientation = "down";
     this.type = type;
 
