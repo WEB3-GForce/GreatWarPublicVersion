@@ -43,7 +43,7 @@ UIGroup.prototype.initUnitInfoUI = function() {
     this.unitGraphics.beginFill(0x000000, 0.3);
     this.unitGraphics.drawRect(0, 0, 128, 128);
 
-    this.unitType = this.game.add.text(8, 8, "Infantry",
+    this.unitType = this.game.add.text(8, 8, "",
                        this.font,
                        this.unitInfo);
     this.unitHP = this.game.add.text(8, 40, "",
@@ -84,6 +84,7 @@ UIGroup.prototype.setTile = function(tile) {
 
 UIGroup.prototype.setUnit = function(unit) {
     if (unit) {
+        this.unitType.text = unit.stats.NAME;
     	this.unitHP.text = "HP: " + unit.stats.HP + "/" + unit.stats.MAX_HP;
     	this.unitATK.text = "ATK: " + unit.stats.ATK;
     	this.unitDEF.text = "DEF: " + unit.stats.DEF;
