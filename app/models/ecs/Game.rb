@@ -1,8 +1,9 @@
 require_relative "./entity/entity_factory.rb"
+require_relative "./entity/json_factory.rb"
 
 class Game
 
-    def init_game(rows=30, cols=30, player_names=["Player 1", "Player 2"])
+    def self.init_game(rows=30, cols=30, player_names=["Player 1", "Player 2"])
         manager = EntityManager.new(rows, cols)
         players, turn, pieces = EntityFactory.create_game_basic(manager, player_names)
         start_json = JsonFactory.game_start(manager, players, turn, pieces)

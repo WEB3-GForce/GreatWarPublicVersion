@@ -9,11 +9,12 @@ Play.prototype = {
 
         this.gameGroup = new GameGroup(this.game);
 
-    	this.game.receiver.bind('rpc', (function(data) {
-    	    this.gameGroup.gameBoard[data.action].apply(this.gameGroup.gameBoard, data.arguments);
+    	this.game.dispatcher.bind('rpc', (function(data) {
+	    console.log(data);
+    	    this.gameGroup[data.action].apply(this.gameGroup, data.arguments);
     	}).bind(this));
 
-    	this.game.dispatcher.trigger("test");
+    	this.game.dispatcher.trigger("init_game");
 
         // deciding dragging vs. clicking: 
     	this.game.input.onUp.add(function() {

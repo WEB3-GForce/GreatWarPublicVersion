@@ -139,3 +139,7 @@ GameGroup.prototype.buttonClicked = function(button) {
     this.gameBoard.highlightRange(this.selected.x/32, this.selected.y/32,
 				  highlightType, range);
 }
+
+GameGroup.prototype.init_game = function(board, players, turn, pieces) {
+    console.log(board, players, turn, pieces);
+}

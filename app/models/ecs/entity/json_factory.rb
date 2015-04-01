@@ -194,11 +194,10 @@ class JsonFactory
 			piece_array.push self.piece(entity_manager, piece)
 		}
 
-		return {"response" => "game_start",
-		        "board"    => board,
-		        "players"  => player_array,
-		        "turn"     => turn_hash,
-		        "pieces"   => piece_array}
+          return {
+            "action" => "init_game",
+            "arguments" => [board, player_array, turn_hash, piece_array]
+          }
 	end
 
 

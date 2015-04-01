@@ -1,5 +1,8 @@
+require_relative '../models/ecs/Game'
+
 class SocketController < WebsocketRails::BaseController
-  def test
-    WebsocketRails[:messages].trigger(:rpc, {action: "revealFog", arguments: [2, 3]})
+  def init_game
+    entity_manager, start_json = Game.init_game
+    send_message :rpc, start_json
   end
 end
