@@ -25,7 +25,7 @@ class User < ActiveRecord::Base
 	has_secure_password
 
 	# Enforce password length
-	validates :password, length: {minimum: 6}
+	validates :password, length: {minimum: 6}, allow_blank: true
 
 	# Returns the hash digest of the given string.
 	def User.digest(string)
