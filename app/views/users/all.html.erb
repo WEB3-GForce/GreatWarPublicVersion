@@ -1,22 +1,20 @@
-<% provide(:title, "All Users") %>
-<% @users.each do |user| %>
-<div class="row">
-  <aside class="col-md-4">
-    <section class="user_info">
-      <h1>
-        <%= gravatar_for user %>
-        <%= link_to user.name, user %> 
-        <% if logged_in? %>
+<% provide(:title, 'All users') %>
+<h1>All users</h1>
+
+<%= will_paginate %>
+
+<ul class="users">
+  <% @users.each do |user| %>
+    <li>
+      <%= gravatar_for user, size: 50 %>
+      <%= link_to user.name, user %>
+      <% if logged_in? %>
         <h1> HI
-        	<%= user.logged %>
+          <%= user.logged %>
         </h1>
-        <% end %>
-      </h1>
-      <!--<h1>
-      <%= user.email %>
-      </h1>
-  		-->
-    </section>
-  </aside>
-</div>
-<% end %>
+      <% end %>
+    </li>
+  <% end %>
+</ul>
+
+<%= will_paginate %>

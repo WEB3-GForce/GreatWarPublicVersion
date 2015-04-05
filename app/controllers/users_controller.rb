@@ -11,7 +11,7 @@ class UsersController < ApplicationController
 	end
 
 	def all
-		@users = User.all
+		@users = User.paginate(page: params[:page])
 	end
 
 	def create
