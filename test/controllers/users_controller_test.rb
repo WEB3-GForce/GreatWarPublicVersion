@@ -4,7 +4,7 @@ class UsersControllerTest < ActionController::TestCase
 
   def setup
     @user = users(:david)
-    @other)user = users(:archer)
+    @other_user = users(:vance)
   end
 
 
@@ -26,8 +26,8 @@ class UsersControllerTest < ActionController::TestCase
     assert_redirected_to login_url
   end
 
-  test "should redirect index when not logged in" do
-    get :index
+  test "should redirect Users when not logged in" do
+    get :all
     assert_redirected_to login_url
   end
 

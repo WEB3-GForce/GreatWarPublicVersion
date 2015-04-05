@@ -5,7 +5,7 @@
     <section class="user_info">
       <h1>
         <%= gravatar_for user %>
-        <%= user.name %> 
+        <%= link_to user.name, user %> 
         <% if logged_in? %>
         <h1> HI
         	<%= user.logged %>
