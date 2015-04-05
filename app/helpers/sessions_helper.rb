@@ -22,6 +22,11 @@ module SessionsHelper
 		!current_user.nil?
 	end
 
+	def logged? (user)
+		user.logged
+	end
+
+
 	def log_out
 		forget(current_user)
 		@current_user.update_attribute :logged, false

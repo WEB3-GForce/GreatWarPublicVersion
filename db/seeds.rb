@@ -1,5 +1,6 @@
 User.create!(name:  "User 1",
              email: "user1@gmail.com",
+             logged: false,
              password:              "foobar",
              password_confirmation: "foobar")
 
@@ -9,6 +10,7 @@ User.create!(name:  "User 1",
   password = "password"
   User.create!(name:  name,
                email: email,
+               logged: false,
                password:              password,
                password_confirmation: password)
 end
