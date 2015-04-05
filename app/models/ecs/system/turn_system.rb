@@ -17,11 +17,6 @@ private
         return entity_manager[turn][TurnComponent].first
     end
 
-    # Gets the entity for the current player from an entity manager.
-    def self.current_turn(entity_manager)
-        return self.turn_component(entity_manager).current_turn()
-    end
-
     # Ends turn and gets the new current player from an entity manager.
     def self.next_turn(entity_manager)
         return self.turn_component(entity_manager).next_turn()
@@ -29,6 +24,11 @@ private
 
 #===============================================================================
 public
+
+    # Gets the entity for the current player from an entity manager.
+    def self.current_turn(entity_manager)
+        return self.turn_component(entity_manager).current_turn()
+    end
     
     # Determines whether the entity belongs to the current turn's player.
     #
