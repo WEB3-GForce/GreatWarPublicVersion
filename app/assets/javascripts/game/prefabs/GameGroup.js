@@ -152,3 +152,14 @@ GameGroup.prototype.init_game = function(board, players, turn, pieces) {
 	this.addUnit(unit.position.row, unit.position.col, true);
     }
 }
+
+GameGroup.prototype.test = function(arg) {
+    return {
+	start: function() {
+	    setTimeout((function(){
+		console.log(arg);
+		this.onComplete();
+	    }).bind(this), 3000);
+	}
+    };
+}

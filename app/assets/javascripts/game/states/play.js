@@ -1,6 +1,8 @@
 'use strict';
 
 function Play() {
+    this.sequences = [];
+    this.currentSequence = null;
 }
 
 Play.prototype = {
@@ -10,7 +12,7 @@ Play.prototype = {
         this.gameGroup = new GameGroup(this.game);
 
     	this.game.dispatcher.bind('rpc', (function(data) {
-    	    this.gameGroup[data.action].apply(this.gameGroup, data.arguments);
+	    this.sequences.push(data.sequence);
     	}).bind(this));
 
     	this.game.dispatcher.trigger("init_game");
@@ -25,6 +27,13 @@ Play.prototype = {
     },
 
     update: function() {
+	// executing actions
+	if (this.currentSequence === null &&
+	    this.sequences.length > 0) {
+	    this.currentSequence = this.sequences.shift();
+	    this.executeSequence();
+	}
+
         // Panning:
         this.moveCameraByPointer(this.game.input.mousePointer);
 
@@ -42,5 +51,21 @@ Play.prototype = {
             play_camera = pointer.position.clone();
         }
         if (pointer.isUp) { play_camera = null; }
+    },
+
+    executeSequence: function() {
+	if (this.currentSequence.length == 0) {
+	    this.currentSequence = null;
+	    return;
+	}
+	this.currentAction = this.currentSequence.shift();
+	var action = this.gameGroup[this.currentAction.action].apply(
+	    this.gameGroup,
+	    this.currentAction.arguments
+	);
+	action.onComplete = (function() {
+	    this.executeSequence();
+	}).bind(this);
+	action.start();
     }
 };
