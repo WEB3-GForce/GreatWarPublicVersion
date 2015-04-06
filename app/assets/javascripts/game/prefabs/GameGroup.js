@@ -5,7 +5,7 @@ var GameGroup = function(game, parent) {
 
     this.gameBoard = new GameBoard(this.game);
     this.selected = null;
-    this.unitGroup = this.game.add.group();
+    this.unitGroup = new UnitGroup(this.game);
 
     this.marker = this.game.add.graphics();
     this.marker.lineStyle(2, 0x000000, 1);
@@ -50,10 +50,6 @@ GameGroup.prototype.onClick = function(targetObject) {
     } else if (targetObject.sprite instanceof Phaser.Button) {
 		this.buttonClicked(targetObject.sprite);
     }
-}
-
-GameGroup.prototype.addUnit = function(type, x, y, mine) {
-    this.unitGroup.add(new Unit(this.game, type, x, y, mine));
 }
 
 GameGroup.prototype.tileClicked = function() {
@@ -164,4 +160,10 @@ GameGroup.prototype.test = function(arg) {
 	    }).bind(this), 3000);
 	}
     };
+}
+
+GameGroup.prototype.testAnim = function() {
+    this.unitGroup.addUnit(1, "infantry", 3, 3, true);
+
+    return new AnimationAction(this.unitGroup.find(1), "attack");
 }

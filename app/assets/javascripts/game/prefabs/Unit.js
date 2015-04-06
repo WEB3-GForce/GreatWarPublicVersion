@@ -58,10 +58,13 @@ var UNIT_MAP = {
     },
 }
 
-var Unit = function(game, type, x, y, mine) {
+var Unit = function(game, id, type, x, y, mine) {
     Phaser.Sprite.call(this, game,
-		       x*this.game.constants.TILE_SIZE, y*this.game.constants.TILE_SIZE,
+		       x*game.constants.TILE_SIZE,
+		       y*game.constants.TILE_SIZE,
 		       UNIT_MAP[type].IMAGE, 1);
+
+    this.id = id;
     this.orientation = "down";
     this.type = type;
 
@@ -69,6 +72,7 @@ var Unit = function(game, type, x, y, mine) {
     this.animations.add('walk-right', [6, 7, 8, 7]);
     this.animations.add('walk-down', [0, 1, 2, 1]);
     this.animations.add('walk-up', [9, 10, 11, 10]);
+    this.animations.add('attack', [0, 3, 6, 9]);
 
     this.inputEnabled = true;
     this.input.useHandCursor = true;
