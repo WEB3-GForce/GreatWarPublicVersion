@@ -7,7 +7,9 @@ function Play() {
 
 Play.prototype = {
     create: function() {
-        this.game.world.setBounds(0, 0, width, height); // size of world, as opposed to window
+	// size of world, as opposed to window
+        this.game.world.setBounds(0, 0,
+				  this.game.constants.WIDTH, this.game.constants.HEIGHT);
 
         this.gameGroup = new GameGroup(this.game);
 
@@ -44,13 +46,13 @@ Play.prototype = {
     moveCameraByPointer: function(pointer) {
         if (!pointer.timeDown) { return; }
         if (pointer.isDown && !pointer.targetObject) {
-            if (play_camera) {
-                game.camera.x += play_camera.x - pointer.position.x;
-                game.camera.y += play_camera.y - pointer.position.y;
+            if (this.playCamera) {
+                this.game.camera.x += this.playCamera.x - pointer.position.x;
+                this.game.camera.y += this.playCamera.y - pointer.position.y;
             }
-            play_camera = pointer.position.clone();
+            this.playCamera = pointer.position.clone();
         }
-        if (pointer.isUp) { play_camera = null; }
+        if (pointer.isUp) { this.playCamera = null; }
     },
 
     executeSequence: function() {

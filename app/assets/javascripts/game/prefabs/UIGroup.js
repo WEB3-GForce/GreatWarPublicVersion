@@ -95,8 +95,8 @@ UIGroup.prototype.setUnit = function(unit) {
 }
 
 UIGroup.prototype.showMenu = function(unit) {
-    this.actionMenu.x = unit.x + 16;
-    this.actionMenu.y = unit.y + 16;
+    this.actionMenu.x = unit.x + this.game.constants.TILE_SIZE/2;
+    this.actionMenu.y = unit.y + this.game.constants.TILE_SIZE/2;
     this.actionMenu.visible = true;
 }
 

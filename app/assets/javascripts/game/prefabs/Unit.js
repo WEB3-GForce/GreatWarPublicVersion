@@ -59,7 +59,9 @@ var UNIT_MAP = {
 }
 
 var Unit = function(game, type, x, y, mine) {
-    Phaser.Sprite.call(this, game, x*32, y*32, UNIT_MAP[type].IMAGE, 1);
+    Phaser.Sprite.call(this, game,
+		       x*this.game.constants.TILE_SIZE, y*this.game.constants.TILE_SIZE,
+		       UNIT_MAP[type].IMAGE, 1);
     this.orientation = "down";
     this.type = type;
 
@@ -91,16 +93,16 @@ Unit.prototype.moveAdjacent = function(orientation) {
     var update;
     switch (orientation) {
     case "down":
-	update = {y: this.y + 32};
+	update = {y: this.y + this.game.constants.TILE_SIZE};
 	break;
     case "left":
-	update = {x: this.x - 32};
+	update = {x: this.x - this.game.constants.TILE_SIZE};
 	break;
     case "right":
-	update = {x: this.x + 32};
+	update = {x: this.x + this.game.constants.TILE_SIZE};
 	break;
     case "up":
-	update = {y: this.y - 32};
+	update = {y: this.y - this.game.constants.TILE_SIZE};
 	break;
     }
     return this.game.add.tween(this).to(update, 200, Phaser.Easing.Linear.None, true);
@@ -112,25 +114,25 @@ Unit.prototype.stop = function() {
 }
 
 Unit.prototype.moveTo = function(x, y) {
-    if (this.x/32 < x) {
+    if (this.x/this.game.constants.TILE_SIZE < x) {
 	this.moveAdjacent("right").onComplete.add(function() {
 	    this.moveTo(x, y);
 	}, this);
 	return;
     }
-    if (this.x/32 > x) {
+    if (this.x/this.game.constants.TILE_SIZE > x) {
 	this.moveAdjacent("left").onComplete.add(function() {
 	    this.moveTo(x, y);
 	}, this);
 	return;
     }
-    if (this.y/32 < y) {
+    if (this.y/this.game.constants.TILE_SIZE < y) {
 	this.moveAdjacent("down").onComplete.add(function() {
 	    this.moveTo(x, y);
 	}, this);
 	return;
     }
-    if (this.y/32 > y) {
+    if (this.y/this.game.constants.TILE_SIZE > y) {
 	this.moveAdjacent("up").onComplete.add(function() {
 	    this.moveTo(x, y);
 	}, this);
