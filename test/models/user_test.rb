@@ -70,4 +70,6 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.authenticated?('')
   end
 
+  # need to create a test for games
+
 end

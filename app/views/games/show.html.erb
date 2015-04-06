@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Pending:</strong>
+  <%= @game.pending %>
+</p>
+
+<p>
+  <strong>Done:</strong>
+  <%= @game.done %>
+</p>
+
+<%= link_to 'Edit', edit_game_path(@game) %> |
+<%= link_to 'Back', games_path %>
