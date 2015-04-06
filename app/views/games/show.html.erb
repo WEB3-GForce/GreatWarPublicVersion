@@ -1,14 +1,21 @@
-<p id="notice"><%= notice %></p>
+<% provide(:title, @game.name) %>
 
 <p>
-  <strong>Pending:</strong>
-  <%= @game.pending %>
+	<% if game_pending?(@game) %>
+  <strong>Game is Pending. Would you like to
+  	<%= link_to 'join?', '#' %></strong> 
+  	<% else %>
+
+  		<% if game_done?(@game) %>
+	  		<strong>Game is Over.</strong> 
+	  	<% else %>
+	  		<strong> Game is on-going.</strong>
+  		<% end %>
+  	<% end %>
+
+  	
 </p>
 
-<p>
-  <strong>Done:</strong>
-  <%= @game.done %>
-</p>
 
 <%= link_to 'Edit', edit_game_path(@game) %> |
 <%= link_to 'Back', games_path %>

@@ -1,5 +1,21 @@
+<% provide(:title, 'New Game') %>
 <h1>New Game</h1>
 
-<%= render 'form' %>
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <%= form_for(@game) do |f| %>
 
-<%= link_to 'Back', games_path %>
+      <%= f.label :name %>
+      <%= f.text_field :name, class: 'form-control' %>
+
+      <% f.label :pending, true %>
+     
+
+      <% f.label :done, false %>
+     
+
+      <%= f.submit "Create Game", class: "btn btn-primary" %>
+      <%= link_to 'Back', games_path %>
+    <% end %>
+  </div>
+</div>
