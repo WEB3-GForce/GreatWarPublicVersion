@@ -42,7 +42,8 @@ class EntityType
 	# Returns
 	#   whether the entity is a human player
 	def self.human_player_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [NameComponent,
+		entity_manager.has_components(entity, [UserIdComponent,
+											   NameComponent,
 		                                       HumanComponent])
 	end
 
@@ -55,7 +56,8 @@ class EntityType
 	# Returns
 	#   whether the entity is an ai player
 	def self.ai_player_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [NameComponent,
+		entity_manager.has_components(entity, [UserIdComponent,
+											   NameComponent,
 		                                       AIComponent])
 	end
 

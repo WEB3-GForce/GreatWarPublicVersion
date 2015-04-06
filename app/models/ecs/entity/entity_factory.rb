@@ -149,9 +149,10 @@ public
 	#
 	# Returns
 	#   the newly created Human Player Entity
-	def self.human_player(entity_manager, name)
+	def self.human_player(entity_manager, name, id=-1)
 		return self.create_entity(entity_manager,
-					  [NameComponent.new(name),
+					  [UserIdComponent.new(id),
+					   NameComponent.new(name),
 					   HumanComponent.new])
 	end
 
@@ -164,9 +165,10 @@ public
 	#
 	# Returns
 	#   the newly created AI Player Entity
-	def self.ai_player(entity_manager, name)
+	def self.ai_player(entity_manager, name, id=-1)
 		return self.create_entity(entity_manager,
-					  [NameComponent.new(name),
+					  [UserIdComponent.new(id),
+					   NameComponent.new(name),
 					   AIComponent.new])
 	end
 
