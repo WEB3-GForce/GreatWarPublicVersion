@@ -18,6 +18,17 @@ class Game
         }
     end
 
+    def self.verify(req_id, em, entity)
+        entity_requester = nil
+        em.each_entity(UserIdComponent) { |e|
+            if em[e][UserIdComponent][0].id == req_id
+                entity_requester = e
+                break
+            end
+        }
+        entity_owner = em[entity][OwnedComponent][0].owner;
+        return entity_requester == entity_owner 
+    end
 
     def self.get_full_info(req_id, em, row, col)
     	return { "tile" => self.get_tile_info(req_id, em, row, col),
