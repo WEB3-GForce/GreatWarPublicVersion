@@ -7,19 +7,61 @@ var ORIENTATION_MAP = {
     up: 10
 }
 
-var DEFAULT_STATS = {
-    HP: 100,
-    MAX_HP: 100,
-    ATK: 30,
-    DEF: 10,
-    MOV: 2,
-    RNG: 3,
-    MEL: 1
+var UNIT_MAP = {
+    'artillery':
+    {
+        NAME: 'Artillery',
+        IMAGE: 'trainer',
+        HP: 50,
+        MAX_HP: 50,
+        ATK: 100,
+        DEF: 1,
+        MOV: 1,
+        RNG: 15,
+        MEL: 0
+    },
+    'command_bunker': 
+    {
+        NAME: 'Bunker',
+        IMAGE: 'trainer',
+        HP: 10,
+        MAX_HP: 10,
+        ATK: 0,
+        DEF: 0,
+        MOV: 1,
+        RNG: 0,
+        MEL: 0
+    },
+    'infantry': 
+    {
+        NAME: 'Infantry',
+        IMAGE: 'trainer',
+        HP: 100,
+        MAX_HP: 100,
+        ATK: 30,
+        DEF: 10,
+        MOV: 2,
+        RNG: 3,
+        MEL: 1
+    },
+    'machine_gun':
+    { 
+        NAME: 'Machine Gun',
+        IMAGE: 'trainer',
+        HP: 100,
+        MAX_HP: 100,
+        ATK: 50,
+        DEF: 5,
+        MOV: 2,
+        RNG: 4,
+        MEL: 1
+    },
 }
 
-var Infantry = function(game, x, y, mine) {
-    Phaser.Sprite.call(this, game, x*32, y*32, 'trainer', 1);
+var Unit = function(game, type, x, y, mine) {
+    Phaser.Sprite.call(this, game, x*32, y*32, UNIT_MAP[type].IMAGE, 1);
     this.orientation = "down";
+    this.type = type;
 
     this.animations.add('walk-left', [3, 4, 5, 4]);
     this.animations.add('walk-right', [6, 7, 8, 7]);
@@ -29,20 +71,20 @@ var Infantry = function(game, x, y, mine) {
     this.inputEnabled = true;
     this.input.useHandCursor = true;
 
-    this.stats = JSON.parse(JSON.stringify(DEFAULT_STATS));
+    this.stats = JSON.parse(JSON.stringify(UNIT_MAP[this.type]));
 
     this.mine = mine;
 };
 
-Infantry.prototype = Object.create(Phaser.Sprite.prototype);
-Infantry.prototype.constructor = Infantry;
+Unit.prototype = Object.create(Phaser.Sprite.prototype);
+Unit.prototype.constructor = Unit;
 
-Infantry.prototype.changeOrientation = function(orientation) {
+Unit.prototype.changeOrientation = function(orientation) {
     this.orientation = orientation;
     this.frame = ORIENTATION_MAP[orientation];
 }
 
-Infantry.prototype.moveAdjacent = function(orientation) {
+Unit.prototype.moveAdjacent = function(orientation) {
     this.orientation = orientation;
     var animation = "walk-" + orientation;
     this.animations.play(animation, 6, true);
@@ -64,12 +106,12 @@ Infantry.prototype.moveAdjacent = function(orientation) {
     return this.game.add.tween(this).to(update, 200, Phaser.Easing.Linear.None, true);
 }
 
-Infantry.prototype.stop = function() {
+Unit.prototype.stop = function() {
     this.animations.stop();
     this.frame = ORIENTATION_MAP[this.orientation];
 }
 
-Infantry.prototype.moveTo = function(x, y) {
+Unit.prototype.moveTo = function(x, y) {
     if (this.x/32 < x) {
 	this.moveAdjacent("right").onComplete.add(function() {
 	    this.moveTo(x, y);
@@ -97,7 +139,7 @@ Infantry.prototype.moveTo = function(x, y) {
     this.stop();
 }
 
-Infantry.prototype.attack = function(unit, type) {
+Unit.prototype.attack = function(unit, type) {
     var givenDamage = type === 'melee' ? this.stats.ATK * 2 : this.stats.ATK;
     var receivedDamage = type === 'melee' ? unit.stats.ATK * 2 : unit.stats.ATK;
     if (!unit.damage(givenDamage))
@@ -105,7 +147,7 @@ Infantry.prototype.attack = function(unit, type) {
 }
 
 // returns whether unit died
-Infantry.prototype.damage = function(atk) {
+Unit.prototype.damage = function(atk) {
     this.stats.HP -= atk - this.stats.DEF;
     if (this.stats.HP <= 0) {
 	this.destroy();

@@ -34,7 +34,7 @@ GameGroup.prototype.update = function() {
     this.ui.setTile(this.tile);
 
     if (this.game.input.mousePointer.targetObject && 
-    	this.game.input.mousePointer.targetObject.sprite instanceof Infantry && 
+    	this.game.input.mousePointer.targetObject.sprite instanceof Unit && 
     	!this.selected) {
 		this.ui.setUnit(this.game.input.mousePointer.targetObject.sprite);
     } else if (!this.selected) {
@@ -44,16 +44,16 @@ GameGroup.prototype.update = function() {
 
 GameGroup.prototype.onClick = function(targetObject) {
     if (targetObject === null) {
-	this.tileClicked();
-    } else if (targetObject.sprite instanceof Infantry) {
-	this.unitClicked(targetObject.sprite);
+		this.tileClicked();
+    } else if (targetObject.sprite instanceof Unit) {
+		this.unitClicked(targetObject.sprite);
     } else if (targetObject.sprite instanceof Phaser.Button) {
-	this.buttonClicked(targetObject.sprite);
+		this.buttonClicked(targetObject.sprite);
     }
 }
 
-GameGroup.prototype.addUnit = function(x, y, mine) {
-    this.unitGroup.add(new Infantry(this.game, x, y, mine));
+GameGroup.prototype.addUnit = function(type, x, y, mine) {
+    this.unitGroup.add(new Unit(this.game, type, x, y, mine));
 }
 
 GameGroup.prototype.tileClicked = function() {
@@ -85,35 +85,36 @@ GameGroup.prototype.unitClicked = function(unit) {
 	return;
 
     if (this.action) {
-	this.interact(unit);
+		this.interact(unit);
     } else {
-	this.select(unit);
+		this.select(unit);
     }
 }
 
 GameGroup.prototype.interact = function(unit) {
     if (this.gameBoard.isHighlighted(this.tile.x, this.tile.y)) {
-	if (unit.mine) {
-	    // maybe later we have within team interaction
-	    this.select(unit);
-	} else {
-	    // selected enemy unit
-	    if ((this.action === 'ranged' || this.action === 'melee')) {
-		this.selected.attack(unit, this.action);
-		this.selected = null;
-	    }
-	}
-	this.gameBoard.unhighlightAll();
-	this.action = null;
+		if (unit.mine) {
+		    // maybe later we have within-team interaction
+		    this.select(unit); // just select the clicked unit for now though
+		} else {
+		    // clicked enemy unit
+		    if ((this.action === 'ranged' || this.action === 'melee')) {
+				this.selected.attack(unit, this.action);
+				this.selected = null;
+		    }
+		}
+		this.gameBoard.unhighlightAll();
+		this.action = null;
     }
 }
 
 GameGroup.prototype.select = function(unit) {
     if (unit.mine) {
-	this.selected = unit;
-	this.ui.showMenu(this.selected);
-	this.gameBoard.unhighlightAll();
-	this.action = null;
+		this.selected = unit;
+		this.ui.setUnit(this.selected);
+		this.ui.showMenu(this.selected);
+		this.gameBoard.unhighlightAll();
+		this.action = null;
     }
 }
 
@@ -143,13 +144,13 @@ GameGroup.prototype.buttonClicked = function(button) {
 GameGroup.prototype.init_game = function(board, players, turn, pieces) {
     var square;
     for (var i = 0; i < board.squares.length; i++) {
-	square = board.squares[i];
-	this.gameBoard.setTile(i % board.row , Math.floor(i / board.col), square.terrain);
+		square = board.squares[i];
+		this.gameBoard.setTile(i % board.row , Math.floor(i / board.col), square.terrain);
     }
     var unit;
     for (var i = 0; i < pieces.length; i++) {
-	unit = pieces[i];
-	this.addUnit(unit.position.row, unit.position.col, true);
+		unit = pieces[i];
+		this.addUnit(unit.type, unit.position.row, unit.position.col, true);
     }
 }
 
