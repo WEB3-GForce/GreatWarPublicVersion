@@ -86,8 +86,7 @@ UIGroup.prototype.setUnit = function(unit) {
     if (unit) {
         this.unitType.text = unit.stats.NAME;
     	this.unitHP.text = "HP: " + unit.stats.HP + "/" + unit.stats.MAX_HP;
-    	this.unitATK.text = "ATK: " + unit.stats.ATK;
-    	this.unitDEF.text = "DEF: " + unit.stats.DEF;
+    	this.unitATK.text = "ATK: " + unit.stats.ATTACK_DAMAGE;
     	this.unitInfo.visible = true;
     } else {
 	    this.unitInfo.visible = false;

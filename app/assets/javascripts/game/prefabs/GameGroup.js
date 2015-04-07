@@ -122,15 +122,15 @@ GameGroup.prototype.buttonClicked = function(button) {
     switch (this.action) {
     case 'move':
 	highlightType = 'blue';
-	range = this.selected.stats.MOV;
+	range = this.selected.stats.ENERGY / this.selected.stats.MOVEMENT_COST;
 	break;
     case 'ranged':
 	highlightType = 'red';
-	range = this.selected.stats.RNG;
+	range = this.selected.stats.RANGE;
 	break;
     case 'melee':
 	highlightType = 'red';
-	range = this.selected.stats.MEL;
+	range = 1;
 	break;
     }
     this.gameBoard.highlightRange(this.selected.x/this.game.constants.TILE_SIZE,
@@ -160,6 +160,26 @@ GameGroup.prototype.test = function(arg) {
 	    }).bind(this), 3000);
 	}
     };
+}
+
+GameGroup.prototype.showUnitActions = function() {
+	
+}
+
+GameGroup.prototype.highlightSquares = function() {
+
+}
+
+GameGroup.prototype.revealFog = function(squares) {
+	var action = {};
+	action.squares = squares;
+	action.gameBoard = this.gameBoard;
+	action.start = function() {
+		for (var i = 0, square; square = this.squares[i]; i++) {
+			this.gameBoard.revealFog(square.x, square.y);
+		}
+	};
+	return action;
 }
 
 GameGroup.prototype.testAnim = function() {
