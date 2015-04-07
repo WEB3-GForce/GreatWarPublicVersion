@@ -117,7 +117,8 @@ Unit.prototype.stop = function() {
     this.frame = ORIENTATION_MAP[this.orientation];
 }
 
-Unit.prototype.moveTo = function(x, y) {
+
+Unit.prototype.moveTo = function(x, y, callback, callbackContext) {
     if (this.x/this.game.constants.TILE_SIZE < x) {
 	this.moveAdjacent("right").onComplete.add(function() {
 	    this.moveTo(x, y);
@@ -143,6 +144,8 @@ Unit.prototype.moveTo = function(x, y) {
 	return;
     }
     this.stop();
+    if (callback)
+	callback().bind(callbackContext);
 }
 
 Unit.prototype.attack = function(unit, type) {

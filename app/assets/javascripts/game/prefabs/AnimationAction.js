@@ -9,3 +9,15 @@ AnimationAction.prototype = {
 	this.sprite.animations.play(this.anim, 2, false);
     }
 }
+
+function TweenAction(tween) {
+    this.tween = tween;
+}
+
+TweenAction.prototype = {
+    start: function() {
+	console.log(this.tween);
+	this.tween.onComplete.add(this.onComplete, this);
+	this.tween.start();
+    }
+}

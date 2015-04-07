@@ -138,7 +138,7 @@ GameGroup.prototype.buttonClicked = function(button) {
 				  highlightType, range);
 }
 
-GameGroup.prototype.init_game = function(board, players, turn, pieces) {
+GameGroup.prototype.initGame = function(board, players, turn, pieces) {
     var square;
     for (var i = 0; i < board.squares.length; i++) {
 		square = board.squares[i];
@@ -166,4 +166,13 @@ GameGroup.prototype.testAnim = function() {
     this.unitGroup.addUnit(1, "infantry", 3, 3, true);
 
     return new AnimationAction(this.unitGroup.find(1), "attack");
+}
+
+GameGroup.prototype.moveUnit = function(unitId, square) {
+    var action = {};
+    action.unit = this.unitGroup.find(unitId);
+    action.start = function() {
+	this.unit.moveTo(square.x, square.y, this.onComplete, this);
+    }
+    return action;
 }
