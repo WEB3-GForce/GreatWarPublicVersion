@@ -4,7 +4,11 @@ var HIGHLIGHT_TYPES = {
     blue: 51,
     red: 52,
     green: 53
-}
+};
+
+var TILE_MAP  = {
+    flatland: 30
+};
 
 var GameBoard = function(game) {
     Phaser.Tilemap.call(this, game, 'tileset');
@@ -66,13 +70,25 @@ GameBoard.prototype.drawGrid = function() {
     this.grid = this.game.add.graphics();
     this.grid.lineStyle(1, 0x000000, 0.1);
     // draw vertical lines:
-    for (var x = 0; x < this.width * 32; x += 32) {
+    for (var x = 0; x < this.width * this.game.constants.TILE_SIZE; x += this.game.constants.TILE_SIZE) {
     	this.grid.moveTo(x, 0);
-    	this.grid.lineTo(x, this.height * 32)
+    	this.grid.lineTo(x, this.height *  this.game.constants.TILE_SIZE)
     }
     // horizontal lines:
-    for (var y = 0; y < this.height * 32; y += 32) {
+    for (var y = 0; y < this.height * this.game.constants.TILE_SIZE; y += this.game.constants.TILE_SIZE) {
     	this.grid.moveTo(0, y);
-    	this.grid.lineTo(this.width * 32, y);
+    	this.grid.lineTo(this.width * this.game.constants.TILE_SIZE, y);
     }
+}
+
+GameBoard.prototype.setTile = function(x, y, type) {
+    this.putTile(TILE_MAP[type], x, y, this.terrainLayer);
+}
+
+GameBoard.prototype.terrainType = function(x, y) {
+    this.getTile(x, y, this.terrainLayer);
+}
+
+GameBoard.prototype.terrainEffect = function(x, y) {
+    return this.effects[this.terrainType(x, y)];
 }

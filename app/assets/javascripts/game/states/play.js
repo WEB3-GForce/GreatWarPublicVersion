@@ -1,17 +1,20 @@
 'use strict';
 
 function Play() {
+    this.sequences = [];
+    this.currentSequence = null;
 }
 
 Play.prototype = {
     create: function() {
-        this.game.world.setBounds(0, 0, width, height); // size of world, as opposed to window
+	// size of world, as opposed to window
+        this.game.world.setBounds(0, 0,
+				  this.game.constants.WIDTH, this.game.constants.HEIGHT);
 
         this.gameGroup = new GameGroup(this.game);
 
     	this.game.dispatcher.bind('rpc', (function(data) {
-	    console.log(data);
-    	    this.gameGroup[data.action].apply(this.gameGroup, data.arguments);
+	    this.sequences.push(data.sequence);
     	}).bind(this));
 
     	this.game.dispatcher.trigger("init_game");
@@ -23,20 +26,16 @@ Play.prototype = {
     	           this.gameGroup.onClick(this.game.input.mousePointer.targetObject);
     	   }
     	}, this);
-
-	this.gameGroup.addUnit(2, 2, true);
-	this.gameGroup.addUnit(2, 3, true);
-	this.gameGroup.addUnit(2, 4, true);
-	this.gameGroup.addUnit(4, 2, false);
-	this.gameGroup.addUnit(4, 3, false);
-	this.gameGroup.addUnit(4, 4, false);
-	// for (var i = 0; i < 10; i++)
-        //     this.gameGroup.addUnit(Math.floor(Math.random() * 30),
-	// 			   Math.floor(Math.random() * 30),
-	// 			   Math.random() > 0.5 ? true : false);
     },
 
     update: function() {
+	// executing actions
+	if (this.currentSequence === null &&
+	    this.sequences.length > 0) {
+	    this.currentSequence = this.sequences.shift();
+	    this.executeSequence();
+	}
+
         // Panning:
         this.moveCameraByPointer(this.game.input.mousePointer);
 
@@ -47,12 +46,28 @@ Play.prototype = {
     moveCameraByPointer: function(pointer) {
         if (!pointer.timeDown) { return; }
         if (pointer.isDown && !pointer.targetObject) {
-            if (play_camera) {
-                game.camera.x += play_camera.x - pointer.position.x;
-                game.camera.y += play_camera.y - pointer.position.y;
+            if (this.playCamera) {
+                this.game.camera.x += this.playCamera.x - pointer.position.x;
+                this.game.camera.y += this.playCamera.y - pointer.position.y;
             }
-            play_camera = pointer.position.clone();
+            this.playCamera = pointer.position.clone();
         }
-        if (pointer.isUp) { play_camera = null; }
+        if (pointer.isUp) { this.playCamera = null; }
+    },
+
+    executeSequence: function() {
+	if (this.currentSequence.length == 0) {
+	    this.currentSequence = null;
+	    return;
+	}
+	this.currentAction = this.currentSequence.shift();
+	var action = this.gameGroup[this.currentAction.action].apply(
+	    this.gameGroup,
+	    this.currentAction.arguments
+	);
+	action.onComplete = (function() {
+	    this.executeSequence();
+	}).bind(this);
+	action.start();
     }
 };

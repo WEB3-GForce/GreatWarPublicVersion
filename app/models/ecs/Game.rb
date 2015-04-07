@@ -10,130 +10,124 @@ class Game
         return manager, start_json
     end
 
-    def get_full_info(reqid, em, row, col)
-    	return { "tile" => self.get_tile_info(reqid, em, row, col),
-                 "unit" => self.get_unit_info(reqid, em, row, col) }
+    def self.each_coord(req_id, em)
+        (0..em.row).each { |row| 
+            (0..em.col).each { |col| 
+                yield row, col
+            }
+        }
     end
 
-    def get_tile_info(reqid, em, row, col)        
+
+    def self.get_full_info(req_id, em, row, col)
+    	return { "tile" => self.get_tile_info(req_id, em, row, col),
+                 "unit" => self.get_unit_info(req_id, em, row, col) }
+    end
+
+    def self.get_tile_info(req_id, em, row, col)        
         return JsonFactory.square(em, em.board[row][col][0])
     end
 
-    def get_unit_info(reqid, em, row, col)
+    def self.get_unit_info(req_id, em, row, col)
         entity = em.board[row][col][1].first
         return JsonFactory.piece(em, entity)
     end
 
-    def get_player_info(reqid, em, name=nil)
+    def self.get_player_info(req_id, em, name=nil)
         em.each_entity(NameComponent) { |entity| 
             nameComp = em[entity][NameComponent].first
             return JsonFactory.player(em, entity) if name == nameComp.name
         }
-        return []
-    end
-
-    def get_all_full_info(em, reqid)
-    	#(0..em.row).each 
-    end
-
-    def get_all_tile_info(em, reqid)
-    end
-
-    def get_all_unit_info(em, reqid)
-    end
-
-    def get_all_player_info(em, reqid)
+        return {}
     end
 
 
-    def get_unit_moves(reqid, em, row, col)
-    	entity = em.board[row][col][1].first
-    	return self.get_unit_moves_entity(reqid, em, entity)
+    def self.get_all_full_info(req_id, em)
+        all_info = []
+        self.each_coord(req_id, em).each { |row, col|
+            all_info << self.get_full_info(req_id, em, row, col)
+        }
+        return all_info
     end
-    
-    def get_unit_entity_moves(reqid, em, entity)
+
+    def self.get_all_tile_info(req_id, em)
+        all_info = []
+        self.each_coord(req_id, em).each { |row, col|
+            all_info << self.get_tile_info(req_id, em, row, col)
+        }
+        return all_info
+    end
+
+    def self.get_all_unit_info(req_id, em)
+        all_info = []
+        self.each_coord(req_id, em).each { |row, col|
+            all_info << self.get_unit_info(req_id, em, row, col)
+        }
+        return all_info
+    end
+
+    def self.get_all_player_info(req_id, em)
+        all_info = []
+        em.each_entity(NameComponent) { |entity| 
+            nameComp = em[entity][NameComponent].first
+            all_info << JsonFactory.player(em, entity)
+        }
+        return all_info
+    end
+
+
+    def self.get_unit_actions(req_id, em, entity)
+        can_move = !MotionSystem.moveable_locations(em, entity).empty?
+        can_melee = !MeleeSystem.attackable_locations(em, entity).empty?
+        can_range = !RangeSystem.attackable_locations(em, entity).empty?
+
+        actions = []
+        actions << JsonFactory.move_action(em, entity) if can_move # UNIMPLEMENTED
+        actions << JsonFactory.melee_action(em, entity) if can_melee # UNIMPLEMENTED
+        actions << JsonFactory.range_action(em, entity) if can_range # UNIMPLEMENTED
+
+        return actions
+    end
+
+    def self.get_unit_moves(req_id, em, entity)
     	locations = MotionSystem.moveable_locations(em, entity)
-    	return EntityFactory.moveable_locations(em, entity, locations)
+    	return JsonFactory.moveable_locations(em, entity, locations)
     end
 
-    def do_unit_move(reqid, em, unit_row, unit_col, row, col)
-    	entity = em.board[unit_row][unit_col][1].first
-    	return self.do_move_entity(reqid, em, entity, row, col)
+    def self.get_unit_melee_attacks(req_id, em, entity)
+        attacks = MeleeSystem.attackable_locations(em, entity)
+        return JsonFactory.melee_attacks(em, e, attacks) # UNIMPLEMENTED
     end
 
-    def do_unit_entity_move(reqid, em, entity, row, col)
-        entity_location = em.board[row][col][0]
-        return self.do_move_entity2(reqid, em, entity, entity_location)
-    end
-    
-    def do_unit_entity_move_entity(reqid, em, entity, entity_location)
-    	path = MotionSystem.make_move(em, entity, entity_location)
-    	return JsonFactory.move(em, entity, path)
-    end
-
-
-    def get_unit_melee_attacks(reqid, em, row, col)
-    	entity = em.board[row][col][1].first
-        return self.get_unit_entity_melee_attacks(reqid, em, entity)
-    end
-    
-    def get_unit_entity_melee_attacks(reqid, em, entity)
-    	attacks = MeleeSystem.attackable_locations(em, entity)
-        # return JsonFactory.melee_attacks(em, e, attacks)
-    end
-    
-
-    def get_unit_range_attacks(reqid, em, row, col)
-        entity = em.board[row][col][1].first
-        # return self.get_unit_entity_range_attacks(reqid, em, entity)
-    end
-
-    def get_unit_entity_range_attacks(reqid, em, entity)
+    def self.get_unit_range_attacks(req_id, em, entity)
         attacks = RangeSystem.attackable_locations(em, entity)
-        # return JsonFactory.range_attacks(em, e, attacks)
-    end
-    
-
-    def get_all_unit_moves(reqid, em)
-    end
-    
-
-    def get_all_unit_melee_attacks(reqid, em)
-    end
-    
-
-    def get_all_unit_range_attacks(reqid, em)
+        return JsonFactory.range_attacks(em, e, attacks) # UNIMPLEMENTED
     end
 
 
-    def do_unit_melee_attack(reqid, em, entity, unit_row, unit_col, row, col)
-        entity = em.board[unit_row][unit_col][1].first
-        return self.do_unit_entity_melee_attack(reqid, em, entity, row, col)
+    def self.move_unit(req_id, em, enitity, row, col)
+        location = em.board[row][col][0]
+        path = MotionSystem.make_move(em, entity, location)
+        return JsonFactory.move(em, entity, path)
     end
 
-    def do_unit_entity_melee_attack(reqid, em, entity, row, col)
-        entity2 = em.board[row][col][1].first
-        return self.do_unit_entity_melee_attack_entity(reqid, em, entity, entity2)
+    def self.melee_attack(req_id, em, entity, row, col)
+        target = em.board[row][col][1].first
+        result = MeleeSystem.update(em, entity, target)
+        return JsonFactory.attack_result(result) # UNIMPLEMENTED
     end
 
-    def do_unit_entity_melee_attack_entity(reqid, em, entity1, entity2)
-        result = MeleeSystem.update(em, entity1, entity2)
-        # return JsonFactory.attack_result(result)
+    def self.ranged_attack(req_id, em, entity, row, col)
+        target = em.board[row][col][1].first
+        result = RangeSystem.update(em, entity, target)
+        return JsonFactory.attack_result(result) # UNIMPLEMENTED
     end
 
-    def do_unit_ranged_attack(reqid, em, entity, unit_row, unit_col, row, col)
-        entity = em.board[unit_row][unit_col][1].first
-        return self.do_unit_entity_ranged_attack(reqid, em, entity, row, col)
-    end
 
-    def do_unit_entity_ranged_attack(reqid, em, entity, row, col)
-        entity2 = em.board[row][col][1].first
-        return self.do_unit_entity_ranged_attack_entity(reqid, em, entity, entity2)
-    end
-
-    def do_unit_entity_ranged_attack_entity(reqid, em, entity1, entity2)
-        result = RangeSystem.update(em, entity1, entity2)
-        # return JsonFactory.attack_result(result)
+    def self.end_turn(req_id, em)
+        #if em[TurnSystem.current_turn(em)][NameComponent][0].name == req_id
+        result = TurnSystem.update(em)
+        return JsonFactory.turn(result)
     end
 
 end

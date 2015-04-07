@@ -1,24 +1,23 @@
 'use strict';
 
-//global variables
-var game;
-
-var width = 960;
-var height = 960;
-var cameraWidth = width/1.5;
-var cameraHeight = width/1.5;
-var play_camera;
-
 window.onload = function () {
+    var constants = {
+	WIDTH: 960,
+	HEIGHT: 960,
+	CAMERA_WIDTH: 640,
+	CAMERA_HEIGHT: 640,
+	TILE_SIZE: 32
+    }
 
-	game = new Phaser.Game(cameraWidth, cameraHeight, Phaser.AUTO, 'the-great-war');
+    var game = new Phaser.Game(constants.CAMERA_WIDTH, constants.CAMERA_HEIGHT, Phaser.AUTO, 'the-great-war');
 
-	// Game States
-	game.state.add('boot', Boot);
-	game.state.add('gameover', GameOver);
-	game.state.add('menu', Menu);
-	game.state.add('play', Play);
-	game.state.add('preload', Preload);
+    game.constants = constants;
+    // Game States
+    game.state.add('boot', Boot);
+    game.state.add('gameover', GameOver);
+    game.state.add('menu', Menu);
+    game.state.add('play', Play);
+    game.state.add('preload', Preload);
 
-	game.state.start('boot');
+    game.state.start('boot');
 };
