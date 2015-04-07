@@ -5,11 +5,11 @@ var GameGroup = function(game, parent) {
 
     this.gameBoard = new GameBoard(this.game);
     this.selected = null;
-    this.unitGroup = this.game.add.group();
+    this.unitGroup = new UnitGroup(this.game);
 
     this.marker = this.game.add.graphics();
     this.marker.lineStyle(2, 0x000000, 1);
-    this.marker.drawRect(0, 0, 32, 32); // THIS IS HARDCODE
+    this.marker.drawRect(0, 0, this.game.constants.TILE_SIZE, this.game.constants.TILE_SIZE);
     this.tile = null;
 
     this.ui = new UIGroup(this.game);
@@ -24,11 +24,11 @@ GameGroup.prototype.constructor = GameGroup;
 
 GameGroup.prototype.update = function() {
     // moving the marker
-    this.marker.x = this.gameBoard.highlightLayer.getTileX(this.game.input.activePointer.worldX) * 32;
-    this.marker.y = this.gameBoard.highlightLayer.getTileY(this.game.input.activePointer.worldY) * 32;
+    this.marker.x = this.gameBoard.highlightLayer.getTileX(this.game.input.activePointer.worldX) * this.game.constants.TILE_SIZE;
+    this.marker.y = this.gameBoard.highlightLayer.getTileY(this.game.input.activePointer.worldY) * this.game.constants.TILE_SIZE;
 
-    this.tile = this.gameBoard.getTile(this.marker.x/32,
-				       this.marker.y/32,
+    this.tile = this.gameBoard.getTile(this.marker.x/this.game.constants.TILE_SIZE,
+				       this.marker.y/this.game.constants.TILE_SIZE,
 				       this.gameBoard.terrainLayer);
 
     this.ui.setTile(this.tile);
@@ -50,10 +50,6 @@ GameGroup.prototype.onClick = function(targetObject) {
     } else if (targetObject.sprite instanceof Phaser.Button) {
 		this.buttonClicked(targetObject.sprite);
     }
-}
-
-GameGroup.prototype.addUnit = function(type, x, y, mine) {
-    this.unitGroup.add(new Unit(this.game, type, x, y, mine));
 }
 
 GameGroup.prototype.tileClicked = function() {
@@ -137,7 +133,8 @@ GameGroup.prototype.buttonClicked = function(button) {
 	range = this.selected.stats.MEL;
 	break;
     }
-    this.gameBoard.highlightRange(this.selected.x/32, this.selected.y/32,
+    this.gameBoard.highlightRange(this.selected.x/this.game.constants.TILE_SIZE,
+				  this.selected.y/this.game.constants.TILE_SIZE,
 				  highlightType, range);
 }
 
@@ -163,4 +160,10 @@ GameGroup.prototype.test = function(arg) {
 	    }).bind(this), 3000);
 	}
     };
+}
+
+GameGroup.prototype.testAnim = function() {
+    this.unitGroup.addUnit(1, "infantry", 3, 3, true);
+
+    return new AnimationAction(this.unitGroup.find(1), "attack");
 }

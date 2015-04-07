@@ -70,8 +70,13 @@ var UNIT_MAP = {
     },
 }
 
-var Unit = function(game, type, x, y, mine) {
-    Phaser.Sprite.call(this, game, x*32, y*32, UNIT_MAP[type].IMAGE, 1);
+var Unit = function(game, id, type, x, y, mine) {
+    Phaser.Sprite.call(this, game,
+		       x*game.constants.TILE_SIZE,
+		       y*game.constants.TILE_SIZE,
+		       UNIT_MAP[type].IMAGE, 1);
+
+    this.id = id;
     this.orientation = "down";
     this.type = type;
 
@@ -79,6 +84,7 @@ var Unit = function(game, type, x, y, mine) {
     this.animations.add('walk-right', [6, 7, 8, 7]);
     this.animations.add('walk-down', [0, 1, 2, 1]);
     this.animations.add('walk-up', [9, 10, 11, 10]);
+    this.animations.add('attack', [0, 3, 6, 9]);
 
     this.inputEnabled = true;
     this.input.useHandCursor = true;
@@ -103,16 +109,16 @@ Unit.prototype.moveAdjacent = function(orientation) {
     var update;
     switch (orientation) {
     case "down":
-	update = {y: this.y + 32};
+	update = {y: this.y + this.game.constants.TILE_SIZE};
 	break;
     case "left":
-	update = {x: this.x - 32};
+	update = {x: this.x - this.game.constants.TILE_SIZE};
 	break;
     case "right":
-	update = {x: this.x + 32};
+	update = {x: this.x + this.game.constants.TILE_SIZE};
 	break;
     case "up":
-	update = {y: this.y - 32};
+	update = {y: this.y - this.game.constants.TILE_SIZE};
 	break;
     }
     return this.game.add.tween(this).to(update, 200, Phaser.Easing.Linear.None, true);
@@ -124,25 +130,25 @@ Unit.prototype.stop = function() {
 }
 
 Unit.prototype.moveTo = function(x, y) {
-    if (this.x/32 < x) {
+    if (this.x/this.game.constants.TILE_SIZE < x) {
 	this.moveAdjacent("right").onComplete.add(function() {
 	    this.moveTo(x, y);
 	}, this);
 	return;
     }
-    if (this.x/32 > x) {
+    if (this.x/this.game.constants.TILE_SIZE > x) {
 	this.moveAdjacent("left").onComplete.add(function() {
 	    this.moveTo(x, y);
 	}, this);
 	return;
     }
-    if (this.y/32 < y) {
+    if (this.y/this.game.constants.TILE_SIZE < y) {
 	this.moveAdjacent("down").onComplete.add(function() {
 	    this.moveTo(x, y);
 	}, this);
 	return;
     }
-    if (this.y/32 > y) {
+    if (this.y/this.game.constants.TILE_SIZE > y) {
 	this.moveAdjacent("up").onComplete.add(function() {
 	    this.moveTo(x, y);
 	}, this);
