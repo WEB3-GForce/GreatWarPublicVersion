@@ -84,3 +84,11 @@ GameBoard.prototype.drawGrid = function() {
 GameBoard.prototype.setTile = function(x, y, type) {
     this.putTile(TILE_MAP[type], x, y, this.terrainLayer);
 }
+
+GameBoard.prototype.terrainType = function(x, y) {
+    this.getTile(x, y, this.terrainLayer);
+}
+
+GameBoard.prototype.terrainEffect = function(x, y) {
+    return this.effects[this.terrainType(x, y)];
+}
