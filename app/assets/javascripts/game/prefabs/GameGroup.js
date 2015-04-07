@@ -16,11 +16,17 @@ var GameGroup = function(game, parent) {
 
     this.action = null;
 
-    this.myTurn = true;
+    this.turn = null;
+    this.players = null;
+    this.game.constants.PLAYER_ID = "test"
 };
 
 GameGroup.prototype = Object.create(Phaser.Group.prototype);
 GameGroup.prototype.constructor = GameGroup;
+
+GameGroup.prototype.myTurn = function() {
+    return this.turn === this.game.constants.PLAYER_ID;
+}
 
 GameGroup.prototype.update = function() {
     // moving the marker
@@ -53,7 +59,7 @@ GameGroup.prototype.onClick = function(targetObject) {
 }
 
 GameGroup.prototype.tileClicked = function() {
-    if (!this.myTurn)
+    if (!this.myTurn())
 	return;
     // tile
     if (this.selected) {
@@ -75,9 +81,8 @@ GameGroup.prototype.tileClicked = function() {
     }
 }
 
-
 GameGroup.prototype.unitClicked = function(unit) {
-    if (!this.myTurn)
+    if (!this.myTurn())
 	return;
 
     if (this.action) {
@@ -89,7 +94,7 @@ GameGroup.prototype.unitClicked = function(unit) {
 
 GameGroup.prototype.interact = function(unit) {
     if (this.gameBoard.isHighlighted(this.tile.x, this.tile.y)) {
-		if (unit.mine) {
+		if (unit.isMine()) {
 		    // maybe later we have within-team interaction
 		    this.select(unit); // just select the clicked unit for now though
 		} else {
@@ -105,7 +110,7 @@ GameGroup.prototype.interact = function(unit) {
 }
 
 GameGroup.prototype.select = function(unit) {
-    if (unit.mine) {
+    if (unit.isMine()) {
 		this.selected = unit;
 		this.ui.setUnit(this.selected);
 		this.ui.showMenu(this.selected);
@@ -138,34 +143,35 @@ GameGroup.prototype.buttonClicked = function(button) {
 				  highlightType, range);
 }
 
-GameGroup.prototype.initGame = function(board, players, turn, pieces) {
-    var square;
-    for (var i = 0; i < board.squares.length; i++) {
-		square = board.squares[i];
-		this.gameBoard.setTile(i % board.row , Math.floor(i / board.col), square.terrain);
-    }
-    var unit;
-    for (var i = 0; i < pieces.length; i++) {
-		unit = pieces[i];
-		this.addUnit(unit.type, unit.position.row, unit.position.col, true);
-    }
-}
-
-GameGroup.prototype.test = function(arg) {
-    return {
-	start: function() {
-	    setTimeout((function(){
-		console.log(arg);
-		this.onComplete();
-	    }).bind(this), 3000);
+GameGroup.prototype.initGame = function(board, effects, units, turn, players) {
+    for (var i = 0; i < board.width; i++) {
+	for (var j = 0; j < board.height; j++) {
+	    this.gameBoard.setTile(i, j, board.squares[i*board.width+j].terrain);
+	    if (board.squares[i*board.width+j].fow)
+		this.gameBoard.addFog(i, j);
 	}
-    };
+    }
+
+    this.gameBoard.effects = effects;
+
+    for (var i = 0; i < units.length; i++) {
+	this.unitGroup.addUnit(units[i].id,
+			       units[i].x,
+			       units[i].y,
+			       units[i].type,
+			       units[i].player,
+			       units[i].stats);
+    }
+
+    this.turn = turn;
+    this.players = players;
+    return { start: function() { this.onComplete(); } }
 }
 
-GameGroup.prototype.testAnim = function() {
-    this.unitGroup.addUnit(1, "infantry", 3, 3, true);
-
-    return new AnimationAction(this.unitGroup.find(1), "attack");
+GameGroup.prototype.attack = function(unitId, square, type, unitType) {
+    var unit = this.unitGroup.find(unitId);
+    // check if need to add an animation to the receiving square
+    return new AnimationAction(unit, type + "-attack");
 }
 
 GameGroup.prototype.moveUnit = function(unitId, square) {

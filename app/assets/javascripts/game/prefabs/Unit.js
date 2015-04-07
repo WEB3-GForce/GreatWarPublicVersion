@@ -58,7 +58,7 @@ var UNIT_MAP = {
     },
 }
 
-var Unit = function(game, id, type, x, y, mine) {
+var Unit = function(game, id, type, x, y, player, stats) {
     Phaser.Sprite.call(this, game,
 		       x*game.constants.TILE_SIZE,
 		       y*game.constants.TILE_SIZE,
@@ -72,18 +72,26 @@ var Unit = function(game, id, type, x, y, mine) {
     this.animations.add('walk-right', [6, 7, 8, 7]);
     this.animations.add('walk-down', [0, 1, 2, 1]);
     this.animations.add('walk-up', [9, 10, 11, 10]);
-    this.animations.add('attack', [0, 3, 6, 9]);
+    this.animations.add('melee-attack', [0, 3, 6, 9]);
+    this.animations.add('ranged-attack', [1, 4, 7, 10]);
 
     this.inputEnabled = true;
     this.input.useHandCursor = true;
 
-    this.stats = JSON.parse(JSON.stringify(UNIT_MAP[this.type]));
+    if (stats)
+	this.stats = stats;
+    else
+	this.stats = JSON.parse(JSON.stringify(UNIT_MAP[this.type]));
 
-    this.mine = mine;
+    this.player = player;
 };
 
 Unit.prototype = Object.create(Phaser.Sprite.prototype);
 Unit.prototype.constructor = Unit;
+
+Unit.prototype.isMine = function() {
+    return this.player === this.game.constants.PLAYER_ID;
+}
 
 Unit.prototype.changeOrientation = function(orientation) {
     this.orientation = orientation;
