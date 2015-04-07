@@ -4,7 +4,7 @@ class SocketController < WebsocketRails::BaseController
   def init_game
     # entity_manager, start_json = Game.init_game
     send_message :rpc, {
-      sequence: [
+      sequence: [ 
                  {
                    action: "revealUnit",
                    arguments: [
@@ -29,10 +29,17 @@ class SocketController < WebsocketRails::BaseController
                                }
                               ]
                  },
+		{
+		   action: "revealFog",
+		   arguments: [[
+			{x: 4, y: 4},
+			{x: 5, y: 4}
+			]]
+		 },
                  {
                    action: "killUnit",
                    arguments: [1]
-                 }
+                 }	
                 ]
     }
  end

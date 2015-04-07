@@ -184,6 +184,7 @@ GameGroup.prototype.revealFog = function(squares) {
 		for (var i = 0, square; square = this.squares[i]; i++) {
 			this.gameBoard.revealFog(square.x, square.y);
 		}
+		this.onComplete()
 	};
 	return action;
 }
