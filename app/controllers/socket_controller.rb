@@ -29,14 +29,21 @@ class SocketController < WebsocketRails::BaseController
                                }
                               ]
                  },
-		{
+		 {
 		   action: "revealFog",
 		   arguments: [[
 			{x: 4, y: 4},
 			{x: 5, y: 4}
 			]]
 		 },
-                 {
+		 {
+		   action: "highlightSquares",
+		   arguments: [[
+			{x: 6, y: 6},
+			{x: 7, y: 6}
+			], 'blue']
+		 },
+		 {
                    action: "killUnit",
                    arguments: [1]
                  }	

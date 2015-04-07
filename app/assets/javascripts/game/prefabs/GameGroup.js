@@ -172,19 +172,33 @@ GameGroup.prototype.showUnitActions = function() {
 	
 }
 
-GameGroup.prototype.highlightSquares = function() {
-
+GameGroup.prototype.highlightSquares = function(squares, type) {
+	var action = {
+		squares: squares,
+		gameBoard: this.gameBoard,
+		type: type	
+	};
+	action.start = function() {
+		for (var i = 0, square; square = this.squares[i]; i++) {
+			var tile = this.gameBoard.getTile(square.x, square.y, this.gameBoard.terrainLayer);
+			this.gameBoard.highlight(tile.x, tile.y, type);	
+		}	
+		this.onComplete();
+	};
+	return action;
 }
 
 GameGroup.prototype.revealFog = function(squares) {
-	var action = {};
-	action.squares = squares;
-	action.gameBoard = this.gameBoard;
+	var action = {
+		squares: squares,
+		gameBoard: this.gameBoard	
+	};
 	action.start = function() {
 		for (var i = 0, square; square = this.squares[i]; i++) {
-			this.gameBoard.revealFog(square.x, square.y);
-		}
-		this.onComplete()
+			var tile = this.gameBoard.getTile(square.x, square.y, this.gameBoard.terrainLayer);
+			this.gameBoard.revealFog(tile.x, tile.y);	
+		}	
+		this.onComplete();
 	};
 	return action;
 }
