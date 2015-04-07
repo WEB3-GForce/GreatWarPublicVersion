@@ -193,3 +193,18 @@ GameGroup.prototype.revealUnit = function(unit) {
     addedUnit.alpha = 0;
     return new TweenAction(this.game.add.tween(addedUnit).to({alpha: 1}, 300));
 }
+
+GameGroup.prototype.killUnit = function(unitId) {
+    var action = {};
+    action.unit = this.unitGroup.find(unitId);
+    delete this.unitGroup.idLookup[unitId];
+    action.tween = this.game.add.tween(action.unit).to({alpha: 0}, 300);
+    action.start = function() {
+	this.tween.onComplete.add(function() {
+	    this.unit.destroy();
+	    this.onComplete();
+	}, this);
+	this.tween.start();
+    }
+    return action;
+}

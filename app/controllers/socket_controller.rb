@@ -21,13 +21,17 @@ class SocketController < WebsocketRails::BaseController
                    action: "revealUnit",
                    arguments: [
                                {
-                                 id: 1,
+                                 id: 2,
                                  x: 5,
                                  y: 5,
                                  type: "infantry",
                                  player: "not"
                                }
                               ]
+                 },
+                 {
+                   action: "killUnit",
+                   arguments: [1]
                  }
                 ]
     }
