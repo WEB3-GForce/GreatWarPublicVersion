@@ -17,6 +17,7 @@ var GameGroup = function(game, parent) {
     this.action = null;
 
     this.turn = null;
+
     this.players = null;
     this.game.constants.PLAYER_ID = "test"
 };
@@ -127,15 +128,15 @@ GameGroup.prototype.buttonClicked = function(button) {
     switch (this.action) {
     case 'move':
 	highlightType = 'blue';
-	range = this.selected.stats.MOV;
+	range = this.selected.stats.ENERGY / this.selected.stats.MOVEMENT_COST;
 	break;
     case 'ranged':
 	highlightType = 'red';
-	range = this.selected.stats.RNG;
+	range = this.selected.stats.RANGE;
 	break;
     case 'melee':
 	highlightType = 'red';
-	range = this.selected.stats.MEL;
+	range = 1;
 	break;
     }
     this.gameBoard.highlightRange(this.selected.x/this.game.constants.TILE_SIZE,
@@ -166,6 +167,50 @@ GameGroup.prototype.initGame = function(board, effects, units, turn, players) {
     this.turn = turn;
     this.players = players;
     return { start: function() { this.onComplete(); } }
+}
+
+GameGroup.prototype.showUnitActions = function(data) {
+	var unitId = data.id;
+	var action = {
+    	unit: this.unitGroup.find(unitId),
+    	gameGroup: this
+    };
+    action.start = function() {
+    	this.gameGroup.select(this.unit);
+    	this.onComplete();
+    };
+    return action;
+}
+
+GameGroup.prototype.highlightSquares = function(squares, type) {
+	var action = {
+		squares: squares,
+		gameBoard: this.gameBoard,
+		type: type	
+	};
+	action.start = function() {
+		for (var i = 0, square; square = this.squares[i]; i++) {
+			var tile = this.gameBoard.getTile(square.x, square.y, this.gameBoard.terrainLayer);
+			this.gameBoard.highlight(tile.x, tile.y, type);	
+		}	
+		this.onComplete();
+	};
+	return action;
+}
+
+GameGroup.prototype.revealFog = function(squares) {
+	var action = {
+		squares: squares,
+		gameBoard: this.gameBoard	
+	};
+	action.start = function() {
+		for (var i = 0, square; square = this.squares[i]; i++) {
+			var tile = this.gameBoard.getTile(square.x, square.y, this.gameBoard.terrainLayer);
+			this.gameBoard.revealFog(tile.x, tile.y);	
+		}	
+		this.onComplete();
+	};
+	return action;
 }
 
 GameGroup.prototype.attack = function(unitId, square, type, unitType) {

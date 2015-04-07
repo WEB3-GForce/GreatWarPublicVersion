@@ -12,49 +12,61 @@ var UNIT_MAP = {
     {
         NAME: 'Artillery',
         IMAGE: 'trainer',
-        HP: 50,
-        MAX_HP: 50,
-        ATK: 100,
-        DEF: 1,
-        MOV: 1,
-        RNG: 15,
-        MEL: 0
+        HP: 12,
+        MAX_HP: 12,
+	MOVEMENT_COST: 6,
+        ATTACK_COST: 6,
+	MELEE_COST: 6,
+	ATTACK_DAMAGE: 10,
+	MELEE_DAMAGE: 0,
+        RANGE: 10,
+        VISION: 2,
+	ENERGY: 6
     },
     'command_bunker': 
     {
         NAME: 'Bunker',
         IMAGE: 'trainer',
-        HP: 10,
-        MAX_HP: 10,
-        ATK: 0,
-        DEF: 0,
-        MOV: 1,
-        RNG: 0,
-        MEL: 0
+        HP: 12,
+        MAX_HP: 12,
+	MOVEMENT_COST: 1,
+        ATTACK_COST: 0,
+	MELEE_COST: 0,
+	ATTACK_DAMAGE: 0,
+	MELEE_DAMAGE: 0,
+        RANGE: 0,
+        VISION: 1,
+	ENERGY: 0
     },
     'infantry': 
     {
         NAME: 'Infantry',
         IMAGE: 'trainer',
-        HP: 100,
-        MAX_HP: 100,
-        ATK: 30,
-        DEF: 10,
-        MOV: 2,
-        RNG: 3,
-        MEL: 1
+        HP: 12,
+        MAX_HP: 12,
+	MOVEMENT_COST: 2,
+        ATTACK_COST: 4,
+	MELEE_COST: 4,
+	ATTACK_DAMAGE: 6,
+	MELEE_DAMAGE: 6,
+        RANGE: 2,
+        VISION: 4,
+	ENERGY: 6
     },
     'machine_gun':
     { 
         NAME: 'Machine Gun',
         IMAGE: 'trainer',
-        HP: 100,
-        MAX_HP: 100,
-        ATK: 50,
-        DEF: 5,
-        MOV: 2,
-        RNG: 4,
-        MEL: 1
+        HP: 12,
+        MAX_HP: 12,
+	MOVEMENT_COST: 3,
+        ATTACK_COST: 2,
+	MELEE_COST: 6,
+	ATTACK_DAMAGE: 4,
+	MELEE_DAMAGE: 6,
+        RANGE: 3,
+        VISION: 3,
+	ENERGY: 6
     },
 }
 
