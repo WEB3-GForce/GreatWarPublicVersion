@@ -16,7 +16,6 @@ function TweenAction(tween) {
 
 TweenAction.prototype = {
     start: function() {
-	console.log(this.tween);
 	this.tween.onComplete.add(this.onComplete, this);
 	this.tween.start();
     }

@@ -125,7 +125,6 @@ Unit.prototype.stop = function() {
     this.frame = ORIENTATION_MAP[this.orientation];
 }
 
-
 Unit.prototype.moveTo = function(x, y, callback, callbackContext) {
     if (this.x/this.game.constants.TILE_SIZE < x) {
 	this.moveAdjacent("right").onComplete.add(function() {

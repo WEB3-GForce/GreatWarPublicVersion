@@ -156,9 +156,9 @@ GameGroup.prototype.initGame = function(board, effects, units, turn, players) {
 
     for (var i = 0; i < units.length; i++) {
 	this.unitGroup.addUnit(units[i].id,
+			       units[i].type,
 			       units[i].x,
 			       units[i].y,
-			       units[i].type,
 			       units[i].player,
 			       units[i].stats);
     }
@@ -181,4 +181,15 @@ GameGroup.prototype.moveUnit = function(unitId, square) {
 	this.unit.moveTo(square.x, square.y, this.onComplete, this);
     }
     return action;
+}
+
+GameGroup.prototype.revealUnit = function(unit) {
+    var addedUnit = this.unitGroup.addUnit(unit.id,
+					   unit.type,
+					   unit.x,
+					   unit.y,
+					   unit.player,
+					   unit.stats);
+    addedUnit.alpha = 0;
+    return new TweenAction(this.game.add.tween(addedUnit).to({alpha: 1}, 300));
 }
