@@ -1,39 +1,24 @@
 require_relative '../models/ecs/Game'
 
 class SocketController < WebsocketRails::BaseController
-  def rpc
+
+  @@game
+
+  def rpc(method_name, method_params)
     # entity_manager, start_json = Game.init_game
+    
+    if obj.respond_to? method_name
+      if method_name == 'init_game'
+        em, response = Game.public_send(method_name.to_sym, method_params)
+      else
+        response = Game.public_send(method_name.to_sym, method_params) 
+      end
+    end
+
+    @@game = em
+
     send_message :rpc, {
-      sequence: [
-                 {
-                   action: "revealUnit",
-                   arguments: [
-                               {
-                                 id: 1,
-                                 x: 3,
-                                 y: 3,
-                                 type: "infantry",
-                                 player: "test"
-                               }
-                              ]
-                 },
-                 {
-                   action: "revealUnit",
-                   arguments: [
-                               {
-                                 id: 2,
-                                 x: 5,
-                                 y: 5,
-                                 type: "infantry",
-                                 player: "not"
-                               }
-                              ]
-                 },
-                 {
-                   action: "killUnits",
-                   arguments: [[1, 2]]
-                 }
-                ]
+      sequence: response
     }
   end
 end

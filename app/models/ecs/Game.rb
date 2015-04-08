@@ -22,6 +22,10 @@ class Game
         }
     end
 
+    def self.test(req_id, em)
+        return {"hello" => "Marvin"}
+    end
+
     def self.verify(req_id, em, entity)
         entity_requester = nil
         em.each_entity(UserIdComponent) { |e|
