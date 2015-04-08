@@ -19,3 +19,8 @@ UnitGroup.prototype.addUnit = function(id, type, x, y, player, stats) {
     return this.idLookup[id];
 }
 
+UnitGroup.prototype.removeUnit = function(id) {
+    var unit = this.idLookup[id];
+    delete this.idLookup[id];
+    this.remove(unit, true);
+}

@@ -67,7 +67,13 @@ GameGroup.prototype.tileClicked = function() {
 	if (this.gameBoard.isHighlighted(this.tile.x, this.tile.y)) {
 	    switch (this.action) {
 	    case 'move':
-		this.selected.moveTo(this.tile.x, this.tile.y);
+		this.game.dispatcher.rpc("move_unit", [
+		    this.selected.id,
+		    {
+			x: this.tile.x,
+			y: this.tile.y
+		    }
+		]);
 		break;
 	    case 'ranged':
 		break;
@@ -75,7 +81,6 @@ GameGroup.prototype.tileClicked = function() {
 		break;
 	    }
 	}
-	this.ui.hideMenu();
 	this.selected = null;
 	this.action = null;
 	this.gameBoard.unhighlightAll();
@@ -101,8 +106,12 @@ GameGroup.prototype.interact = function(unit) {
 		} else {
 		    // clicked enemy unit
 		    if ((this.action === 'ranged' || this.action === 'melee')) {
-				this.selected.attack(unit, this.action);
-				this.selected = null;
+			this.game.dispatcher.rpc("attack", [
+			    this.selected.id,
+			    {x: this.tile.x, y: this.tile.y},
+			    this.action
+			]);
+			this.selected = null;
 		    }
 		}
 		this.gameBoard.unhighlightAll();
@@ -112,11 +121,11 @@ GameGroup.prototype.interact = function(unit) {
 
 GameGroup.prototype.select = function(unit) {
     if (unit.isMine()) {
-		this.selected = unit;
-		this.ui.setUnit(this.selected);
-		this.ui.showMenu(this.selected);
-		this.gameBoard.unhighlightAll();
-		this.action = null;
+	this.selected = unit;
+	this.ui.setUnit(this.selected);
+	this.gameBoard.unhighlightAll();
+	this.action = null;
+	this.game.dispatcher.rpc("get_unit_actions", [this.selected.id]);
     }
 }
 
@@ -124,24 +133,17 @@ GameGroup.prototype.buttonClicked = function(button) {
     this.action = button.key.replace('action-', '');
     this.ui.hideMenu();
 
-    var highlightType, range;
     switch (this.action) {
     case 'move':
-	highlightType = 'blue';
-	range = this.selected.stats.ENERGY / this.selected.stats.MOVEMENT_COST;
+	this.game.dispatcher.rpc("get_unit_moves", [this.selected.id]);
 	break;
     case 'ranged':
-	highlightType = 'red';
-	range = this.selected.stats.RANGE;
+	this.game.dispatcher.rpc("get_unit_ranged_attacks", [this.selected.id]);
 	break;
     case 'melee':
-	highlightType = 'red';
-	range = 1;
+	this.game.dispatcher.rpc("get_unit_melee_attacks", [this.selected.id]);
 	break;
     }
-    this.gameBoard.highlightRange(this.selected.x/this.game.constants.TILE_SIZE,
-				  this.selected.y/this.game.constants.TILE_SIZE,
-				  highlightType, range);
 }
 
 GameGroup.prototype.initGame = function(board, effects, units, turn, players) {
@@ -169,14 +171,12 @@ GameGroup.prototype.initGame = function(board, effects, units, turn, players) {
     return { start: function() { this.onComplete(); } }
 }
 
-GameGroup.prototype.showUnitActions = function(data) {
-	var unitId = data.id;
-	var action = {
-    	unit: this.unitGroup.find(unitId),
+GameGroup.prototype.showUnitActions = function(unitActions) {
+    var action = {
     	gameGroup: this
     };
     action.start = function() {
-    	this.gameGroup.select(this.unit);
+	this.ui.showMenu(this.gameGroup.selected, unitActions);
     	this.onComplete();
     };
     return action;
@@ -239,17 +239,32 @@ GameGroup.prototype.revealUnit = function(unit) {
     return new TweenAction(this.game.add.tween(addedUnit).to({alpha: 1}, 300));
 }
 
-GameGroup.prototype.killUnit = function(unitId) {
+GameGroup.prototype.killUnits = function(unitIds) {
     var action = {};
-    action.unit = this.unitGroup.find(unitId);
-    delete this.unitGroup.idLookup[unitId];
-    action.tween = this.game.add.tween(action.unit).to({alpha: 0}, 300);
+    action.unitGroup = this.unitGroup;
+    action.units = unitIds.map(function(unitId) {
+	return this.unitGroup.find(unitId);
+    }, this);
+    action.tweens = unitIds.map(function(unitId, i) {
+	return this.game.add.tween(action.units[i]).to({alpha: 0}, 300);
+    }, this);
     action.start = function() {
-	this.tween.onComplete.add(function() {
-	    this.unit.destroy();
+	this.tweens[0].onComplete.add(function() {
 	    this.onComplete();
 	}, this);
-	this.tween.start();
+	this.tweens.map(function(tween, i) {
+	    tween.onComplete.add(function() {
+		this.unitGroup.removeUnit(this.units[i].id);
+	    }, this);
+	}, this);
+	this.tweens.map(function(tween, i) {
+	    tween.start();
+	}, this);
     }
     return action;
+}
+
+GameGroup.prototype.setTurn = function(playerId) {
+    this.turn = playerId;
+    return { start: function() { this.onComplete(); } }
 }
