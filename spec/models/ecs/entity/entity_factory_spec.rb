@@ -48,58 +48,6 @@ def place_bottom_right_helper(manager, army, owner)
 	expect(army.size).to eq(0)
 end
 
-# ;)
-def goliath(entity_manager, owner)
-	return self.create_entity(entity_manager,
-				  [PieceComponent.infantry,
-				   HealthComponent.new(30),
-				   MotionComponent.new(1),
-				   MeleeAttackComponent.new(20),
-				   EnergyComponent.new(1),
-				   OwnedComponent.new(owner)])
-end
-
-def infantry(entity_manager, owner)
-	return self.create_entity(entity_manager,
-				  [PieceComponent.infantry,
-				   HealthComponent.new(10),
-				   EnergyComponent.new(10),
-				   MotionComponent.new(5),
-				   MeleeAttackComponent.new(10),
-				   RangeAttackComponent.new(10, 1, 4),
-				   OwnedComponent.new(owner)])
-end
-
-def machine_gun(entity_manager, owner)
-	return self.create_entity(entity_manager,
-				  [PieceComponent.machine_gun,
-				   HealthComponent.new(20),
-				   EnergyComponent.new(10),
-				   MotionComponent.new(3),
-				   MeleeAttackComponent.new(10),
-				   RangeAttackComponent.new(10, 3, 7),
-				   OwnedComponent.new(owner)])
-end
-
-def artillery(entity_manager, owner)
-	return self.create_entity(entity_manager,
-				  [PieceComponent.artillery,
-				   HealthComponent.new(10),
-				   EnergyComponent.new(10),
-				   MotionComponent.new(1),
-				   RangeAttackComponent.new(20, 5, 15),
-				   OwnedComponent.new(owner)])
-end
-
-def command_bunker(entity_manager, owner)
-	return self.create_entity(entity_manager,
-				  [PieceComponent.command_bunker,
-				   HealthComponent.new(30),
-				   EnergyComponent.new(10),
-				   RangeAttackImmunityComponent.new,
-				   OwnedComponent.new(owner)])
-end
-
 describe EntityFactory do
 
 	let(:manager) {EntityManager.new(15, 15)}

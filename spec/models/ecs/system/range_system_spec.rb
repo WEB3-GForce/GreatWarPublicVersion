@@ -1,13 +1,34 @@
 require_relative '../../../spec_helper'
 
+def debug_goliath(entity_manager, owner)
+    return EntityFactory.create_entity(entity_manager,
+                  [PieceComponent.infantry,
+                   HealthComponent.new(30),
+                   MotionComponent.new(1),
+                   MeleeAttackComponent.new(20),
+                   EnergyComponent.new(1),
+                   OwnedComponent.new(owner)])
+end
+
+def debug_infantry(entity_manager, owner)
+    return EntityFactory.create_entity(entity_manager,
+                  [PieceComponent.infantry,
+                   HealthComponent.new(10),
+                   EnergyComponent.new(10),
+                   MotionComponent.new(5),
+                   MeleeAttackComponent.new(10),
+                   RangeAttackComponent.new(10, 1, 4),
+                   OwnedComponent.new(owner)])
+end
+
 describe RangeSystem do
 
     let(:manager)    {EntityManager.new(7, 7)}
     let(:human1)     {EntityFactory.human_player(manager, "David")}
     let(:human2)     {EntityFactory.human_player(manager, "Goliath")}
-    let(:infantry)   {EntityFactory.infantry(manager, human1)}
-    let(:infantry2)  {EntityFactory.goliath(manager, human2)}
-    let(:infantry3)  {EntityFactory.infantry(manager, human2)}
+    let(:infantry)   {debug_infantry(manager, human1)}
+    let(:infantry2)  {debug_goliath(manager, human2)}
+    let(:infantry3)  {debug_infantry(manager, human2)}
     let(:flatland1)  {EntityFactory.flatland_square(manager)}
     let(:flatland2)  {EntityFactory.flatland_square(manager)}
     let(:flatland3)  {EntityFactory.flatland_square(manager)}

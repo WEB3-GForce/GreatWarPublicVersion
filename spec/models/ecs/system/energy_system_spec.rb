@@ -1,5 +1,16 @@
 require_relative '../../../spec_helper'
 
+def debug_infantry(entity_manager, owner)
+	return EntityFactory.create_entity(entity_manager,
+				  [PieceComponent.infantry,
+				   HealthComponent.new(10),
+				   EnergyComponent.new(10),
+				   MotionComponent.new(5),
+				   MeleeAttackComponent.new(10),
+				   RangeAttackComponent.new(10, 1, 4),
+				   OwnedComponent.new(owner)])
+end
+
 describe EnergySystem do
 
 	let(:manager)               {EntityManager.new(10, 20)}
@@ -7,10 +18,10 @@ describe EnergySystem do
 	let(:human2)                {EntityFactory.human_player(manager, "Goliath")}
 	let(:turn_entity)           {EntityFactory.turn_entity(manager, [human, human2])}
 	let(:flatland)              {EntityFactory.flatland_square(manager)}
-	let(:infantry)              {EntityFactory.infantry(manager, human)}
-	let(:infantry2)             {EntityFactory.infantry(manager, human)}
-	let(:foe)                   {EntityFactory.infantry(manager, human2)}
-	let(:foe2)                  {EntityFactory.infantry(manager, human2)}
+	let(:infantry)              {debug_infantry(manager, human)}
+	let(:infantry2)             {debug_infantry(manager, human)}
+	let(:foe)                   {debug_infantry(manager, human2)}
+	let(:foe2)                  {debug_infantry(manager, human2)}
 
 	it "should be a subclass of System" do
 		expect(EnergySystem < System).to be true
