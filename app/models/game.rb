@@ -1,3 +1,5 @@
 class Game < ActiveRecord::Base
-	attr_accessor :name, :pending, :done
+	attr_accessible :name, :pending, :done
+
+	#validates :name,  presence: true, length: { maximum: 50 }
 end

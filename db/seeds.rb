@@ -14,3 +14,7 @@ User.create!(name:  "User 1",
                password:              password,
                password_confirmation: password)
 end
+
+Game.create!(name: "Game 1",
+            pending: true,
+            done: false)

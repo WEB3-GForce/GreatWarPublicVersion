@@ -1,23 +1,23 @@
 <% provide(:title, 'All Games') %>
 <h1>All Games</h1>
 
-<table>
-  <thead>
-  </thead>
+<ul class="games">
+  <% @games.each do |game| %>
+    <li>
+      <%= link_to game.name, game %>
+        <% if game_pending?(game) %>
+    <strong>Game is Pending. Would you like to
+    <%= link_to 'join?', '#' %></strong> 
+    <% else %>
 
-  <tbody>
-    <% @games.each do |game| %>
-      <tr>
-        <td><%= game.pending %></td>
-        <td><%= game.done %></td>
-        <td><%= link_to 'Show', game %></td>
-        <!--<td><%= link_to 'Edit', edit_game_path(game) %></td> 
-        <td><%= link_to 'Destroy', game, method: :delete, data: { confirm: 'Are you sure?' } %></td> -->
-      </tr>
+      <% if game_done?(game) %>
+        <strong>Game is Over.</strong> 
+      <% else %>
+        <strong> Game is on-going.</strong>
+      <% end %>
     <% end %>
-  </tbody>
-</table>
-
-<br>
+    </li>
+  <% end %>
+</ul>
 
 <%= link_to 'Create Game', new_game_path %>

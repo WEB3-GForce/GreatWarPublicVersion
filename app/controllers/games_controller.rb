@@ -26,16 +26,14 @@ class GamesController < ApplicationController
   # POST /games.json
   def create
     @game = Game.new(game_params)
-
-    respond_to do |format|
+    @game.update_attribute(:pending, true)
+    @game.update_attribute(:done, false)
       if @game.save
-        format.html { redirect_to @game, notice: 'Game was successfully created.' }
-        format.json { render :show, status: :created, location: @game }
+        flash[:success] = "Game Successfully Created!"
+        redirect_to games_path
       else
-        format.html { render :new }
-        format.json { render json: @game.errors, status: :unprocessable_entity }
+        render 'new'
       end
-    end
   end
 
   # PATCH/PUT /games/1
@@ -70,6 +68,6 @@ class GamesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def game_params
-      params.require(:game).permit(:pending, :done)
+      params.require(:game).permit(:name, :pending, :done)
     end
 end
