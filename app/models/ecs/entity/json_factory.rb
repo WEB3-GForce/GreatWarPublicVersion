@@ -41,8 +41,7 @@ class JsonFactory
 	#   A hash that is ready to be jsoned
 	def self.square_path(entity_manager, entity)
 		pos_comp = entity_manager.get_components(entity, PositionComponent).first
-		return {"id" => entity,
-		        "x"  => pos_comp.row,
+		return {"x"  => pos_comp.row,
 		        "y"  => pos_comp.col}
 	end
 
@@ -56,6 +55,7 @@ class JsonFactory
 	#   A hash that is ready to be jsoned
 	def self.player(entity_manager, entity)
 		name_comp = entity_manager.get_components(entity, NameComponent).first
+		user_id_comp = entity_manager.get_components(entity, UserIdComponent).first
 
 		ai_comp = entity_manager.get_components(entity, AIComponent).first
 		player_type = "CPU" if ai_comp	
@@ -65,7 +65,8 @@ class JsonFactory
 
 		return {"id"      => entity,
 		        "name"    => name_comp.name,
-		        "type"    => player_type}
+		        "type"    => player_type, 
+		        "userId"  => user_id_comp.id }
 	end
 
 	# Converts a turn entity into a hash object.
@@ -78,8 +79,7 @@ class JsonFactory
 	#   A hash that is ready to be jsoned
 	def self.turn(entity_manager, entity)
 		turn_comp = entity_manager.get_components(entity, TurnComponent).first
-		return {"id"      => entity,
-		        "current" => turn_comp.current_turn}
+		return {"playerid" => turn_comp.current_turn}
 	end
 
 	# This method is responsible for converting a piece entity into a json-
@@ -96,52 +96,55 @@ class JsonFactory
 	# Returns
 	#   A hash that is ready to be jsoned
 	def self.piece(entity_manager, entity)
-		piece_hash       = Hash.new
-		piece_hash["id"] = entity
+		piece_hash          = Hash.new
+		piece_hash["id"]    = entity
 		
 		piece_comp = entity_manager.get_components(entity, PieceComponent).first
 		piece_hash["type"] = piece_comp.type.to_s
 
 		owned_comp = entity_manager.get_components(entity, OwnedComponent).first
-		piece_hash["owner"] = owned_comp.owner
+		piece_hash["player"] = owned_comp.owner
 
 		pos_comp = entity_manager.get_components(entity, PositionComponent).first
-		piece_hash["position"] = {"x" => pos_comp.row,
-		                          "y" => pos_comp.col}
+		piece_hash["x"] = pos_comp.row
+		piece_hash["y"] = pos_comp.col
+
+
+		piece_hash["stats"] = Hash.new
 
 		health_comp = entity_manager.get_components(entity, HealthComponent).first
-		piece_hash["health"] = {"current" => health_comp.cur_health,
-		                        "max"     => health_comp.max_health}
+		piece_hash["stats"]["health"] = {"current" => health_comp.cur_health,
+		                                 "max"     => health_comp.max_health}
 
 		energy_comp = entity_manager.get_components(entity, EnergyComponent).first
 		if energy_comp
-		   piece_hash["energy"] = {"current" => energy_comp.cur_energy,
-		                           "max"     => energy_comp.max_energy}
+		   piece_hash["stats"]["energy"] = {"current" => energy_comp.cur_energy,
+		                                    "max"     => energy_comp.max_energy}
 		end
 
 		motion_comp = entity_manager.get_components(entity, MotionComponent).first
 		if motion_comp
-		   piece_hash["motion"] = {"cost" => motion_comp.energy_cost}
+		   piece_hash["stats"]["motion"] = {"cost" => motion_comp.energy_cost}
 		end
 
 		melee_comp = entity_manager.get_components(entity, MeleeAttackComponent).first
 		if melee_comp
-		   piece_hash["melee"] = {"attack" => melee_comp.attack,
-		                          "cost"   => melee_comp.energy_cost}
+		   piece_hash["stats"]["melee"] = {"attack" => melee_comp.attack,
+		                                   "cost"   => melee_comp.energy_cost}
 		end
 
 		range_comp = entity_manager.get_components(entity, RangeAttackComponent).first
-		piece_hash["range"] = Hash.new
+		piece_hash["stats"]["range"] = Hash.new
 		if range_comp
-		   piece_hash["range"] = {"attack" => range_comp.attack,
-		                          "range"  => {"min" => range_comp.min_range,
-		                                       "max" => range_comp.max_range},
-		                          "splash" => range_comp.splash.size,
-		                          "cost"   => range_comp.energy_cost}
+		   piece_hash["stats"]["range"] = {"attack" => range_comp.attack,
+		                                   "min"    => range_comp.min_range,
+		                                   "max"    => range_comp.max_range,
+		                                   "splash" => range_comp.splash.size,
+		                                   "cost"   => range_comp.energy_cost}
 		end
 
 		range_immune_comp = entity_manager.get_components(entity, RangeAttackImmunityComponent).first
-		piece_hash["range"]["immune"] = range_immune_comp != nil
+		piece_hash["stats"]["range"]["immune"] = range_immune_comp != nil
 		return piece_hash
 	end
 
@@ -162,8 +165,8 @@ class JsonFactory
 					entity_manager.board[row][col][0])				
 			}
 		}
-		return {"x"      => entity_manager.row,
-		        "y"      => entity_manager.col,
+		return {"width"    => entity_manager.row,
+		        "height"   => entity_manager.col,
 		        "squares"  => board_array}
 	end
 
@@ -195,8 +198,8 @@ class JsonFactory
 		}
 
           return {
-            "action" => "init_game",
-            "arguments" => [board, player_array, turn_hash, piece_array]
+            "action" => "initGame",
+            "arguments" => [board, piece_array, turn_hash, player_array]
           }
 	end
 
@@ -238,9 +241,47 @@ class JsonFactory
 		locations.each { |square|
 			locations_array.push self.square_path(entity_manager, square)
 		}
-		return {"action"  => "moveable_locations",
-		        "arguments" => [moving_entity, locations_array]
+		return {"action"  => "highlightSquares",
+		        "arguments" => ["move", locations_array]
 		       }
+	end
+
+	# Converts a turn entity into a hash object.
+	#
+	# Argumetns
+	#   entity_manager = the manager in which the entity is kept.
+	#   entity         = the turn entity to be jsoned
+	#
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.end_turn(entity_manager, entity)
+		return {"action"    => "setTurn",
+		        "arguments" => [self.turn(entity_manager, entity)]}
+	end
+
+
+	def self.actions(entity_manager, entity, can_move, can_melee, can_range)
+	
+		actions = []
+		
+		if can_move
+		 actions.push  {"name" => "motion",
+		                "cost" => entity_manager[entity][MotionComponent].first.energy_cost]}
+		end
+	
+		if can_melee
+		 actions.push  {"name" => "melee",
+		                "cost" => entity_manager[entity][MeleeAttackComponent].first.energy_cost]}
+		end
+
+		if can_range
+		 actions.push  {"name" => "range",
+		                "cost" => entity_manager[entity][RangeAttackComponent].first.energy_cost]}
+		end
+
+	
+		return {"action"    => "showUnitActions",
+		        "arguments" => actions}
 	end
 
 	# Actions to handle:
