@@ -1,9 +1,9 @@
 'use strict';
 
 var HIGHLIGHT_TYPES = {
-    blue: 51,
-    red: 52,
-    green: 53
+    move: 51,
+    attack: 52,
+    special: 53
 };
 
 var TILE_MAP  = {
