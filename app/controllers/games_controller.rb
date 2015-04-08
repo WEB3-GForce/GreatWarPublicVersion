@@ -5,6 +5,7 @@ class GamesController < ApplicationController
   # GET /games.json
   def index
     @games = Game.all
+    
   end
 
   # GET /games/1
@@ -30,6 +31,7 @@ class GamesController < ApplicationController
     @game.update_attribute(:done, false)
       if @game.save
         flash[:success] = "Game Successfully Created!"
+        assign_game_to_current_user(@game)
         redirect_to games_path
       else
         render 'new'
