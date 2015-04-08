@@ -48,6 +48,58 @@ def place_bottom_right_helper(manager, army, owner)
 	expect(army.size).to eq(0)
 end
 
+# ;)
+def goliath(entity_manager, owner)
+	return self.create_entity(entity_manager,
+				  [PieceComponent.infantry,
+				   HealthComponent.new(30),
+				   MotionComponent.new(1),
+				   MeleeAttackComponent.new(20),
+				   EnergyComponent.new(1),
+				   OwnedComponent.new(owner)])
+end
+
+def infantry(entity_manager, owner)
+	return self.create_entity(entity_manager,
+				  [PieceComponent.infantry,
+				   HealthComponent.new(10),
+				   EnergyComponent.new(10),
+				   MotionComponent.new(5),
+				   MeleeAttackComponent.new(10),
+				   RangeAttackComponent.new(10, 1, 4),
+				   OwnedComponent.new(owner)])
+end
+
+def machine_gun(entity_manager, owner)
+	return self.create_entity(entity_manager,
+				  [PieceComponent.machine_gun,
+				   HealthComponent.new(20),
+				   EnergyComponent.new(10),
+				   MotionComponent.new(3),
+				   MeleeAttackComponent.new(10),
+				   RangeAttackComponent.new(10, 3, 7),
+				   OwnedComponent.new(owner)])
+end
+
+def artillery(entity_manager, owner)
+	return self.create_entity(entity_manager,
+				  [PieceComponent.artillery,
+				   HealthComponent.new(10),
+				   EnergyComponent.new(10),
+				   MotionComponent.new(1),
+				   RangeAttackComponent.new(20, 5, 15),
+				   OwnedComponent.new(owner)])
+end
+
+def command_bunker(entity_manager, owner)
+	return self.create_entity(entity_manager,
+				  [PieceComponent.command_bunker,
+				   HealthComponent.new(30),
+				   EnergyComponent.new(10),
+				   RangeAttackImmunityComponent.new,
+				   OwnedComponent.new(owner)])
+end
+
 describe EntityFactory do
 
 	let(:manager) {EntityManager.new(15, 15)}
@@ -156,15 +208,15 @@ describe EntityFactory do
 		energy_comp  = manager[entity][EnergyComponent][0]
 		
 		expect(unit_comp.type).to eq(:infantry)
-		expect(health_comp.cur_health).to eq(10)
-		expect(health_comp.max_health).to eq(10)
-		expect(energy_comp.cur_energy).to eq(10)
-		expect(energy_comp.max_energy).to eq(10)
-		expect(motion_comp.max_movement).to eq(5)
-		expect(melee_comp.attack).to eq(10)
-		expect(range_comp.attack).to eq(10)
-		expect(range_comp.min_range).to eq(1)
-		expect(range_comp.max_range).to eq(4)
+		expect(health_comp.cur_health).not_to be_nil
+		expect(health_comp.max_health).not_to be_nil
+		expect(energy_comp.cur_energy).not_to be_nil
+		expect(energy_comp.max_energy).not_to be_nil
+		expect(motion_comp.max_movement).not_to be_nil
+		expect(melee_comp.attack).not_to be_nil
+		expect(range_comp.attack).not_to be_nil
+		expect(range_comp.min_range).not_to be_nil
+		expect(range_comp.max_range).not_to be_nil
 		expect(owned_comp.owner).to eq(owner)
 	end
 
@@ -181,14 +233,14 @@ describe EntityFactory do
 		energy_comp  = manager[entity][EnergyComponent][0]
 		
 		expect(unit_comp.type).to eq(:machine_gun)
-		expect(health_comp.cur_health).to eq(20)
-		expect(health_comp.max_health).to eq(20)
-		expect(energy_comp.cur_energy).to eq(10)
-		expect(motion_comp.max_movement).to eq(3)
-		expect(melee_comp.attack).to eq(10)
-		expect(range_comp.attack).to eq(10)
-		expect(range_comp.min_range).to eq(3)
-		expect(range_comp.max_range).to eq(7)
+		expect(health_comp.cur_health).not_to be_nil
+		expect(health_comp.max_health).not_to be_nil
+		expect(energy_comp.cur_energy).not_to be_nil
+		expect(motion_comp.max_movement).not_to be_nil
+		expect(melee_comp.attack).not_to be_nil
+		expect(range_comp.attack).not_to be_nil
+		expect(range_comp.min_range).not_to be_nil
+		expect(range_comp.max_range).not_to be_nil
 		expect(owned_comp.owner).to eq(owner)
 	end
 
@@ -205,15 +257,15 @@ describe EntityFactory do
 		energy_comp  = manager[entity][EnergyComponent][0]
 		
 		expect(unit_comp.type).to eq(:artillery)
-		expect(health_comp.cur_health).to eq(10)
-		expect(health_comp.max_health).to eq(10)
-		expect(energy_comp.cur_energy).to eq(10)
-		expect(energy_comp.max_energy).to eq(10)
-		expect(motion_comp.max_movement).to eq(1)
+		expect(health_comp.cur_health).not_to be_nil
+		expect(health_comp.max_health).not_to be_nil
+		expect(energy_comp.cur_energy).not_to be_nil
+		expect(energy_comp.max_energy).not_to be_nil
+		expect(motion_comp.max_movement).not_to be_nil
 		expect(has_melee_comp).to be false
-		expect(range_comp.attack).to eq(20)
-		expect(range_comp.min_range).to eq(5)
-		expect(range_comp.max_range).to eq(15)
+		expect(range_comp.attack).not_to be_nil
+		expect(range_comp.min_range).not_to be_nil
+		expect(range_comp.max_range).not_to be_nil
 		expect(owned_comp.owner).to eq(owner)
 	end
 
@@ -228,10 +280,10 @@ describe EntityFactory do
 		energy_comp  = manager[entity][EnergyComponent][0]
 		
 		expect(unit_comp.type).to eq(:command_bunker)
-		expect(health_comp.cur_health).to eq(30)
-		expect(health_comp.max_health).to eq(30)
-		expect(energy_comp.cur_energy).to eq(10)
-		expect(energy_comp.max_energy).to eq(10)
+		expect(health_comp.cur_health).not_to be_nil
+		expect(health_comp.max_health).not_to be_nil
+		expect(energy_comp.cur_energy).not_to be_nil
+		expect(energy_comp.max_energy).not_to be_nil
 		expect(immunity_comp.class).to eq(RangeAttackImmunityComponent)
 		expect(owned_comp.owner).to eq(owner)
 	end
