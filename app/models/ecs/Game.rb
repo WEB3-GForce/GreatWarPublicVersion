@@ -96,12 +96,7 @@ class Game
         can_melee = !MeleeSystem.attackable_locations(em, entity).empty?
         can_range = !RangeSystem.attackable_locations(em, entity).empty?
 
-        actions = []
-        actions << JsonFactory.move_action(em, entity) if can_move # UNIMPLEMENTED
-        actions << JsonFactory.melee_action(em, entity) if can_melee # UNIMPLEMENTED
-        actions << JsonFactory.range_action(em, entity) if can_range # UNIMPLEMENTED
-
-        return actions
+        return JsonFactory.actions(em, entity, can_move, can_melee, can_range)
     end
 
     def self.get_unit_moves(req_id, em, entity)
@@ -138,11 +133,15 @@ class Game
         return JsonFactory.attack_result(result) # UNIMPLEMENTED
     end
 
-
+    # End the turn for the current player.
     def self.end_turn(req_id, em)
-        #if em[TurnSystem.current_turn(em)][NameComponent][0].name == req_id
-        result = TurnSystem.update(em)
-        return JsonFactory.turn(result)
+        if em[TurnSystem.current_turn(em)][UserIdComponent][0].id != req_id
+            return {}
+        end
+
+        TurnSystem.update(em)
+        turn = em.get_entities_with_components(TurnComponent).first
+        return JsonFactory.end_turn(em, turn)
     end
 
 end
