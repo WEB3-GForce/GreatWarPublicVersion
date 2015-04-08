@@ -19,6 +19,6 @@ class SocketController < WebsocketRails::BaseController
 
     send_message :rpc, {
       sequence: response
-    }
+   }
   end
 end

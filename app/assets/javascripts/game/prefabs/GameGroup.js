@@ -121,11 +121,11 @@ GameGroup.prototype.interact = function(unit) {
 
 GameGroup.prototype.select = function(unit) {
     if (unit.isMine()) {
-	this.selected = unit;
-	this.ui.setUnit(this.selected);
-	this.gameBoard.unhighlightAll();
-	this.action = null;
-	this.game.dispatcher.rpc("get_unit_actions", [this.selected.id]);
+		this.selected = unit;
+		this.ui.setUnit(this.selected);
+		this.gameBoard.unhighlightAll();
+		this.action = null;
+		this.game.dispatcher.rpc("get_unit_actions", [this.selected.id]);
     }
 }
 
@@ -172,11 +172,12 @@ GameGroup.prototype.initGame = function(board, effects, units, turn, players) {
 }
 
 GameGroup.prototype.showUnitActions = function(unitActions) {
+	this.selected = this.unitGroup.find(2); // REMOVE THIS LINE
     var action = {
     	gameGroup: this
     };
     action.start = function() {
-	this.ui.showMenu(this.gameGroup.selected, unitActions);
+		this.gameGroup.ui.showMenu(this.gameGroup.selected, unitActions);
     	this.onComplete();
     };
     return action;
@@ -208,6 +209,49 @@ GameGroup.prototype.revealFog = function(squares) {
 			var tile = this.gameBoard.getTile(square.x, square.y, this.gameBoard.terrainLayer);
 			this.gameBoard.revealFog(tile.x, tile.y);	
 		}	
+		this.onComplete();
+	};
+	return action;
+}
+
+GameGroup.prototype.updateUnitsHealth = function(units) {
+	var action = {
+		unitGroup: this.unitGroup,
+		ui: this.ui,
+		data: units
+	}
+    	action.units = units.map(function(unit) {
+		return this.unitGroup.find(unit.id);
+    	}, this);
+    	action.tweens = units.map(function(unit, i) {
+		return this.game.add.tween(action.units[i]).to({alpha: 0}, 500);
+    	}, this);
+    	action.start = function() {
+		this.tweens[0].onComplete.add(function() {
+	    		this.onComplete();
+		}, this);
+		this.tweens.map(function(tween, i) {
+	    		tween.onComplete.add(function() {
+				this.units[i].stats.HP = this.data[i].newHealth;
+				this.units[i].alpha = 1; // will just fade out and pop back in for nowi
+							 // (I think)
+	    		}, this);
+		}, this);
+		this.tweens.map(function(tween, i) {
+	    		tween.start();
+		}, this);
+    	}
+    return action;
+}
+
+GameGroup.prototype.updateUnitEnergy = function(unitId, energyValue) {
+	var action = {
+		unit: this.unitGroup.find(unitId),
+		ui: this.ui
+	};
+	action.start = function() {
+		this.unit.stats.ENERGY = energyValue;
+		this.ui.setUnit(this.unit);
 		this.onComplete();
 	};
 	return action;
