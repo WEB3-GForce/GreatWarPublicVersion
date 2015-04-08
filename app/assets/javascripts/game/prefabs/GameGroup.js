@@ -265,6 +265,11 @@ GameGroup.prototype.killUnits = function(unitIds) {
 }
 
 GameGroup.prototype.setTurn = function(playerId) {
-    this.turn = playerId;
-    return { start: function() { this.onComplete(); } }
+    this.gameGroup = this;
+    return {
+	start: function() { 
+	    this.gameGroup.turn = playerId;
+	    this.onComplete();
+	}
+    };
 }
