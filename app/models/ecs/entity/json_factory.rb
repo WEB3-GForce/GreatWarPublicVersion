@@ -265,18 +265,18 @@ class JsonFactory
 		actions = []
 		
 		if can_move
-		 actions.push  {"name" => "motion",
-		                "cost" => entity_manager[entity][MotionComponent].first.energy_cost]}
+		 actions.push({"name" => "motion",
+		               "cost" => entity_manager[entity][MotionComponent].first.energy_cost})
 		end
 	
 		if can_melee
-		 actions.push  {"name" => "melee",
-		                "cost" => entity_manager[entity][MeleeAttackComponent].first.energy_cost]}
+		 actions.push({"name" => "melee",
+		               "cost" => entity_manager[entity][MeleeAttackComponent].first.energy_cost})
 		end
 
 		if can_range
-		 actions.push  {"name" => "range",
-		                "cost" => entity_manager[entity][RangeAttackComponent].first.energy_cost]}
+		 actions.push({"name" => "range",
+		               "cost" => entity_manager[entity][RangeAttackComponent].first.energy_cost})
 		end
 
 	
