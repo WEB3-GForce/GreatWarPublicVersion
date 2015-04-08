@@ -2,10 +2,13 @@ require_relative '../models/ecs/Game'
 
 class SocketController < WebsocketRails::BaseController
 
-  @@game
+  @@game = Hash.new
 
   def rpc(method_name, method_params)
     # entity_manager, start_json = Game.init_game
+
+    req_id = 0
+    em =  @@game[]
     
     if obj.respond_to? method_name
       if method_name == 'init_game'
@@ -15,7 +18,7 @@ class SocketController < WebsocketRails::BaseController
       end
     end
 
-    @@game = em
+    @@game = em if !em.nil?
 
     send_message :rpc, {
       sequence: response
