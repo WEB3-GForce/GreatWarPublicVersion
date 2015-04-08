@@ -13,7 +13,7 @@ class SocketController < WebsocketRails::BaseController
                                  x: 3,
                                  y: 3,
                                  type: "infantry",
-                                 player: "test"
+                                 player: "not"
                                }
                               ]
                  },
@@ -25,7 +25,7 @@ class SocketController < WebsocketRails::BaseController
                                  x: 5,
                                  y: 5,
                                  type: "infantry",
-                                 player: "not"
+                                 player: "test"
                                }
                               ]
                  },

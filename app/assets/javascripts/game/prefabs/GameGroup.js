@@ -17,6 +17,7 @@ var GameGroup = function(game, parent) {
     this.action = null;
 
     this.turn = null;
+
     this.players = null;
     this.game.constants.PLAYER_ID = "test"
 };
@@ -175,11 +176,7 @@ GameGroup.prototype.showUnitActions = function(data) {
     	gameGroup: this
     };
     action.start = function() {
-    	this.selected = this.unit;
-		this.gameGroup.ui.setUnit(this.selected);
-		this.gameGroup.ui.showMenu(this.selected);
-		this.gameGroup.gameBoard.unhighlightAll();
-		this.gameGroup.action = null;
+    	this.gameGroup.select(this.unit);
     	this.onComplete();
     };
     return action;
