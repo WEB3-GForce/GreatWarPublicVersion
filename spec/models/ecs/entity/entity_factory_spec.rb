@@ -114,15 +114,17 @@ describe EntityFactory do
 	end
 
 	it "should create a new human player" do
-		entity = EntityFactory.human_player(manager, "David")
+		entity = EntityFactory.human_player(manager, "David", 123)
 		expect(manager[entity][NameComponent][0].name).to eq("David")
 		expect(manager[entity][HumanComponent].size).to eq(1)
+		expect(manager[entity][UserIdComponent][0].id).to eq(123)
 	end
 
 	it "should create a new ai player" do
-		entity = EntityFactory.ai_player(manager, "CPU 1")
+		entity = EntityFactory.ai_player(manager, "CPU 1", 456)
 		expect(manager[entity][NameComponent][0].name).to eq("CPU 1")
 		expect(manager[entity][AIComponent].size).to eq(1)
+		expect(manager[entity][UserIdComponent][0].id).to eq(456)
 	end
 
 	it "should create a new turn entity" do

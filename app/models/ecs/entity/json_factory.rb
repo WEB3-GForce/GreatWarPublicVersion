@@ -42,8 +42,8 @@ class JsonFactory
 	def self.square_path(entity_manager, entity)
 		pos_comp = entity_manager.get_components(entity, PositionComponent).first
 		return {"id" => entity,
-		        "row"  => pos_comp.row,
-		        "col"  => pos_comp.col}
+		        "x"  => pos_comp.row,
+		        "y"  => pos_comp.col}
 	end
 
 	# Converts a player entity into a hash object.
@@ -106,8 +106,8 @@ class JsonFactory
 		piece_hash["owner"] = owned_comp.owner
 
 		pos_comp = entity_manager.get_components(entity, PositionComponent).first
-		piece_hash["position"] = {"row" => pos_comp.row,
-		                          "col" => pos_comp.col}
+		piece_hash["position"] = {"x" => pos_comp.row,
+		                          "y" => pos_comp.col}
 
 		health_comp = entity_manager.get_components(entity, HealthComponent).first
 		piece_hash["health"] = {"current" => health_comp.cur_health,
@@ -162,8 +162,8 @@ class JsonFactory
 					entity_manager.board[row][col][0])				
 			}
 		}
-		return {"row"      => entity_manager.row,
-		        "col"      => entity_manager.col,
+		return {"x"      => entity_manager.row,
+		        "y"      => entity_manager.col,
 		        "squares"  => board_array}
 	end
 
@@ -216,9 +216,9 @@ class JsonFactory
 		path.each { |square|
 			path_array.push self.square_path(entity_manager, square)
 		}
-		return {"response" => "move",
-		        "mover"    => moving_entity,
-		        "path"     => path_array}
+		return {"action" => "move",
+		        "arguments" =>[moving_entity, path_array]
+		       }
 	end
 
 	# This function is used to return a response to a moveable_locations
@@ -238,9 +238,9 @@ class JsonFactory
 		locations.each { |square|
 			locations_array.push self.square_path(entity_manager, square)
 		}
-		return {"response"  => "moveable locations",
-		        "mover"     => moving_entity,
-		        "locations" => locations_array}
+		return {"action"  => "moveable_locations",
+		        "arguments" => [moving_entity, locations_array]
+		       }
 	end
 
 	# Actions to handle:

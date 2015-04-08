@@ -90,11 +90,11 @@ describe JsonFactory do
 		it "should return a hash with the attributes of the square" do
 			set_simple
 			expect(JsonFactory.square_path(manager, flatland00)).to eq(
-				{"id" => flatland00, "row" => 0, "col" => 0})
+				{"id" => flatland00, "x" => 0, "y" => 0})
 			expect(JsonFactory.square_path(manager, river01)).to eq(
-				{"id" => river01, "row" => 0, "col" => 1})
+				{"id" => river01, "x" => 0, "y" => 1})
 			expect(JsonFactory.square_path(manager, mountain02)).to eq(
-				{"id" => mountain02, "row" => 0, "col" => 2})
+				{"id" => mountain02, "x" => 0, "y" => 2})
 		end
 	end
 
@@ -111,8 +111,8 @@ describe JsonFactory do
 			answer = {"id"     => infantry,
 			          "type"   => PieceComponent.infantry.type.to_s,
 			          "owner"  => human1,
-			          "position" => {"row" => pos_comp.row,
-			                         "col" => pos_comp.col},
+			          "position" => {"x" => pos_comp.row,
+			                         "y" => pos_comp.col},
 			          "health" => {"current" => health_comp.cur_health,
 			                       "max"     => health_comp.max_health},
 			          "energy" => {"current" => energy_comp.cur_energy,
@@ -143,8 +143,8 @@ describe JsonFactory do
 			answer = {"id"     => machine_gun,
 			          "type"   => PieceComponent.machine_gun.type.to_s,
 			          "owner"  => human1,
-			          "position" => {"row" => pos_comp.row,
-			                         "col" => pos_comp.col},
+			          "position" => {"x" => pos_comp.row,
+			                         "y" => pos_comp.col},
 			          "health" => {"current" => health_comp.cur_health,
 			                       "max"     => health_comp.max_health},
 			          "energy" => {"current" => energy_comp.cur_energy,
@@ -175,8 +175,8 @@ describe JsonFactory do
 			answer = {"id"     => artillery,
 			          "type"   => PieceComponent.artillery.type.to_s,
 			          "owner"  => human1,
-			          "position" => {"row" => pos_comp.row,
-			                         "col" => pos_comp.col},
+			          "position" => {"x" => pos_comp.row,
+			                         "y" => pos_comp.col},
 			          "health" => {"current" => health_comp.cur_health,
 			                       "max"     => health_comp.max_health},
 			          "energy" => {"current" => energy_comp.cur_energy,
@@ -204,8 +204,8 @@ describe JsonFactory do
 			answer = {"id"     => command_bunker,
 			          "type"   => PieceComponent.command_bunker.type.to_s,
 			          "owner"  => human1,
-			          "position" => {"row" => pos_comp.row,
-			                         "col" => pos_comp.col},
+			          "position" => {"x" => pos_comp.row,
+			                         "y" => pos_comp.col},
 			          "health" => {"current" => health_comp.cur_health,
 			                       "max"     => health_comp.max_health},
 			          "energy" => {"current" => energy_comp.cur_energy,
@@ -226,7 +226,7 @@ describe JsonFactory do
 				board_array.push JsonFactory.square(manager, square)
 			}
 			expect(JsonFactory.board(manager)).to eq(
-				{"row" => row, "col" => col, "squares" => board_array})
+				{"x" => row, "y" => col, "squares" => board_array})
 		end
 	end
 
@@ -246,11 +246,11 @@ describe JsonFactory do
 			}
 
 			expect(JsonFactory.game_start(manager, players, turn, pieces)).to eq(
-				{"response" => "game_start", 
-				 "board"    => JsonFactory.board(manager),
-				 "players"  => player_array,
-				 "turn"     => JsonFactory.turn(manager, turn),
-				 "pieces"   => pieces_array})
+				{"action" => "init_game", 
+				 "arguments" => [JsonFactory.board(manager),
+				                 player_array,
+				                 JsonFactory.turn(manager, turn),
+				                 pieces_array]})
 		end
 	end
 
@@ -263,8 +263,7 @@ describe JsonFactory do
 				path_array.push JsonFactory.square_path(manager, square)
 			}
 			expect(JsonFactory.move(manager, infantry, path)).to eq(
-				{"response" => "move", "mover" => infantry, 
-			 	 "path" => path_array})
+				{"action" => "move", "arguments" => [infantry, path_array]})
 		end
 	end
 
@@ -277,8 +276,7 @@ describe JsonFactory do
 				locations.push JsonFactory.square_path(manager, square)
 			}
 			expect(JsonFactory.moveable_locations(manager, machine_gun, square_array)).to eq(
-				{"response" => "moveable locations", "mover" => machine_gun, 
-			 	 "locations" => locations})
+				{"action" => "moveable_locations", "arguments" => [machine_gun, locations]})
 		end
 	end
 

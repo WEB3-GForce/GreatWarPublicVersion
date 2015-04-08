@@ -3,11 +3,15 @@ require_relative "./entity/json_factory.rb"
 
 class Game
 
+    def manager
+    	@@manager
+    end
+
     def self.init_game(rows=30, cols=30, player_names=["Player 1", "Player 2"])
-        manager = EntityManager.new(rows, cols)
-        players, turn, pieces = EntityFactory.create_game_basic(manager, player_names)
-        start_json = JsonFactory.game_start(manager, players, turn, pieces)
-        return manager, start_json
+        @@manager = EntityManager.new(rows, cols)
+        players, turn, pieces = EntityFactory.create_game_basic(@@manager, player_names)
+        start_json = JsonFactory.game_start(@@manager, players, turn, pieces)
+        return @@manager, start_json
     end
 
     def self.each_coord(req_id, em)
@@ -18,6 +22,17 @@ class Game
         }
     end
 
+    def self.verify(req_id, em, entity)
+        entity_requester = nil
+        em.each_entity(UserIdComponent) { |e|
+            if em[e][UserIdComponent][0].id == req_id
+                entity_requester = e
+                break
+            end
+        }
+        entity_owner = em[entity][OwnedComponent][0].owner;
+        return entity_requester == entity_owner 
+    end
 
     def self.get_full_info(req_id, em, row, col)
     	return { "tile" => self.get_tile_info(req_id, em, row, col),
