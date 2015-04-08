@@ -168,8 +168,21 @@ GameGroup.prototype.initGame = function(board, effects, units, turn, players) {
     return { start: function() { this.onComplete(); } }
 }
 
-GameGroup.prototype.showUnitActions = function() {
-	
+GameGroup.prototype.showUnitActions = function(data) {
+	var unitId = data.id;
+	var action = {
+    	unit: this.unitGroup.find(unitId),
+    	gameGroup: this
+    };
+    action.start = function() {
+    	this.selected = this.unit;
+		this.gameGroup.ui.setUnit(this.selected);
+		this.gameGroup.ui.showMenu(this.selected);
+		this.gameGroup.gameBoard.unhighlightAll();
+		this.gameGroup.action = null;
+    	this.onComplete();
+    };
+    return action;
 }
 
 GameGroup.prototype.highlightSquares = function(squares, type) {
