@@ -3,7 +3,7 @@ require_relative '../models/ecs/Game.rb'
 class SocketController < WebsocketRails::BaseController
   @@game = Hash.new
 
-  def rpc()
+  def rpc
     Rails.logger.debug("#{message.inspect}")
     # TODO
 
@@ -32,6 +32,6 @@ class SocketController < WebsocketRails::BaseController
 
     send_message :rpc, {
       sequence: response
-   }
+    }
   end
 end
