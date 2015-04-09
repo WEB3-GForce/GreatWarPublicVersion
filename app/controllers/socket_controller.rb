@@ -30,8 +30,6 @@ class SocketController < WebsocketRails::BaseController
 
     Rails.logger.debug("#{response.inspect}")
 
-    send_message :rpc, {
-      sequence: response
-    }
+    send_message :rpc, response #, :namespace => 
   end
 end
