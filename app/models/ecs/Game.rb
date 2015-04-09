@@ -3,15 +3,11 @@ require_relative "./entity/json_factory.rb"
 
 class Game
 
-    def manager
-    	@@manager
-    end
-
     def self.init_game(rows=30, cols=30, player_names=["Player 1", "Player 2"])
-        @@manager = EntityManager.new(rows, cols)
+        manager = EntityManager.new(rows, cols)
         players, turn, pieces = EntityFactory.create_game_basic(@@manager, player_names)
         start_json = JsonFactory.game_start(@@manager, players, turn, pieces)
-        return @@manager, start_json
+        return manager, start_json
     end
 
     def self.each_coord(req_id, em)
