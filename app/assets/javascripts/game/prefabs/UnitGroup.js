@@ -24,3 +24,13 @@ UnitGroup.prototype.removeUnit = function(id) {
     delete this.idLookup[id];
     this.remove(unit, true);
 }
+
+UnitGroup.prototype.getAllByPlayer = function(playerId) {
+    units = [];
+    for (var unit in this.idLookup) {
+        if (unit.player == playerId) {
+            units.push(unit);
+        }
+    }
+    return units;
+}

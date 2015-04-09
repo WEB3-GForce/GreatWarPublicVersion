@@ -8,7 +8,7 @@ var UIGroup = function(game, parent) {
     
     this.initTileInfoUI();
     this.initUnitInfoUI();
-    this.initActionMenu(); 
+    this.initActionMenu();
 };
 
 UIGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -102,3 +102,4 @@ UIGroup.prototype.showMenu = function(unit) {
 UIGroup.prototype.hideMenu = function() {
     this.actionMenu.visible = false;
 }
+

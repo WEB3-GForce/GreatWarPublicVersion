@@ -143,6 +143,10 @@ GameGroup.prototype.buttonClicked = function(button) {
     case 'melee':
 	this.game.dispatcher.rpc("get_unit_melee_attacks", [this.selected.id]);
 	break;
+    case 'endTurn'
+    // this.game.dispatcher.rpc("end_turn", [this.turn);
+    this.resetEnergy(this.turn);
+    break;
     }
 }
 
@@ -212,6 +216,13 @@ GameGroup.prototype.revealFog = function(squares) {
 		this.onComplete();
 	};
 	return action;
+}
+
+GameGroup.prototype.resetEnergy = function(playerId) {
+    var units = this.unitGroup.getAllByPlayer(playerId);
+    for (var i = 0, unit; unit = units[i]; i++) {
+        unit.stats.ENERGY = unit.stats.MAX_ENERGY;
+    }
 }
 
 GameGroup.prototype.updateUnitsHealth = function(units) {
