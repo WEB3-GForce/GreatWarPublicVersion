@@ -1,10 +1,21 @@
 require_relative '../../../spec_helper'
 
+def debug_infantry(entity_manager, owner)
+	return EntityFactory.create_entity(entity_manager,
+				  [PieceComponent.infantry,
+				   HealthComponent.new(10),
+				   EnergyComponent.new(10),
+				   MotionComponent.new(5),
+				   MeleeAttackComponent.new(10),
+				   RangeAttackComponent.new(10, 1, 4),
+				   OwnedComponent.new(owner)])
+end
+
 describe KillSystem do
 
 	let(:manager)    {EntityManager.new(3, 3)}
 	let(:human1)     {EntityFactory.human_player(manager, "David")}
-	let(:infantry)   {EntityFactory.infantry(manager, human1)}
+	let(:infantry)   {debug_infantry(manager, human1)}
 	let(:flatland)   {EntityFactory.flatland_square(manager)}
 	let(:row)        {1}
 	let(:col)        {1}

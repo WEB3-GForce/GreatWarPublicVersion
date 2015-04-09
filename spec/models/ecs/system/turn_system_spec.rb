@@ -1,15 +1,26 @@
 require_relative '../../../spec_helper'
 
+def debug_infantry(entity_manager, owner)
+    return EntityFactory.create_entity(entity_manager,
+                  [PieceComponent.infantry,
+                   HealthComponent.new(10),
+                   EnergyComponent.new(10),
+                   MotionComponent.new(5),
+                   MeleeAttackComponent.new(10),
+                   RangeAttackComponent.new(10, 1, 4),
+                   OwnedComponent.new(owner)])
+end
+
 describe TurnSystem do
 
     let(:manager)       {EntityManager.new(3, 3)}
     let(:human1)        {EntityFactory.human_player(manager, "Gates")}    
     let(:human2)        {EntityFactory.human_player(manager, "Jobs")}
     let(:turn_entity)   {EntityFactory.turn_entity(manager, [human1, human2])}
-    let(:infantry1a)    {EntityFactory.infantry(manager, human1)}    
-    let(:infantry1b)    {EntityFactory.infantry(manager, human1)}
-    let(:infantry2a)    {EntityFactory.infantry(manager, human2)}
-    let(:infantry2b)    {EntityFactory.infantry(manager, human2)}
+    let(:infantry1a)    {debug_infantry(manager, human1)}    
+    let(:infantry1b)    {debug_infantry(manager, human1)}
+    let(:infantry2a)    {debug_infantry(manager, human2)}
+    let(:infantry2b)    {debug_infantry(manager, human2)}
 
 	it "should be a subclass of System" do
 		expect(TurnSystem < System).to be true
@@ -21,10 +32,10 @@ describe TurnSystem do
             human1 = EntityFactory.human_player(manager, "Gates")
             human2 = EntityFactory.human_player(manager, "Jobs")
             turn_entity = EntityFactory.turn_entity(manager, [human1, human2])
-            infantry1a = EntityFactory.infantry(manager, human1)
-            infantry1b = EntityFactory.infantry(manager, human1)
-            infantry2a = EntityFactory.infantry(manager, human2)
-            infantry2b = EntityFactory.infantry(manager, human2)
+            infantry1a = debug_infantry(manager, human1)
+            infantry1b = debug_infantry(manager, human1)
+            infantry2a = debug_infantry(manager, human2)
+            infantry2b = debug_infantry(manager, human2)
 
             result = TurnSystem.turn_component(manager)
             expect(result).to eq manager[turn_entity][TurnComponent].first
@@ -37,10 +48,10 @@ describe TurnSystem do
             human1 = EntityFactory.human_player(manager, "Gates")
             human2 = EntityFactory.human_player(manager, "Jobs")
             turn_entity = EntityFactory.turn_entity(manager, [human1, human2])
-            infantry1a = EntityFactory.infantry(manager, human1)
-            infantry1b = EntityFactory.infantry(manager, human1)
-            infantry2a = EntityFactory.infantry(manager, human2)
-            infantry2b = EntityFactory.infantry(manager, human2)
+            infantry1a = debug_infantry(manager, human1)
+            infantry1b = debug_infantry(manager, human1)
+            infantry2a = debug_infantry(manager, human2)
+            infantry2b = debug_infantry(manager, human2)
 
             result = TurnSystem.current_turn(manager)
             expect(result).to be human1
@@ -53,10 +64,10 @@ describe TurnSystem do
             human1 = EntityFactory.human_player(manager, "Gates")
             human2 = EntityFactory.human_player(manager, "Jobs")
             turn_entity = EntityFactory.turn_entity(manager, [human1, human2])
-            infantry1a = EntityFactory.infantry(manager, human1)
-            infantry1b = EntityFactory.infantry(manager, human1)
-            infantry2a = EntityFactory.infantry(manager, human2)
-            infantry2b = EntityFactory.infantry(manager, human2)
+            infantry1a = debug_infantry(manager, human1)
+            infantry1b = debug_infantry(manager, human1)
+            infantry2a = debug_infantry(manager, human2)
+            infantry2b = debug_infantry(manager, human2)
 
             result = TurnSystem.next_turn(manager)
             expect(result).to be human2
@@ -69,10 +80,10 @@ describe TurnSystem do
             human1 = EntityFactory.human_player(manager, "Gates")
             human2 = EntityFactory.human_player(manager, "Jobs")
             turn_entity = EntityFactory.turn_entity(manager, [human1, human2])
-            infantry1a = EntityFactory.infantry(manager, human1)
-            infantry1b = EntityFactory.infantry(manager, human1)
-            infantry2a = EntityFactory.infantry(manager, human2)
-            infantry2b = EntityFactory.infantry(manager, human2)
+            infantry1a = debug_infantry(manager, human1)
+            infantry1b = debug_infantry(manager, human1)
+            infantry2a = debug_infantry(manager, human2)
+            infantry2b = debug_infantry(manager, human2)
 
             result = TurnSystem.current_turn_entity?(manager, infantry1a)
             expect(result).to be true
@@ -83,10 +94,10 @@ describe TurnSystem do
             human1 = EntityFactory.human_player(manager, "Gates")
             human2 = EntityFactory.human_player(manager, "Jobs")
             turn_entity = EntityFactory.turn_entity(manager, [human1, human2])
-            infantry1a = EntityFactory.infantry(manager, human1)
-            infantry1b = EntityFactory.infantry(manager, human1)
-            infantry2a = EntityFactory.infantry(manager, human2)
-            infantry2b = EntityFactory.infantry(manager, human2)
+            infantry1a = debug_infantry(manager, human1)
+            infantry1b = debug_infantry(manager, human1)
+            infantry2a = debug_infantry(manager, human2)
+            infantry2b = debug_infantry(manager, human2)
 
             result = TurnSystem.current_turn_entity?(manager, infantry2a)
             expect(result).to be false
@@ -99,10 +110,10 @@ describe TurnSystem do
             human1 = EntityFactory.human_player(manager, "Gates")
             human2 = EntityFactory.human_player(manager, "Jobs")
             turn_entity = EntityFactory.turn_entity(manager, [human1, human2])
-            infantry1a = EntityFactory.infantry(manager, human1)
-            infantry1b = EntityFactory.infantry(manager, human1)
-            infantry2a = EntityFactory.infantry(manager, human2)
-            infantry2b = EntityFactory.infantry(manager, human2)
+            infantry1a = debug_infantry(manager, human1)
+            infantry1b = debug_infantry(manager, human1)
+            infantry2a = debug_infantry(manager, human2)
+            infantry2b = debug_infantry(manager, human2)
 
             TurnSystem.current_turn_entities_each(manager) { |e|
                 owner = manager[e][OwnedComponent].first.owner
@@ -117,10 +128,10 @@ describe TurnSystem do
             human1 = EntityFactory.human_player(manager, "Gates")
             human2 = EntityFactory.human_player(manager, "Jobs")
             turn_entity = EntityFactory.turn_entity(manager, [human1, human2])
-            infantry1a = EntityFactory.infantry(manager, human1)
-            infantry1b = EntityFactory.infantry(manager, human1)
-            infantry2a = EntityFactory.infantry(manager, human2)
-            infantry2b = EntityFactory.infantry(manager, human2)
+            infantry1a = debug_infantry(manager, human1)
+            infantry1b = debug_infantry(manager, human1)
+            infantry2a = debug_infantry(manager, human2)
+            infantry2b = debug_infantry(manager, human2)
 
             result = TurnSystem.current_turn_entities(manager)
             expect(result.to_set).to eq [infantry1a, infantry1b].to_set
@@ -133,10 +144,10 @@ describe TurnSystem do
             human1 = EntityFactory.human_player(manager, "Gates")
             human2 = EntityFactory.human_player(manager, "Jobs")
             turn_entity = EntityFactory.turn_entity(manager, [human1, human2])
-            infantry1a = EntityFactory.infantry(manager, human1)
-            infantry1b = EntityFactory.infantry(manager, human1)
-            infantry2a = EntityFactory.infantry(manager, human2)
-            infantry2b = EntityFactory.infantry(manager, human2)
+            infantry1a = debug_infantry(manager, human1)
+            infantry1b = debug_infantry(manager, human1)
+            infantry2a = debug_infantry(manager, human2)
+            infantry2b = debug_infantry(manager, human2)
 
             result = TurnSystem.update(manager)
             expect(result).to eq ["turn", human2]
@@ -150,10 +161,10 @@ describe TurnSystem do
             human1 = EntityFactory.human_player(manager, "Gates")
             human2 = EntityFactory.human_player(manager, "Jobs")
             turn_entity = EntityFactory.turn_entity(manager, [human1, human2])
-            infantry1a = EntityFactory.infantry(manager, human1)
-            infantry1b = EntityFactory.infantry(manager, human1)
-            infantry2a = EntityFactory.infantry(manager, human2)
-            infantry2b = EntityFactory.infantry(manager, human2)
+            infantry1a = debug_infantry(manager, human1)
+            infantry1b = debug_infantry(manager, human1)
+            infantry2a = debug_infantry(manager, human2)
+            infantry2b = debug_infantry(manager, human2)
 
             manager[infantry1a][EnergyComponent].first.cur_energy = 0
             manager[infantry1b][EnergyComponent].first.cur_energy = 0
@@ -172,10 +183,10 @@ describe TurnSystem do
             human1 = EntityFactory.human_player(manager, "Gates")
             human2 = EntityFactory.human_player(manager, "Jobs")
             turn_entity = EntityFactory.turn_entity(manager, [human1, human2])
-            infantry1a = EntityFactory.infantry(manager, human1)
-            infantry1b = EntityFactory.infantry(manager, human1)
-            infantry2a = EntityFactory.infantry(manager, human2)
-            infantry2b = EntityFactory.infantry(manager, human2)
+            infantry1a = debug_infantry(manager, human1)
+            infantry1b = debug_infantry(manager, human1)
+            infantry2a = debug_infantry(manager, human2)
+            infantry2b = debug_infantry(manager, human2)
 
             manager[infantry2a][EnergyComponent].first.cur_energy = 0
             manager[infantry2b][EnergyComponent].first.cur_energy = 0
