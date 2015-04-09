@@ -40,8 +40,8 @@ GameGroup.prototype.update = function() {
 
     this.ui.setTile(this.tile);
 
-    if (this.game.input.mousePointer.targetObject && 
-    	this.game.input.mousePointer.targetObject.sprite instanceof Unit && 
+    if (this.game.input.mousePointer.targetObject &&
+    	this.game.input.mousePointer.targetObject.sprite instanceof Unit &&
     	!this.selected) {
 		this.ui.setUnit(this.game.input.mousePointer.targetObject.sprite);
     } else if (!this.selected) {
@@ -143,8 +143,8 @@ GameGroup.prototype.buttonClicked = function(button) {
     case 'melee':
 	this.game.dispatcher.rpc("get_unit_melee_attacks", [this.selected.id]);
 	break;
-    case 'endTurn'
-    // this.game.dispatcher.rpc("end_turn", [this.turn);
+    case 'endTurn':
+    // this.game.dispatcher.rpc("end_turn", [this.turn]);
     this.resetEnergy(this.turn);
     break;
     }
@@ -191,13 +191,13 @@ GameGroup.prototype.highlightSquares = function(squares, type) {
 	var action = {
 		squares: squares,
 		gameBoard: this.gameBoard,
-		type: type	
+		type: type
 	};
 	action.start = function() {
 		for (var i = 0, square; square = this.squares[i]; i++) {
 			var tile = this.gameBoard.getTile(square.x, square.y, this.gameBoard.terrainLayer);
-			this.gameBoard.highlight(tile.x, tile.y, type);	
-		}	
+			this.gameBoard.highlight(tile.x, tile.y, type);
+		}
 		this.onComplete();
 	};
 	return action;
@@ -206,13 +206,13 @@ GameGroup.prototype.highlightSquares = function(squares, type) {
 GameGroup.prototype.revealFog = function(squares) {
 	var action = {
 		squares: squares,
-		gameBoard: this.gameBoard	
+		gameBoard: this.gameBoard
 	};
 	action.start = function() {
 		for (var i = 0, square; square = this.squares[i]; i++) {
 			var tile = this.gameBoard.getTile(square.x, square.y, this.gameBoard.terrainLayer);
-			this.gameBoard.revealFog(tile.x, tile.y);	
-		}	
+			this.gameBoard.revealFog(tile.x, tile.y);
+		}
 		this.onComplete();
 	};
 	return action;
@@ -231,27 +231,26 @@ GameGroup.prototype.updateUnitsHealth = function(units) {
 		ui: this.ui,
 		data: units
 	}
-    	action.units = units.map(function(unit) {
+	action.units = units.map(function(unit) {
 		return this.unitGroup.find(unit.id);
-    	}, this);
-    	action.tweens = units.map(function(unit, i) {
-		return this.game.add.tween(action.units[i]).to({alpha: 0}, 500);
-    	}, this);
-    	action.start = function() {
+	}, this);
+	action.tweens = units.map(function(unit, i) {
+		return this.game.add.tween(action.units[i]).to({alpha: 0}, 500, null, false, 0, 5, true);
+	}, this);
+	action.start = function() {
 		this.tweens[0].onComplete.add(function() {
 	    		this.onComplete();
 		}, this);
 		this.tweens.map(function(tween, i) {
-	    		tween.onComplete.add(function() {
+	    	tween.onComplete.add(function() {
 				this.units[i].stats.HP = this.data[i].newHealth;
-				this.units[i].alpha = 1; // will just fade out and pop back in for nowi
-							 // (I think)
-	    		}, this);
+				this.units[i].alpha = 1; 
+	    	}, this);
 		}, this);
 		this.tweens.map(function(tween, i) {
-	    		tween.start();
+	    	tween.start();
 		}, this);
-    	}
+    }
     return action;
 }
 
@@ -322,7 +321,7 @@ GameGroup.prototype.killUnits = function(unitIds) {
 GameGroup.prototype.setTurn = function(playerId) {
     this.gameGroup = this;
     return {
-	start: function() { 
+	start: function() {
 	    this.gameGroup.turn = playerId;
 	    this.onComplete();
 	}

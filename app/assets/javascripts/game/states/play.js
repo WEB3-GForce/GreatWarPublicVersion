@@ -14,12 +14,12 @@ Play.prototype = {
         this.gameGroup = new GameGroup(this.game);
 
     	this.game.dispatcher.bind('rpc', (function(data) {
-	    this.sequences.push(data.sequence);
+	       this.sequences.push(data.sequence);
     	}).bind(this));
 
-	this.game.dispatcher.rpc = function(action, args) {
-	    this.trigger("rpc", {action: action, arguments: args});
-	}
+    	this.game.dispatcher.rpc = function(action, args) {
+    	    this.trigger("rpc", {action: action, arguments: args});
+    	}
     	this.game.dispatcher.rpc("init_game", []);
 
         // deciding dragging vs. clicking: 
