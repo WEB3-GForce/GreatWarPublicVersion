@@ -14,9 +14,8 @@ Play.prototype = {
         this.gameGroup = new GameGroup(this.game);
 
     	this.game.dispatcher.bind('rpc', (function(data) {
-            // data isn't coming in as a sequence right now, it's just one at a time
-            // Added data to an array to keep the code from breaking
-            this.sequences.push([data]);
+            console.log(data);
+            this.sequences.push(data.sequence);
     	}).bind(this));
 
     	this.game.dispatcher.rpc = function(action, args) {

@@ -5,8 +5,6 @@ class SocketController < WebsocketRails::BaseController
 
   def rpc
     # TODO
-    p message
-    
     method_name = message['action']
     method_params = message['arguments']
 
@@ -27,11 +25,13 @@ class SocketController < WebsocketRails::BaseController
         method_params.unshift req_id
         response = Game.public_send(method_name.to_sym, *method_params)
     end
-    
-    p response
+
+    # the front end expects to response to be an array, if it's not though,
+    # that's fine, it just needs to be sent as one regardless, hence this:
+    response = [response] unless response.kind_of?(Array)
 
     send_message :rpc, {
-      sequence => response
+      :sequence => response
     }
   end
 end
