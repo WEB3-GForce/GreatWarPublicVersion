@@ -12,14 +12,15 @@ var GameGroup = function(game, parent) {
     this.marker.drawRect(0, 0, this.game.constants.TILE_SIZE, this.game.constants.TILE_SIZE);
     this.tile = null;
 
-    this.ui = new UIGroup(this.game);
-
     this.action = null;
 
     this.turn = null;
+    this.game.turnNumber = 0;
 
     this.players = null;
-    this.game.constants.PLAYER_ID = "test"
+    this.game.constants.PLAYER_ID = "Mazer Rackham";
+
+    this.ui = new UIGroup(this.game);
 };
 
 GameGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -146,23 +147,29 @@ GameGroup.prototype.buttonClicked = function(button) {
     case 'endTurn':
     // this.game.dispatcher.rpc("end_turn", [this.turn]);
     this.resetEnergy(this.turn);
+    this.turnNumber += 1;
     break;
     }
 }
 
-GameGroup.prototype.initGame = function(board, effects, units, turn, players) {
+GameGroup.prototype.initGame = function(board, units, turn, players) {
+
+    console.log("initGame is called");
+    console.log(units);
+
     for (var i = 0; i < board.width; i++) {
-	for (var j = 0; j < board.height; j++) {
-	    this.gameBoard.setTile(i, j, board.squares[i*board.width+j].terrain);
-	    if (board.squares[i*board.width+j].fow)
-		this.gameBoard.addFog(i, j);
-	}
+	    for (var j = 0; j < board.height; j++) {
+	        this.gameBoard.setTile(i, j, board.squares[i*board.width+j].terrain);
+	        if (board.squares[i*board.width+j].fow)
+		        this.gameBoard.addFog(i, j);
+	    }
     }
 
-    this.gameBoard.effects = effects;
+    // effects is not passed right now
+    // this.gameBoard.effects = effects;
 
     for (var i = 0; i < units.length; i++) {
-	this.unitGroup.addUnit(units[i].id,
+	    this.unitGroup.addUnit(units[i].id,
 			       units[i].type,
 			       units[i].x,
 			       units[i].y,
@@ -244,7 +251,7 @@ GameGroup.prototype.updateUnitsHealth = function(units) {
 		this.tweens.map(function(tween, i) {
 	    	tween.onComplete.add(function() {
 				this.units[i].stats.HP = this.data[i].newHealth;
-				this.units[i].alpha = 1; 
+				this.units[i].alpha = 1;
 	    	}, this);
 		}, this);
 		this.tweens.map(function(tween, i) {

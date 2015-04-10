@@ -5,14 +5,53 @@ var UIGroup = function(game, parent) {
 
     this.font = { font: "18px Helvetica", fill: "#ffffff" };
     this.smallerFont = { font: "14px Helvetica", fill: "#ffffff" };
-    
-    this.initTileInfoUI();
-    this.initUnitInfoUI();
+
+    // this.initTileInfoUI();
+    // this.initUnitInfoUI();
+    this.initPlayerInfoUI();
     this.initActionMenu();
 };
 
 UIGroup.prototype = Object.create(Phaser.Group.prototype);
 UIGroup.prototype.constructor = UIGroup;
+
+UIGroup.prototype.initPlayerInfoUI = function() {
+    this.playerInfo = this.game.add.group();
+    this.playerInfo.x = 8;
+    this.playerInfo.y = 8;
+    this.playerInfo.fixedToCamera = true;
+
+    var width = 256;
+    var height = 72;
+
+    this.playerInfoGraphics = this.game.add.graphics(0, 0, this.playerInfo);
+    this.playerInfoGraphics.beginFill(0x000000, 0.5);
+    this.playerInfoGraphics.drawRect(0, 0, width, height);
+
+    this.playerNameBackground = this.game.add.graphics(72, 4, this.playerInfo);
+    this.playerNameBackground.beginFill(0xFF0000, 0.5);
+    this.playerNameBackground.drawRect(0, 0, width - 72 - 4, 36);
+
+    this.playerName = this.game.add.text(76, 10,
+        this.game.constants.PLAYER_ID,
+        this.font,
+        this.playerInfo);
+
+    this.turnNumber = this.game.add.text(84, 40,
+        "Day: " + this.game.turnNumber,
+        this.font,
+        this.playerInfo);
+
+    this.playerPortraitFrame = this.game.add.graphics(2, 3, this.playerInfo);
+    this.playerPortraitFrame.beginFill(0x000000, 0.5);
+    this.playerPortraitFrame.drawRect(0, 0, 66, 66);
+
+    this.playerPortrait = this.game.add.sprite(44, 44, 'generalPortrait', this.playerInfo);
+    this.playerPortrait.anchor.setTo(0.5, 0.5);
+    this.playerPortrait.width = 64;
+    this.playerPortrait.height = 64;
+    this.playerPortrait.fixedToCamera = true;
+}
 
 UIGroup.prototype.initTileInfoUI = function() {
     this.tileInfo = this.game.add.group();
@@ -78,19 +117,19 @@ UIGroup.prototype.initActionMenu = function() {
 }
 
 UIGroup.prototype.setTile = function(tile) {
-    this.currentTile.frame = tile.index - 1;
-    this.tileTitle.text = "tile #" + tile.index;
+    // this.currentTile.frame = tile.index - 1;
+    // this.tileTitle.text = "tile #" + tile.index;
 }
 
 UIGroup.prototype.setUnit = function(unit) {
-    if (unit) {
-        this.unitType.text = unit.stats.NAME;
-    	this.unitHP.text = "HP: " + unit.stats.HP + "/" + unit.stats.MAX_HP;
-    	this.unitATK.text = "ENERGY: " + unit.stats.ENERGY;
-    	this.unitInfo.visible = true;
-    } else {
-	    this.unitInfo.visible = false;
-    }
+    // if (unit) {
+    //   this.unitType.text = unit.stats.NAME;
+    //	this.unitHP.text = "HP: " + unit.stats.HP + "/" + unit.stats.MAX_HP;
+    //	this.unitATK.text = "ENERGY: " + unit.stats.ENERGY;
+    //	this.unitInfo.visible = true;
+    //} else {
+	//    this.unitInfo.visible = false;
+    //}
 }
 
 UIGroup.prototype.showMenu = function(unit) {

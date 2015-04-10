@@ -26,6 +26,8 @@ Preload.prototype = {
 	this.load.image('action-melee', '/assets/melee.png');
 	this.load.image('action-ranged', '/assets/ranged.png');
 
+    this.load.image('generalPortrait', '/assets/generalPortrait.png');
+
 	this.load.spritesheet('trainer', '/assets/trainer.png',
 			      this.game.constants.TILE_SIZE,
 			      this.game.constants.TILE_SIZE);

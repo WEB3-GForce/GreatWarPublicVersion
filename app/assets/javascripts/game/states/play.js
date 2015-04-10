@@ -7,14 +7,16 @@ function Play() {
 
 Play.prototype = {
     create: function() {
-	// size of world, as opposed to window
+    	// size of world, as opposed to window
         this.game.world.setBounds(0, 0,
 				  this.game.constants.WIDTH, this.game.constants.HEIGHT);
 
         this.gameGroup = new GameGroup(this.game);
 
     	this.game.dispatcher.bind('rpc', (function(data) {
-	       this.sequences.push(data.sequence);
+            // data isn't coming in as a sequence right now, it's just one at a time
+            // Added data to an array to keep the code from breaking
+            this.sequences.push([data]);
     	}).bind(this));
 
     	this.game.dispatcher.rpc = function(action, args) {
@@ -22,9 +24,9 @@ Play.prototype = {
     	}
     	this.game.dispatcher.rpc("init_game", []);
 
-        // deciding dragging vs. clicking: 
+        // deciding dragging vs. clicking:
     	this.game.input.onUp.add(function() {
-    	    if (this.game.input.mousePointer.positionDown.x == this.game.input.mousePointer.position.x && 
+    	    if (this.game.input.mousePointer.positionDown.x == this.game.input.mousePointer.position.x &&
                 this.game.input.mousePointer.positionDown.y == this.game.input.mousePointer.position.y) {
     	           this.gameGroup.onClick(this.game.input.mousePointer.targetObject);
     	   }
@@ -32,18 +34,18 @@ Play.prototype = {
     },
 
     update: function() {
-	// executing actions
-	if (this.currentSequence === null &&
-	    this.sequences.length > 0) {
-	    this.currentSequence = this.sequences.shift();
-	    this.executeSequence();
-	}
+	    // executing actions
+	    if (this.currentSequence === null &&
+	        this.sequences.length > 0) {
+                this.currentSequence = this.sequences.shift();
+	            this.executeSequence();
+	    }
 
         // Panning:
         this.moveCameraByPointer(this.game.input.mousePointer);
 
         // Updating the gameBoard
-        this.gameGroup.update(); 
+        this.gameGroup.update();
     },
 
     moveCameraByPointer: function(pointer) {
@@ -59,18 +61,18 @@ Play.prototype = {
     },
 
     executeSequence: function() {
-	if (this.currentSequence.length == 0) {
-	    this.currentSequence = null;
-	    return;
-	}
-	this.currentAction = this.currentSequence.shift();
-	var action = this.gameGroup[this.currentAction.action].apply(
-	    this.gameGroup,
-	    this.currentAction.arguments
-	);
-	action.onComplete = (function() {
-	    this.executeSequence();
-	}).bind(this);
-	action.start();
+	    if (this.currentSequence.length == 0) {
+	        this.currentSequence = null;
+	        return;
+	    }
+	    this.currentAction = this.currentSequence.shift();
+	    var action = this.gameGroup[this.currentAction.action].apply(
+	        this.gameGroup,
+	        this.currentAction.arguments
+	    );
+    	action.onComplete = (function() {
+	        this.executeSequence();
+	    }).bind(this);
+	    action.start();
     }
 };
