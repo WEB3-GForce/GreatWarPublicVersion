@@ -1,5 +1,10 @@
 require_relative "./entity/entity_factory.rb"
+require_relative "./entity/entity_manager.rb"
 require_relative "./entity/json_factory.rb"
+require_relative "./system/motion_system.rb"
+require_relative "./system/melee_system.rb"
+require_relative "./system/range_system.rb"
+require_relative "./system/turn_system.rb"
 
 class Game
 
@@ -91,11 +96,11 @@ class Game
     end
 
 
-    def self.get_unit_actions(req_id, em, entity)
+    def self.get_unit_actions(req_id, em, entity)      
         can_move = !MotionSystem.moveable_locations(em, entity).empty?
         can_melee = !MeleeSystem.attackable_locations(em, entity).empty?
         can_range = !RangeSystem.attackable_locations(em, entity).empty?
-
+        
         return JsonFactory.actions(em, entity, can_move, can_melee, can_range)
     end
 

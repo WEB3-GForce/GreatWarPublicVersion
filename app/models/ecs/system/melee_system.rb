@@ -58,11 +58,13 @@ public
 
 	# Gets the locations that an entity can melee attack
 	# TODO testing/documentation
-	def self.attack_locations(entity_manager, entity)
+	def self.attackable_locations(entity_manager, entity)
 		if !EntityType.melee_entity?(entity_manager, entity) or 
 				!EntityType.placed_entity?(entity_manager, entity)
 			return []
 		end
+        
+        own_comp = entity_manager.get_components(entity, OwnedComponent).first
 
 		results = []
 
