@@ -6,6 +6,7 @@ class SocketController < WebsocketRails::BaseController
   def rpc
     # TODO
     p message
+    
     method_name = message['action']
     method_params = message['arguments']
 
@@ -16,9 +17,6 @@ class SocketController < WebsocketRails::BaseController
     # since we only need to call it once on backend, but multiple times on
     # frontend.
     if method_name == 'init_game'
-
-        p "we here????"
-
         em, response = Game.init_game(*method_params)
 
         @@game[game_id] = em if !em.nil?
@@ -29,9 +27,11 @@ class SocketController < WebsocketRails::BaseController
         method_params.unshift req_id
         response = Game.public_send(method_name.to_sym, *method_params)
     end
-    p "how about here"
+    
     p response
 
-    send_message :rpc, response #, :namespace =>
+    send_message :rpc, {
+      sequence => response
+    }
   end
 end
