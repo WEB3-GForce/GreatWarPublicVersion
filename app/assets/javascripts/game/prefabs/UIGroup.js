@@ -7,7 +7,7 @@ var UIGroup = function(game, parent) {
     this.smallerFont = { font: "14px Helvetica", fill: "#ffffff" };
 
     // this.initTileInfoUI();
-    // this.initUnitInfoUI();
+    this.initUnitInfoUI();
     this.initPlayerInfoUI();
     this.initActionMenu();
 };
@@ -74,8 +74,8 @@ UIGroup.prototype.initTileInfoUI = function() {
 
 UIGroup.prototype.initUnitInfoUI = function() {
     this.unitInfo = this.game.add.group();
-    this.unitInfo.x = this.game.width - 128 - 8;
-    this.unitInfo.y = 8;
+    this.unitInfo.x = 8;
+    this.unitInfo.y = this.game.height - 128 - 8;
     this.unitInfo.fixedToCamera = true;
 
     this.unitGraphics = this.game.add.graphics(0, 0, this.unitInfo);
@@ -85,13 +85,20 @@ UIGroup.prototype.initUnitInfoUI = function() {
     this.unitType = this.game.add.text(8, 8, "",
                        this.font,
                        this.unitInfo);
-    this.unitHP = this.game.add.text(8, 40, "",
+
+    this.unitImage = this.game.add.sprite(64, this.game.height - 120,
+                       "trainer", 0,
+                       this.unitInfo);
+    this.unitImage.fixedToCamera = true;
+    this.unitImage.alpha = 0.5;
+
+    this.unitHealth = this.game.add.text(8, 64, "",
                        this.smallerFont,
                        this.unitInfo);
-    this.unitATK = this.game.add.text(8, 64, "",
+    this.unitAttack = this.game.add.text(8, 88, "",
                        this.smallerFont,
                        this.unitInfo);
-    this.unitDEF = this.game.add.text(8, 88, "",
+    this.unitEnergy = this.game.add.text(8, 112, "",
                        this.smallerFont,
                        this.unitInfo);
     this.unitInfo.visible = false;
@@ -122,14 +129,15 @@ UIGroup.prototype.setTile = function(tile) {
 }
 
 UIGroup.prototype.setUnit = function(unit) {
-    // if (unit) {
-    //   this.unitType.text = unit.stats.NAME;
-    //	this.unitHP.text = "HP: " + unit.stats.HP + "/" + unit.stats.MAX_HP;
-    //	this.unitATK.text = "ENERGY: " + unit.stats.ENERGY;
-    //	this.unitInfo.visible = true;
-    //} else {
-	//    this.unitInfo.visible = false;
-    //}
+    if (unit) {
+        this.unitType.text = unit.type[0].toUpperCase() + unit.type.slice(1);
+    	this.unitHealth.text = "HP: " + unit.stats.health.current + "/" + unit.stats.health.max;
+    	this.unitEnergy.text = "ENERGY: " + unit.stats.energy.current + "/" + unit.stats.energy.max;
+        this.unitAttack.text = "ATTACK: " + unit.stats.range.attack;
+    	this.unitInfo.visible = true;
+    } else {
+	    this.unitInfo.visible = false;
+    }
 }
 
 UIGroup.prototype.showMenu = function(unit) {

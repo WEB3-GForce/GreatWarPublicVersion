@@ -11,66 +11,22 @@ var UNIT_MAP = {
     'artillery':
     {
         NAME: 'Artillery',
-        IMAGE: 'trainer',
-        HP: 12,
-        MAX_HP: 12,
-	    MOVEMENT_COST: 6,
-        ATTACK_COST: 6,
-	    MELEE_COST: 6,
-	    ATTACK_DAMAGE: 10,
-	    MELEE_DAMAGE: 0,
-        RANGE: 10,
-        VISION: 2,
-	    ENERGY: 6,
-        MAX_ENERGY: 6
+        IMAGE: 'trainer'
     },
-    'command_bunker': 
+    'command_bunker':
     {
         NAME: 'Bunker',
-        IMAGE: 'trainer',
-        HP: 12,
-        MAX_HP: 12,
-	    MOVEMENT_COST: 1,
-        ATTACK_COST: 0,
-	    MELEE_COST: 0,
-	    ATTACK_DAMAGE: 0,
-	    MELEE_DAMAGE: 0,
-        RANGE: 0,
-        VISION: 1,
-	    ENERGY: 0,
-        MAX_ENERGY: 6
+        IMAGE: 'trainer'
     },
-    'infantry': 
+    'infantry':
     {
         NAME: 'Infantry',
-        IMAGE: 'trainer',
-        HP: 12,
-        MAX_HP: 12,
-	    MOVEMENT_COST: 2,
-        ATTACK_COST: 4,
-	    MELEE_COST: 4,
-	    ATTACK_DAMAGE: 6,
-	    MELEE_DAMAGE: 6,
-        RANGE: 2,
-        VISION: 4,
-	    ENERGY: 6,
-        MAX_ENERGY: 6
+        IMAGE: 'trainer'
     },
     'machine_gun':
-    { 
+    {
         NAME: 'Machine Gun',
-        IMAGE: 'trainer',
-        HP: 12,
-        MAX_HP: 12,
-	    MOVEMENT_COST: 3,
-        ATTACK_COST: 2,
-	    MELEE_COST: 6,
-	    ATTACK_DAMAGE: 4,
-	    MELEE_DAMAGE: 6,
-        RANGE: 3,
-        VISION: 3,
-	    ENERGY: 6,
-        MAX_ENERGY: 6,
+        IMAGE: 'trainer'
     },
 }
 
@@ -94,11 +50,7 @@ var Unit = function(game, id, type, x, y, player, stats) {
     this.inputEnabled = true;
     this.input.useHandCursor = true;
 
-    if (stats)
 	this.stats = stats;
-    else
-	this.stats = JSON.parse(JSON.stringify(UNIT_MAP[this.type]));
-
     this.player = player;
 };
 
@@ -171,20 +123,20 @@ Unit.prototype.moveTo = function(x, y, callback, callbackContext) {
 	callback().bind(callbackContext);
 }
 
-Unit.prototype.attack = function(unit, type) {
-    var givenDamage = type === 'melee' ? this.stats.ATK * 2 : this.stats.ATK;
-    var receivedDamage = type === 'melee' ? unit.stats.ATK * 2 : unit.stats.ATK;
-    if (!unit.damage(givenDamage))
-	this.damage(receivedDamage);
-}
+// Unit.prototype.attack = function(unit, type) {
+//     var givenDamage = type === 'melee' ? this.stats.ATK * 2 : this.stats.ATK;
+//    var receivedDamage = type === 'melee' ? unit.stats.ATK * 2 : unit.stats.ATK;
+//    if (!unit.damage(givenDamage))
+//	this.damage(receivedDamage);
+// }
 
 // returns whether unit died
-Unit.prototype.damage = function(atk) {
-    this.stats.HP -= atk - this.stats.DEF;
-    if (this.stats.HP <= 0) {
-	this.destroy();
-	return true;
-    } else {
-	return false;
-    }
-}
+// Unit.prototype.damage = function(atk) {
+//    this.stats.HP -= atk - this.stats.DEF;
+//    if (this.stats.HP <= 0) {
+//	this.destroy();
+//	return true;
+//    } else {
+//	return false;
+//    }
+// }

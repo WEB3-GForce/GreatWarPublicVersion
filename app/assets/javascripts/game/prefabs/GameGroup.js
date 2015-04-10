@@ -18,7 +18,7 @@ var GameGroup = function(game, parent) {
     this.game.turnNumber = 0;
 
     this.players = null;
-    this.game.constants.PLAYER_ID = "Mazer Rackham";
+    this.game.constants.PLAYER_ID = "";
 
     this.ui = new UIGroup(this.game);
 };
@@ -121,7 +121,9 @@ GameGroup.prototype.interact = function(unit) {
 }
 
 GameGroup.prototype.select = function(unit) {
+    console.log("selecting");
     if (unit.isMine()) {
+        console.log("unit is mine");
 		this.selected = unit;
 		this.ui.setUnit(this.selected);
 		this.gameBoard.unhighlightAll();
@@ -153,10 +155,6 @@ GameGroup.prototype.buttonClicked = function(button) {
 }
 
 GameGroup.prototype.initGame = function(board, units, turn, players) {
-
-    console.log("initGame is called");
-    console.log(units);
-
     for (var i = 0; i < board.width; i++) {
 	    for (var j = 0; j < board.height; j++) {
 	        this.gameBoard.setTile(i, j, board.squares[i*board.width+j].terrain);
@@ -177,13 +175,15 @@ GameGroup.prototype.initGame = function(board, units, turn, players) {
 			       units[i].stats);
     }
 
-    this.turn = turn;
+    this.turn = turn.playerid;
     this.players = players;
+    // There should be a better/different way to do this
+    this.game.constants.PLAYER_ID = this.turn;
     return { start: function() { this.onComplete(); } }
 }
 
 GameGroup.prototype.showUnitActions = function(unitActions) {
-	this.selected = this.unitGroup.find(2); // REMOVE THIS LINE
+    console.log("rpc made the round trip");
     var action = {
     	gameGroup: this
     };

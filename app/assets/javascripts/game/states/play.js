@@ -14,7 +14,6 @@ Play.prototype = {
         this.gameGroup = new GameGroup(this.game);
 
     	this.game.dispatcher.bind('rpc', (function(data) {
-            console.log(data);
             this.sequences.push(data.sequence);
     	}).bind(this));
 
