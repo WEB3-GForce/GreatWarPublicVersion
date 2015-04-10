@@ -33,7 +33,7 @@ UIGroup.prototype.initPlayerInfoUI = function() {
     this.playerNameBackground.drawRect(0, 0, width - 72 - 4, 36);
 
     this.playerName = this.game.add.text(76, 10,
-        this.game.constants.PLAYER_ID,
+        this.game.constants.PLAYER_NAME,
         this.font,
         this.playerInfo);
 

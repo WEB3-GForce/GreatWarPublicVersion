@@ -19,6 +19,8 @@ var GameGroup = function(game, parent) {
 
     this.players = null;
     this.game.constants.PLAYER_ID = "";
+    // How are we going to do player names and stuff?
+    this.game.constants.PLAYER_NAME = "Pokemon General";
 
     this.ui = new UIGroup(this.game);
 };
@@ -68,6 +70,7 @@ GameGroup.prototype.tileClicked = function() {
 	if (this.gameBoard.isHighlighted(this.tile.x, this.tile.y)) {
 	    switch (this.action) {
 	    case 'move':
+        console.log("trying to make the move unit rpc call");
 		this.game.dispatcher.rpc("move_unit", [
 		    this.selected.id,
 		    {
@@ -121,10 +124,8 @@ GameGroup.prototype.interact = function(unit) {
 }
 
 GameGroup.prototype.select = function(unit) {
-    console.log("selecting");
     if (unit.isMine()) {
-        console.log("unit is mine");
-		this.selected = unit;
+        this.selected = unit;
 		this.ui.setUnit(this.selected);
 		this.gameBoard.unhighlightAll();
 		this.action = null;
@@ -183,7 +184,7 @@ GameGroup.prototype.initGame = function(board, units, turn, players) {
 }
 
 GameGroup.prototype.showUnitActions = function(unitActions) {
-    console.log("rpc made the round trip");
+    console.log("show Unit Actions");
     var action = {
     	gameGroup: this
     };
@@ -194,8 +195,9 @@ GameGroup.prototype.showUnitActions = function(unitActions) {
     return action;
 }
 
-GameGroup.prototype.highlightSquares = function(squares, type) {
-	var action = {
+GameGroup.prototype.highlightSquares = function(type, squares) {
+    console.log("highlight Squares");
+    var action = {
 		squares: squares,
 		gameBoard: this.gameBoard,
 		type: type
@@ -281,10 +283,14 @@ GameGroup.prototype.attack = function(unitId, square, type, unitType) {
 }
 
 GameGroup.prototype.moveUnit = function(unitId, square) {
+    console.log("move Unit");
+    console.log(unitId);
+    console.log(square);
+
     var action = {};
     action.unit = this.unitGroup.find(unitId);
     action.start = function() {
-	this.unit.moveTo(square.x, square.y, this.onComplete, this);
+	    this.unit.moveTo(square.x, square.y, this.onComplete, this);
     }
     return action;
 }
