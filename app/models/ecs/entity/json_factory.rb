@@ -41,8 +41,8 @@ class JsonFactory
 	#   A hash that is ready to be jsoned
 	def self.square_path(entity_manager, entity)
 		pos_comp = entity_manager.get_components(entity, PositionComponent).first
-		return {"x"  => pos_comp.row,
-		        "y"  => pos_comp.col}
+		return {"y"  => pos_comp.row,
+		        "x"  => pos_comp.col}
 	end
 
 	# Converts a player entity into a hash object.
@@ -106,8 +106,8 @@ class JsonFactory
 		piece_hash["player"] = owned_comp.owner
 
 		pos_comp = entity_manager.get_components(entity, PositionComponent).first
-		piece_hash["x"] = pos_comp.row
-		piece_hash["y"] = pos_comp.col
+		piece_hash["y"] = pos_comp.row
+		piece_hash["x"] = pos_comp.col
 
 
 		piece_hash["stats"] = Hash.new
@@ -215,13 +215,21 @@ class JsonFactory
 	# Returns
 	#   A hash that is ready to be jsoned
 	def self.move(entity_manager, moving_entity, path)
-		path_array = []
-		path.each { |square|
-			path_array.push self.square_path(entity_manager, square)
-		}
-		return {"action" => "move",
-		        "arguments" =>[moving_entity, path_array]
-		       }
+		# path_array = []
+		# path.each { |square|
+		# 	path_array.push self.square_path(entity_manager, square)
+		# }
+		# return {"action" => "moveUnit",
+		#         "arguments" =>[moving_entity, path_array]
+		#        }
+      
+        actions = []
+        path[1, path.size].each { |square|
+            coordinates = self.square_path(entity_manager, square)
+            actions.push({"action" => "moveUnit",
+                          "arguments" => [moving_entity, coordinates] })
+        }
+        return actions
 	end
 
 	# This function is used to return a response to a moveable_locations

@@ -19,12 +19,13 @@ class SocketController < WebsocketRails::BaseController
 
         @@game[game_id] = em if !em.nil?
 
-    elsif Game.respond_to? method_name
+    elsif Game.respond_to? method_name      
         manager = @@game[game_id]
         method_params.unshift manager
         method_params.unshift req_id
         
         response = Game.public_send(method_name, *method_params)
+        p response
     end
 
     # the front end expects to response to be an array, if it's not though,

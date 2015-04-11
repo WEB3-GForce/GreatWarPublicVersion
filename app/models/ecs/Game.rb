@@ -8,7 +8,7 @@ require_relative "./system/turn_system.rb"
 
 class Game
 
-    def self.init_game(rows=30, cols=30, player_names=["Player 1", "Player 2"])
+    def self.init_game(rows=15, cols=15, player_names=["Player 1", "Player 2"])
         manager = EntityManager.new(rows, cols)
         players, turn, pieces = EntityFactory.create_game_basic(manager, player_names)
         start_json = JsonFactory.game_start(manager, players, turn, pieces)
@@ -21,6 +21,10 @@ class Game
                 yield row, col
             }
         }
+    end
+    
+    def self.extract_coord(location)
+        return location['y'], location['x']
     end
 
     def self.test(req_id, em)
@@ -120,9 +124,10 @@ class Game
     end
 
 
-    def self.move_unit(req_id, em, enitity, row, col)
-        location = em.board[row][col][0]
-        path = MotionSystem.make_move(em, entity, location)
+    def self.move_unit(req_id, em, entity, location)
+        row, col = self.extract_coord(location)      
+        square = em.board[row][col][0]
+        path = MotionSystem.make_move(em, entity, square)
         return JsonFactory.move(em, entity, path)
     end
 

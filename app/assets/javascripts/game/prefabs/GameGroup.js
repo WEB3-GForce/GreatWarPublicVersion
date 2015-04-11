@@ -290,7 +290,11 @@ GameGroup.prototype.moveUnit = function(unitId, square) {
     var action = {};
     action.unit = this.unitGroup.find(unitId);
     action.start = function() {
-	    this.unit.moveTo(square.x, square.y, this.onComplete, this);
+    	// for (var i = 1, l = square.length; i < l; i++) {
+    	// 	this.unit.moveTo(square[i].x, square[i].y);
+    	// }
+    	// this.onComplete();
+    	this.unit.moveTo(square.x, square.y, this.onComplete, this);
     }
     return action;
 }
