@@ -14,4 +14,8 @@
 //= require jquery_ujs
 //= require bootstrap
 //= require turbolinks
+//= require websocket_rails/main
+//= require phaser.min
+//= require_tree ./game/prefabs
+//= require_tree ./game/states
 //= require_tree .

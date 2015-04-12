@@ -1,169 +1,161 @@
-require 'json'
+require_relative "./entity/entity_factory.rb"
+require_relative "./entity/entity_manager.rb"
+require_relative "./entity/json_factory.rb"
+require_relative "./system/motion_system.rb"
+require_relative "./system/melee_system.rb"
+require_relative "./system/range_system.rb"
+require_relative "./system/turn_system.rb"
 
-require_relative "entity/EntityManager.rb"
-require_relative "entity/EntityFactory.rb"
-require_relative "component/GridComponent.rb"
-require_relative "component/NameComponent.rb"
-require_relative "component/MotionComponent.rb"
-require_relative "component/PositionComponent.rb"
-require_relative "component/OwnedComponent.rb"
-
-=begin
-	A Game represents a game instance the The Great War, with players, units, etc.
-=end
 class Game
-	attr_reader :entity_manager, :systems
-	
-	# Creates new entity manager and associated systems
-	def initialize()
-		@entity_manager = EntityManager.new
-		@systems = [] # TODO add systems need for game
-		
-		initialize_entities()
-	end
-	
-	# Processes a request object
-	def process(request)
-		raise NotImplementedError
-	end
-	
-	def get_board()
-        squares = Hash.new
-        
-        grid = @entity_manager.get_components(@board_entity, GridComponent)[0]
-        grid.grid.each { |row_array|
-            row_array.each { |element|
-                pos = @entity_manager.get_components(element, PositionComponent)[0]
-                unit = @entity_manager.get_components(element, OccupiableComponent)[0]
-                squares[pos.row.to_s+','+pos.col.to_s] = {
-                    'row' => pos.row,
-                    'col' => pos.col,
-                    'unit' => unit.occupier
-                }
-            }
-        }
-        
-        squares.to_json
-	end
-	
-	def select_entity(id)
-        squares = Hash.new 
-        
-        posComp = @entity_manager.get_components(id, PositionComponent)
-        motComp = @entity_manager.get_components(id, MotionComponent)
-        unless posComp == []
-            squares[posComp[0].row.to_s+','+posComp[0].col.to_s] = {
-                'row' => posComp[0].row,
-                'col' => posComp[0].col,
-            }
-        end
-        unless motComp == [] or posComp == []
-            row = posComp[0].row
-            col = posComp[0].col
-            dist = motComp[0].cur_movement
-            
-            (-dist..dist).each { |n|
-                (-dist..dist).each { |m|
-                    next if (n == 0 and m == 0)
-                    next if (n.abs + m.abs > dist)
-                    cur_row = row + n
-                    cur_col = col + m
-                    next if (cur_row < 0 or cur_col < 0)
-                    next if (cur_row >= 3 or cur_col >= 3) # WARNING: hack
-                    squares[cur_row.to_s+','+cur_col.to_s] = {
-                        'row' => cur_row,
-                        'col' => cur_col,
-                    }
-                }
-            }
-        end
-        
-        squares.to_json
-	end
-	
-	def move_entity(id, row, col)
-        squares = Hash.new 
-        p id, row, col
-        posComp = @entity_manager.get_components("11", PositionComponent)
-        motComp = @entity_manager.get_components(id, MotionComponent)
-        
-        return squares if motComp == [] or posComp == []
-        
-        cur_row = posComp[0].row
-        cur_col = posComp[0].col
-        max_dist = motComp[0].cur_movement
-        
-        return squares if (cur_row - row).abs + (cur_col - col).abs > max_dist
-        
-        grid = @entity_manager.get_components(@board_entity, GridComponent)[0]
-        
-        occ = @entity_manager.get_components(grid[posComp[0].row][posComp[0].col], OccupiableComponent)[0]
-        occ.occupier = nil
-        squares[posComp[0].row.to_s+','+posComp[0].col.to_s] = {
-            'row' => posComp[0].row,
-            'col' => posComp[0].col,
-            'unit' => nil
-        }
 
-        posComp[0].row = row
-        posComp[0].col = col
-        
-        occ = @entity_manager.get_components(grid[posComp[0].row][posComp[0].col], OccupiableComponent)[0]
-        occ.occupier = id
-        squares[posComp[0].row.to_s+','+posComp[0].col.to_s] = {
-            'row' => posComp[0].row,
-            'col' => posComp[0].col,
-            'unit' => id
-        }
-        
-	end
-	
-private
-    def initialize_entities()
-        # Create board
-		board = @entity_manager.create_entity()
-		@board_entity = board
-		grid = GridComponent.new(3, 3)
-		        
-        # Create tiles
-        3.times { |row|
-            3.times { |col|
-                sq = @entity_manager.create_entity()
-                @entity_manager.add_component(sq, PositionComponent.new(row, col))
-                @entity_manager.add_component(sq, OccupiableComponent.new())
-                grid[row][col] = sq
-            } 
-        }
-        
-        @entity_manager.add_component(board, grid)
-        
-        # Create players
-        2.times { |player_num|
-            player = @entity_manager.create_entity()
-            @entity_manager.add_component(player, NameComponent.new("Player "+player.to_s))
-            
-            # Create units
-            unit = @entity_manager.create_entity()
-            @entity_manager.add_component(unit, MotionComponent.new(2))
-            @entity_manager.add_component(unit, PositionComponent.new(player_num, player_num))
-            @entity_manager.add_component(unit, OwnedComponent.new(player))
-            occ = @entity_manager.get_components(grid[0][player_num], OccupiableComponent)[0]
-            occ.occupier = unit
+    def self.init_game(rows=15, cols=15, player_names=["Player 1", "Player 2"])
+        manager = EntityManager.new(rows, cols)
+        players, turn, pieces = EntityFactory.create_game_basic(manager, player_names)
+        start_json = JsonFactory.game_start(manager, players, turn, pieces)
+        return manager, start_json
+    end
+
+    def self.each_coord(req_id, em)
+        (0..em.row).each { |row| 
+            (0..em.col).each { |col| 
+                yield row, col
+            }
         }
     end
+    
+    def self.extract_coord(location)
+        return location['y'], location['x']
+    end
+
+    def self.test(req_id, em)
+        return {"hello" => "Marvin"}
+    end
+
+    def self.verify(req_id, em, entity)
+        entity_requester = nil
+        em.each_entity(UserIdComponent) { |e|
+            if em[e][UserIdComponent][0].id == req_id
+                entity_requester = e
+                break
+            end
+        }
+        entity_owner = em[entity][OwnedComponent][0].owner;
+        return entity_requester == entity_owner 
+    end
+
+    def self.get_full_info(req_id, em, row, col)
+    	return { "tile" => self.get_tile_info(req_id, em, row, col),
+                 "unit" => self.get_unit_info(req_id, em, row, col) }
+    end
+
+    def self.get_tile_info(req_id, em, row, col)        
+        return JsonFactory.square(em, em.board[row][col][0])
+    end
+
+    def self.get_unit_info(req_id, em, row, col)
+        entity = em.board[row][col][1].first
+        return JsonFactory.piece(em, entity)
+    end
+
+    def self.get_player_info(req_id, em, name=nil)
+        em.each_entity(NameComponent) { |entity| 
+            nameComp = em[entity][NameComponent].first
+            return JsonFactory.player(em, entity) if name == nameComp.name
+        }
+        return {}
+    end
+
+
+    def self.get_all_full_info(req_id, em)
+        all_info = []
+        self.each_coord(req_id, em).each { |row, col|
+            all_info << self.get_full_info(req_id, em, row, col)
+        }
+        return all_info
+    end
+
+    def self.get_all_tile_info(req_id, em)
+        all_info = []
+        self.each_coord(req_id, em).each { |row, col|
+            all_info << self.get_tile_info(req_id, em, row, col)
+        }
+        return all_info
+    end
+
+    def self.get_all_unit_info(req_id, em)
+        all_info = []
+        self.each_coord(req_id, em).each { |row, col|
+            all_info << self.get_unit_info(req_id, em, row, col)
+        }
+        return all_info
+    end
+
+    def self.get_all_player_info(req_id, em)
+        all_info = []
+        em.each_entity(NameComponent) { |entity| 
+            nameComp = em[entity][NameComponent].first
+            all_info << JsonFactory.player(em, entity)
+        }
+        return all_info
+    end
+
+
+    def self.get_unit_actions(req_id, em, entity)      
+        can_move = !MotionSystem.moveable_locations(em, entity).empty?
+        can_melee = !MeleeSystem.attackable_locations(em, entity).empty?
+        can_range = !RangeSystem.attackable_locations(em, entity).empty?
+        
+        return JsonFactory.actions(em, entity, can_move, can_melee, can_range)
+    end
+
+    def self.get_unit_moves(req_id, em, entity)
+    	locations = MotionSystem.moveable_locations(em, entity)
+    	return JsonFactory.moveable_locations(em, entity, locations)
+    end
+
+    def self.get_unit_melee_attacks(req_id, em, entity)
+        attacks = MeleeSystem.attackable_locations(em, entity)
+        return JsonFactory.melee_attacks(em, e, attacks) # UNIMPLEMENTED
+    end
+
+    def self.get_unit_range_attacks(req_id, em, entity)
+        attacks = RangeSystem.attackable_locations(em, entity)
+        return JsonFactory.range_attacks(em, e, attacks) # UNIMPLEMENTED
+    end
+
+
+    def self.move_unit(req_id, em, entity, location)
+        row, col = self.extract_coord(location)      
+        square = em.board[row][col][0]
+        path = MotionSystem.make_move(em, entity, square)
+        return JsonFactory.move(em, entity, path)
+    end
+
+    def self.melee_attack(req_id, em, entity, row, col)
+        target = em.board[row][col][1].first
+        result = MeleeSystem.update(em, entity, target)
+        return JsonFactory.attack_result(result) # UNIMPLEMENTED
+    end
+
+    def self.ranged_attack(req_id, em, entity, row, col)
+        target = em.board[row][col][1].first
+        result = RangeSystem.update(em, entity, target)
+        return JsonFactory.attack_result(result) # UNIMPLEMENTED
+    end
+
+    # End the turn for the current player.
+    def self.end_turn(req_id, em)
+        if em[TurnSystem.current_turn(em)][UserIdComponent][0].id != req_id
+            return {}
+        end
+
+        TurnSystem.update(em)
+        turn = em.get_entities_with_components(TurnComponent).first
+        return JsonFactory.end_turn(em, turn)
+    end
+
 end
 
-g = Game.new
-p 'begin'
-p g
-puts
-puts g.get_board()
-puts
-puts g.select_entity("11")
-puts
-puts g.move_entity("ll", 2, 2)
-puts g.move_entity("ll", 0, 1)
-puts g.move_entity("11", 1, 1)
-puts g.move_entity("11", 1, 2)
-puts
-puts g.get_board()
+#g = Game.new
+
+#puts g

@@ -19,7 +19,7 @@ gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.1.0'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
+gem 'therubyracer', platforms: :ruby
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -37,14 +37,36 @@ gem 'coffee-script-source', '1.8.0'
 group :development, :test do
   gem 'sqlite3',     '1.3.9'
   gem 'byebug',      '3.4.0'
-#  gem 'web-console', '2.0.0.beta3'
   gem 'spring',      '1.1.3'
-end
 
-group :test do
   gem 'minitest-reporters', '1.0.5'
   gem 'mini_backtrace',     '0.1.3'
   gem 'guard-minitest',     '2.3.1'
+
+  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  #gem 'byebug'
+
+  # Access an IRB console on exception pages or by using <%= console %> in views
+  gem 'web-console', '~> 2.0'
+
+  # development
+  gem 'rack-livereload'
+  #gem 'better_errors'
+  gem 'binding_of_caller'
+
+  # testing
+  gem 'rspec-rails'
+  gem 'database_cleaner'
+  gem 'spork-rails'
+  gem 'fuubar'
+  gem 'factory_girl_rails'
+  
+  # guard
+  gem 'guard-rspec'
+  gem 'guard-livereload', require: false
+  gem 'guard-spork'
+  gem 'guard-bundler'
+  gem 'guard-rails'
 end
 
 group :production do
@@ -52,4 +74,8 @@ group :production do
   gem 'rails_12factor', '0.0.2'
 end
 
+# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
+gem 'websocket-rails'
+gem 'phaser-rails'

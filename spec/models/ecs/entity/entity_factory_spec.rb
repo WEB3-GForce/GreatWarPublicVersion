@@ -114,15 +114,17 @@ describe EntityFactory do
 	end
 
 	it "should create a new human player" do
-		entity = EntityFactory.human_player(manager, "David")
+		entity = EntityFactory.human_player(manager, "David", 123)
 		expect(manager[entity][NameComponent][0].name).to eq("David")
 		expect(manager[entity][HumanComponent].size).to eq(1)
+		expect(manager[entity][UserIdComponent][0].id).to eq(123)
 	end
 
 	it "should create a new ai player" do
-		entity = EntityFactory.ai_player(manager, "CPU 1")
+		entity = EntityFactory.ai_player(manager, "CPU 1", 456)
 		expect(manager[entity][NameComponent][0].name).to eq("CPU 1")
 		expect(manager[entity][AIComponent].size).to eq(1)
+		expect(manager[entity][UserIdComponent][0].id).to eq(456)
 	end
 
 	it "should create a new turn entity" do
@@ -151,16 +153,18 @@ describe EntityFactory do
 		melee_comp  = manager[entity][MeleeAttackComponent][0]
 		range_comp  = manager[entity][RangeAttackComponent][0]
 		owned_comp  = manager[entity][OwnedComponent][0]
+		energy_comp  = manager[entity][EnergyComponent][0]
 		
 		expect(unit_comp.type).to eq(:infantry)
-		expect(health_comp.cur_health).to eq(10)
-		expect(health_comp.max_health).to eq(10)
-		expect(motion_comp.cur_movement).to eq(5)
-		expect(motion_comp.base_movement).to eq(5)
-		expect(melee_comp.attack).to eq(10)
-		expect(range_comp.attack).to eq(10)
-		expect(range_comp.min_range).to eq(1)
-		expect(range_comp.max_range).to eq(4)
+		expect(health_comp.cur_health).not_to be_nil
+		expect(health_comp.max_health).not_to be_nil
+		expect(energy_comp.cur_energy).not_to be_nil
+		expect(energy_comp.max_energy).not_to be_nil
+		expect(motion_comp.max_movement).not_to be_nil
+		expect(melee_comp.attack).not_to be_nil
+		expect(range_comp.attack).not_to be_nil
+		expect(range_comp.min_range).not_to be_nil
+		expect(range_comp.max_range).not_to be_nil
 		expect(owned_comp.owner).to eq(owner)
 	end
 
@@ -174,16 +178,17 @@ describe EntityFactory do
 		melee_comp  = manager[entity][MeleeAttackComponent][0]
 		range_comp  = manager[entity][RangeAttackComponent][0]
 		owned_comp  = manager[entity][OwnedComponent][0]
+		energy_comp  = manager[entity][EnergyComponent][0]
 		
 		expect(unit_comp.type).to eq(:machine_gun)
-		expect(health_comp.cur_health).to eq(20)
-		expect(health_comp.max_health).to eq(20)
-		expect(motion_comp.cur_movement).to eq(3)
-		expect(motion_comp.base_movement).to eq(3)
-		expect(melee_comp.attack).to eq(10)
-		expect(range_comp.attack).to eq(10)
-		expect(range_comp.min_range).to eq(3)
-		expect(range_comp.max_range).to eq(7)
+		expect(health_comp.cur_health).not_to be_nil
+		expect(health_comp.max_health).not_to be_nil
+		expect(energy_comp.cur_energy).not_to be_nil
+		expect(motion_comp.max_movement).not_to be_nil
+		expect(melee_comp.attack).not_to be_nil
+		expect(range_comp.attack).not_to be_nil
+		expect(range_comp.min_range).not_to be_nil
+		expect(range_comp.max_range).not_to be_nil
 		expect(owned_comp.owner).to eq(owner)
 	end
 
@@ -197,16 +202,18 @@ describe EntityFactory do
 		has_melee_comp = manager[entity].has_key? MeleeAttackComponent
 		range_comp     = manager[entity][RangeAttackComponent][0]
 		owned_comp     = manager[entity][OwnedComponent][0]
+		energy_comp  = manager[entity][EnergyComponent][0]
 		
 		expect(unit_comp.type).to eq(:artillery)
-		expect(health_comp.cur_health).to eq(10)
-		expect(health_comp.max_health).to eq(10)
-		expect(motion_comp.cur_movement).to eq(1)
-		expect(motion_comp.base_movement).to eq(1)
+		expect(health_comp.cur_health).not_to be_nil
+		expect(health_comp.max_health).not_to be_nil
+		expect(energy_comp.cur_energy).not_to be_nil
+		expect(energy_comp.max_energy).not_to be_nil
+		expect(motion_comp.max_movement).not_to be_nil
 		expect(has_melee_comp).to be false
-		expect(range_comp.attack).to eq(20)
-		expect(range_comp.min_range).to eq(5)
-		expect(range_comp.max_range).to eq(15)
+		expect(range_comp.attack).not_to be_nil
+		expect(range_comp.min_range).not_to be_nil
+		expect(range_comp.max_range).not_to be_nil
 		expect(owned_comp.owner).to eq(owner)
 	end
 
@@ -218,10 +225,13 @@ describe EntityFactory do
 		health_comp    = manager[entity][HealthComponent][0]
 		immunity_comp  = manager[entity][RangeAttackImmunityComponent][0]
 		owned_comp     = manager[entity][OwnedComponent][0]
+		energy_comp  = manager[entity][EnergyComponent][0]
 		
 		expect(unit_comp.type).to eq(:command_bunker)
-		expect(health_comp.cur_health).to eq(30)
-		expect(health_comp.max_health).to eq(30)
+		expect(health_comp.cur_health).not_to be_nil
+		expect(health_comp.max_health).not_to be_nil
+		expect(energy_comp.cur_energy).not_to be_nil
+		expect(energy_comp.max_energy).not_to be_nil
 		expect(immunity_comp.class).to eq(RangeAttackImmunityComponent)
 		expect(owned_comp.owner).to eq(owner)
 	end
@@ -297,9 +307,9 @@ describe EntityFactory do
 
 	it "should create a new basic game with 1 player" do
 		game_bundle = EntityFactory.create_game_basic(manager, ["David"])
-		turn_comp   = manager[game_bundle[0]][TurnComponent][0]
-		player1     = game_bundle[1][0][0]
-		army1       = game_bundle[1][0][1]
+		turn_comp   = manager[game_bundle[1]][TurnComponent][0]
+		player1     = game_bundle[0][0]
+		army1       = game_bundle[2][0...25]
 	
 		expect(turn_comp.current_turn).to eq(player1)
 		expect(turn_comp.next_turn).to eq(player1)
@@ -312,11 +322,11 @@ describe EntityFactory do
 
 	it "should create a new basic game with 2 player" do
 		game_bundle = EntityFactory.create_game_basic(manager, ["David", "Charlie"])
-		turn_comp   = manager[game_bundle[0]][TurnComponent][0]
-		player1     = game_bundle[1][0][0]
-		army1       = game_bundle[1][0][1]
-		player2     = game_bundle[1][1][0]
-		army2       = game_bundle[1][1][1]
+		turn_comp   = manager[game_bundle[1]][TurnComponent][0]
+		player1     = game_bundle[0][0]
+		army1       = game_bundle[2][0...25]
+		player2     = game_bundle[0][1]
+		army2       = game_bundle[2][25...50]
 
 		expect(turn_comp.current_turn).to eq(player1)
 		
@@ -335,13 +345,13 @@ describe EntityFactory do
 
 	it "should create a new basic game with 3 player" do
 		game_bundle = EntityFactory.create_game_basic(manager, ["David", "Charlie", "Jack"])
-		turn_comp   = manager[game_bundle[0]][TurnComponent][0]
-		player1     = game_bundle[1][0][0]
-		army1       = game_bundle[1][0][1]
-		player2     = game_bundle[1][1][0]
-		army2       = game_bundle[1][1][1]
-		player3     = game_bundle[1][2][0]
-		army3       = game_bundle[1][2][1]
+		turn_comp   = manager[game_bundle[1]][TurnComponent][0]
+		player1     = game_bundle[0][0]
+		army1       = game_bundle[2][0...25]
+		player2     = game_bundle[0][1]
+		army2       = game_bundle[2][25...50]
+		player3     = game_bundle[0][2]
+		army3       = game_bundle[2][50...75]
 
 		expect(turn_comp.current_turn).to eq(player1)
 		
@@ -366,15 +376,15 @@ describe EntityFactory do
 
 	it "should create a new basic game with 4 player" do
 		game_bundle = EntityFactory.create_game_basic(manager, ["David", "Charlie", "Jack", "Steve"])
-		turn_comp   = manager[game_bundle[0]][TurnComponent][0]
-		player1     = game_bundle[1][0][0]
-		army1       = game_bundle[1][0][1]
-		player2     = game_bundle[1][1][0]
-		army2       = game_bundle[1][1][1]
-		player3     = game_bundle[1][2][0]
-		army3       = game_bundle[1][2][1]
-		player4     = game_bundle[1][3][0]
-		army4       = game_bundle[1][3][1]
+		turn_comp   = manager[game_bundle[1]][TurnComponent][0]
+		player1     = game_bundle[0][0]
+		army1       = game_bundle[2][0...25]
+		player2     = game_bundle[0][1]
+		army2       = game_bundle[2][25...50]
+		player3     = game_bundle[0][2]
+		army3       = game_bundle[2][50...75]
+		player4     = game_bundle[0][3]
+		army4       = game_bundle[2][75...100]
 
 		expect(turn_comp.current_turn).to eq(player1)
 		

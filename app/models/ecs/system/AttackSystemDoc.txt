@@ -1,0 +1,121 @@
+This file provides general documentation on the format of attack systems and
+how to create new ones.
+
+In general, the attack system consists of three main tiers:
+
+	1. Higher Level Systems
+	2. DamageSystem
+	3. KillSystem
+	
+Let's examine each in turn starting at the bottom and moving to the top:
+
+3. KillSystem
+
+	The KillSystem is simply responsible for checking if entities are alive
+	and removing dead entities from the game (entity_manager, board, etc).
+
+2. DamageSystem
+
+	The DamageSystem is responsible for applying damage to entities. It
+	is simply given the entity and the damage to apply. It does not care
+	how the damage was determined but simply applies it. It then calls
+	the KillSystem to see if the entity needs to be removed.
+	
+1. Higher Level Systems
+
+	In short, higher level systems are responsible for calculating the damage
+	to an entity to be passed to the DamageSystem.
+	
+	For example, the MeleeSystem is such a system. It performs
+	checks to make sure that the entities involved can actually attack
+	each other. Then, it retrieves the MeleeAttackComponent of the attacker
+	and then sends (attacked_entity, damage) to the DamageSystem for it to
+	apply the damage. Lastly, it makes the attacked entity retaliate if it
+	can attack and is still alive.
+	
+	In short, the higher level systems handle the semantics of the attacks
+	and use the lower level systems to actually apply the damage.
+
+
+Each system also returns an array describing the result. This is done to make
+sending data to the frontend easier. In short, the array returned should be
+of the following form:
+
+	[[information_about_result], [more_info], [more_info]]
+	
+This will make it easier to send messages to the frontend. One would simply need
+to go through each array, transform it into a message, and send it off.
+
+All systems return [] if an invalid argument is given or nothing occurs.
+
+On that note, let's look at how each return result is formatted:
+
+
+3. KillSystem
+
+	At the moment, the system returns a result of the following:
+	
+		[["kill", entity_id, whether_entity_was_removed_from_board, owner_if_it_has_one]]
+		
+	For example:
+	
+		[["kill", "entity#0", true, "entity#21"]]
+		
+
+2. DamageSystem
+
+	The basic return result is:
+	
+		[[entity_damaged, damage_amount]] 
+		
+	For example:
+	
+		[["entity#1", 10]]
+	
+	If the entity also dies, it will return
+	
+		[[entity_damaged, damage_amount], [kill_info]]
+		
+	For example:
+	
+		[["entity#0", 10], ["kill", "entity#0", true, "entity#21"]]
+		
+
+3. Higher Level System
+
+	Higher level systems will basically be lists of DamageSystem/KillSystem
+	records.
+	
+	There is one important note that needs to be made. The frontend needs to
+	know what type of attack caused damage. Hence, it is the responsibility
+	for the higher level system to include this.
+	
+	For example, this result from the DamageSystem:
+	
+		[["entity#1", 10]]
+		
+	would be transformed into this for the MeleeSystem:
+	
+		[["melee", "entity#1", 10]]
+	
+	Each higher level attack system should add its result. The easiest way
+	to do this programatically is:
+	
+		result[0].unshift type_of_attack if !result.empty?
+
+	where result is the return result of the DamageSystem.
+
+
+As for two final tips:
+
+	1. Always return one's results as an array of arrays:
+	
+		[[thing_one], [thing_two], [thing_three], ...]
+		
+	2. array.concat is your friend
+	
+		[[thing_one]].concat [[thing_two]] => [[thing_one], [thing_two]]
+		
+		[[thing_one]].concat [] => [[thing_one]]
+		
+	Hence, there is no need to have special cases for empty arrays.

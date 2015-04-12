@@ -8,6 +8,10 @@ describe RangeAttackComponent do
 		expect(RangeAttackComponent < Component).to be true
 	end
 
+	it "should include ENERGY_COST" do
+		expect(RangeAttackComponent < ENERGY_COST).to be true
+	end
+
 	context "when initializing" do
 
 		it "should initialize itself properly" do
@@ -15,6 +19,26 @@ describe RangeAttackComponent do
 			expect(rattack_comp.attack).to eq(10)
 			expect(rattack_comp.min_range).to eq(3)
 			expect(rattack_comp.max_range).to eq(7)
+			expect(rattack_comp.splash).to eq([1.0])
+			expect(rattack_comp.energy_cost).to eq(1)
+		end
+
+		it "should initialize itself properly with splash" do
+			rattack_comp = RangeAttackComponent.new(10, 3, 7, [1.0, 0.5])
+			expect(rattack_comp.attack).to eq(10)
+			expect(rattack_comp.min_range).to eq(3)
+			expect(rattack_comp.max_range).to eq(7)
+			expect(rattack_comp.splash).to eq([1.0, 0.5])
+			expect(rattack_comp.energy_cost).to eq(1)
+		end
+
+		it "should initialize itself properly with cost" do
+			rattack_comp = RangeAttackComponent.new(10, 3, 7, [1.0, 0.5], 7)
+			expect(rattack_comp.attack).to eq(10)
+			expect(rattack_comp.min_range).to eq(3)
+			expect(rattack_comp.max_range).to eq(7)
+			expect(rattack_comp.splash).to eq([1.0, 0.5])
+			expect(rattack_comp.energy_cost).to eq(7)
 		end
 
 		it "should ensure attack >= 0" do

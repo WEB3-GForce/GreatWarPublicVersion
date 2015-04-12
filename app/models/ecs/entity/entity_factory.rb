@@ -149,9 +149,10 @@ public
 	#
 	# Returns
 	#   the newly created Human Player Entity
-	def self.human_player(entity_manager, name)
+	def self.human_player(entity_manager, name, id=-1)
 		return self.create_entity(entity_manager,
-					  [NameComponent.new(name),
+					  [UserIdComponent.new(id),
+					   NameComponent.new(name),
 					   HumanComponent.new])
 	end
 
@@ -164,9 +165,10 @@ public
 	#
 	# Returns
 	#   the newly created AI Player Entity
-	def self.ai_player(entity_manager, name)
+	def self.ai_player(entity_manager, name, id=-1)
 		return self.create_entity(entity_manager,
-					  [NameComponent.new(name),
+					  [UserIdComponent.new(id),
+					   NameComponent.new(name),
 					   AIComponent.new])
 	end
 
@@ -186,6 +188,17 @@ public
 					  [TurnComponent.new(players)])
 	end
 
+	# ;)
+	def self.goliath(entity_manager, owner)
+		return self.create_entity(entity_manager,
+					  [PieceComponent.infantry,
+					   HealthComponent.new(30),
+					   MotionComponent.new(1),
+					   MeleeAttackComponent.new(20),
+					   EnergyComponent.new(1),
+					   OwnedComponent.new(owner)])
+	end
+
 	# This function creates a new AI player etity. These entities
 	# represent the players that are controlled by artifical intelligence
 	#
@@ -199,6 +212,7 @@ public
 		return self.create_entity(entity_manager,
 					  [PieceComponent.infantry,
 					   HealthComponent.new(10),
+					   EnergyComponent.new(10),
 					   MotionComponent.new(5),
 					   MeleeAttackComponent.new(10),
 					   RangeAttackComponent.new(10, 1, 4),
@@ -218,6 +232,7 @@ public
 		return self.create_entity(entity_manager,
 					  [PieceComponent.machine_gun,
 					   HealthComponent.new(20),
+					   EnergyComponent.new(10),
 					   MotionComponent.new(3),
 					   MeleeAttackComponent.new(10),
 					   RangeAttackComponent.new(10, 3, 7),
@@ -237,6 +252,7 @@ public
 		return self.create_entity(entity_manager,
 					  [PieceComponent.artillery,
 					   HealthComponent.new(10),
+					   EnergyComponent.new(10),
 					   MotionComponent.new(1),
 					   RangeAttackComponent.new(20, 5, 15),
 					   OwnedComponent.new(owner)])
@@ -256,6 +272,7 @@ public
 		return self.create_entity(entity_manager,
 					  [PieceComponent.command_bunker,
 					   HealthComponent.new(30),
+					   EnergyComponent.new(10),
 					   RangeAttackImmunityComponent.new,
 					   OwnedComponent.new(owner)])
 	end
@@ -369,16 +386,14 @@ public
 	#
 	# Arguments
 	#   entity_manager = the entity manager to add the new entities to
-	#   player_anmes   = the names of the players to have (max 4)
+	#   player_names   = the names of the players to have (max 4)
 	#
 	# Returns
 	#   an array of the following entities:
 	#
 	#   [turn_entity, 
-	#    [ [player1_entity, [entities_in_player1's_army]],
-	#      [player2_entity, [entities_in_player2's_army]],
-	#      ...
-	#    ]
+	#    [player_entity1, player_entity2, ...],
+	#    [piece_entity1, piece_entity2, piece_entity3, ....]
 	#   ]
 	#
 	# Note
@@ -399,17 +414,17 @@ public
 				 EntityFactory.method(:place_army_bottom_left)]
 		
 		players = []
-		players_and_army = []
+		pieces = []
 		player_names.each_with_index { |name, name_index|
 			player = self.human_player(entity_manager, name)
 			army   = self.create_army(entity_manager, player)
 			players.push player
-			players_and_army.push [player, army]
+			pieces.concat army
 			place_methods[name_index].call(entity_manager, army)
 		}
 		
 		turn = self.turn_entity(entity_manager, players)
-		return [turn, players_and_army]
+		return [players, turn, pieces]
 	end
 
 =begin

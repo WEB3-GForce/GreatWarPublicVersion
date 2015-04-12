@@ -26,8 +26,9 @@ class Entity < String
 	# Postcondition
 	#  A new entity is created. It is represented as a uuid string to ensure
 	#  that each entity is uniquely identifiable.
-	def initialize()
-		super SecureRandom.uuid
+	def initialize(string=nil)
+		string = SecureRandom.uuid if string == nil
+		super string
 	end
 
 	# Creates a new Entity for debugging

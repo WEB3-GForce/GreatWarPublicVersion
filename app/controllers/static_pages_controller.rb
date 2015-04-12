@@ -10,4 +10,7 @@ class StaticPagesController < ApplicationController
 
   def lobby
   end
+
+  def index
+  end
 end

@@ -1,63 +1,49 @@
 require_relative "./component.rb"
+require_relative "./energy_module.rb"
 
 =begin
-	The MotionComponent records stats that are necessary for movement
-	upon a board. The component stores two main stats: the current
-	movement of the entity (which denotes how many squares an entity
-	can currently move) and the base movement (which denotes the entity's
-	original movement status). Current movement could potentially change
-	based on status boosts; base movement is used to return the movement
-	to normal.
+	The MotionComponent handles stats necessary for movement. In particular,
+	
 =end
 class MotionComponent < Component
+	
+	include ENERGY_COST
 
-	attr_reader :base_movement, :cur_movement
+	attr_reader :max_movement
 
 	# Initializes a new MotionComponent object
 	#
 	# Arguments
-	#   base_movement = the default movement of the entity
-	#   cur_movement  = the amount of spaces the entity can currently move
+	#   max_movement = the maximum reach of the entity
+	#   energy_cost  = the amount of energy a single movement takes
 	#
 	# Postcondtion
 	#   The MotionComponent object is properly initialized
-	def initialize(base_movement, cur_movement=base_movement)
-		self.base_movement = base_movement
-		self.cur_movement  = cur_movement
-	end
-  
-  	# Sets the current movement to a new movement
-  	#
-  	# Arguments
-  	#   movement = the new movement to set current movement to
-  	#
-  	# Postcondition
-  	#   The current movement is set to the new movement or 0 if the new
-  	#   movement was negative
-	def cur_movement=(movement)
-		@cur_movement = [0, movement].max
+	def initialize(max_movement, energy_cost=1)
+		self.max_movement  = max_movement
+		self.energy_cost   = energy_cost
 	end
 
-  	# Sets the base movement to a new movement
+  	# Sets the max movement to a new movement
   	#
   	# Arguments
-  	#   movement = the new movement to set base movement to
+  	#   movement = the new movement to set max movement to
   	#
   	# Postcondition
-  	#   The base movement is set to the new movement or 0 if the new
+  	#   The max movement is set to the new movement or 0 if the new
   	#   movement was negative
-	def base_movement=(movement)
-		@base_movement = [0, movement].max
+	def max_movement=(movement)
+		@max_movement = [0, movement].max
 	end
 
 	# Whether the entity can move
 	def can_move?
-		@cur_movement > 0
+		@max_movement > 0
 	end
 
   	# Returns a string representation of the component  
 	def to_s
-		"Movement: #{@cur_movement}/#{@base_movement}"
+		"Movement: #{@max_movement}"
 	end
 
   

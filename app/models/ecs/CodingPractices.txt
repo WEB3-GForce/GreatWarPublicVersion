@@ -1,0 +1,170 @@
+Preamble:
+
+	This document attempts to highlight key coding practices for this project.
+	Feel free to propose amendments or changes to this document.
+
+	As I have found in development thus far, many of these practices will be tremendously
+	helpful for us moving on. Proper documentation helps each other to understand
+	code others have written along with nuances of the system. Testing has litterly
+	exposed several errors in my programs. Such errors would have been a pain
+	to uncover later when we are dealing with a larger system.
+
+	Taking effort in the beginning to develop "beautiful code" as the
+	teacher would say will pay dividends in the future. It is much easier to
+	document and get a file working now when it is first created than when
+	it is part of a massive system with many interconnected parts.
+
+Practices:
+
+	A. Comments
+
+		1) For each method, provide introductory documentation:
+	
+			a) The simplist case is:
+		
+				# Description of what method does
+				#
+				# Arguments
+				#   arg = ...
+				#   ...
+				#
+				# Returns
+				#   ...
+				#
+				# Notes
+				#   Key notes about the function whether it be how
+				#   to call the function, more about its return results,
+				#   or an explanation of nuances in implementation.
+				def method(arg, ...)
+		
+			b) If a function is not intended to have a return, describe its
+			postcondition instead
+		
+				# This function should do xy
+				#
+				# Arguments
+				#   arg = ....
+				#
+				# Postcondition
+				#   The piece should be added to the board
+				def method(arg)
+			
+			c) If the method is extremely simple, a one line comment will
+			suffice
+		
+				# Returns a string representation of the object
+				def to_s
+				
+		2) For each class, provide introductary comments
+	
+			=begin
+				This is the best class ever. When describing your
+				best class, talk a little about what it is, what it does,
+				and why it is important.
+			
+				If there's anything particular the world should know
+				about the class (such as how it is used), include it also
+			=end
+			class BestClassEver
+		
+		3) For nuances in the code, make sure to document them:
+	
+			a) In the code
+		
+				This is an example from motion_system.rb. result is an
+				array of square entities that a moveable_entity can move
+				to.
+		
+				# Don't include the square the entity is currently standing on.
+				result.delete entity_manager.board[pos_comp.row][pos_comp.col][0]
+			
+			b) In another document
+		
+				This file and AttackSystemDoc.txt are such examples.
+
+	B. Testing
+
+		1) For each file written, a unit test should be included.
+	
+			a) Unit tests are kept under the "spec" folder
+		
+			b) Unit tests should be named class_to_test_spec.rb
+		
+			c) spec/spec_helper.rb preloads all the files needed for tests.
+			Alter this file to load new files.
+		
+			d) Look here to learn more about writing good rspec tests: http://betterspecs.org/
+		
+				i) In short, unit tests should test one specific function
+			
+				ii) There should be many of them that exhaustively test the code.
+		
+			e) The code base currently has several examples of tests.
+		
+		2) Unit tests should be written shortly after file creation
+	
+			a) A good rule of thumb is not to check in code without tests
+		
+			b) Generally, I have followed what I like to call TVD "Test
+			Verification Development". I write code for some methods and then
+			write tests to ensure it is working. Then, repeat.
+		
+		3) Unit tests should be written for new features added to old code
+		
+		4) Unit tests should be updated when old features are changed 
+		
+		5) Broken unit tests should be fixed ASAP
+	
+			a) Before submitting code, run "rspec spec" in the top level directory.
+			It will run all the unit tests. They should all pass.
+		
+	C. Naming
+
+		1) Follow the style guide Ruby:
+	
+			https://github.com/bbatsov/ruby-style-guide#naming
+		
+		2) In general:
+	
+			a. classes are CamelCase
+		
+			b. Files, local variables, and methods are snake_case
+		
+				motion_system.rb
+				good_variable
+				def cool_method()
+			
+		3) Documentation files such as this should be CamelCased and .txt files
+	
+			a. AttackSystemDoc.txt
+
+	D. Coding
+
+		1) Try to follow the preferred practices of Ruby
+	
+		2) Reek your code.
+	
+			a) Reek will denote important ways in which the code can be
+			improved.
+		
+			b) Keep in mind Reek is just a heuristic. Though helpful, it
+			does not need to be followed to the tee.
+
+
+
+Concluding Remarks:
+
+	While this document is not meant to be legalistic, please do try to follow
+	the coding practices as much as possible. In my coding experience thus far,
+	I have found these things to be vastly helpful for code cleanliness and
+	healthiness. 
+	
+		1) Communication is important within the team. Hence, good documentation is key.
+	
+		2) Catching bugs early with testing is much easier than having to debug a
+		large system with multiple points of failure
+	
+		3) Good coding practices help make code more readable.
+	
+	As stated in the preamble, feel free to propose changes or amendments to
+	this documentation.
