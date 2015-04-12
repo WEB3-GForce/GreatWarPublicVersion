@@ -15,6 +15,14 @@ class MeleeSystem < System
 
 private
 
+	# Determines whether an entity has enough energy to atttack
+	def self.enough_energy?(entity_manager, entity)
+		melee_comp = entity_manager.get_components(entity, MeleeAttackComponent).first
+		cost = melee_comp.energy_cost
+
+		return EnergySystem.enough_energy?(entity_manager, entity, cost)
+	end
+
 	# Determines if it is valid for two entities to melee attack each other.
 	#
 	# Arguments
@@ -57,10 +65,10 @@ private
 public
 
 	# Gets the locations that an entity can melee attack
-	# TODO testing/documentation
 	def self.attackable_locations(entity_manager, entity)
 		if !EntityType.melee_entity?(entity_manager, entity) or 
-				!EntityType.placed_entity?(entity_manager, entity)
+				!EntityType.placed_entity?(entity_manager, entity) or
+				!self.enough_energy?(entity_manager, entity)
 			return []
 		end
         
@@ -83,6 +91,32 @@ public
 				occ_own_comp = entity_manager.get_components(occ, OwnedComponent).first
 				results.push square if occ_own_comp.owner != own_comp.owner
 			}
+		}
+
+		return results
+	end
+
+	# Gets the locations that an entity could melee attack in theory
+	def self.attackable_range(entity_manager, entity)
+		if !EntityType.melee_entity?(entity_manager, entity) or 
+				!EntityType.placed_entity?(entity_manager, entity) or
+				!self.enough_energy?(entity_manager, entity)
+			return []
+		end
+
+		results = []
+
+		pos_comp = entity_manager.get_components(entity, PositionComponent).first
+		[[-1, 0], [1, 0], [0, -1], [0, 1]].each { |row_diff, col_diff|
+			row = pos_comp.row + row_diff
+			col = pos_comp.col + col_diff
+
+			next if row < 0 or row >= entity_manager.row
+			next if col < 0 or col >= entity_manager.col
+
+			(square, occupants) = entity_manager.board[row][col]
+			
+			results.push square if !entity_manager.has_components(square, [ImpassableComponent])
 		}
 
 		return results

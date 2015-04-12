@@ -114,12 +114,12 @@ class Game
     end
 
     def self.get_unit_melee_attacks(req_id, em, entity)
-        attacks = MeleeSystem.attackable_locations(em, entity)
+        attacks = MeleeSystem.attackable_range(em, entity)
         return JsonFactory.melee_attackable_locations(em, entity, attacks)
     end
 
     def self.get_unit_ranged_attacks(req_id, em, entity)
-        attacks = RangeSystem.attackable_locations(em, entity)
+        attacks = RangeSystem.attackable_range(em, entity)
         return JsonFactory.range_attackable_locations(em, entity, attacks)
     end
 

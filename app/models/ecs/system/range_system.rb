@@ -12,6 +12,14 @@ class RangeSystem < System
 #===============================================================================
 private
 
+	# Determines whether an entity has enough energy to atttack
+	def self.enough_energy?(entity_manager, entity)
+		range_comp = entity_manager.get_components(entity, RangeAttackComponent).first
+		cost = range_comp.energy_cost
+
+		return EnergySystem.enough_energy?(entity_manager, entity, cost)
+	end
+
 	# Generates entities within a certain range of an entity's position.
 	def self.locations_in_range(entity_manager, entity, min_range, max_range)
 		pos_comp = entity_manager.get_components(entity, PositionComponent).first
@@ -103,7 +111,8 @@ public
 	#
 	def self.attackable_locations(entity_manager, entity)
 		if !EntityType.range_entity?(entity_manager, entity) or 
-				!EntityType.placed_entity?(entity_manager, entity)
+				!EntityType.placed_entity?(entity_manager, entity) or
+				!self.enough_energy?(entity_manager, entity)
 			return []
 		end
 		
@@ -120,6 +129,27 @@ public
 				occ_own_comp = entity_manager.get_components(occ, OwnedComponent).first
 				results.push square if occ_own_comp.owner != own_comp.owner
 			}
+		}
+
+		return results
+	end
+
+	# Gets locations that an entity could range attack in theory.
+	def self.attackable_range(entity_manager, entity)
+		if !EntityType.range_entity?(entity_manager, entity) or 
+				!EntityType.placed_entity?(entity_manager, entity) or
+				!self.enough_energy?(entity_manager, entity)
+			return []
+		end
+
+		range_comp = entity_manager.get_components(entity, RangeAttackComponent).first
+		
+		results = []
+
+		self.locations_in_range(entity_manager, entity, 
+			range_comp.min_range, range_comp.max_range) { |square, occupants|
+
+			results.push square if !entity_manager.has_components(square, [ImpassableComponent])
 		}
 
 		return results

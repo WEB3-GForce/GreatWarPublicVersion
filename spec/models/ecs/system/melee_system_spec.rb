@@ -15,9 +15,13 @@ describe MeleeSystem do
 
 	let(:manager)    {EntityManager.new(3, 3)}
 	let(:human1)     {EntityFactory.human_player(manager, "David")}
+    let(:human2)     {EntityFactory.human_player(manager, "Goliath")}
 	let(:infantry)   {debug_infantry(manager, human1)}
-	let(:infantry2)  {debug_infantry(manager, human1)}
-	let(:flatland)   {EntityFactory.flatland_square(manager)}
+	let(:infantry2)  {debug_infantry(manager, human2)}
+	let(:infantry3)  {debug_infantry(manager, human2)}
+	let(:flatland1)   {EntityFactory.flatland_square(manager)}
+	let(:flatland2)   {EntityFactory.flatland_square(manager)}
+	let(:flatland3)   {EntityFactory.flatland_square(manager)}
 	let(:row)        {1}
 	let(:col)        {1}
 
@@ -27,12 +31,12 @@ describe MeleeSystem do
 		manager.add_component(infantry2,
 				      PositionComponent.new(row+1, col))
 	
-		manager.add_component(flatland,
+		manager.add_component(flatland1,
 				      PositionComponent.new(row, col))
-		manager.add_component(flatland,
+		manager.add_component(flatland2,
 				      PositionComponent.new(row+1, col))
-		manager.board[row][col] = [flatland, [infantry]]
-		manager.board[row+1][col] = [flatland, [infantry2]]
+		manager.board[row][col] = [flatland1, [infantry]]
+		manager.board[row+1][col] = [flatland2, [infantry2]]
 	end
 	
 	before(:each) do
@@ -42,6 +46,19 @@ describe MeleeSystem do
 	it "should be a subclass of System" do
 		expect(MeleeSystem < System).to be true
 	end
+
+    context "when calling enough_energy?" do
+        it "should return true if enough energy" do
+            result = MeleeSystem.enough_energy?(manager, infantry)
+            expect(result).to be true
+        end
+
+        it "should return false if not enough energy" do
+            manager[infantry][EnergyComponent].first.cur_energy = 0
+            result = MeleeSystem.enough_energy?(manager, infantry)
+            expect(result).to be false
+        end
+    end
 
 	context "when calling valid_melee?" do
 	
@@ -95,6 +112,136 @@ describe MeleeSystem do
 			expect(result[1][0]).to eq "kill"
 		end
 	end
+
+	context "when calling attackable_locations" do
+    
+        it "should fail if the entity has no PositionComponent" do
+            manager[infantry].delete PositionComponent
+            result = MeleeSystem.attackable_locations(manager, infantry)
+            
+            expect(result.empty?).to eq true
+        end
+
+        it "should fail if the entity is no MeleeAttackComponent" do
+            manager[infantry].delete MeleeAttackComponent
+            result = MeleeSystem.attackable_locations(manager, infantry)
+            
+            expect(result.empty?).to eq true
+        end
+
+        it "should return [] if not enough energy remains" do
+            manager[infantry][EnergyComponent].first.cur_energy = 0
+            result = MeleeSystem.attackable_locations(manager, infantry)
+            expect(result).to eq []
+        end
+
+        it "should not fail on out-of-board locations" do
+            manager[infantry].delete PositionComponent
+            manager.add_component(infantry, PositionComponent.new(0,0))
+            MeleeSystem.attackable_locations(manager, infantry)
+        end
+
+        it "should return correct square" do
+            result = MeleeSystem.attackable_locations(manager, infantry)
+            answer = [flatland2]
+            expect(result).to eq answer
+        end
+
+        it "should return multiple correct squares" do
+            manager.add_component(infantry3,
+                          PositionComponent.new(row, col+1))
+            manager.add_component(flatland3,
+                          PositionComponent.new(row, col+1))
+            manager.board[row][col+1] = [flatland3, [infantry3]]
+
+            result = MeleeSystem.attackable_locations(manager, infantry)
+            answer = [flatland2, flatland3]
+            expect(result.sort).to eq answer.sort
+        end
+
+        it "should not return own unit squares" do            
+            manager.add_component(infantry3,
+                          PositionComponent.new(row, col+1))
+            manager.add_component(flatland3,
+                          PositionComponent.new(row, col+1))
+            manager.board[row][col+1] = [flatland3, [infantry3]]
+
+            manager[infantry3][OwnedComponent].first.owner = human1
+
+            result = MeleeSystem.attackable_locations(manager, infantry)
+            answer = [flatland2]
+            expect(result.sort).to eq answer.sort
+        end
+    end
+
+    context "when calling attackable_range" do
+    
+        it "should fail if the entity has no PositionComponent" do
+            manager[infantry].delete PositionComponent
+            result = MeleeSystem.attackable_range(manager, infantry)
+            
+            expect(result.empty?).to eq true
+        end
+
+        it "should fail if the entity is no MeleeAttackComponent" do
+            manager[infantry].delete MeleeAttackComponent
+            result = MeleeSystem.attackable_range(manager, infantry)
+            
+            expect(result.empty?).to eq true
+        end
+
+        it "should return [] if not enough energy remains" do
+            manager[infantry][EnergyComponent].first.cur_energy = 0
+            result = MeleeSystem.attackable_range(manager, infantry)
+            expect(result).to eq []
+        end
+
+        it "should not fail on out-of-board locations" do
+            manager[infantry].delete PositionComponent
+            manager.add_component(infantry, PositionComponent.new(0,0))
+            MeleeSystem.attackable_range(manager, infantry)
+        end
+
+        it "should return correct squares (1)" do
+            result = MeleeSystem.attackable_range(manager, infantry)
+            expect(result.size).to eq 4
+        end
+
+        it "should return correct squares (2)" do
+            manager.add_component(infantry3,
+                          PositionComponent.new(row+1, col+1))
+            manager.add_component(flatland3,
+                          PositionComponent.new(row+1, col+1))
+            manager.board[row+1][col+1] = [flatland3, [infantry3]]
+
+            result = MeleeSystem.attackable_range(manager, infantry)
+            expect(result.size).to eq 4
+        end
+
+        it "should return multiple correct squares" do
+            manager.add_component(infantry3,
+                          PositionComponent.new(row, col+1))
+            manager.add_component(flatland3,
+                          PositionComponent.new(row, col+1))
+            manager.board[row][col+1] = [flatland3, [infantry3]]
+
+            result = MeleeSystem.attackable_range(manager, infantry)
+            expect(result.size).to eq 4
+        end
+
+        it "should return unit squares" do            
+            manager.add_component(infantry3,
+                          PositionComponent.new(row, col+1))
+            manager.add_component(flatland3,
+                          PositionComponent.new(row, col+1))
+            manager.board[row][col+1] = [flatland3, [infantry3]]
+
+            manager[infantry3][OwnedComponent].first.owner = human1
+
+            result = MeleeSystem.attackable_range(manager, infantry)
+            expect(result.size).to eq 4
+        end
+    end
 
 	context "when calling update" do
 
