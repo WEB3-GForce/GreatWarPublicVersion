@@ -153,7 +153,7 @@ private
 			return results
 		end
 
-		if self.occupy_square?(entity_manager, square, occupants) &&
+		if entity_manager.has_components(square, [OccupiableComponent]) &&
 		   !results.include?(square)
 			results.push square
 		end
