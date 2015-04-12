@@ -386,7 +386,7 @@ public
 	#
 	# Arguments
 	#   entity_manager = the entity manager to add the new entities to
-	#   player_names   = the names of the players to have (max 4)
+	#   users          = map of player ids => names (max 4)
 	#
 	# Returns
 	#   an array of the following entities:
@@ -404,7 +404,7 @@ public
 	#
 	#   When initializing a new game, this is the only method that needs
 	#   to be called.     
-	def self.create_game_basic(entity_manager, player_names)
+	def self.create_game_basic(entity_manager, users)
 
 		self.create_board_basic(entity_manager)
 		
@@ -415,12 +415,12 @@ public
 		
 		players = []
 		pieces = []
-		player_names.each_with_index { |name, name_index|
-			player = self.human_player(entity_manager, name)
+		users.each_with_index { |(id, name), index|
+			player = self.human_player(entity_manager, name, id)
 			army   = self.create_army(entity_manager, player)
 			players.push player
 			pieces.concat army
-			place_methods[name_index].call(entity_manager, army)
+			place_methods[index].call(entity_manager, army)
 		}
 		
 		turn = self.turn_entity(entity_manager, players)

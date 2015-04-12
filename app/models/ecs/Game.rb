@@ -8,9 +8,9 @@ require_relative "./system/turn_system.rb"
 
 class Game
 
-    def self.init_game(rows=15, cols=15, player_names=["Player 1", "Player 2"])
+    def self.init_game(users, rows=15, cols=15)
         manager = EntityManager.new(rows, cols)
-        players, turn, pieces = EntityFactory.create_game_basic(manager, player_names)
+        players, turn, pieces = EntityFactory.create_game_basic(manager, users)
         start_json = JsonFactory.game_start(manager, players, turn, pieces)
         return manager, start_json
     end
