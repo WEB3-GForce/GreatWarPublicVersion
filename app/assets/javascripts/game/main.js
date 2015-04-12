@@ -9,7 +9,7 @@ window.onload = function () {
 	TILE_SIZE: 32
     }
 
-    var game = new Phaser.Game(constants.CAMERA_WIDTH, constants.CAMERA_HEIGHT, Phaser.AUTO, 'the-great-war');
+    var game = new Phaser.Game(constants.CAMERA_WIDTH, constants.CAMERA_HEIGHT, Phaser.CANVAS, 'the-great-war');
 
     game.constants = constants;
     // Game States

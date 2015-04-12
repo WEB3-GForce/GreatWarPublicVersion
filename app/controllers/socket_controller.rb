@@ -55,6 +55,15 @@ class SocketController < WebsocketRails::BaseController
                                     }
                                   }
                                 }]
+                  },
+                  {
+                    action: "updateUnitsHealth",
+                    arguments: [[
+                                 {
+                                   id: 1,
+                                   newHealth: 4
+                                 }
+                                ]]
                   }
                   
                  ]

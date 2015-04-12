@@ -237,29 +237,23 @@ GameGroup.prototype.resetEnergy = function(playerId) {
 
 GameGroup.prototype.updateUnitsHealth = function(units) {
     var action = {
-	unitGroup: this.unitGroup,
-	ui: this.ui,
-	data: units
+    	unitGroup: this.unitGroup,
+    	ui: this.ui,
+    	data: units
     }
     action.units = units.map(function(unit) {
-	return this.unitGroup.find(unit.id);
+    	return this.unitGroup.find(unit.id);
     }, this);
     action.tweens = units.map(function(unit, i) {
-	return this.game.add.tween(action.units[i]).to({alpha: 0}, 500, null, false, 0, 5, true);
+    	return this.ui.updateHealth(action.units[i], units[i].newHealth);
     }, this);
     action.start = function() {
-	this.tweens[0].onComplete.add(function() {
-	    this.onComplete();
-	}, this);
-	this.tweens.map(function(tween, i) {
-	    tween.onComplete.add(function() {
-		this.units[i].stats.HP = this.data[i].newHealth;
-		this.units[i].alpha = 1;
-	    }, this);
-	}, this);
-	this.tweens.map(function(tween, i) {
-	    tween.start();
-	}, this);
+    	this.tweens[0].onComplete.add(function() {
+    	    this.onComplete();
+    	}, this);
+    	this.tweens.map(function(tween) {
+    	    tween.start();
+    	}, this);
     }
     return action;
 }

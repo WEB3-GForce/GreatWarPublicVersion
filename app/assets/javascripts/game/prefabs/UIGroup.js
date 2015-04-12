@@ -7,6 +7,7 @@ var UIGroup = function(game, parent) {
     this.smallerFont = { font: "14px Helvetica", fill: "#ffffff" };
 
     this.initActionMenu();
+    this.initHealthDisplay();
     // this.initTileInfoUI();
     this.initUnitInfoUI();
     this.initPlayerInfoUI();
@@ -112,6 +113,17 @@ UIGroup.prototype.drawArc = function(graphics, x, y, r, start, end, stroke, colo
     graphics.lineStyle(0);
 }
 
+UIGroup.prototype.arcTween = function(graphics, x, y, r, start, end, stroke, color, duration, easing) {
+    var t = this.game.add.tween(graphics).to({}, duration, easing);
+    t.onUpdateCallback(function(tween, fraction) {
+	this.drawArc(graphics, x, y, r, start, start + fraction*(end - start), stroke, color);
+    }, this);
+    t.onComplete.add(function() {
+	this.drawArc(graphics, x, y, r, start, end, stroke, color);
+    }, this);
+    return t;
+}
+
 UIGroup.prototype.initActionMenu = function() {
     this.actionMenu = this.game.add.group();
     this.actions = [];
@@ -119,19 +131,51 @@ UIGroup.prototype.initActionMenu = function() {
     this.actionGraphics = this.game.add.graphics(0, 0, this.actionMenu);
     this.drawArc(this.actionGraphics, 0, 0, 44, -0.5*Math.PI, 1.5*Math.PI, 8, 0x556270);
     this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, 0xfbb829);
-    
-    // var t = this.game.add.tween(this.testGraphics).to({}, 300);
-    // t.onUpdateCallback(function(a, b, c, d, e, f) {
-    // 	this.testGraphics.moveTo(150, 100);
-    // 	this.testGraphics.lineStyle(2, 0xff0000);
-    // 	this.testGraphics.arc(100, 100, 50, 0, b*Math.PI);
-    // 	this.testGraphics.lineStyle(0, 0, 0);
-    // }, this);
-    // t.start();
-
+ 
     this.actionMenu.scale.x = 0;
     this.actionMenu.scale.y = 0;
     this.actionMenu.visible = false;
+}
+
+UIGroup.prototype.initHealthDisplay = function() {
+    this.healthCircle = this.game.add.group();
+
+    this.healthGraphics = this.game.add.graphics(0, 0, this.healthCircle);
+    this.drawArc(this.healthGraphics, 0, 0, 44, -0.5*Math.PI, 1.5*Math.PI, 8, 0x556270);
+    this.drawArc(this.healthGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, 0x7eb041);
+    
+    this.healthCircle.scale.x = 0;
+    this.healthCircle.scale.y = 0;
+    this.healthCircle.visible = false;
+}
+
+UIGroup.prototype.updateHealth = function(unit, newHealth) {
+    // visual representation of remaining energy
+    this.drawArc(this.healthGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, 0x7eb041);
+    this.drawArc(this.healthGraphics, 0, 0, 32,
+		 -0.5*Math.PI, (-0.5 + 2*(1-unit.stats.health.current/unit.stats.health.max))*Math.PI,
+		 16, 0xdadfe6);
+
+    this.healthCircle.x = unit.x + this.game.constants.TILE_SIZE/2;
+    this.healthCircle.y = unit.y + this.game.constants.TILE_SIZE/2;
+    this.healthCircle.visible = true;
+
+    var showTween = this.game.add.tween(this.healthCircle.scale).to({x: 1, y: 1}, 200, Phaser.Easing.Quadratic.InOut);
+    var healthTween = this.arcTween(this.healthGraphics, 0, 0, 32,
+    				    (-0.5 + 2*(1-unit.stats.health.current/unit.stats.health.max))*Math.PI,
+    				    (-0.5 + 2*(1-newHealth/unit.stats.health.max))*Math.PI,
+    				    16, 0xdadfe6, 300, Phaser.Easing.Quadratic.InOut);
+    healthTween.onComplete.add(function() {
+    	unit.stats.health.current = newHealth;
+    }, this);
+    var hideTween = this.game.add.tween(this.healthCircle.scale).to({x: 0, y: 0}, 200, Phaser.Easing.Quadratic.InOut, false, 300);
+    hideTween.onComplete.add(function() {
+    	this.healthCircle.visible = false;
+    }, this);
+
+    showTween.chain(healthTween);
+    healthTween.chain(hideTween);
+    return showTween;
 }
 
 UIGroup.prototype.setTile = function(tile) {
