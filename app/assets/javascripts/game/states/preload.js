@@ -25,8 +25,11 @@ Preload.prototype = {
 	this.load.image('action-move', '/assets/move.png');
 	this.load.image('action-melee', '/assets/melee.png');
 	this.load.image('action-ranged', '/assets/ranged.png');
+	this.load.image('action-hover-move', '/assets/move-hover.png');
+	this.load.image('action-hover-melee', '/assets/melee-hover.png');
+	this.load.image('action-hover-ranged', '/assets/ranged-hover.png');
 
-    this.load.image('generalPortrait', '/assets/generalPortrait.png');
+	this.load.image('generalPortrait', '/assets/generalPortrait.png');
 
 	this.load.spritesheet('trainer', '/assets/trainer.png',
 			      this.game.constants.TILE_SIZE,

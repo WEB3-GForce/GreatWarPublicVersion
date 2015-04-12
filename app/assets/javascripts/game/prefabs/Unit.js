@@ -50,7 +50,7 @@ var Unit = function(game, id, type, x, y, player, stats) {
     this.inputEnabled = true;
     this.input.useHandCursor = true;
 
-	this.stats = stats;
+    this.stats = stats;
     this.player = player;
 };
 

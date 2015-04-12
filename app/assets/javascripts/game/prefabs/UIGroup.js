@@ -6,10 +6,10 @@ var UIGroup = function(game, parent) {
     this.font = { font: "18px Helvetica", fill: "#ffffff" };
     this.smallerFont = { font: "14px Helvetica", fill: "#ffffff" };
 
+    this.initActionMenu();
     // this.initTileInfoUI();
     this.initUnitInfoUI();
     this.initPlayerInfoUI();
-    this.initActionMenu();
 };
 
 UIGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -104,22 +104,33 @@ UIGroup.prototype.initUnitInfoUI = function() {
     this.unitInfo.visible = false;
 }
 
+UIGroup.prototype.drawArc = function(graphics, x, y, r, start, end, stroke, color) {
+    graphics.lineStyle(0);
+    graphics.moveTo(x+r*Math.cos(start), y+r*Math.sin(start));
+    graphics.lineStyle(stroke, color);
+    graphics.arc(x, y, r, start, end);
+    graphics.lineStyle(0);
+}
+
 UIGroup.prototype.initActionMenu = function() {
     this.actionMenu = this.game.add.group();
-    var actions = ['move', 'ranged', 'melee'];
-    for (var i = 0; i < actions.length; i++) {
-        var name = actions[i] + 'Button';
-        this[name] = this.game.add.button(0, 0, 'action-' + actions[i]);
-        this[name].inputEnabled = true;
-        this[name].input.useHandCursor = true;
-        this[name].anchor.setTo(0.5, 0.5);
-        this.actionMenu.add(this[name]);
-        var angle = 2*Math.PI / actions.length * i - Math.PI/2;
-        var r = 48;
-        this[name].x = r*Math.cos(angle);
-        this[name].y = r*Math.sin(angle);
-    }
-    this.actionMenu.alpha = 0.7;
+    this.actions = [];
+
+    this.actionGraphics = this.game.add.graphics(0, 0, this.actionMenu);
+    this.drawArc(this.actionGraphics, 0, 0, 44, -0.5*Math.PI, 1.5*Math.PI, 8, 0x556270);
+    this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, 0xfbb829);
+    
+    // var t = this.game.add.tween(this.testGraphics).to({}, 300);
+    // t.onUpdateCallback(function(a, b, c, d, e, f) {
+    // 	this.testGraphics.moveTo(150, 100);
+    // 	this.testGraphics.lineStyle(2, 0xff0000);
+    // 	this.testGraphics.arc(100, 100, 50, 0, b*Math.PI);
+    // 	this.testGraphics.lineStyle(0, 0, 0);
+    // }, this);
+    // t.start();
+
+    this.actionMenu.scale.x = 0;
+    this.actionMenu.scale.y = 0;
     this.actionMenu.visible = false;
 }
 
@@ -140,13 +151,42 @@ UIGroup.prototype.setUnit = function(unit) {
     }
 }
 
-UIGroup.prototype.showMenu = function(unit) {
+UIGroup.prototype.showMenu = function(unit, actions) {
+    for (var i = 0; i < this.actions.length; i++) {
+	this.actionMenu.remove(this.actions[i], true);
+    }
+    this.currentActions = actions;
+ 
+   this.actions = [];
+    for (var i = 0; i < actions.length; i++) {
+	// add each button to an array of actions
+	this.actions[actions[i]] = this.game.add.button(0, 0, 'action-' + actions[i]);
+        this.actions[actions[i]].inputEnabled = true;
+        this.actions[actions[i]].input.useHandCursor = true;
+        this.actions[actions[i]].anchor.setTo(0.5, 0.5);
+        this.actionMenu.add(this.actions[actions[i]]);
+        var angle = 2*Math.PI / actions.length * i - Math.PI/2;
+        var r = 80;
+        this.actions[actions[i]].x = r*Math.cos(angle);
+        this.actions[actions[i]].y = r*Math.sin(angle);
+    }
+
+    // visual representation of remaining energy
+    this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, 0xfbb829);
+    this.drawArc(this.actionGraphics, 0, 0, 32,
+		 -0.5*Math.PI, (-0.5 + 2*(1-unit.stats.energy.current/unit.stats.energy.max))*Math.PI,
+		 16, 0xdadfe6);
+
     this.actionMenu.x = unit.x + this.game.constants.TILE_SIZE/2;
     this.actionMenu.y = unit.y + this.game.constants.TILE_SIZE/2;
     this.actionMenu.visible = true;
+    this.game.add.tween(this.actionMenu.scale).to({x: 1, y: 1}, 200, Phaser.Easing.Back.Out, true);
 }
 
 UIGroup.prototype.hideMenu = function() {
-    this.actionMenu.visible = false;
+    var t = this.game.add.tween(this.actionMenu.scale).to({x: 0, y: 0}, 200, Phaser.Easing.Back.In);
+    t.onComplete.add(function() {
+	this.actionMenu.visible = false;
+    }, this);
+    t.start();
 }
-
