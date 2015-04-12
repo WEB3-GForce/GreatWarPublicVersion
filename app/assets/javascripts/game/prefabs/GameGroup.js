@@ -70,7 +70,6 @@ GameGroup.prototype.tileClicked = function() {
 	if (this.gameBoard.isHighlighted(this.tile.x, this.tile.y)) {
 	    switch (this.action) {
 	    case 'move':
-		console.log("trying to make the move unit rpc call");
 		this.game.dispatcher.rpc("move_unit", [
 		    this.selected.id,
 		    {
@@ -185,7 +184,6 @@ GameGroup.prototype.initGame = function(board, units, turn, players) {
 }
 
 GameGroup.prototype.showUnitActions = function(unitActions) {
-    console.log("show Unit Actions");
     var action = {
     	gameGroup: this
     };
@@ -208,7 +206,6 @@ GameGroup.prototype.showUnitActions = function(unitActions) {
 }
 
 GameGroup.prototype.highlightSquares = function(type, squares) {
-    console.log("highlight Squares");
     var action = {
 		squares: squares,
 		gameBoard: this.gameBoard,
@@ -270,16 +267,19 @@ GameGroup.prototype.updateUnitsHealth = function(units) {
 }
 
 GameGroup.prototype.updateUnitEnergy = function(unitId, energyValue) {
-	var action = {
-		unit: this.unitGroup.find(unitId),
-		ui: this.ui
-	};
-	action.start = function() {
-		this.unit.stats.ENERGY = energyValue;
-		this.ui.setUnit(this.unit);
-		this.onComplete();
-	};
-	return action;
+    var action = {
+	unit: this.unitGroup.find(unitId),
+	ui: this.ui
+    };
+    action.tween = this.ui.updateEnergy(action.unit, energyValue);
+
+    action.start = function() {
+    	this.tween.onComplete.add(function() {
+    	    this.onComplete();
+    	}, this);
+    	this.tween.start();
+    };
+    return action;
 }
 
 GameGroup.prototype.attack = function(unitId, square, type, unitType) {
@@ -289,8 +289,6 @@ GameGroup.prototype.attack = function(unitId, square, type, unitType) {
 }
 
 GameGroup.prototype.moveUnit = function(unitId, square) {
-    console.log("move Unit");
-
     var action = {};
     action.unit = this.unitGroup.find(unitId);
     action.start = function() {
