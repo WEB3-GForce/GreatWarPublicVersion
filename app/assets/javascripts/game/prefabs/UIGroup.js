@@ -1,5 +1,12 @@
 'use strict';
 
+var COLORS = {
+    HEALTH: 0x7eb041,
+    ENERGY: 0xfbb829,
+    BUTTON: 0x556270,
+    DEPLETED: 0xdadfe6
+}
+
 var UIGroup = function(game, parent) {
     Phaser.Group.call(this, game, parent);
 
@@ -124,9 +131,8 @@ UIGroup.prototype.initActionMenu = function() {
     this.actions = [];
 
     this.actionGraphics = this.game.add.graphics(0, 0, this.actionMenu);
-    this.drawArc(this.actionGraphics, 0, 0, 44, -0.5*Math.PI, 1.5*Math.PI, 8, 0x556270);
-    this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, 0xfbb829);
-
+    this.drawArc(this.actionGraphics, 0, 0, 44, -0.5*Math.PI, 1.5*Math.PI, 8, COLORS.BUTTON);
+    this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.ENERGY);
     this.actionMenu.scale.x = 0;
     this.actionMenu.scale.y = 0;
     this.actionMenu.visible = false;
@@ -136,9 +142,9 @@ UIGroup.prototype.initHealthDisplay = function() {
     this.healthCircle = this.game.add.group();
 
     this.healthGraphics = this.game.add.graphics(0, 0, this.healthCircle);
-    this.drawArc(this.healthGraphics, 0, 0, 44, -0.5*Math.PI, 1.5*Math.PI, 8, 0x556270);
-    this.drawArc(this.healthGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, 0x7eb041);
-
+    this.drawArc(this.healthGraphics, 0, 0, 44, -0.5*Math.PI, 1.5*Math.PI, 8, COLORS.BUTTON);
+    this.drawArc(this.healthGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.HEALTH);
+    
     this.healthCircle.scale.x = 0;
     this.healthCircle.scale.y = 0;
     this.healthCircle.visible = false;
@@ -146,10 +152,10 @@ UIGroup.prototype.initHealthDisplay = function() {
 
 UIGroup.prototype.updateHealth = function(unit, newHealth) {
     // visual representation of remaining energy
-    this.drawArc(this.healthGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, 0x7eb041);
+    this.drawArc(this.healthGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.HEALTH);
     this.drawArc(this.healthGraphics, 0, 0, 32,
 		 -0.5*Math.PI, (-0.5 + 2*(1-unit.stats.health.current/unit.stats.health.max))*Math.PI,
-		 16, 0xdadfe6);
+		 16, COLORS.DEPLETED);
 
     this.healthCircle.x = unit.x + this.game.constants.TILE_SIZE/2;
     this.healthCircle.y = unit.y + this.game.constants.TILE_SIZE/2;
@@ -159,7 +165,7 @@ UIGroup.prototype.updateHealth = function(unit, newHealth) {
     var healthTween = this.arcTween(this.healthGraphics, 0, 0, 32,
     				    (-0.5 + 2*(1-unit.stats.health.current/unit.stats.health.max))*Math.PI,
     				    (-0.5 + 2*(1-newHealth/unit.stats.health.max))*Math.PI,
-    				    16, 0xdadfe6, 300, Phaser.Easing.Quadratic.InOut);
+    				    16, COLORS.DEPLETED, 300, Phaser.Easing.Quadratic.InOut);
     healthTween.onComplete.add(function() {
     	unit.stats.health.current = newHealth;
     }, this);
@@ -170,6 +176,35 @@ UIGroup.prototype.updateHealth = function(unit, newHealth) {
 
     showTween.chain(healthTween);
     healthTween.chain(hideTween);
+    return showTween;
+}
+
+UIGroup.prototype.updateEnergy = function(unit, newEnergy) {
+    // visual representation of remaining energy
+    this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.ENERGY);
+    this.drawArc(this.actionGraphics, 0, 0, 32,
+		 -0.5*Math.PI, (-0.5 + 2*(1-unit.stats.energy.current/unit.stats.energy.max))*Math.PI,
+		 16, COLORS.DEPLETED);
+
+    this.actionMenu.x = unit.x + this.game.constants.TILE_SIZE/2;
+    this.actionMenu.y = unit.y + this.game.constants.TILE_SIZE/2;
+    this.actionMenu.visible = true;
+
+    var showTween = this.game.add.tween(this.actionMenu.scale).to({x: 1, y: 1}, 200, Phaser.Easing.Quadratic.InOut);
+    var energyTween = this.arcTween(this.actionGraphics, 0, 0, 32,
+    				    (-0.5 + 2*(1-unit.stats.energy.current/unit.stats.energy.max))*Math.PI,
+    				    (-0.5 + 2*(1-newEnergy/unit.stats.energy.max))*Math.PI,
+    				    16, COLORS.DEPLETED, 300, Phaser.Easing.Quadratic.InOut);
+    energyTween.onComplete.add(function() {
+    	unit.stats.energy.current = newEnergy;
+    }, this);
+    var hideTween = this.game.add.tween(this.actionMenu.scale).to({x: 0, y: 0}, 200, Phaser.Easing.Quadratic.InOut, false, 300);
+    hideTween.onComplete.add(function() {
+    	this.actionMenu.visible = false;
+    }, this);
+
+    showTween.chain(energyTween);
+    energyTween.chain(hideTween);
     return showTween;
 }
 
@@ -207,22 +242,22 @@ UIGroup.prototype.setUnit = function(unit) {
 UIGroup.prototype.showMenu = function(unit, actions) {
     for (var i = 0; i < actions.length; i++) {
 	// add each button to an array of actions
-	this.actions[actions[i].name] = this.game.add.button(0, 0, 'action-' + actions[i].name);
-        this.actions[actions[i].name].inputEnabled = true;
-        this.actions[actions[i].name].input.useHandCursor = true;
-        this.actions[actions[i].name].anchor.setTo(0.5, 0.5);
-        this.actionMenu.add(this.actions[actions[i].name]);
+	this.actions[i] = this.game.add.button(0, 0, 'action-' + actions[i].name);
+        this.actions[i].inputEnabled = true;
+        this.actions[i].input.useHandCursor = true;
+        this.actions[i].anchor.setTo(0.5, 0.5);
+        this.actionMenu.add(this.actions[i]);
         var angle = 2*Math.PI / actions.length * i - Math.PI/2;
         var r = 80;
-        this.actions[actions[i].name].x = r*Math.cos(angle);
-        this.actions[actions[i].name].y = r*Math.sin(angle);
+        this.actions[i].x = r*Math.cos(angle);
+        this.actions[i].y = r*Math.sin(angle);
     }
 
     // visual representation of remaining energy
-    this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, 0xfbb829);
+    this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.ENERGY);
     this.drawArc(this.actionGraphics, 0, 0, 32,
 		 -0.5*Math.PI, (-0.5 + 2*(1-unit.stats.energy.current/unit.stats.energy.max))*Math.PI,
-		 16, 0xdadfe6);
+		 16, COLORS.DEPLETED);
 
     this.actionMenu.x = unit.x + this.game.constants.TILE_SIZE/2;
     this.actionMenu.y = unit.y + this.game.constants.TILE_SIZE/2;
@@ -238,6 +273,7 @@ UIGroup.prototype.hideMenu = function() {
 	    this.actionMenu.remove(this.actions[i], true);
 	}
 	this.actions = [];
+	console.log(this.actionMenu);
     }, this);
     return t;
 }
