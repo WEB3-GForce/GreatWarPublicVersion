@@ -2,7 +2,7 @@
 
 <p>
 	<% if game_pending?(@game) %>
-  <strong>Game is Pending. Would you like to
+  <strong>Game <%= @game.name %> is Pending. Would you like to
   	<%= link_to 'join?', '#' %></strong> 
   	<% else %>
 

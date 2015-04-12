@@ -13,8 +13,9 @@ class GamesController < ApplicationController
   def show
     @game = Game.find(params[:id])
     user = current_user
-    if user.game != 0
-        @game = Game.find(user.game)
+    if user.game != 0 && params[:join] == "1" && user.game != @game.id
+      flash.now[:warning] = "You cannot join more than one game at a time. You have been redirected."
+      @game = Game.find(user.game)
     
     elsif (user.game == 0 && params[:join] == "1")
       
@@ -30,6 +31,7 @@ class GamesController < ApplicationController
   def new
     user = current_user
     if (user.game != 0)
+      flash[:warning] = "You cannot join more than one game at a time. You have been redirected."
       redirect_to game_path(user.game)
   
     else
