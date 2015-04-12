@@ -41,14 +41,14 @@ UIGroup.prototype.initPlayerInfoUI = function() {
     this.playerNameBackground.drawRect(0, 0, width - 72 - 4, 36);
 
     this.playerName = this.game.add.text(76, 10,
-        this.game.constants.PLAYER_NAME,
-        this.font,
-        this.playerInfo);
+					 this.game.constants.PLAYER_NAME,
+					 this.font,
+					 this.playerInfo);
 
     this.turnNumber = this.game.add.text(84, 40,
-        "Day: " + this.game.turnNumber,
-        this.font,
-        this.playerInfo);
+					 "Day: " + this.game.turnNumber,
+					 this.font,
+					 this.playerInfo);
 
     this.playerPortraitFrame = this.game.add.graphics(2, 3, this.playerInfo);
     this.playerPortraitFrame.beginFill(0x000000, 0.5);
@@ -62,48 +62,52 @@ UIGroup.prototype.initPlayerInfoUI = function() {
 }
 
 UIGroup.prototype.initTileInfoUI = function() {
+    var height = 160;
+    var width = 80;
     this.tileInfo = this.game.add.group();
-    this.tileInfo.x = this.unitInfo.x + 128 + 1;
+    this.tileInfo.x = this.unitInfo.x + 160 + 4;
     this.tileInfo.y = this.unitInfo.y;
     this.tileInfo.fixedToCamera = true;
 
     this.tileGraphics = this.game.add.graphics(0, 0, this.tileInfo);
     this.tileGraphics.beginFill(0x000000, 0.3);
-    this.tileGraphics.drawRect(0, 0, 48, 128);
+    this.tileGraphics.drawRect(0, 0, width, height);
 
-    this.currentTile = this.game.add.sprite(8, 8, 'terrain', 0, this.tileInfo);
-    this.currentTile.alpha = 0.5;
-
-    this.tileTitle = this.game.add.text(8, 48, "test",
-                    this.font,
-                    this.tileInfo);
-    this.tileTitle.anchor.setTo(0, 0.5);
+    this.tileTitle = this.game.add.text(8, 8, "test",
+					this.font,
+					this.tileInfo);
+    this.currentTile = this.game.add.sprite(8, 40, 'terrain', 0, this.tileInfo);
+    this.currentTile.alpha = 0.7;
 
     this.tileInfo.visible = false;
 }
 
 UIGroup.prototype.initUnitInfoUI = function() {
+    var height = 160;
+    var width = 160;
     this.unitInfo = this.game.add.group();
     this.unitInfo.x = 8;
-    this.unitInfo.y = this.game.height - 128 - 8;
+    this.unitInfo.y = this.game.height - height - 8;
     this.unitInfo.fixedToCamera = true;
 
     this.unitGraphics = this.game.add.graphics(0, 0, this.unitInfo);
     this.unitGraphics.beginFill(0x000000, 0.3);
-    this.unitGraphics.drawRect(0, 0, 128, 128);
+    this.unitGraphics.drawRect(0, 0, width, height);
 
     this.unitType = this.game.add.text(8, 8, "",
-                       this.font,
-                       this.unitInfo);
-    this.unitHealth = this.game.add.text(8, 64, "",
-                       this.smallerFont,
-                       this.unitInfo);
-    this.unitAttack = this.game.add.text(8, 88, "",
-                       this.smallerFont,
-                       this.unitInfo);
-    this.unitEnergy = this.game.add.text(8, 112, "",
-                       this.smallerFont,
-                       this.unitInfo);
+				       this.font,
+				       this.unitInfo);
+    this.currentUnit = this.game.add.sprite(8, 40, 'trainer', 1, this.unitInfo);
+    this.currentUnit.alpha = 0.7;
+    this.unitHealth = this.game.add.text(8, 80, "",
+					 this.smallerFont,
+					 this.unitInfo);
+    this.unitAttack = this.game.add.text(8, 104, "",
+					 this.smallerFont,
+					 this.unitInfo);
+    this.unitEnergy = this.game.add.text(8, 128, "",
+					 this.smallerFont,
+					 this.unitInfo);
     this.unitInfo.visible = false;
 }
 
@@ -219,23 +223,14 @@ UIGroup.prototype.setUnit = function(unit) {
     	this.unitHealth.text = "HP: " + unit.stats.health.current + "/" + unit.stats.health.max;
     	this.unitEnergy.text = "ENERGY: " + unit.stats.energy.current + "/" + unit.stats.energy.max;
         this.unitAttack.text = "ATTACK: " + unit.stats.range.attack;
-        this.unitImage = this.game.add.sprite(48, this.game.height - 105,
-                       "trainer", 1);
-        this.unitImage.fixedToCamera = true;
-        this.unitImage.alpha = 0.5;
+
+	this.currentUnit.key = UNIT_MAP[unit.type].IMAGE;
 
     	this.unitInfo.visible = true;
         this.tileInfo.visible = true;
     } else {
-	    this.unitInfo.visible = false;
+	this.unitInfo.visible = false;
         this.tileInfo.visible = false;
-        // none of these things work to get rid of the sprite
-        if (this.unitImage) {
-            this.unitImage.renderable = false;
-            this.unitImage.destroy();
-            this.unitImage = null;
-            console.log(this.unitImage);
-        }
     }
 }
 
