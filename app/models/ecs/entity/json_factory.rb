@@ -185,6 +185,20 @@ class JsonFactory
 	end
 
 
+	# This method sends a request to the frontend to update health.
+	#
+	# Arguments
+	#   entity_manager = the manager of the entities
+	#   entity         = the entity who lost health
+	# 
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.update_health(entity_manager, entity)
+		health_comp = entity_manager.get_components(entity, HealthComponent).first
+		return [{"action"    => "updateUnitsHealth",
+		         "arguments" => [entity, health_comp.cur_health]}]
+	end
+
 	# This method is responsible for sending all relevant game
 	# start data to the frontend. Once the frontend receives this, it will
 	# be able to completely initialize the browser for a new game.
