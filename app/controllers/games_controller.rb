@@ -1,5 +1,5 @@
 class GamesController < ApplicationController
-  before_action :set_game, only: [:show, :edit, :update, :destroy]
+  #before_action :set_game, only: [:show, :edit, :update, :destroy]
 
   # GET /games
   # GET /games.json
@@ -12,11 +12,29 @@ class GamesController < ApplicationController
   # GET /games/1.json
   def show
     @game = Game.find(params[:id])
+    user = current_user
+    if user.game != 0
+        @game = Game.find(user.game)
+    
+    elsif (user.game == 0 && params[:join] == "1")
+      
+      #current_user.game = nil
+      #current_user.save
+      
+      flash.now[:success] = "Game Successfully Joined!"
+      assign_game_to_current_user(@game)
+    end
   end
 
   # GET /games/new
   def new
-    @game = Game.new
+    user = current_user
+    if (user.game != 0)
+      redirect_to game_path(user.game)
+  
+    else
+      @game = Game.new
+    end
   end
 
   # GET /games/1/edit
@@ -26,6 +44,7 @@ class GamesController < ApplicationController
   # POST /games
   # POST /games.json
   def create
+
     @game = Game.new(game_params)
     @game.update_attribute(:pending, true)
     @game.update_attribute(:done, false)

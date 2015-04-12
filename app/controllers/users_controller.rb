@@ -18,6 +18,7 @@ class UsersController < ApplicationController
 		@user = User.new(user_params)
 		if @user.save
 			log_in @user
+			@user.update_attribute(:game, 0)
 			flash[:success] = "Welcome to the Great War!"
 			redirect_to @user
 		else

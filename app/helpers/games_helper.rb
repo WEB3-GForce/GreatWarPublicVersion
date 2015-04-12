@@ -13,4 +13,10 @@ module GamesHelper
 		user.game = game.id
 		user.save!
 	end
+
+	def players_in_game(game)
+		@players = User.find_by(:game => game.id)
+		return @players
+	end
+
 end

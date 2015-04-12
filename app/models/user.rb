@@ -59,4 +59,15 @@ class User < ActiveRecord::Base
 		update_attribute(:remember_hash, nil)
 	end
 
+	def each
+
+		0.upto(self.length - 1) do |x|
+			yield self[x]
+		end
+	end
+
+	def length
+		1
+	end
+
 end

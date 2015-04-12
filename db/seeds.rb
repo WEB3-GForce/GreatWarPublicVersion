@@ -12,9 +12,10 @@ User.create!(name:  "User 1",
                email: email,
                logged: false,
                password:              password,
-               password_confirmation: password)
+               password_confirmation: password,
+               game: 0)
 end
 
-Game.create!(name: "Game 1",
-            pending: true,
-            done: false)
+#Game.create!(name: "Game 1",
+ #           pending: true,
+  #          done: false)
