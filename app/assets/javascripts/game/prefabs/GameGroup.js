@@ -88,7 +88,7 @@ GameGroup.prototype.tileClicked = function() {
 	this.selected = null;
 	this.action = null;
 	this.gameBoard.unhighlightAll();
-	this.ui.hideMenu();
+	this.ui.hideMenu().start();
     }
 }
 
@@ -136,7 +136,7 @@ GameGroup.prototype.select = function(unit) {
 
 GameGroup.prototype.buttonClicked = function(button) {
     this.action = button.key.replace('action-', '');
-    this.ui.hideMenu();
+    this.ui.hideMenu().start();
 
     switch (this.action) {
     case 'move':
@@ -190,8 +190,19 @@ GameGroup.prototype.showUnitActions = function(unitActions) {
     	gameGroup: this
     };
     action.start = function() {
-	this.gameGroup.ui.showMenu(this.gameGroup.selected, unitActions);
-    	this.onComplete();
+	if (this.gameGroup.ui.menuVisible()) {
+	    var hideTween = this.gameGroup.ui.hideMenu();
+	    hideTween.onComplete.add(function() {
+		var showTween = this.gameGroup.ui.showMenu(this.gameGroup.selected, unitActions);
+		showTween.onComplete.add(this.onComplete, this);
+		showTween.start();
+	    }, this);
+	    hideTween.start();
+	} else {
+	    var showTween = this.gameGroup.ui.showMenu(this.gameGroup.selected, unitActions);
+	    showTween.onComplete.add(this.onComplete, this);
+	    showTween.start();
+	}
     };
     return action;
 }
@@ -277,7 +288,7 @@ GameGroup.prototype.attack = function(unitId, square, type, unitType) {
     return new AnimationAction(unit, type + "-attack");
 }
 
-GameGroup.prototype.moveUnit = function(unitId, square, b, c) {
+GameGroup.prototype.moveUnit = function(unitId, square) {
     console.log("move Unit");
 
     var action = {};

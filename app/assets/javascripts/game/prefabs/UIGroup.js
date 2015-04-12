@@ -191,17 +191,11 @@ UIGroup.prototype.setUnit = function(unit) {
         this.unitAttack.text = "ATTACK: " + unit.stats.range.attack;
     	this.unitInfo.visible = true;
     } else {
-	    this.unitInfo.visible = false;
+	this.unitInfo.visible = false;
     }
 }
 
 UIGroup.prototype.showMenu = function(unit, actions) {
-    for (var i = 0; i < this.actions.length; i++) {
-	this.actionMenu.remove(this.actions[i], true);
-    }
-    this.currentActions = actions;
- 
-   this.actions = [];
     for (var i = 0; i < actions.length; i++) {
 	// add each button to an array of actions
 	this.actions[actions[i].name] = this.game.add.button(0, 0, 'action-' + actions[i].name);
@@ -224,13 +218,21 @@ UIGroup.prototype.showMenu = function(unit, actions) {
     this.actionMenu.x = unit.x + this.game.constants.TILE_SIZE/2;
     this.actionMenu.y = unit.y + this.game.constants.TILE_SIZE/2;
     this.actionMenu.visible = true;
-    this.game.add.tween(this.actionMenu.scale).to({x: 1, y: 1}, 200, Phaser.Easing.Back.Out, true);
+    return this.game.add.tween(this.actionMenu.scale).to({x: 1, y: 1}, 200, Phaser.Easing.Back.Out);
 }
 
 UIGroup.prototype.hideMenu = function() {
     var t = this.game.add.tween(this.actionMenu.scale).to({x: 0, y: 0}, 200, Phaser.Easing.Back.In);
     t.onComplete.add(function() {
 	this.actionMenu.visible = false;
+	for (var i = 0; i < this.actions.length; i++) {
+	    this.actionMenu.remove(this.actions[i], true);
+	}
+	this.actions = [];
     }, this);
-    t.start();
+    return t;
+}
+
+UIGroup.prototype.menuVisible = function() {
+    return this.actionMenu.visible;
 }
