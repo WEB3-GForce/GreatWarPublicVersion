@@ -4,6 +4,7 @@ class SocketController < WebsocketRails::BaseController
   @@game ||= Hash.new
 
   def rpc
+    p "Wtf"
     # TODO
     method_name = message['action']
     method_params = message['arguments']

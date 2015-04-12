@@ -20,7 +20,7 @@ Play.prototype = {
     	this.game.dispatcher.rpc = function(action, args) {
     	    this.trigger("rpc", {action: action, arguments: args});
     	}
-    	this.game.dispatcher.rpc("init_game", []);
+    	this.game.dispatcher.rpc("init_game", {});
 
         // deciding dragging vs. clicking:
     	this.game.input.onUp.add(function() {

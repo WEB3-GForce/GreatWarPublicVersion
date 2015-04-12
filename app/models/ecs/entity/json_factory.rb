@@ -273,7 +273,7 @@ class JsonFactory
 		actions = []
 		
 		if can_move
-		 actions.push({"name" => "motion",
+		 actions.push({"name" => "move",
 		               "cost" => entity_manager[entity][MotionComponent].first.energy_cost})
 		end
 	
@@ -287,7 +287,6 @@ class JsonFactory
 		               "cost" => entity_manager[entity][RangeAttackComponent].first.energy_cost})
 		end
 
-	
 		return [{"action"    => "showUnitActions",
 		        "arguments" => actions}]
 	end
