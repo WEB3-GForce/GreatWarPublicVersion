@@ -21,7 +21,7 @@ class SocketController < WebsocketRails::BaseController
 
         @@game[game_id] = em if !em.nil?
 
-    elsif Game.respond_to? method_name      
+    elsif Game.respond_to? method_name
         manager = @@game[game_id]
         method_params.unshift manager
         method_params.unshift req_id
@@ -33,51 +33,6 @@ class SocketController < WebsocketRails::BaseController
     # # the front end expects to response to be an array, if it's not though,
     # # that's fine, it just needs to be sent as one regardless, hence this:
     response = [response] unless response.kind_of?(Array)
-    
-    # if method_name == 'init_game'
-    #   response = [
-    #               {
-    #                 action: "revealUnit",
-    #                 arguments: [{
-    #                               id: 1,
-    #                               type: 'infantry',
-    #                               x: 5,
-    #                               y: 5,
-    #                               player: 'test',
-    #                               stats: {
-    #                                 health: {
-    #                                   current: 10,
-    #                                   max: 10
-    #                                 },
-    #                                 energy: {
-    #                                   current: 7,
-    #                                   max: 10
-    #                                 },
-    #                                 range: {
-    #                                   attack: 10
-    #                                 }
-    #                               }
-    #                             }]
-    #               },
-    #               {
-    #                 action: "updateUnitsHealth",
-    #                 arguments: [[
-    #                              {
-    #                                id: 1,
-    #                                newHealth: 4
-    #                              }
-    #                             ]]
-    #               }
-                  
-    #              ]
-    # elsif method_name == "get_unit_actions"
-    #   response = [
-    #               {
-    #                 action: "showUnitActions",
-    #                 arguments: [["ranged", "melee", "move"]]
-    #               }
-    #              ]
-    # end
 
     if response
       send_message :rpc, {

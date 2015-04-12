@@ -8,9 +8,9 @@ var UIGroup = function(game, parent) {
 
     this.initActionMenu();
     this.initHealthDisplay();
-    // this.initTileInfoUI();
     this.initUnitInfoUI();
     this.initPlayerInfoUI();
+    this.initTileInfoUI();
 };
 
 UIGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -56,21 +56,23 @@ UIGroup.prototype.initPlayerInfoUI = function() {
 
 UIGroup.prototype.initTileInfoUI = function() {
     this.tileInfo = this.game.add.group();
-    this.tileInfo.x = 8;
-    this.tileInfo.y = 8;
+    this.tileInfo.x = this.unitInfo.x + 128 + 1;
+    this.tileInfo.y = this.unitInfo.y;
     this.tileInfo.fixedToCamera = true;
 
     this.tileGraphics = this.game.add.graphics(0, 0, this.tileInfo);
     this.tileGraphics.beginFill(0x000000, 0.3);
-    this.tileGraphics.drawRect(0, 0, 128, 48);
+    this.tileGraphics.drawRect(0, 0, 48, 128);
 
     this.currentTile = this.game.add.sprite(8, 8, 'terrain', 0, this.tileInfo);
     this.currentTile.alpha = 0.5;
 
-    this.tileTitle = this.game.add.text(48, 24, "test",
+    this.tileTitle = this.game.add.text(8, 48, "test",
                     this.font,
                     this.tileInfo);
     this.tileTitle.anchor.setTo(0, 0.5);
+
+    this.tileInfo.visible = false;
 }
 
 UIGroup.prototype.initUnitInfoUI = function() {
@@ -86,13 +88,6 @@ UIGroup.prototype.initUnitInfoUI = function() {
     this.unitType = this.game.add.text(8, 8, "",
                        this.font,
                        this.unitInfo);
-
-    this.unitImage = this.game.add.sprite(64, this.game.height - 120,
-                       "trainer", 0,
-                       this.unitInfo);
-    this.unitImage.fixedToCamera = true;
-    this.unitImage.alpha = 0.5;
-
     this.unitHealth = this.game.add.text(8, 64, "",
                        this.smallerFont,
                        this.unitInfo);
@@ -131,7 +126,7 @@ UIGroup.prototype.initActionMenu = function() {
     this.actionGraphics = this.game.add.graphics(0, 0, this.actionMenu);
     this.drawArc(this.actionGraphics, 0, 0, 44, -0.5*Math.PI, 1.5*Math.PI, 8, 0x556270);
     this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, 0xfbb829);
- 
+
     this.actionMenu.scale.x = 0;
     this.actionMenu.scale.y = 0;
     this.actionMenu.visible = false;
@@ -143,7 +138,7 @@ UIGroup.prototype.initHealthDisplay = function() {
     this.healthGraphics = this.game.add.graphics(0, 0, this.healthCircle);
     this.drawArc(this.healthGraphics, 0, 0, 44, -0.5*Math.PI, 1.5*Math.PI, 8, 0x556270);
     this.drawArc(this.healthGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, 0x7eb041);
-    
+
     this.healthCircle.scale.x = 0;
     this.healthCircle.scale.y = 0;
     this.healthCircle.visible = false;
@@ -179,8 +174,8 @@ UIGroup.prototype.updateHealth = function(unit, newHealth) {
 }
 
 UIGroup.prototype.setTile = function(tile) {
-    // this.currentTile.frame = tile.index - 1;
-    // this.tileTitle.text = "tile #" + tile.index;
+    this.currentTile.frame = tile.index - 1;
+    this.tileTitle.text = "tile #" + tile.index;
 }
 
 UIGroup.prototype.setUnit = function(unit) {
@@ -189,9 +184,23 @@ UIGroup.prototype.setUnit = function(unit) {
     	this.unitHealth.text = "HP: " + unit.stats.health.current + "/" + unit.stats.health.max;
     	this.unitEnergy.text = "ENERGY: " + unit.stats.energy.current + "/" + unit.stats.energy.max;
         this.unitAttack.text = "ATTACK: " + unit.stats.range.attack;
+        this.unitImage = this.game.add.sprite(48, this.game.height - 105,
+                       "trainer", 1);
+        this.unitImage.fixedToCamera = true;
+        this.unitImage.alpha = 0.5;
+
     	this.unitInfo.visible = true;
+        this.tileInfo.visible = true;
     } else {
-	this.unitInfo.visible = false;
+	    this.unitInfo.visible = false;
+        this.tileInfo.visible = false;
+        // none of these things work to get rid of the sprite
+        if (this.unitImage) {
+            this.unitImage.renderable = false;
+            this.unitImage.destroy();
+            this.unitImage = null;
+            console.log(this.unitImage);
+        }
     }
 }
 
