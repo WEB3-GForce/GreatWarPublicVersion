@@ -170,6 +170,20 @@ class JsonFactory
 		        "squares"  => board_array}
 	end
 
+	# This method sends a request to the frontend to update energy.
+	#
+	# Arguments
+	#   entity_manager = the manager of the entities
+	#   entity         = the entity who lost energy
+	# 
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.update_energy(entity_manager, entity)
+		energy_comp = entity_manager.get_components(entity, EnergyComponent).first
+		return [{"action"    => "updateUnitEnergy",
+		         "arguments" => [entity, energy_comp.cur_energy]}]
+	end
+
 
 	# This method is responsible for sending all relevant game
 	# start data to the frontend. Once the frontend receives this, it will
@@ -229,6 +243,7 @@ class JsonFactory
         		actions.push({"action" => "moveUnit",
         		              "arguments" => [moving_entity, coordinates] })
         	}
+        	actions.push self.update_energy(entity_manager, moving_entity)
        		return actions
 	end
 
