@@ -286,4 +286,28 @@ describe JsonFactory do
         end
     end
 
+    context "when calling melee attackable locations" do
+        it "should return a hash of a json for a melee attackable locations request" do
+            set_simple
+            locations = []
+            square_array.each { |square|
+                locations.push JsonFactory.square_path(manager, square)
+            }
+            expect(JsonFactory.melee_attackable_locations(manager, machine_gun, square_array)).to eq(
+                [{"action" => "highlightSquares", "arguments" => ["melee", locations]}])
+        end
+    end
+
+    context "when calling range attackable locations" do
+        it "should return a hash of a json for a range attackable locations request" do
+            set_simple
+            locations = []
+            square_array.each { |square|
+                locations.push JsonFactory.square_path(manager, square)
+            }
+            expect(JsonFactory.range_attackable_locations(manager, machine_gun, square_array)).to eq(
+                [{"action" => "highlightSquares", "arguments" => ["range", locations]}])
+        end
+    end
+
 end

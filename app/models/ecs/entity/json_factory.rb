@@ -232,11 +232,34 @@ class JsonFactory
        		return actions
 	end
 
+
+	# This is the helper function that performs the main work for requests
+	# to determine where a unit can move or attack.
+	#
+	# Argumetns
+	#   entity_manager = the manager that contains the entities
+	#   entity         = the entity that wishes to move or attack.
+	#   locations      = an array of square entities denoting the possible
+	#                  squares that can be attacked or moved to
+	#
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.locations(entity_manager,  entity, locations, type)
+		locations_array = []
+		locations.each { |square|
+			locations_array.push self.square_path(entity_manager, square)
+		}
+		return [{"action"  => "highlightSquares",
+		        "arguments" => [type, locations_array]
+		        }]
+	end
+
+
 	# This function is used to return a response to a moveable_locations
 	# request. In particular, it contains the list of locations that the
 	# specified entity can move to.
 	#
-	# Argumetns
+	# Arguments
 	#   entity_manager = the manager that contains the entities
 	#   moving_entity  = the entity that wishes to move.
 	#   locations      = an array of square entities denoting the possible
@@ -245,14 +268,43 @@ class JsonFactory
 	# Returns
 	#   A hash that is ready to be jsoned	
 	def self.moveable_locations(entity_manager,  moving_entity, locations)
-		locations_array = []
-		locations.each { |square|
-			locations_array.push self.square_path(entity_manager, square)
-		}
-		return [{"action"  => "highlightSquares",
-		        "arguments" => ["move", locations_array]
-		        }]
+		self.locations(entity_manager, moving_entity, locations, "move")
 	end
+
+
+	# This function is used to return a response to a melee_attackable_locations
+	# request. In particular, it contains the list of locations that the
+	# specified entity can melee attack.
+	#
+	# Arguments
+	#   entity_manager = the manager that contains the entities
+	#   melee_entity  = the entity that wishes to attack.
+	#   locations      = an array of square entities denoting the possible
+	#                  squares that the entity can melee attack
+	#
+	# Returns
+	#   A hash that is ready to be jsoned	
+	def self.melee_attackable_locations(entity_manager,  melee_entity, locations)
+		self.locations(entity_manager, melee_entity, locations, "melee")
+	end
+	
+
+	# This function is used to return a response to a range_attackble_locations
+	# request. In particular, it contains the list of locations that the
+	# specified entity can range attack.
+	#
+	# Argumetns
+	#   entity_manager = the manager that contains the entities
+	#   range_entity  = the entity that wishes to attack.
+	#   locations      = an array of square entities denoting the possible
+	#                  squares that can range attack
+	#
+	# Returns
+	#   A hash that is ready to be jsoned	
+	def self.range_attackable_locations(entity_manager,  range_entity, locations)
+		self.locations(entity_manager, range_entity, locations, "range")
+	end
+
 
 	# Converts a turn entity into a hash object.
 	#
