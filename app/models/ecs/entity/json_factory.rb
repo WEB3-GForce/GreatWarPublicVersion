@@ -197,10 +197,10 @@ class JsonFactory
 			piece_array.push self.piece(entity_manager, piece)
 		}
 
-          return {
+          return [{
             "action" => "initGame",
             "arguments" => [board, piece_array, turn_hash, player_array]
-          }
+          }]
 	end
 
 
@@ -223,13 +223,13 @@ class JsonFactory
 		#         "arguments" =>[moving_entity, path_array]
 		#        }
       
-        actions = []
-        path[1, path.size].each { |square|
-            coordinates = self.square_path(entity_manager, square)
-            actions.push({"action" => "moveUnit",
-                          "arguments" => [moving_entity, coordinates] })
-        }
-        return actions
+        	actions = []
+        	path[1, path.size].each { |square|
+        		coordinates = self.square_path(entity_manager, square)
+        		actions.push({"action" => "moveUnit",
+        		              "arguments" => [moving_entity, coordinates] })
+        	}
+       		return actions
 	end
 
 	# This function is used to return a response to a moveable_locations
@@ -249,9 +249,9 @@ class JsonFactory
 		locations.each { |square|
 			locations_array.push self.square_path(entity_manager, square)
 		}
-		return {"action"  => "highlightSquares",
+		return [{"action"  => "highlightSquares",
 		        "arguments" => ["move", locations_array]
-		       }
+		        }]
 	end
 
 	# Converts a turn entity into a hash object.
@@ -263,8 +263,8 @@ class JsonFactory
 	# Returns
 	#   A hash that is ready to be jsoned
 	def self.end_turn(entity_manager, entity)
-		return {"action"    => "setTurn",
-		        "arguments" => [self.turn(entity_manager, entity)]}
+		return [{"action"    => "setTurn",
+		        "arguments" => [self.turn(entity_manager, entity)]}]
 	end
 
 
@@ -288,8 +288,8 @@ class JsonFactory
 		end
 
 	
-		return {"action"    => "showUnitActions",
-		        "arguments" => actions}
+		return [{"action"    => "showUnitActions",
+		        "arguments" => actions}]
 	end
 
 	# Actions to handle:
