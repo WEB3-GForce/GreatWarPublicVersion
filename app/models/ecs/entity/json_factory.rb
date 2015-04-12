@@ -243,7 +243,7 @@ class JsonFactory
         		actions.push({"action" => "moveUnit",
         		              "arguments" => [moving_entity, coordinates] })
         	}
-        	actions.push self.update_energy(entity_manager, moving_entity)
+        	actions.concat self.update_energy(entity_manager, moving_entity)
        		return actions
 	end
 

@@ -254,12 +254,12 @@ describe MotionSystem do
 			expect(result1.sort).to eq answer.sort
 		end
 
-		it "should pass over but not include squares occupied by friends" do
+		it "should pass over and include squares occupied by friends" do
 			set_simple()
 			manager.board[0][1][1].push friend1
 			MotionSystem.determine_locations(manager, human1,
 							 0, 0, 2, result1, [])
-			answer = [flatland00, flatland10, flatland20, flatland11, flatland02]
+			answer = [flatland00, flatland01, flatland10, flatland20, flatland11, flatland02]
 			expect(result1.sort).to eq answer.sort
 		end
 
@@ -272,7 +272,7 @@ describe MotionSystem do
 			expect(result1.sort).to eq answer.sort
 		end
 
-		it "should neither pass over nor include squares occupied by ay foe" do
+		it "should neither pass over nor include squares occupied by any foe" do
 			set_simple()
 			manager.board[0][1][1].push friend1
 			manager.board[0][1][1].push foe1
@@ -378,7 +378,7 @@ describe MotionSystem do
 			manager.add_component(infantry, PositionComponent.new(1, 1))
 
 			result = MotionSystem.moveable_locations(manager, infantry)
-			answer = [flatland00, flatland02, flatland20]
+			answer = [flatland00, flatland10, flatland02, flatland20]
 			expect(result.sort).to eq answer.sort
 		end
 

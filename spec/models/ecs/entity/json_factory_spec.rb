@@ -304,7 +304,7 @@ describe JsonFactory do
                 locations.push JsonFactory.square_path(manager, square)
             }
             expect(JsonFactory.melee_attackable_locations(manager, machine_gun, square_array)).to eq(
-                [{"action" => "highlightSquares", "arguments" => ["melee", locations]}])
+                [{"action" => "highlightSquares", "arguments" => ["attack", locations]}])
         end
     end
 
@@ -316,7 +316,7 @@ describe JsonFactory do
                 locations.push JsonFactory.square_path(manager, square)
             }
             expect(JsonFactory.range_attackable_locations(manager, machine_gun, square_array)).to eq(
-                [{"action" => "highlightSquares", "arguments" => ["range", locations]}])
+                [{"action" => "highlightSquares", "arguments" => ["attack", locations]}])
         end
     end
 
