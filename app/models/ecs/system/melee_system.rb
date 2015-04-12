@@ -54,11 +54,12 @@ private
 	#
 	#    If damage is applied, the damage return array will be of the form:
 	#
-	#	[["melee", damage_info], ...]
+	#	[["melee", attacking_entity, damage_info], ...]
 	def self.perform_attack(entity_manager, attacking_entity, attacked_entity)
 		mattack = entity_manager.get_components(attacking_entity, MeleeAttackComponent).first
 		result  = DamageSystem.update(entity_manager, attacked_entity, mattack.attack)
-		result[0].unshift "melee" if !result.empty?
+		piece_comp = entity_manager.get_components(attacking_entity, PieceComponent).first
+		(result[0].unshift piece_comp.type.to_s).unshift(attacking_entity).unshift "melee" if !result.empty?
 		return result
 	end
 
@@ -139,10 +140,10 @@ public
 	#	3. if entity1 and entity2 both attack and live
 	#	4. if entity1 and entity2 both attack and entity1 dies
 	#
-	#	1. [["melee", entity2_damage_info]]
-	#	2. [["melee", entity2_damage_info], [entity2_kill_info]]
-	#	3. [["melee", entity2_damage_info], ["melee", entity1_damage_info]]
-	#	4. [["melee", entity2_damage_info], ["melee", entity1_damage_info], [entity1_kill_info]]
+	#	1. [["melee", entity1, entity2_damage_info]]
+	#	2. [["melee", entity1, entity2_damage_info], [entity2_kill_info]]
+	#	3. [["melee", entity1, entity2_damage_info], ["melee", entity2, entity1_damage_info]]
+	#	4. [["melee", entity1, entity2_damage_info], ["melee", entity2, entity1_damage_info], [entity1_kill_info]]
 	def self.update(entity_manager, entity1, entity2)
 		if !self.valid_melee?(entity_manager, entity1, entity2)
 			return []

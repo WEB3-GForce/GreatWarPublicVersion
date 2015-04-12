@@ -98,6 +98,17 @@ describe JsonFactory do
         end
     end
 
+
+    context "when calling piece_xy" do
+        it "should return a hash with the attributes of the piece" do
+            set_intermediate
+            expect(JsonFactory.piece_xy(manager, infantry)).to eq(
+                {"y" => 0, "x" => 0})
+            expect(JsonFactory.piece_xy(manager, command_bunker)).to eq(
+                {"y" => 2, "x" => 0})
+        end
+    end
+
     context "when calling piece" do
         it "should return a proper hash for an infantry" do
             set_intermediate
@@ -243,15 +254,28 @@ describe JsonFactory do
         end
     end
 
-    context "when calling update_energy" do
-        it "should return a hash of the entity with its updated energy" do
+    context "when calling update_health" do
+        it "should return a hash of the entity with its updated health" do
             health_comp = manager.get_components(infantry, HealthComponent).first
             expect(JsonFactory.update_health(manager, infantry)).to eq(
                 [{"action" => "updateUnitsHealth",
                   "arguments" => [infantry, health_comp.cur_health]}])
         end
+        it "should return a hash with health set to 0 if an entity doesnt exit" do
+            health_comp = manager.get_components(infantry, HealthComponent).first
+            expect(JsonFactory.update_health(manager, "test")).to eq(
+                [{"action" => "updateUnitsHealth",
+                  "arguments" => ["test", 0]}])
+        end
     end
 
+    context "when calling kill_units" do
+        it "should return a hash of the entity to be killed" do
+            expect(JsonFactory.kill_units(manager, [infantry, machine_gun])).to eq(
+                [{"action" => "killUnits",
+                  "arguments" => [[infantry, machine_gun]]}])
+        end
+    end
 
     context "when calling game_start" do
         it "should return a hash of the game_start" do
@@ -289,6 +313,17 @@ describe JsonFactory do
             }
             path_actions.concat(JsonFactory.update_energy(manager, infantry))
             expect(JsonFactory.move(manager, infantry, path)).to eq(path_actions)
+        end
+    end
+
+    context "when calling attack_animate" do
+        it "should return a hash of an attack animation action" do
+            set_intermediate
+            pos_comp = manager.get_components(command_bunker, PositionComponent).first
+            expect(JsonFactory.attack_animate(manager, "ranged", infantry, "infantry", pos_comp.row, pos_comp.col)).to  (
+               eq([{"actions"   => "attack",
+       		   "arguments" => [infantry, {"y" => pos_comp.row , "x"=> pos_comp.col},
+       		                   "ranged", "infantry"]}]))
         end
     end
 

@@ -40,8 +40,9 @@ class DamageSystem < System
 		
 		health = entity_manager.get_components(entity, HealthComponent).first
 		health.cur_health -= damage
+		pos_comp = entity_manager.get_components(entity, PositionComponent).first
 		
 		result = KillSystem.update(entity_manager, entity)
-		return [[entity, damage]].concat result
+		return [[entity, pos_comp.row, pos_comp.col, damage]].concat result
 	end
 end

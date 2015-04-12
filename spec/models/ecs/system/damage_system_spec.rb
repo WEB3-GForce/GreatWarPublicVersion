@@ -38,8 +38,12 @@ describe DamageSystem do
 		end
 
 		it "should return the proper array for live damageable entities" do
+			setup()
+			manager.board[row][col][1].push infantry
+			manager.add_component(infantry,
+					      PositionComponent.new(row, col))
 			result = DamageSystem.update(manager, infantry, 5)
-			expect(result).to eq [[infantry, 5]]
+			expect(result).to eq [[infantry, 1, 1, 5]]
 		end
 
 		it "should return the proper array for dead entities" do
@@ -49,7 +53,7 @@ describe DamageSystem do
 					      PositionComponent.new(row, col))
 			result = DamageSystem.update(manager, infantry, 10)
 			expect(result.size).to eq 2
-			expect(result[0]).to eq [infantry, 10]
+			expect(result[0]).to eq [infantry, 1, 1, 10]
 			expect(result[1][0]).to eq "kill"
 		end
 	end
