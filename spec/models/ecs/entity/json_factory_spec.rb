@@ -234,6 +234,15 @@ describe JsonFactory do
         end
     end
 
+    context "when calling update_energy" do
+        it "should return a hash of the entity with its updated energy" do
+            energy_comp = manager.get_components(infantry, EnergyComponent).first
+            expect(JsonFactory.update_energy(manager, infantry)).to eq(
+                [{"action" => "updateUnitEnergy",
+                  "arguments" => [infantry, energy_comp.cur_energy]}])
+        end
+    end
+
 
     context "when calling game_start" do
         it "should return a hash of the game_start" do
@@ -269,6 +278,7 @@ describe JsonFactory do
                  path_actions.push({"action" => "moveUnit",
         		           "arguments" => [infantry, result] })
             }
+            path_actions.push(JsonFactory.update_energy(manager, infantry))
             expect(JsonFactory.move(manager, infantry, path)).to eq(path_actions)
         end
     end
