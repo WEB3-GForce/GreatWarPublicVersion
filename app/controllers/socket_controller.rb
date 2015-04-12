@@ -4,10 +4,11 @@ class SocketController < WebsocketRails::BaseController
   @@game ||= Hash.new
 
   def rpc
-    p "Wtf"
     # TODO
     method_name = message['action']
     method_params = message['arguments']
+
+    p method_name
 
     req_id = 0
     game_id = 0
@@ -24,7 +25,7 @@ class SocketController < WebsocketRails::BaseController
         manager = @@game[game_id]
         method_params.unshift manager
         method_params.unshift req_id
-        
+
         response = Game.public_send(method_name, *method_params)
         p response
     end
@@ -77,8 +78,6 @@ class SocketController < WebsocketRails::BaseController
     #               }
     #              ]
     # end
-
-    p method_name
 
     if response
       send_message :rpc, {

@@ -300,7 +300,7 @@ class JsonFactory
 	# Returns
 	#   A hash that is ready to be jsoned	
 	def self.melee_attackable_locations(entity_manager,  melee_entity, locations)
-		self.locations(entity_manager, melee_entity, locations, "melee")
+		self.locations(entity_manager, melee_entity, locations, "attack")
 	end
 	
 
@@ -317,7 +317,7 @@ class JsonFactory
 	# Returns
 	#   A hash that is ready to be jsoned	
 	def self.range_attackable_locations(entity_manager,  range_entity, locations)
-		self.locations(entity_manager, range_entity, locations, "range")
+		self.locations(entity_manager, range_entity, locations, "attack")
 	end
 
 
@@ -350,12 +350,12 @@ class JsonFactory
 		end
 
 		if can_range
-		 actions.push({"name" => "range",
+		 actions.push({"name" => "ranged",
 		               "cost" => entity_manager[entity][RangeAttackComponent].first.energy_cost})
 		end
 
 		return [{"action"    => "showUnitActions",
-		        "arguments" => actions}]
+		        "arguments" => [actions]}]
 	end
 
 	# Actions to handle:

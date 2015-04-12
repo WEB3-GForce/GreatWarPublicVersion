@@ -184,7 +184,7 @@ GameGroup.prototype.initGame = function(board, units, turn, players) {
     return { start: function() { this.onComplete(); } }
 }
 
-GameGroup.prototype.showUnitActions = function(unitActions, a) {
+GameGroup.prototype.showUnitActions = function(unitActions) {
     console.log("show Unit Actions");
     var action = {
     	gameGroup: this
@@ -279,8 +279,6 @@ GameGroup.prototype.attack = function(unitId, square, type, unitType) {
 
 GameGroup.prototype.moveUnit = function(unitId, square, b, c) {
     console.log("move Unit");
-    console.log(unitId);
-    console.log(square);
 
     var action = {};
     action.unit = this.unitGroup.find(unitId);

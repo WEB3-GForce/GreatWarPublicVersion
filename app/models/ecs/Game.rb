@@ -8,7 +8,7 @@ require_relative "./system/turn_system.rb"
 
 class Game
 
-    def self.init_game(rows=15, cols=15, player_names=["Player 1", "Player 2"])
+    def self.init_game(rows=10, cols=10, player_names=["Player 1", "Player 2"])
         manager = EntityManager.new(rows, cols)
         players, turn, pieces = EntityFactory.create_game_basic(manager, player_names)
         start_json = JsonFactory.game_start(manager, players, turn, pieces)
@@ -115,12 +115,12 @@ class Game
 
     def self.get_unit_melee_attacks(req_id, em, entity)
         attacks = MeleeSystem.attackable_locations(em, entity)
-        return JsonFactory.melee_attackable_locations(em, e, attacks)
+        return JsonFactory.melee_attackable_locations(em, entity, attacks)
     end
 
     def self.get_unit_ranged_attacks(req_id, em, entity)
         attacks = RangeSystem.attackable_locations(em, entity)
-        return JsonFactory.range_attackable_locations(em, e, attacks)
+        return JsonFactory.range_attackable_locations(em, entity, attacks)
     end
 
 
