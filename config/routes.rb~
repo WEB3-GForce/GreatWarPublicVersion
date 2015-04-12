@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  resources :gamas
+  resources :games
 
   get 'sessions/new'
 

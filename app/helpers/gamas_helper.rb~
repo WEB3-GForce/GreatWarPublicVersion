@@ -1,4 +1,4 @@
-module GamesHelper
+module GamasHelper
 
 	def game_pending?(game)
 		game.pending

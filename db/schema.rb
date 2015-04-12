@@ -11,9 +11,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150406020750) do
+ActiveRecord::Schema.define(version: 20150412211934) do
 
-  create_table "games", force: :cascade do |t|
+  create_table "gamas", force: :cascade do |t|
     t.boolean  "pending"
     t.boolean  "done"
     t.datetime "created_at", null: false
