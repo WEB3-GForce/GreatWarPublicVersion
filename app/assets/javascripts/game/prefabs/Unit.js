@@ -96,31 +96,32 @@ Unit.prototype.stop = function() {
 Unit.prototype.moveTo = function(x, y, callback, callbackContext) {
     if (this.x/this.game.constants.TILE_SIZE < x) {
 	this.moveAdjacent("right").onComplete.add(function() {
-	    this.moveTo(x, y);
+	    this.moveTo(x, y, callback, callbackContext);
 	}, this);
 	return;
     }
     if (this.x/this.game.constants.TILE_SIZE > x) {
 	this.moveAdjacent("left").onComplete.add(function() {
-	    this.moveTo(x, y);
+	    this.moveTo(x, y, callback, callbackContext);
 	}, this);
 	return;
     }
     if (this.y/this.game.constants.TILE_SIZE < y) {
 	this.moveAdjacent("down").onComplete.add(function() {
-	    this.moveTo(x, y);
+	    this.moveTo(x, y, callback, callbackContext);
 	}, this);
 	return;
     }
     if (this.y/this.game.constants.TILE_SIZE > y) {
 	this.moveAdjacent("up").onComplete.add(function() {
-	    this.moveTo(x, y);
+	    this.moveTo(x, y, callback, callbackContext);
 	}, this);
 	return;
     }
     this.stop();
-    if (callback)
-	callback().bind(callbackContext);
+    if (callback) {
+	callback.bind(callbackContext)();
+    }
 }
 
 // Unit.prototype.attack = function(unit, type) {

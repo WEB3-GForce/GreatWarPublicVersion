@@ -184,7 +184,7 @@ GameGroup.prototype.initGame = function(board, units, turn, players) {
     return { start: function() { this.onComplete(); } }
 }
 
-GameGroup.prototype.showUnitActions = function(unitActions) {
+GameGroup.prototype.showUnitActions = function(unitActions, a) {
     console.log("show Unit Actions");
     var action = {
     	gameGroup: this
@@ -277,7 +277,7 @@ GameGroup.prototype.attack = function(unitId, square, type, unitType) {
     return new AnimationAction(unit, type + "-attack");
 }
 
-GameGroup.prototype.moveUnit = function(unitId, square) {
+GameGroup.prototype.moveUnit = function(unitId, square, b, c) {
     console.log("move Unit");
     console.log(unitId);
     console.log(square);
@@ -285,10 +285,6 @@ GameGroup.prototype.moveUnit = function(unitId, square) {
     var action = {};
     action.unit = this.unitGroup.find(unitId);
     action.start = function() {
-    	// for (var i = 1, l = square.length; i < l; i++) {
-    	// 	this.unit.moveTo(square[i].x, square[i].y);
-    	// }
-    	// this.onComplete();
     	this.unit.moveTo(square.x, square.y, this.onComplete, this);
     }
     return action;
