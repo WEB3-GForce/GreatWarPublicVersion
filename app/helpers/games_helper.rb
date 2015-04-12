@@ -19,4 +19,13 @@ module GamesHelper
 		return @players
 	end
 
+	def leave_game
+		user = current_user
+		game = Game.find(user.game)
+		user.game = 0
+		user.save!
+
+		game.update_attribute(:pending, true)
+	end
+
 end

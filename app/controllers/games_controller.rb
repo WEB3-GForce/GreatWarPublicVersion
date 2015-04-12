@@ -5,6 +5,11 @@ class GamesController < ApplicationController
   # GET /games.json
   def index
     @games = Game.all
+    user = current_user
+    if user.game != 0 && params[:leave] == "1"
+      flash.now[:success] = "You have left your current game"
+      leave_game
+    end
     
   end
 
@@ -13,15 +18,17 @@ class GamesController < ApplicationController
   def show
     @game = Game.find(params[:id])
     user = current_user
+    #current_user.game = 0
+    #  current_user.save
+    #@game.update_attribute(:pending, true)
     if user.game != 0 && params[:join] == "1" && user.game != @game.id
       flash.now[:warning] = "You cannot join more than one game at a time. You have been redirected."
       @game = Game.find(user.game)
     
     elsif (user.game == 0 && params[:join] == "1")
       
-      #current_user.game = nil
-      #current_user.save
       
+      @game.update_attribute(:pending, false)
       flash.now[:success] = "Game Successfully Joined!"
       assign_game_to_current_user(@game)
     end

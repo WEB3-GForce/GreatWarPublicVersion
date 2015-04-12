@@ -7,9 +7,9 @@
   	<% else %>
 
   		<% if game_done?(@game) %>
-	  		<strong>Game is Over.</strong> 
+	  		<strong>Game <%= @game.name %> is Over.</strong> 
 	  	<% else %>
-	  		<strong> Game is on-going.</strong>
+	  		<strong> Game <%= @game.name %> is on-going.</strong>
   		<% end %>
   	<% end %>
 
@@ -17,5 +17,5 @@
 </p>
 
 
-<%= link_to 'Edit', edit_game_path(@game) %> |
+<%= link_to 'Leave', games_path(:leave => 1) %> |
 <%= link_to 'Back', games_path %>
