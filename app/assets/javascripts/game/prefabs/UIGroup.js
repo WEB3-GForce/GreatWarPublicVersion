@@ -234,15 +234,15 @@ UIGroup.prototype.setUnit = function(unit) {
 UIGroup.prototype.showMenu = function(unit, actions) {
     for (var i = 0; i < actions.length; i++) {
 	// add each button to an array of actions
-	this.actions[actions[i].name] = this.game.add.button(0, 0, 'action-' + actions[i].name);
-        this.actions[actions[i].name].inputEnabled = true;
-        this.actions[actions[i].name].input.useHandCursor = true;
-        this.actions[actions[i].name].anchor.setTo(0.5, 0.5);
-        this.actionMenu.add(this.actions[actions[i].name]);
+	this.actions[i] = this.game.add.button(0, 0, 'action-' + actions[i].name);
+        this.actions[i].inputEnabled = true;
+        this.actions[i].input.useHandCursor = true;
+        this.actions[i].anchor.setTo(0.5, 0.5);
+        this.actionMenu.add(this.actions[i]);
         var angle = 2*Math.PI / actions.length * i - Math.PI/2;
         var r = 80;
-        this.actions[actions[i].name].x = r*Math.cos(angle);
-        this.actions[actions[i].name].y = r*Math.sin(angle);
+        this.actions[i].x = r*Math.cos(angle);
+        this.actions[i].y = r*Math.sin(angle);
     }
 
     // visual representation of remaining energy
@@ -265,6 +265,7 @@ UIGroup.prototype.hideMenu = function() {
 	    this.actionMenu.remove(this.actions[i], true);
 	}
 	this.actions = [];
+	console.log(this.actionMenu);
     }, this);
     return t;
 }
