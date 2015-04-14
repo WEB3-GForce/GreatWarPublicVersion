@@ -29,33 +29,27 @@ UIGroup.prototype.initPlayerInfoUI = function() {
     this.playerInfo.y = 8;
     this.playerInfo.fixedToCamera = true;
 
-    var width = 256;
-    var height = 72;
+    var width = 288;
+    var height = 64;
 
     this.playerInfoGraphics = this.game.add.graphics(0, 0, this.playerInfo);
-    this.playerInfoGraphics.beginFill(0x000000, 0.5);
+    this.playerInfoGraphics.beginFill(0x000000, 0.3);
     this.playerInfoGraphics.drawRect(0, 0, width, height);
 
-    this.playerNameBackground = this.game.add.graphics(72, 4, this.playerInfo);
-    this.playerNameBackground.beginFill(0xFF0000, 0.5);
-    this.playerNameBackground.drawRect(0, 0, width - 72 - 4, 36);
+    this.playerInfoGraphics.beginFill(COLORS.HEALTH, 1);
+    this.playerInfoGraphics.drawRect(64, 0, width - 64, 32);
 
-    this.playerName = this.game.add.text(76, 10,
-					 this.game.constants.PLAYER_NAME,
-					 this.font,
-					 this.playerInfo);
+    this.playerName = this.game.add.bitmapText(72, 4, 'minecraftia',
+					       this.game.constants.PLAYER_NAME,
+					       20,
+					       this.playerInfo);
 
-    this.turnNumber = this.game.add.text(84, 40,
-					 "Day: " + this.game.turnNumber,
-					 this.font,
-					 this.playerInfo);
+    this.turnNumber = this.game.add.bitmapText(72, 36, 'minecraftia',
+					       "Day: " + this.game.turnNumber,
+					       20,
+					       this.playerInfo);
 
-    this.playerPortraitFrame = this.game.add.graphics(2, 3, this.playerInfo);
-    this.playerPortraitFrame.beginFill(0x000000, 0.5);
-    this.playerPortraitFrame.drawRect(0, 0, 66, 66);
-
-    this.playerPortrait = this.game.add.sprite(44, 44, 'generalPortrait', this.playerInfo);
-    this.playerPortrait.anchor.setTo(0.5, 0.5);
+    this.playerPortrait = this.game.add.sprite(8, 8, 'generalPortrait', this.playerInfo);
     this.playerPortrait.width = 64;
     this.playerPortrait.height = 64;
     this.playerPortrait.fixedToCamera = true;
@@ -63,9 +57,9 @@ UIGroup.prototype.initPlayerInfoUI = function() {
 
 UIGroup.prototype.initTileInfoUI = function() {
     var height = 160;
-    var width = 80;
+    var width = 96;
     this.tileInfo = this.game.add.group();
-    this.tileInfo.x = this.unitInfo.x + 160 + 4;
+    this.tileInfo.x = 8;
     this.tileInfo.y = this.unitInfo.y;
     this.tileInfo.fixedToCamera = true;
 
@@ -73,18 +67,16 @@ UIGroup.prototype.initTileInfoUI = function() {
     this.tileGraphics.beginFill(0x000000, 0.3);
     this.tileGraphics.drawRect(0, 0, width, height);
 
-    this.tileTitle = this.game.add.text(8, 8, "test",
-					this.font,
-					this.tileInfo);
+    this.tileTitle = this.game.add.bitmapText(8, 8, 'minecraftia', '',
+					      16,
+					      this.tileInfo);
     this.currentTile = this.game.add.sprite(8, 40, 'terrain', 0, this.tileInfo);
     this.currentTile.alpha = 0.7;
-
-    this.tileInfo.visible = false;
 }
 
 UIGroup.prototype.initUnitInfoUI = function() {
     var height = 160;
-    var width = 160;
+    var width = 192;
     this.unitInfo = this.game.add.group();
     this.unitInfo.x = 8;
     this.unitInfo.y = this.game.height - height - 8;
@@ -94,20 +86,20 @@ UIGroup.prototype.initUnitInfoUI = function() {
     this.unitGraphics.beginFill(0x000000, 0.3);
     this.unitGraphics.drawRect(0, 0, width, height);
 
-    this.unitType = this.game.add.text(8, 8, "",
-				       this.font,
-				       this.unitInfo);
+    this.unitType = this.game.add.bitmapText(8, 8, 'minecraftia', '',
+					     16,
+					     this.unitInfo);
     this.currentUnit = this.game.add.sprite(8, 40, 'trainer', 1, this.unitInfo);
     this.currentUnit.alpha = 0.7;
-    this.unitHealth = this.game.add.text(8, 80, "",
-					 this.smallerFont,
-					 this.unitInfo);
-    this.unitAttack = this.game.add.text(8, 104, "",
-					 this.smallerFont,
-					 this.unitInfo);
-    this.unitEnergy = this.game.add.text(8, 128, "",
-					 this.smallerFont,
-					 this.unitInfo);
+    this.unitHealth = this.game.add.bitmapText(8, 80, 'minecraftia', '',
+					       12,
+					       this.unitInfo);
+    this.unitAttack = this.game.add.bitmapText(8, 104, 'minecraftia', '',
+					       12,
+					       this.unitInfo);
+    this.unitEnergy = this.game.add.bitmapText(8, 128, 'minecraftia', '',
+					       12,
+					       this.unitInfo);
     this.unitInfo.visible = false;
 }
 
@@ -227,10 +219,10 @@ UIGroup.prototype.setUnit = function(unit) {
 	this.currentUnit.key = UNIT_MAP[unit.type].IMAGE;
 
     	this.unitInfo.visible = true;
-        this.tileInfo.visible = true;
+	this.tileInfo.cameraOffset.x = 208;
     } else {
 	this.unitInfo.visible = false;
-        this.tileInfo.visible = false;
+        this.tileInfo.cameraOffset.x = 8;
     }
 }
 

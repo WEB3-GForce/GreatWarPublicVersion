@@ -33,6 +33,8 @@ Preload.prototype = {
 			      this.game.constants.TILE_SIZE,
 			      this.game.constants.TILE_SIZE,
 			      -1, 1, 1);
+
+	this.load.bitmapFont('minecraftia', 'assets/minecraftia.png', 'assets/minecraftia.fnt');
     },
     create: function() {
 	this.asset.cropEnabled = false;
