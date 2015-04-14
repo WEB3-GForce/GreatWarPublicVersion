@@ -227,14 +227,14 @@ describe RangeSystem do
             manager[infantry][RangeAttackComponent].first.attack = 1
             result = RangeSystem.perform_attack(manager, infantry, infantry2)
             expect(result.size).to eq 1
-            expect(result[0][0]).to eq "range"
+            expect(result[0][0]).to eq "ranged"
         end
 
         it "should return proper array from damage and kill" do
             manager[infantry][RangeAttackComponent].first.attack = 100
             result = RangeSystem.perform_attack(manager, infantry, infantry2)
             expect(result.size).to eq 2
-            expect(result[0][0]).to eq "range"
+            expect(result[0][0]).to eq "ranged"
             expect(result[1][0]).to eq "kill"
         end
     end
@@ -432,7 +432,7 @@ describe RangeSystem do
                     manager[infantry][RangeAttackComponent].first.attack = 1
                     result = RangeSystem.update(manager, infantry, infantry2)
                     expect(result.size).to eq 1
-                    expect(result[0][0]).to eq "range"
+                    expect(result[0][0]).to eq "ranged"
                     expect(manager[infantry][EnergyComponent].first.cur_energy).to eq(
                     	10 - manager[infantry][RangeAttackComponent].first.energy_cost)
                 end
@@ -444,7 +444,7 @@ describe RangeSystem do
                     manager[infantry][RangeAttackComponent].first.attack = 100
                     result = RangeSystem.update(manager, infantry, infantry2)
                     expect(result.size).to eq 2
-                    expect(result[0][0]).to eq "range"
+                    expect(result[0][0]).to eq "ranged"
                     expect(result[1][0]).to eq "kill"
                     expect(manager[infantry][EnergyComponent].first.cur_energy).to eq(
                     	10 - manager[infantry][RangeAttackComponent].first.energy_cost)
@@ -467,8 +467,8 @@ describe RangeSystem do
                     manager.board[row+1][col+2] = [flatland3, [infantry3]]
                     result = RangeSystem.update(manager, infantry, infantry2)
                     expect(result.size).to eq 1
-                    expect(result[0].size).to eq 5
-                    expect(result[0][0]).to eq "range"
+                    expect(result[0].size).to eq 11
+                    expect(result[0][0]).to eq "ranged"
                     expect(manager[infantry][EnergyComponent].first.cur_energy).to eq(
                     	10 - manager[infantry][RangeAttackComponent].first.energy_cost)
                 end
@@ -485,8 +485,8 @@ describe RangeSystem do
                     manager[infantry3][OwnedComponent].first.owner = human1
                     result = RangeSystem.update(manager, infantry, infantry2)
                     expect(result.size).to eq 1
-                    expect(result[0].size).to eq 3
-                    expect(result[0][0]).to eq "range"
+                    expect(result[0].size).to eq 7
+                    expect(result[0][0]).to eq "ranged"
                     expect(manager[infantry][EnergyComponent].first.cur_energy).to eq(
                     	10 - manager[infantry][RangeAttackComponent].first.energy_cost)
                 end
@@ -504,8 +504,8 @@ describe RangeSystem do
                     manager.board[row+1][col+2] = [flatland3, [infantry3]]
                     result = RangeSystem.update(manager, infantry, infantry2)
                     expect(result.size).to eq 3
-                    expect(result[0][0]).to eq "range"
-                    expect(result[0].size).to eq 5
+                    expect(result[0][0]).to eq "ranged"
+                    expect(result[0].size).to eq 11
                     expect(result[1][0]).to eq "kill"
                     expect(result[2][0]).to eq "kill"
                     expect(manager[infantry][EnergyComponent].first.cur_energy).to eq(
@@ -524,8 +524,8 @@ describe RangeSystem do
                     manager[infantry3][OwnedComponent].first.owner = human1
                     result = RangeSystem.update(manager, infantry, infantry2)
                     expect(result.size).to eq 2
-                    expect(result[0][0]).to eq "range"
-                    expect(result[0].size).to eq 3
+                    expect(result[0][0]).to eq "ranged"
+                    expect(result[0].size).to eq 7
                     expect(result[1][0]).to eq "kill"
                     expect(manager[infantry][EnergyComponent].first.cur_energy).to eq(
                     	10 - manager[infantry][RangeAttackComponent].first.energy_cost)

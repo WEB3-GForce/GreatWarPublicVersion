@@ -134,13 +134,13 @@ class Game
     def self.melee_attack(req_id, em, entity, row, col)
         target = em.board[row][col][1].first
         result = MeleeSystem.update(em, entity, target)
-        return JsonFactory.attack_result(result) # UNIMPLEMENTED
+        return JsonFactory.attack(result)
     end
 
     def self.ranged_attack(req_id, em, entity, row, col)
         target = em.board[row][col][1].first
         result = RangeSystem.update(em, entity, target)
-        return JsonFactory.attack_result(result) # UNIMPLEMENTED
+        return JsonFactory.attack(result)
     end
 
     # End the turn for the current player.

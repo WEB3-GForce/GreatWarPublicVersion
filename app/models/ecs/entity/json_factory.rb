@@ -148,6 +148,21 @@ class JsonFactory
 		return piece_hash
 	end
 
+	# This method is similar to square_path but converts a unit to its x, y
+	# coordinates.
+	#
+	# Argumetns
+	#   entity_manager = the manager in which the entity is kept.
+	#   entity         = the piece entity to be jsoned
+	#
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.piece_xy(entity_manager, entity)
+		pos_comp = entity_manager.get_components(entity, PositionComponent).first
+		return {"y"  => pos_comp.row,
+		        "x"  => pos_comp.col}
+	end
+
 	# Converts the board into a json-ready hash. This method is particularly
 	# useful for initialization of the frontend and sending the frontend the
 	# data for the board.
@@ -184,6 +199,36 @@ class JsonFactory
 		         "arguments" => [entity, energy_comp.cur_energy]}]
 	end
 
+
+	# This method sends a request to the frontend to update health.
+	#
+	# Arguments
+	#   entity_manager = the manager of the entities
+	#   entity         = the entity who lost health
+	# 
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.update_health(entity_manager, entity)
+		cur_health = 0
+		if entity_manager.has_key? entity
+			cur_health = entity_manager.get_components(entity, HealthComponent).first.cur_health
+		end
+		return [{"action"    => "updateUnitsHealth",
+		         "arguments" => [entity, cur_health]}]
+	end
+
+	# This method produces a message for the frontend to kill a set of units.
+	#
+	# Arguments
+	#   entity_manager = the manager of the entities
+	#   units_array    = the entities to kill
+	# 
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.kill_units(entity_manager, units_array)
+		return [{"action"    => "killUnits",
+		         "arguments" => [units_array]}]
+	end
 
 	# This method is responsible for sending all relevant game
 	# start data to the frontend. Once the frontend receives this, it will
@@ -244,6 +289,60 @@ class JsonFactory
         		              "arguments" => [moving_entity, coordinates] })
         	}
         	actions.concat self.update_energy(entity_manager, moving_entity)
+       		return actions
+	end
+
+
+      # This function converts an attack result information into an rpc for the front
+      # end. In particular, it has all necessary information rcorded by the attack
+      # systems. Once an entity dies, it is removed from the entity manager. Hence,
+      # it would be futile to search for it. Hence, everything needed has to be
+      # specified
+      #
+      # Arguments
+      #   entity_manager   = manager of entities
+      #   type             = the type of the attack
+      #   attacking_entity = the entity launching the attack.
+      #   attacker_type    = the piece type of the attackign entity.
+      #   target_row       = the row of the targeted entity
+      #   target_col       = the col of the targeted enitty
+      #
+      # Returns
+      #   a hash ready to be sent to the frontend.
+      def self.attack_animate(entity_manager, type, attacking_entity, attacker_type, target_row, target_col)
+       		return [{"actions"   => "attack",
+       		         "arguments" =>
+       		            [attacking_entity,
+       		             {"y" => target_row,
+       		              "x" => target_col
+       		               },
+       		             type,
+       		             attacker_type]}]
+	end
+
+	# This returns the results of a move command to the frontend. It specifies
+	# the entity that moved along with the path it moved upon.
+	#
+	# Argumetns
+	#   entity_manager = the manager that contains the entities
+	#   moving_entity  = the entity that moved.
+	#   path           = an array of square entities denoting the path of motion.
+	#
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.attack(entity_manager, result)
+        	actions = []
+        	killed_units = []
+        	result.each { |item|
+        		if item[0] == "melee" || item[0] == "ranged"
+        			actions.concat self.attack_animate(entity_manager,
+        				item[0], item[1], item[2], item[4], item[5])
+        			actions.concat self.update_health(entity_manager, item[2])
+        		elsif item[0] == "kill"
+        			killed_units.push item[1]
+        		end
+        	}        	
+        	actions.concat self.kill_units(entity_manager, killed_units) if !killed_units.empty?
        		return actions
 	end
 
