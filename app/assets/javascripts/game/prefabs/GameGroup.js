@@ -46,10 +46,10 @@ GameGroup.prototype.update = function() {
     if (this.game.input.mousePointer.targetObject &&
     	this.game.input.mousePointer.targetObject.sprite instanceof Unit &&
     	!this.selected) {
-		this.ui.setUnit(this.game.input.mousePointer.targetObject.sprite);
+	this.ui.setUnit(this.game.input.mousePointer.targetObject.sprite);
     } else if (!this.selected) {
- 		this.ui.setUnit(null);
- 	}
+ 	this.ui.setUnit(null);
+    }
 }
 
 GameGroup.prototype.onClick = function(targetObject) {
