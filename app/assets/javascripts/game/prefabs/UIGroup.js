@@ -237,7 +237,11 @@ UIGroup.prototype.setUnit = function(unit) {
 UIGroup.prototype.showMenu = function(unit, actions) {
     for (var i = 0; i < actions.length; i++) {
 	// add each button to an array of actions
-	this.actions[i] = this.game.add.button(0, 0, 'action-' + actions[i].name);
+	this.actions[i] = this.game.add.button(0, 0,
+					       'action-' + actions[i].name,
+					       function() {}, this,
+					       0, 1
+					      );
         this.actions[i].inputEnabled = true;
         this.actions[i].input.useHandCursor = true;
         this.actions[i].anchor.setTo(0.5, 0.5);
