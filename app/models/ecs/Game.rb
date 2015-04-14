@@ -131,6 +131,16 @@ class Game
         return JsonFactory.move(em, entity, path)
     end
 
+    def self.attack(req_id, em, entity, square, type)
+    
+    	if type == "melee"
+    		return self.melee_attack(req_id, em, entity, square.y, square.x)
+    	end
+    	if type == "ranged"
+    		return self.ranged_attack(req_id, em, entity, square.y, square.x)
+    	end
+    end
+
     def self.melee_attack(req_id, em, entity, row, col)
         target = em.board[row][col][1].first
         result = MeleeSystem.update(em, entity, target)
