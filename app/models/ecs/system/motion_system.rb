@@ -262,7 +262,7 @@ public
 		pos_comp    = entity_manager.get_components(entity, PositionComponent).first
 		own_comp    = entity_manager.get_components(entity, OwnedComponent).first
 		
-		motion_comp.max_movement = energy_comp.cur_energy / motion_comp.cost
+		motion_comp.max_movement = energy_comp.cur_energy / motion_comp.energy_cost
 		
 		result = []
 		self.determine_locations(entity_manager, own_comp.owner, pos_comp.row,
@@ -307,7 +307,7 @@ public
 		pos_comp    = entity_manager.get_components(entity, PositionComponent).first
 		own_comp    = entity_manager.get_components(entity, OwnedComponent).first
 		
-		motion_comp.max_movement = energy_comp.cur_energy / motion_comp.cost
+		motion_comp.max_movement = energy_comp.cur_energy / motion_comp.energy_cost
 		
 		path = self.determine_path(entity_manager, own_comp.owner, pos_comp.row,
 			pos_comp.col, end_pos.row, end_pos.col, motion_comp.max_movement, [])
