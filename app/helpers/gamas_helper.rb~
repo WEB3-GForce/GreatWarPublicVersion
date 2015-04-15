@@ -42,7 +42,7 @@ module GamasHelper
 	def start_game(players, game)
 		puts players
 		puts game
-		
+		return SocketController.init_game(players, game.id)
 	end
 
 end

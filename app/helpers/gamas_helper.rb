@@ -42,7 +42,10 @@ module GamasHelper
 	def start_game(players, game)
 		puts players
 		puts game
-		SocketController.init_game(players, game.id)
+		redirect = SocketController.init_game(players, game.id)
+		if redirect
+			
+		end
 	end
 
 end
