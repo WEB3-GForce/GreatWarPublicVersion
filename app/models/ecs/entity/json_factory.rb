@@ -210,9 +210,9 @@ class JsonFactory
 	#   A hash that is ready to be jsoned
 	def self.update_health(entity_manager, entity)
 		cur_health = 0
-		if entity_manager.has_key? entity
+		if entity_manager.has_key? (entity) and !entity_manager[entity].empty?
 			cur_health = entity_manager.get_components(entity, HealthComponent).first.cur_health
-		end
+        end
 		return [{"action"    => "updateUnitHealth",
 		         "arguments" => [entity, cur_health]}]
 	end
@@ -338,7 +338,7 @@ class JsonFactory
         			actions.concat self.attack_animate(entity_manager,
         				item[0], item[1], item[2], item[4], item[5])
         			actions.concat self.update_health(entity_manager, item[3])
-        			if entity_manager.has_key? item[1]
+        			if entity_manager.has_key? item[1] and !entity_manager[item[1]].empty?
         				actions.concat self.update_energy(entity_manager, item[1])
         			end
         		elsif item[0] == "kill"
