@@ -21,7 +21,7 @@ class GamasController < ApplicationController
     #current_user.Gama = 0
     #  current_user.save
     #@Gama.update_attribute(:pending, true)
-    if user.game != nil && user.game != 0 && params[:join] == "1" && user.game != @gama.id
+    if user.game != 0 && params[:join] == "1" && user.game != @gama.id
       flash.now[:warning] = "You cannot join more than one Gama at a time. You have been redirected."
       @gama = Gama.find(user.game)
     
@@ -37,7 +37,7 @@ class GamasController < ApplicationController
   # GET /Gamas/new
   def new
     user = current_user
-    if (user.game != nil && user.game != 0)
+    if (user.game != 0)
       flash[:warning] = "You cannot join more than one Gama at a time. You have been redirected."
       redirect_to gama_path(user.game)
   
@@ -55,15 +55,20 @@ class GamasController < ApplicationController
   def create
 
     @gama = Gama.new(gama_params)
-    @gama.update_attribute(:pending, true)
-    @gama.update_attribute(:done, false)
       if @gama.save
         flash[:success] = "Gama Successfully Created!"
+        @gama.update_attribute(:pending, true)
+    	@gama.update_attribute(:done, false)
+    	@gama.update_attribute(:host, true)
         assign_game_to_current_user(@gama)
         redirect_to gamas_path
       else
         render 'new'
       end
+  end
+  
+  def start
+  	start_game
   end
 
   # PATCH/PUT /Gamas/1

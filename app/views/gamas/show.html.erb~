@@ -1,21 +1,31 @@
-<% provide(:title, @game.name) %>
+<% provide(:title, @gama.name) %>
 
 <p>
-	<% if game_pending?(@game) %>
-  <strong>Game <%= @game.name %> is Pending. Would you like to
+	<% if game_pending?(@gama) %>
+  <strong>Game <%= @gama.name %> is Pending. Would you like to
   	<%= link_to 'join?', '#' %></strong> 
   	<% else %>
 
-  		<% if game_done?(@game) %>
-	  		<strong>Game <%= @game.name %> is Over.</strong> 
+  		<% if game_done?(@gama) %>
+	  		<strong>Game <%= @gama.name %> is Over.</strong> 
 	  	<% else %>
-	  		<strong> Game <%= @game.name %> is on-going.</strong>
+	  		<strong> Game <%= @gama.name %> is on-going.</strong>
   		<% end %>
   	<% end %>
 
   	
 </p>
 
+<p>
+	<% if(is_current_user_host?(@gama)) %>
+	<h1> Press below to start the game </h1>
+	
+	<% end %>
 
-<%= link_to 'Leave', games_path(:leave => 1) %> |
-<%= link_to 'Back', games_path %>
+
+	
+</p>
+
+
+<%= link_to 'Leave', gamas_path(:leave => 1) %> |
+<%= link_to 'Back', gamas_path %>

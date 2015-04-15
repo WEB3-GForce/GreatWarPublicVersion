@@ -3,7 +3,8 @@ User.create!(name:  "User 1",
              logged: false,
              password:              "foobar",
              password_confirmation: "foobar",
-             game: 0)
+             game: 0,
+             host: false)
 
 99.times do |n|
   name  = Faker::Name.name
@@ -14,7 +15,8 @@ User.create!(name:  "User 1",
                logged: false,
                password:              password,
                password_confirmation: password,
-               game: 0)
+               game: 0,
+               host: false)
 end
 
 #Game.create!(name: "Game 1",

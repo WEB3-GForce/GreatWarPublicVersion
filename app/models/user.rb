@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
 	attr_accessor :remember_token
-	attr_accessible :name, :email, :logged, :password, :password_confirmation, :game
+	attr_accessible :name, :email, :logged, :password, :password_confirmation, :game, :host
 	# We save all emails as downcased versions to ensure uniqueness
 	before_save { self.email = email.downcase }
 	validates :name,  presence: true, length: { maximum: 50 }
