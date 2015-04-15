@@ -70,7 +70,7 @@ class GamasController < ApplicationController
   def start
   	@gama = Gama.find(params[:gama])
   	@players = players_in_game(@gama)
-  	puts @players
+  	#puts @players
   	start_game(@players, @gama)
   end
 

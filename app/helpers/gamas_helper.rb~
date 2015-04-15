@@ -1,3 +1,5 @@
+require_relative '../controllers/socket_controller.rb'
+
 module GamasHelper
 
 	def game_pending?(game)
@@ -15,7 +17,7 @@ module GamasHelper
 	end
 
 	def players_in_game(game)
-		@players = User.where(:game => game.id)
+		@players = User.where(:game.to_s => game.id)
 		return @players
 	end
 
@@ -40,6 +42,7 @@ module GamasHelper
 	def start_game(players, game)
 		puts players
 		puts game
+		
 	end
 
 end

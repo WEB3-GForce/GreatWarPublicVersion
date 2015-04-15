@@ -1,3 +1,5 @@
+require_relative '../controllers/socket_controller.rb'
+
 module GamasHelper
 
 	def game_pending?(game)
@@ -40,6 +42,7 @@ module GamasHelper
 	def start_game(players, game)
 		puts players
 		puts game
+		SocketController.init_game(players, game.id)
 	end
 
 end
