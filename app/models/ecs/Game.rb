@@ -16,13 +16,13 @@ class Game
     end
 
     def self.each_coord(req_id, em)
-        (0..em.row).each { |row| 
-            (0..em.col).each { |col| 
+        (0..em.row).each { |row|
+            (0..em.col).each { |col|
                 yield row, col
             }
         }
     end
-    
+
     def self.extract_coord(location)
         return location['y'], location['x']
     end
@@ -40,7 +40,7 @@ class Game
             end
         }
         entity_owner = em[entity][OwnedComponent][0].owner;
-        return entity_requester == entity_owner 
+        return entity_requester == entity_owner
     end
 
     def self.get_full_info(req_id, em, row, col)
@@ -48,7 +48,7 @@ class Game
                  "unit" => self.get_unit_info(req_id, em, row, col) }
     end
 
-    def self.get_tile_info(req_id, em, row, col)        
+    def self.get_tile_info(req_id, em, row, col)
         return JsonFactory.square(em, em.board[row][col][0])
     end
 
@@ -58,7 +58,7 @@ class Game
     end
 
     def self.get_player_info(req_id, em, name=nil)
-        em.each_entity(NameComponent) { |entity| 
+        em.each_entity(NameComponent) { |entity|
             nameComp = em[entity][NameComponent].first
             return JsonFactory.player(em, entity) if name == nameComp.name
         }
@@ -92,7 +92,7 @@ class Game
 
     def self.get_all_player_info(req_id, em)
         all_info = []
-        em.each_entity(NameComponent) { |entity| 
+        em.each_entity(NameComponent) { |entity|
             nameComp = em[entity][NameComponent].first
             all_info << JsonFactory.player(em, entity)
         }
@@ -100,11 +100,11 @@ class Game
     end
 
 
-    def self.get_unit_actions(req_id, em, entity)      
+    def self.get_unit_actions(req_id, em, entity)
         can_move = !MotionSystem.moveable_locations(em, entity).empty?
         can_melee = !MeleeSystem.attackable_locations(em, entity).empty?
         can_range = !RangeSystem.attackable_locations(em, entity).empty?
-        
+
         return JsonFactory.actions(em, entity, can_move, can_melee, can_range)
     end
 
@@ -114,33 +114,43 @@ class Game
     end
 
     def self.get_unit_melee_attacks(req_id, em, entity)
-        attacks = MeleeSystem.attackable_locations(em, entity)
-        return JsonFactory.melee_attacks(em, e, attacks) # UNIMPLEMENTED
+        attacks = MeleeSystem.attackable_range(em, entity)
+        return JsonFactory.melee_attackable_locations(em, entity, attacks)
     end
 
-    def self.get_unit_range_attacks(req_id, em, entity)
-        attacks = RangeSystem.attackable_locations(em, entity)
-        return JsonFactory.range_attacks(em, e, attacks) # UNIMPLEMENTED
+    def self.get_unit_ranged_attacks(req_id, em, entity)
+        attacks = RangeSystem.attackable_range(em, entity)
+        return JsonFactory.range_attackable_locations(em, entity, attacks)
     end
 
 
     def self.move_unit(req_id, em, entity, location)
-        row, col = self.extract_coord(location)      
+        row, col = self.extract_coord(location)
         square = em.board[row][col][0]
         path = MotionSystem.make_move(em, entity, square)
         return JsonFactory.move(em, entity, path)
     end
 
+    def self.attack(req_id, em, entity, square, type)
+
+    	if type == "melee"
+    		return self.melee_attack(req_id, em, entity, square['y'], square['x'])
+    	end
+    	if type == "ranged"
+    		return self.ranged_attack(req_id, em, entity, square['y'], square['x'])
+    	end
+    end
+
     def self.melee_attack(req_id, em, entity, row, col)
         target = em.board[row][col][1].first
         result = MeleeSystem.update(em, entity, target)
-        return JsonFactory.attack_result(result) # UNIMPLEMENTED
+        return JsonFactory.attack(em, result)
     end
 
     def self.ranged_attack(req_id, em, entity, row, col)
         target = em.board[row][col][1].first
         result = RangeSystem.update(em, entity, target)
-        return JsonFactory.attack_result(result) # UNIMPLEMENTED
+        return JsonFactory.attack(em, result)
     end
 
     # End the turn for the current player.

@@ -1,5 +1,12 @@
 'use strict';
 
+var COLORS = {
+    HEALTH: 0x7eb041,
+    ENERGY: 0xfbb829,
+    BUTTON: 0x556270,
+    DEPLETED: 0xdadfe6
+}
+
 var UIGroup = function(game, parent) {
     Phaser.Group.call(this, game, parent);
 
@@ -8,9 +15,9 @@ var UIGroup = function(game, parent) {
 
     this.initActionMenu();
     this.initHealthDisplay();
-    // this.initTileInfoUI();
     this.initUnitInfoUI();
     this.initPlayerInfoUI();
+    this.initTileInfoUI();
 };
 
 UIGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -22,86 +29,77 @@ UIGroup.prototype.initPlayerInfoUI = function() {
     this.playerInfo.y = 8;
     this.playerInfo.fixedToCamera = true;
 
-    var width = 256;
-    var height = 72;
+    var width = 288;
+    var height = 64;
 
     this.playerInfoGraphics = this.game.add.graphics(0, 0, this.playerInfo);
-    this.playerInfoGraphics.beginFill(0x000000, 0.5);
+    this.playerInfoGraphics.beginFill(0x000000, 0.3);
     this.playerInfoGraphics.drawRect(0, 0, width, height);
 
-    this.playerNameBackground = this.game.add.graphics(72, 4, this.playerInfo);
-    this.playerNameBackground.beginFill(0xFF0000, 0.5);
-    this.playerNameBackground.drawRect(0, 0, width - 72 - 4, 36);
+    this.playerInfoGraphics.beginFill(COLORS.HEALTH, 1);
+    this.playerInfoGraphics.drawRect(64, 0, width - 64, 32);
 
-    this.playerName = this.game.add.text(76, 10,
-        this.game.constants.PLAYER_NAME,
-        this.font,
-        this.playerInfo);
+    this.playerName = this.game.add.bitmapText(72, 4, 'minecraftia',
+					       this.game.constants.PLAYER_NAME,
+					       20,
+					       this.playerInfo);
 
-    this.turnNumber = this.game.add.text(84, 40,
-        "Day: " + this.game.turnNumber,
-        this.font,
-        this.playerInfo);
+    this.turnNumber = this.game.add.bitmapText(72, 36, 'minecraftia',
+					       "Day: " + this.game.turnNumber,
+					       20,
+					       this.playerInfo);
 
-    this.playerPortraitFrame = this.game.add.graphics(2, 3, this.playerInfo);
-    this.playerPortraitFrame.beginFill(0x000000, 0.5);
-    this.playerPortraitFrame.drawRect(0, 0, 66, 66);
-
-    this.playerPortrait = this.game.add.sprite(44, 44, 'generalPortrait', this.playerInfo);
-    this.playerPortrait.anchor.setTo(0.5, 0.5);
+    this.playerPortrait = this.game.add.sprite(8, 8, 'generalPortrait', this.playerInfo);
     this.playerPortrait.width = 64;
     this.playerPortrait.height = 64;
     this.playerPortrait.fixedToCamera = true;
 }
 
 UIGroup.prototype.initTileInfoUI = function() {
+    var height = 160;
+    var width = 96;
     this.tileInfo = this.game.add.group();
     this.tileInfo.x = 8;
-    this.tileInfo.y = 8;
+    this.tileInfo.y = this.unitInfo.y;
     this.tileInfo.fixedToCamera = true;
 
     this.tileGraphics = this.game.add.graphics(0, 0, this.tileInfo);
     this.tileGraphics.beginFill(0x000000, 0.3);
-    this.tileGraphics.drawRect(0, 0, 128, 48);
+    this.tileGraphics.drawRect(0, 0, width, height);
 
-    this.currentTile = this.game.add.sprite(8, 8, 'terrain', 0, this.tileInfo);
-    this.currentTile.alpha = 0.5;
-
-    this.tileTitle = this.game.add.text(48, 24, "test",
-                    this.font,
-                    this.tileInfo);
-    this.tileTitle.anchor.setTo(0, 0.5);
+    this.tileTitle = this.game.add.bitmapText(8, 8, 'minecraftia', '',
+					      16,
+					      this.tileInfo);
+    this.currentTile = this.game.add.sprite(8, 40, 'terrain', 0, this.tileInfo);
+    this.currentTile.alpha = 0.7;
 }
 
 UIGroup.prototype.initUnitInfoUI = function() {
+    var height = 160;
+    var width = 192;
     this.unitInfo = this.game.add.group();
     this.unitInfo.x = 8;
-    this.unitInfo.y = this.game.height - 128 - 8;
+    this.unitInfo.y = this.game.height - height - 8;
     this.unitInfo.fixedToCamera = true;
 
     this.unitGraphics = this.game.add.graphics(0, 0, this.unitInfo);
     this.unitGraphics.beginFill(0x000000, 0.3);
-    this.unitGraphics.drawRect(0, 0, 128, 128);
+    this.unitGraphics.drawRect(0, 0, width, height);
 
-    this.unitType = this.game.add.text(8, 8, "",
-                       this.font,
-                       this.unitInfo);
-
-    this.unitImage = this.game.add.sprite(64, this.game.height - 120,
-                       "trainer", 0,
-                       this.unitInfo);
-    this.unitImage.fixedToCamera = true;
-    this.unitImage.alpha = 0.5;
-
-    this.unitHealth = this.game.add.text(8, 64, "",
-                       this.smallerFont,
-                       this.unitInfo);
-    this.unitAttack = this.game.add.text(8, 88, "",
-                       this.smallerFont,
-                       this.unitInfo);
-    this.unitEnergy = this.game.add.text(8, 112, "",
-                       this.smallerFont,
-                       this.unitInfo);
+    this.unitType = this.game.add.bitmapText(8, 8, 'minecraftia', '',
+					     16,
+					     this.unitInfo);
+    this.currentUnit = this.game.add.sprite(8, 40, 'trainer', 1, this.unitInfo);
+    this.currentUnit.alpha = 0.7;
+    this.unitHealth = this.game.add.bitmapText(8, 80, 'minecraftia', '',
+					       12,
+					       this.unitInfo);
+    this.unitAttack = this.game.add.bitmapText(8, 104, 'minecraftia', '',
+					       12,
+					       this.unitInfo);
+    this.unitEnergy = this.game.add.bitmapText(8, 128, 'minecraftia', '',
+					       12,
+					       this.unitInfo);
     this.unitInfo.visible = false;
 }
 
@@ -129,9 +127,8 @@ UIGroup.prototype.initActionMenu = function() {
     this.actions = [];
 
     this.actionGraphics = this.game.add.graphics(0, 0, this.actionMenu);
-    this.drawArc(this.actionGraphics, 0, 0, 44, -0.5*Math.PI, 1.5*Math.PI, 8, 0x556270);
-    this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, 0xfbb829);
- 
+    this.drawArc(this.actionGraphics, 0, 0, 44, -0.5*Math.PI, 1.5*Math.PI, 8, COLORS.BUTTON);
+    this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.ENERGY);
     this.actionMenu.scale.x = 0;
     this.actionMenu.scale.y = 0;
     this.actionMenu.visible = false;
@@ -141,20 +138,21 @@ UIGroup.prototype.initHealthDisplay = function() {
     this.healthCircle = this.game.add.group();
 
     this.healthGraphics = this.game.add.graphics(0, 0, this.healthCircle);
-    this.drawArc(this.healthGraphics, 0, 0, 44, -0.5*Math.PI, 1.5*Math.PI, 8, 0x556270);
-    this.drawArc(this.healthGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, 0x7eb041);
-    
+    this.drawArc(this.healthGraphics, 0, 0, 44, -0.5*Math.PI, 1.5*Math.PI, 8, COLORS.BUTTON);
+    this.drawArc(this.healthGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.HEALTH);
+
     this.healthCircle.scale.x = 0;
     this.healthCircle.scale.y = 0;
     this.healthCircle.visible = false;
 }
 
 UIGroup.prototype.updateHealth = function(unit, newHealth) {
+    console.log(unit);
     // visual representation of remaining energy
-    this.drawArc(this.healthGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, 0x7eb041);
+    this.drawArc(this.healthGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.HEALTH);
     this.drawArc(this.healthGraphics, 0, 0, 32,
 		 -0.5*Math.PI, (-0.5 + 2*(1-unit.stats.health.current/unit.stats.health.max))*Math.PI,
-		 16, 0xdadfe6);
+		 16, COLORS.DEPLETED);
 
     this.healthCircle.x = unit.x + this.game.constants.TILE_SIZE/2;
     this.healthCircle.y = unit.y + this.game.constants.TILE_SIZE/2;
@@ -164,7 +162,7 @@ UIGroup.prototype.updateHealth = function(unit, newHealth) {
     var healthTween = this.arcTween(this.healthGraphics, 0, 0, 32,
     				    (-0.5 + 2*(1-unit.stats.health.current/unit.stats.health.max))*Math.PI,
     				    (-0.5 + 2*(1-newHealth/unit.stats.health.max))*Math.PI,
-    				    16, 0xdadfe6, 300, Phaser.Easing.Quadratic.InOut);
+    				    16, COLORS.DEPLETED, 300, Phaser.Easing.Quadratic.InOut);
     healthTween.onComplete.add(function() {
     	unit.stats.health.current = newHealth;
     }, this);
@@ -178,9 +176,38 @@ UIGroup.prototype.updateHealth = function(unit, newHealth) {
     return showTween;
 }
 
+UIGroup.prototype.updateEnergy = function(unit, newEnergy) {
+    // visual representation of remaining energy
+    this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.ENERGY);
+    this.drawArc(this.actionGraphics, 0, 0, 32,
+		 -0.5*Math.PI, (-0.5 + 2*(1-unit.stats.energy.current/unit.stats.energy.max))*Math.PI,
+		 16, COLORS.DEPLETED);
+
+    this.actionMenu.x = unit.x + this.game.constants.TILE_SIZE/2;
+    this.actionMenu.y = unit.y + this.game.constants.TILE_SIZE/2;
+    this.actionMenu.visible = true;
+
+    var showTween = this.game.add.tween(this.actionMenu.scale).to({x: 1, y: 1}, 200, Phaser.Easing.Quadratic.InOut);
+    var energyTween = this.arcTween(this.actionGraphics, 0, 0, 32,
+    				    (-0.5 + 2*(1-unit.stats.energy.current/unit.stats.energy.max))*Math.PI,
+    				    (-0.5 + 2*(1-newEnergy/unit.stats.energy.max))*Math.PI,
+    				    16, COLORS.DEPLETED, 300, Phaser.Easing.Quadratic.InOut);
+    energyTween.onComplete.add(function() {
+    	unit.stats.energy.current = newEnergy;
+    }, this);
+    var hideTween = this.game.add.tween(this.actionMenu.scale).to({x: 0, y: 0}, 200, Phaser.Easing.Quadratic.InOut, false, 300);
+    hideTween.onComplete.add(function() {
+    	this.actionMenu.visible = false;
+    }, this);
+
+    showTween.chain(energyTween);
+    energyTween.chain(hideTween);
+    return showTween;
+}
+
 UIGroup.prototype.setTile = function(tile) {
-    // this.currentTile.frame = tile.index - 1;
-    // this.tileTitle.text = "tile #" + tile.index;
+    this.currentTile.frame = tile.index - 1;
+    this.tileTitle.text = "tile #" + tile.index;
 }
 
 UIGroup.prototype.setUnit = function(unit) {
@@ -189,48 +216,60 @@ UIGroup.prototype.setUnit = function(unit) {
     	this.unitHealth.text = "HP: " + unit.stats.health.current + "/" + unit.stats.health.max;
     	this.unitEnergy.text = "ENERGY: " + unit.stats.energy.current + "/" + unit.stats.energy.max;
         this.unitAttack.text = "ATTACK: " + unit.stats.range.attack;
+
+	this.currentUnit.key = UNIT_MAP[unit.type].IMAGE;
+
     	this.unitInfo.visible = true;
+	this.tileInfo.cameraOffset.x = 208;
     } else {
-	    this.unitInfo.visible = false;
+	this.unitInfo.visible = false;
+        this.tileInfo.cameraOffset.x = 8;
     }
 }
 
 UIGroup.prototype.showMenu = function(unit, actions) {
-    for (var i = 0; i < this.actions.length; i++) {
-	this.actionMenu.remove(this.actions[i], true);
-    }
-    this.currentActions = actions;
- 
-   this.actions = [];
     for (var i = 0; i < actions.length; i++) {
 	// add each button to an array of actions
-	this.actions[actions[i]] = this.game.add.button(0, 0, 'action-' + actions[i]);
-        this.actions[actions[i]].inputEnabled = true;
-        this.actions[actions[i]].input.useHandCursor = true;
-        this.actions[actions[i]].anchor.setTo(0.5, 0.5);
-        this.actionMenu.add(this.actions[actions[i]]);
+	this.actions[i] = this.game.add.button(0, 0,
+					       'action-' + actions[i].name,
+					       function() {}, this,
+					       0, 1
+					      );
+        this.actions[i].inputEnabled = true;
+        this.actions[i].input.useHandCursor = true;
+        this.actions[i].anchor.setTo(0.5, 0.5);
+        this.actionMenu.add(this.actions[i]);
         var angle = 2*Math.PI / actions.length * i - Math.PI/2;
         var r = 80;
-        this.actions[actions[i]].x = r*Math.cos(angle);
-        this.actions[actions[i]].y = r*Math.sin(angle);
+        this.actions[i].x = r*Math.cos(angle);
+        this.actions[i].y = r*Math.sin(angle);
     }
 
     // visual representation of remaining energy
-    this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, 0xfbb829);
+    this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.ENERGY);
     this.drawArc(this.actionGraphics, 0, 0, 32,
 		 -0.5*Math.PI, (-0.5 + 2*(1-unit.stats.energy.current/unit.stats.energy.max))*Math.PI,
-		 16, 0xdadfe6);
+		 16, COLORS.DEPLETED);
 
     this.actionMenu.x = unit.x + this.game.constants.TILE_SIZE/2;
     this.actionMenu.y = unit.y + this.game.constants.TILE_SIZE/2;
     this.actionMenu.visible = true;
-    this.game.add.tween(this.actionMenu.scale).to({x: 1, y: 1}, 200, Phaser.Easing.Back.Out, true);
+    return this.game.add.tween(this.actionMenu.scale).to({x: 1, y: 1}, 200, Phaser.Easing.Back.Out);
 }
 
 UIGroup.prototype.hideMenu = function() {
     var t = this.game.add.tween(this.actionMenu.scale).to({x: 0, y: 0}, 200, Phaser.Easing.Back.In);
     t.onComplete.add(function() {
 	this.actionMenu.visible = false;
+	for (var i = 0; i < this.actions.length; i++) {
+	    this.actionMenu.remove(this.actions[i], true);
+	}
+	this.actions = [];
+	console.log(this.actionMenu);
     }, this);
-    t.start();
+    return t;
+}
+
+UIGroup.prototype.menuVisible = function() {
+    return this.actionMenu.visible;
 }

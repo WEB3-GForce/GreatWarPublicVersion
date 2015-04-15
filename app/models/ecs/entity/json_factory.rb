@@ -6,7 +6,7 @@
 	or entities to send to the frontend? JsonFactory has you covered. It will
 	handle both sending newly created entities as well as update actions like
 	movement and attack to the frontend.
-	
+
 	Note: It is the responsibility of the caller to ensure that the entities
 	are well-formed.
 =end
@@ -58,14 +58,14 @@ class JsonFactory
 		user_id_comp = entity_manager.get_components(entity, UserIdComponent).first
 
 		ai_comp = entity_manager.get_components(entity, AIComponent).first
-		player_type = "CPU" if ai_comp	
+		player_type = "CPU" if ai_comp
 
 		human_comp = entity_manager.get_components(entity, HumanComponent).first
 		player_type = "Human" if human_comp
 
 		return {"id"      => entity,
 		        "name"    => name_comp.name,
-		        "type"    => player_type, 
+		        "type"    => player_type,
 		        "userId"  => user_id_comp.id }
 	end
 
@@ -98,7 +98,7 @@ class JsonFactory
 	def self.piece(entity_manager, entity)
 		piece_hash          = Hash.new
 		piece_hash["id"]    = entity
-		
+
 		piece_comp = entity_manager.get_components(entity, PieceComponent).first
 		piece_hash["type"] = piece_comp.type.to_s
 
@@ -148,6 +148,21 @@ class JsonFactory
 		return piece_hash
 	end
 
+	# This method is similar to square_path but converts a unit to its x, y
+	# coordinates.
+	#
+	# Argumetns
+	#   entity_manager = the manager in which the entity is kept.
+	#   entity         = the piece entity to be jsoned
+	#
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.piece_xy(entity_manager, entity)
+		pos_comp = entity_manager.get_components(entity, PositionComponent).first
+		return {"y"  => pos_comp.row,
+		        "x"  => pos_comp.col}
+	end
+
 	# Converts the board into a json-ready hash. This method is particularly
 	# useful for initialization of the frontend and sending the frontend the
 	# data for the board.
@@ -162,7 +177,7 @@ class JsonFactory
 		(0...entity_manager.row).each { |row|
 			(0...entity_manager.col).each { |col|
 				board_array.push self.square(entity_manager,
-					entity_manager.board[row][col][0])				
+					entity_manager.board[row][col][0])
 			}
 		}
 		return {"width"    => entity_manager.row,
@@ -170,6 +185,50 @@ class JsonFactory
 		        "squares"  => board_array}
 	end
 
+	# This method sends a request to the frontend to update energy.
+	#
+	# Arguments
+	#   entity_manager = the manager of the entities
+	#   entity         = the entity who lost energy
+	#
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.update_energy(entity_manager, entity)
+		energy_comp = entity_manager.get_components(entity, EnergyComponent).first
+		return [{"action"    => "updateUnitEnergy",
+		         "arguments" => [entity, energy_comp.cur_energy]}]
+	end
+
+
+	# This method sends a request to the frontend to update health.
+	#
+	# Arguments
+	#   entity_manager = the manager of the entities
+	#   entity         = the entity who lost health
+	#
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.update_health(entity_manager, entity)
+		cur_health = 0
+		if entity_manager.has_key? (entity) and !entity_manager[entity].empty?
+			cur_health = entity_manager.get_components(entity, HealthComponent).first.cur_health
+        end
+		return [{"action"    => "updateUnitHealth",
+		         "arguments" => [entity, cur_health]}]
+	end
+
+	# This method produces a message for the frontend to kill a set of units.
+	#
+	# Arguments
+	#   entity_manager = the manager of the entities
+	#   units_array    = the entities to kill
+	#
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.kill_units(entity_manager, units_array)
+		return [{"action"    => "killUnits",
+		         "arguments" => [units_array]}]
+	end
 
 	# This method is responsible for sending all relevant game
 	# start data to the frontend. Once the frontend receives this, it will
@@ -188,19 +247,19 @@ class JsonFactory
 		players.each { |player|
 			player_array.push self.player(entity_manager, player)
 		}
-	
+
 		turn_hash = self.turn(entity_manager, turn)
 		board     = self.board(entity_manager)
-		
+
 		piece_array = []
 		pieces.each { |piece|
 			piece_array.push self.piece(entity_manager, piece)
 		}
 
-          return {
+          return [{
             "action" => "initGame",
             "arguments" => [board, piece_array, turn_hash, player_array]
-          }
+          }]
 	end
 
 
@@ -222,37 +281,147 @@ class JsonFactory
 		# return {"action" => "moveUnit",
 		#         "arguments" =>[moving_entity, path_array]
 		#        }
-      
-        actions = []
-        path[1, path.size].each { |square|
-            coordinates = self.square_path(entity_manager, square)
-            actions.push({"action" => "moveUnit",
-                          "arguments" => [moving_entity, coordinates] })
-        }
-        return actions
+
+        	actions = []
+        	path[1, path.size].each { |square|
+        		coordinates = self.square_path(entity_manager, square)
+        		actions.push({"action" => "moveUnit",
+        		              "arguments" => [moving_entity, coordinates] })
+        	}
+        	actions.concat self.update_energy(entity_manager, moving_entity)
+       		return actions
 	end
+
+
+      # This function converts an attack result information into an rpc for the front
+      # end. In particular, it has all necessary information rcorded by the attack
+      # systems. Once an entity dies, it is removed from the entity manager. Hence,
+      # it would be futile to search for it. Hence, everything needed has to be
+      # specified
+      #
+      # Arguments
+      #   entity_manager   = manager of entities
+      #   type             = the type of the attack
+      #   attacking_entity = the entity launching the attack.
+      #   attacker_type    = the piece type of the attackign entity.
+      #   target_row       = the row of the targeted entity
+      #   target_col       = the col of the targeted enitty
+      #
+      # Returns
+      #   a hash ready to be sent to the frontend.
+      def self.attack_animate(entity_manager, type, attacking_entity, attacker_type, target_row, target_col)
+       		return [{"action"   => "attack",
+       		         "arguments" =>
+       		            [attacking_entity,
+       		             {"y" => target_row,
+       		              "x" => target_col
+       		               },
+       		             type,
+       		             attacker_type]}]
+	end
+
+	# This returns the results of a move command to the frontend. It specifies
+	# the entity that moved along with the path it moved upon.
+	#
+	# Argumetns
+	#   entity_manager = the manager that contains the entities
+	#   moving_entity  = the entity that moved.
+	#   path           = an array of square entities denoting the path of motion.
+	#
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.attack(entity_manager, result)
+        	actions = []
+        	killed_units = []
+        	result.each { |item|
+        		if item[0] == "melee" || item[0] == "ranged"
+        			actions.concat self.attack_animate(entity_manager,
+        				item[0], item[1], item[2], item[4], item[5])
+        			actions.concat self.update_health(entity_manager, item[3])
+        			if entity_manager.has_key? item[1] and !entity_manager[item[1]].empty?
+        				actions.concat self.update_energy(entity_manager, item[1])
+        			end
+        		elsif item[0] == "kill"
+        			killed_units.push item[1]
+        		end
+        	}
+        	actions.concat self.kill_units(entity_manager, killed_units) if !killed_units.empty?
+       		return actions
+	end
+
+
+	# This is the helper function that performs the main work for requests
+	# to determine where a unit can move or attack.
+	#
+	# Argumetns
+	#   entity_manager = the manager that contains the entities
+	#   entity         = the entity that wishes to move or attack.
+	#   locations      = an array of square entities denoting the possible
+	#                  squares that can be attacked or moved to
+	#
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.locations(entity_manager,  entity, locations, type)
+		locations_array = []
+		locations.each { |square|
+			locations_array.push self.square_path(entity_manager, square)
+		}
+		return [{"action"  => "highlightSquares",
+		        "arguments" => [type, locations_array]
+		        }]
+	end
+
 
 	# This function is used to return a response to a moveable_locations
 	# request. In particular, it contains the list of locations that the
 	# specified entity can move to.
 	#
-	# Argumetns
+	# Arguments
 	#   entity_manager = the manager that contains the entities
 	#   moving_entity  = the entity that wishes to move.
 	#   locations      = an array of square entities denoting the possible
 	#                  squares that can be moved to
 	#
 	# Returns
-	#   A hash that is ready to be jsoned	
+	#   A hash that is ready to be jsoned
 	def self.moveable_locations(entity_manager,  moving_entity, locations)
-		locations_array = []
-		locations.each { |square|
-			locations_array.push self.square_path(entity_manager, square)
-		}
-		return {"action"  => "highlightSquares",
-		        "arguments" => ["move", locations_array]
-		       }
+		self.locations(entity_manager, moving_entity, locations, "move")
 	end
+
+
+	# This function is used to return a response to a melee_attackable_locations
+	# request. In particular, it contains the list of locations that the
+	# specified entity can melee attack.
+	#
+	# Arguments
+	#   entity_manager = the manager that contains the entities
+	#   melee_entity  = the entity that wishes to attack.
+	#   locations      = an array of square entities denoting the possible
+	#                  squares that the entity can melee attack
+	#
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.melee_attackable_locations(entity_manager,  melee_entity, locations)
+		self.locations(entity_manager, melee_entity, locations, "attack")
+	end
+
+
+	# This function is used to return a response to a range_attackble_locations
+	# request. In particular, it contains the list of locations that the
+	# specified entity can range attack.
+	#
+	# Argumetns
+	#   entity_manager = the manager that contains the entities
+	#   range_entity  = the entity that wishes to attack.
+	#   locations      = an array of square entities denoting the possible
+	#                  squares that can range attack
+	#
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.range_attackable_locations(entity_manager,  range_entity, locations)
+		self.locations(entity_manager, range_entity, locations, "attack")
+	end
+
 
 	# Converts a turn entity into a hash object.
 	#
@@ -263,33 +432,32 @@ class JsonFactory
 	# Returns
 	#   A hash that is ready to be jsoned
 	def self.end_turn(entity_manager, entity)
-		return {"action"    => "setTurn",
-		        "arguments" => [self.turn(entity_manager, entity)]}
+		return [{"action"    => "setTurn",
+		        "arguments" => [self.turn(entity_manager, entity)]}]
 	end
 
 
 	def self.actions(entity_manager, entity, can_move, can_melee, can_range)
-	
+
 		actions = []
-		
+
 		if can_move
-		 actions.push({"name" => "motion",
+		 actions.push({"name" => "move",
 		               "cost" => entity_manager[entity][MotionComponent].first.energy_cost})
 		end
-	
+
 		if can_melee
 		 actions.push({"name" => "melee",
 		               "cost" => entity_manager[entity][MeleeAttackComponent].first.energy_cost})
 		end
 
 		if can_range
-		 actions.push({"name" => "range",
+		 actions.push({"name" => "ranged",
 		               "cost" => entity_manager[entity][RangeAttackComponent].first.energy_cost})
 		end
 
-	
-		return {"action"    => "showUnitActions",
-		        "arguments" => actions}
+		return [{"action"    => "showUnitActions",
+		        "arguments" => [actions]}]
 	end
 
 	# Actions to handle:

@@ -153,7 +153,7 @@ private
 			return results
 		end
 
-		if self.occupy_square?(entity_manager, square, occupants) &&
+		if entity_manager.has_components(square, [OccupiableComponent]) &&
 		   !results.include?(square)
 			results.push square
 		end
@@ -258,8 +258,11 @@ public
 		end
 		
 		motion_comp = entity_manager.get_components(entity, MotionComponent).first
+		energy_comp = entity_manager.get_components(entity, EnergyComponent).first
 		pos_comp    = entity_manager.get_components(entity, PositionComponent).first
 		own_comp    = entity_manager.get_components(entity, OwnedComponent).first
+		
+		motion_comp.max_movement = energy_comp.cur_energy / motion_comp.energy_cost
 		
 		result = []
 		self.determine_locations(entity_manager, own_comp.owner, pos_comp.row,
@@ -300,8 +303,11 @@ public
 		end
 
 		motion_comp = entity_manager.get_components(entity, MotionComponent).first
+		energy_comp = entity_manager.get_components(entity, EnergyComponent).first
 		pos_comp    = entity_manager.get_components(entity, PositionComponent).first
 		own_comp    = entity_manager.get_components(entity, OwnedComponent).first
+		
+		motion_comp.max_movement = energy_comp.cur_energy / motion_comp.energy_cost
 		
 		path = self.determine_path(entity_manager, own_comp.owner, pos_comp.row,
 			pos_comp.col, end_pos.row, end_pos.col, motion_comp.max_movement, [])

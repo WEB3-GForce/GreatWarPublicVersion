@@ -90,11 +90,22 @@ describe JsonFactory do
         it "should return a hash with the attributes of the square" do
             set_simple
             expect(JsonFactory.square_path(manager, flatland00)).to eq(
-                {"x" => 0, "y" => 0})
+                {"y" => 0, "x" => 0})
             expect(JsonFactory.square_path(manager, river01)).to eq(
-                {"x" => 0, "y" => 1})
+                {"y" => 0, "x" => 1})
             expect(JsonFactory.square_path(manager, mountain02)).to eq(
-                {"x" => 0, "y" => 2})
+                {"y" => 0, "x" => 2})
+        end
+    end
+
+
+    context "when calling piece_xy" do
+        it "should return a hash with the attributes of the piece" do
+            set_intermediate
+            expect(JsonFactory.piece_xy(manager, infantry)).to eq(
+                {"y" => 0, "x" => 0})
+            expect(JsonFactory.piece_xy(manager, command_bunker)).to eq(
+                {"y" => 2, "x" => 0})
         end
     end
 
@@ -207,8 +218,8 @@ describe JsonFactory do
             answer = {"id"     => command_bunker,
                       "type"   => PieceComponent.command_bunker.type.to_s,
                       "player"  => human1,
-                      "x"      => pos_comp.row,
-                      "y"      => pos_comp.col,
+                      "y"      => pos_comp.row,
+                      "x"      => pos_comp.col,
                       "stats"  => {
                           "health" => {"current" => health_comp.cur_health,
                                        "max"     => health_comp.max_health},
@@ -234,6 +245,37 @@ describe JsonFactory do
         end
     end
 
+    context "when calling update_energy" do
+        it "should return a hash of the entity with its updated energy" do
+            energy_comp = manager.get_components(infantry, EnergyComponent).first
+            expect(JsonFactory.update_energy(manager, infantry)).to eq(
+                [{"action" => "updateUnitEnergy",
+                  "arguments" => [infantry, energy_comp.cur_energy]}])
+        end
+    end
+
+    context "when calling update_health" do
+        it "should return a hash of the entity with its updated health" do
+            health_comp = manager.get_components(infantry, HealthComponent).first
+            expect(JsonFactory.update_health(manager, infantry)).to eq(
+                [{"action" => "updateUnitsHealth",
+                  "arguments" => [infantry, health_comp.cur_health]}])
+        end
+        it "should return a hash with health set to 0 if an entity doesnt exit" do
+            health_comp = manager.get_components(infantry, HealthComponent).first
+            expect(JsonFactory.update_health(manager, "test")).to eq(
+                [{"action" => "updateUnitsHealth",
+                  "arguments" => ["test", 0]}])
+        end
+    end
+
+    context "when calling kill_units" do
+        it "should return a hash of the entity to be killed" do
+            expect(JsonFactory.kill_units(manager, [infantry, machine_gun])).to eq(
+                [{"action" => "killUnits",
+                  "arguments" => [[infantry, machine_gun]]}])
+        end
+    end
 
     context "when calling game_start" do
         it "should return a hash of the game_start" do
@@ -250,11 +292,11 @@ describe JsonFactory do
             }
 
             expect(JsonFactory.game_start(manager, players, turn, pieces)).to eq(
-                {"action" => "initGame", 
+                [{"action" => "initGame", 
                  "arguments" => [JsonFactory.board(manager),
                                  pieces_array,
                                  JsonFactory.turn(manager, turn),
-                                 player_array]})
+                                 player_array]}])
         end
     end
 
@@ -262,12 +304,26 @@ describe JsonFactory do
         it "should return a hash of a move action" do
             set_simple
             path = [flatland20, flatland10, flatland00]
-            path_array = []
-            path.each { |square|
-                path_array.push JsonFactory.square_path(manager, square)
+            path_actions = []
+            path[1, path.size].each { |square|
+                result = JsonFactory.square_path(manager, square)
+                
+                 path_actions.push({"action" => "moveUnit",
+        		           "arguments" => [infantry, result] })
             }
-            expect(JsonFactory.move(manager, infantry, path)).to eq(
-                {"action" => "move", "arguments" => [infantry, path_array]})
+            path_actions.concat(JsonFactory.update_energy(manager, infantry))
+            expect(JsonFactory.move(manager, infantry, path)).to eq(path_actions)
+        end
+    end
+
+    context "when calling attack_animate" do
+        it "should return a hash of an attack animation action" do
+            set_intermediate
+            pos_comp = manager.get_components(command_bunker, PositionComponent).first
+            expect(JsonFactory.attack_animate(manager, "ranged", infantry, "infantry", pos_comp.row, pos_comp.col)).to  (
+               eq([{"actions"   => "attack",
+       		   "arguments" => [infantry, {"y" => pos_comp.row , "x"=> pos_comp.col},
+       		                   "ranged", "infantry"]}]))
         end
     end
 
@@ -280,7 +336,31 @@ describe JsonFactory do
                 locations.push JsonFactory.square_path(manager, square)
             }
             expect(JsonFactory.moveable_locations(manager, machine_gun, square_array)).to eq(
-                {"action" => "highlightSquares", "arguments" => ["move", locations]})
+                [{"action" => "highlightSquares", "arguments" => ["move", locations]}])
+        end
+    end
+
+    context "when calling melee attackable locations" do
+        it "should return a hash of a json for a melee attackable locations request" do
+            set_simple
+            locations = []
+            square_array.each { |square|
+                locations.push JsonFactory.square_path(manager, square)
+            }
+            expect(JsonFactory.melee_attackable_locations(manager, machine_gun, square_array)).to eq(
+                [{"action" => "highlightSquares", "arguments" => ["attack", locations]}])
+        end
+    end
+
+    context "when calling range attackable locations" do
+        it "should return a hash of a json for a range attackable locations request" do
+            set_simple
+            locations = []
+            square_array.each { |square|
+                locations.push JsonFactory.square_path(manager, square)
+            }
+            expect(JsonFactory.range_attackable_locations(manager, machine_gun, square_array)).to eq(
+                [{"action" => "highlightSquares", "arguments" => ["attack", locations]}])
         end
     end
 

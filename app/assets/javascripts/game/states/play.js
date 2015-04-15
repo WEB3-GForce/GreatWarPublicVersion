@@ -20,7 +20,7 @@ Play.prototype = {
     	this.game.dispatcher.rpc = function(action, args) {
     	    this.trigger("rpc", {action: action, arguments: args});
     	}
-    	this.game.dispatcher.rpc("init_game", []);
+    	this.game.dispatcher.rpc("init_game", {});
 
         // deciding dragging vs. clicking:
     	this.game.input.onUp.add(function() {
@@ -59,18 +59,22 @@ Play.prototype = {
     },
 
     executeSequence: function() {
-	    if (this.currentSequence.length == 0) {
-	        this.currentSequence = null;
-	        return;
-	    }
-	    this.currentAction = this.currentSequence.shift();
-	    var action = this.gameGroup[this.currentAction.action].apply(
-	        this.gameGroup,
-	        this.currentAction.arguments
-	    );
+	if (this.currentSequence.length == 0) {
+	    this.currentSequence = null;
+	    return;
+	}
+	this.currentAction = this.currentSequence.shift();
+	
+	// for debugging
+	console.log(this.currentAction);
+
+	var action = this.gameGroup[this.currentAction.action].apply(
+	    this.gameGroup,
+	    this.currentAction.arguments
+	);
     	action.onComplete = (function() {
-	        this.executeSequence();
-	    }).bind(this);
-	    action.start();
+	    this.executeSequence();
+	}).bind(this);
+	action.start();
     }
 };

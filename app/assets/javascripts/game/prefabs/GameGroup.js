@@ -5,6 +5,8 @@ var GameGroup = function(game, parent) {
 
     this.gameBoard = new GameBoard(this.game);
     this.selected = null;
+    this.animatingAction = false; // don't let the user select a unit while another unit
+                                  // is performing an action
     this.unitGroup = new UnitGroup(this.game);
 
     this.marker = this.game.add.graphics();
@@ -46,10 +48,10 @@ GameGroup.prototype.update = function() {
     if (this.game.input.mousePointer.targetObject &&
     	this.game.input.mousePointer.targetObject.sprite instanceof Unit &&
     	!this.selected) {
-		this.ui.setUnit(this.game.input.mousePointer.targetObject.sprite);
+	this.ui.setUnit(this.game.input.mousePointer.targetObject.sprite);
     } else if (!this.selected) {
- 		this.ui.setUnit(null);
- 	}
+ 	this.ui.setUnit(null);
+    }
 }
 
 GameGroup.prototype.onClick = function(targetObject) {
@@ -70,7 +72,6 @@ GameGroup.prototype.tileClicked = function() {
 	if (this.gameBoard.isHighlighted(this.tile.x, this.tile.y)) {
 	    switch (this.action) {
 	    case 'move':
-		console.log("trying to make the move unit rpc call");
 		this.game.dispatcher.rpc("move_unit", [
 		    this.selected.id,
 		    {
@@ -88,7 +89,7 @@ GameGroup.prototype.tileClicked = function() {
 	this.selected = null;
 	this.action = null;
 	this.gameBoard.unhighlightAll();
-	this.ui.hideMenu();
+	this.ui.hideMenu().start();
     }
 }
 
@@ -125,18 +126,18 @@ GameGroup.prototype.interact = function(unit) {
 }
 
 GameGroup.prototype.select = function(unit) {
-    if (unit.isMine()) {
+    if (unit.isMine() && !this.animatingAction) {
         this.selected = unit;
-	this.ui.setUnit(this.selected);
-	this.gameBoard.unhighlightAll();
-	this.action = null;
-	this.game.dispatcher.rpc("get_unit_actions", [this.selected.id]);
+	    this.ui.setUnit(this.selected);
+	    this.gameBoard.unhighlightAll();
+	    this.action = null;
+	    this.game.dispatcher.rpc("get_unit_actions", [this.selected.id]);
     }
 }
 
 GameGroup.prototype.buttonClicked = function(button) {
     this.action = button.key.replace('action-', '');
-    this.ui.hideMenu();
+    this.ui.hideMenu().start();
 
     switch (this.action) {
     case 'move':
@@ -185,19 +186,28 @@ GameGroup.prototype.initGame = function(board, units, turn, players) {
 }
 
 GameGroup.prototype.showUnitActions = function(unitActions) {
-    console.log("show Unit Actions");
     var action = {
     	gameGroup: this
     };
     action.start = function() {
-	this.gameGroup.ui.showMenu(this.gameGroup.selected, unitActions);
-    	this.onComplete();
+	if (this.gameGroup.ui.menuVisible()) {
+	    var hideTween = this.gameGroup.ui.hideMenu();
+	    hideTween.onComplete.add(function() {
+		var showTween = this.gameGroup.ui.showMenu(this.gameGroup.selected, unitActions);
+		showTween.onComplete.add(this.onComplete, this);
+		showTween.start();
+	    }, this);
+	    hideTween.start();
+	} else {
+	    var showTween = this.gameGroup.ui.showMenu(this.gameGroup.selected, unitActions);
+	    showTween.onComplete.add(this.onComplete, this);
+	    showTween.start();
+	}
     };
     return action;
 }
 
 GameGroup.prototype.highlightSquares = function(type, squares) {
-    console.log("highlight Squares");
     var action = {
 		squares: squares,
 		gameBoard: this.gameBoard,
@@ -235,40 +245,35 @@ GameGroup.prototype.resetEnergy = function(playerId) {
     }
 }
 
-GameGroup.prototype.updateUnitsHealth = function(units) {
+GameGroup.prototype.updateUnitHealth = function(unit, health) {
     var action = {
-    	unitGroup: this.unitGroup,
     	ui: this.ui,
-    	data: units
+    	unit: this.unitGroup.find(unit)
     }
-    action.units = units.map(function(unit) {
-    	return this.unitGroup.find(unit.id);
-    }, this);
-    action.tweens = units.map(function(unit, i) {
-    	return this.ui.updateHealth(action.units[i], units[i].newHealth);
-    }, this);
+    action.tween = this.ui.updateHealth(action.unit, health);
     action.start = function() {
-    	this.tweens[0].onComplete.add(function() {
+    	this.tween.onComplete.add(function() {
     	    this.onComplete();
     	}, this);
-    	this.tweens.map(function(tween) {
-    	    tween.start();
-    	}, this);
+    	this.tween.start();
     }
     return action;
 }
 
 GameGroup.prototype.updateUnitEnergy = function(unitId, energyValue) {
-	var action = {
-		unit: this.unitGroup.find(unitId),
-		ui: this.ui
-	};
-	action.start = function() {
-		this.unit.stats.ENERGY = energyValue;
-		this.ui.setUnit(this.unit);
-		this.onComplete();
-	};
-	return action;
+    var action = {
+	unit: this.unitGroup.find(unitId),
+	ui: this.ui
+    };
+    action.tween = this.ui.updateEnergy(action.unit, energyValue);
+
+    action.start = function() {
+    	this.tween.onComplete.add(function() {
+    	    this.onComplete();
+    	}, this);
+    	this.tween.start();
+    };
+    return action;
 }
 
 GameGroup.prototype.attack = function(unitId, square, type, unitType) {
@@ -278,17 +283,9 @@ GameGroup.prototype.attack = function(unitId, square, type, unitType) {
 }
 
 GameGroup.prototype.moveUnit = function(unitId, square) {
-    console.log("move Unit");
-    console.log(unitId);
-    console.log(square);
-
     var action = {};
     action.unit = this.unitGroup.find(unitId);
     action.start = function() {
-    	// for (var i = 1, l = square.length; i < l; i++) {
-    	// 	this.unit.moveTo(square[i].x, square[i].y);
-    	// }
-    	// this.onComplete();
     	this.unit.moveTo(square.x, square.y, this.onComplete, this);
     }
     return action;

@@ -66,19 +66,19 @@ On that note, let's look at how each return result is formatted:
 
 	The basic return result is:
 	
-		[[entity_damaged, damage_amount]] 
+		[[entity_damaged, entity_damaged_row, entity_damaged_col, damage_amount]] 
 		
 	For example:
 	
-		[["entity#1", 10]]
+		[["entity#1", 0, 1, 10]]
 	
 	If the entity also dies, it will return
 	
-		[[entity_damaged, damage_amount], [kill_info]]
+		[[entity_damaged, entity_damaged_row, entity_damaged_col, damage_amount], [kill_info]]
 		
 	For example:
 	
-		[["entity#0", 10], ["kill", "entity#0", true, "entity#21"]]
+		[["entity#0", 0, 1, 10], ["kill", "entity#0", true, "entity#21"]]
 		
 
 3. Higher Level System
@@ -92,16 +92,16 @@ On that note, let's look at how each return result is formatted:
 	
 	For example, this result from the DamageSystem:
 	
-		[["entity#1", 10]]
+		[["entity#1", 0, 1, 10]]
 		
 	would be transformed into this for the MeleeSystem:
 	
-		[["melee", "entity#1", 10]]
+		[["melee", "attacking_entity", "entity#1", 0, 1, 10]]
 	
 	Each higher level attack system should add its result. The easiest way
 	to do this programatically is:
 	
-		result[0].unshift type_of_attack if !result.empty?
+		(result[0].unshift attacking_entity).unshift type_of_attack if !result.empty?
 
 	where result is the return result of the DamageSystem.
 

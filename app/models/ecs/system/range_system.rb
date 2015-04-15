@@ -12,6 +12,14 @@ class RangeSystem < System
 #===============================================================================
 private
 
+	# Determines whether an entity has enough energy to atttack
+	def self.enough_energy?(entity_manager, entity)
+		range_comp = entity_manager.get_components(entity, RangeAttackComponent).first
+		cost = range_comp.energy_cost
+
+		return EnergySystem.enough_energy?(entity_manager, entity, cost)
+	end
+
 	# Generates entities within a certain range of an entity's position.
 	def self.locations_in_range(entity_manager, entity, min_range, max_range)
 		pos_comp = entity_manager.get_components(entity, PositionComponent).first
@@ -53,7 +61,7 @@ private
 	end
 
 	# Executes a ranged attack.
-	# Returns array of form [["ranged", damage_info, ...], kill_info...] if successful
+	# Returns array of form [["ranged", attacking_entity, damage_info, ...], kill_info...] if successful
 	# TODO update tests
 	def self.perform_attack(entity_manager, attacking_entity, attacked_entity)
 		rattack = entity_manager.get_components(attacking_entity, RangeAttackComponent).first
@@ -83,8 +91,12 @@ private
 		}
 
 		return [] if damage_info.empty?		
-
-		return [damage_info.unshift("range")].concat kill_info
+		
+		piece_comp = entity_manager.get_components(attacking_entity, PieceComponent).first
+		damage_info.unshift(piece_comp.type.to_s)
+		damage_info.unshift(attacking_entity)
+		damage_info.unshift("ranged")
+		return [damage_info].concat kill_info
 	end
 
 #===============================================================================
@@ -103,7 +115,8 @@ public
 	#
 	def self.attackable_locations(entity_manager, entity)
 		if !EntityType.range_entity?(entity_manager, entity) or 
-				!EntityType.placed_entity?(entity_manager, entity)
+				!EntityType.placed_entity?(entity_manager, entity) or
+				!self.enough_energy?(entity_manager, entity)
 			return []
 		end
 		
@@ -125,6 +138,27 @@ public
 		return results
 	end
 
+	# Gets locations that an entity could range attack in theory.
+	def self.attackable_range(entity_manager, entity)
+		if !EntityType.range_entity?(entity_manager, entity) or 
+				!EntityType.placed_entity?(entity_manager, entity) or
+				!self.enough_energy?(entity_manager, entity)
+			return []
+		end
+
+		range_comp = entity_manager.get_components(entity, RangeAttackComponent).first
+		
+		results = []
+
+		self.locations_in_range(entity_manager, entity, 
+			range_comp.min_range, range_comp.max_range) { |square, occupants|
+
+			results.push square if !entity_manager.has_components(square, [ImpassableComponent])
+		}
+
+		return results
+	end
+
 	# Executes a ranged attack from entity1 onto entity2.
 	#
 	# Arguments
@@ -134,9 +168,9 @@ public
 	#
 	# Returns
 	#   [] if nothing happens
-	#   Else an array of the form [["ranged", entity2_damage_info]] for an
+	#   Else an array of the form [["ranged", entit1, entity2_damage_info]] for an
 	#   attack that succeeds but does not kill, and
-	#   [["ranged", entity2_damage_info], [entity2_kill_info]] if it does kill.
+	#   [["ranged", entity1, entity2_damage_info], [entity2_kill_info]] if it does kill.
 	#
 	def self.update(entity_manager, entity1, entity2)
 		if !self.valid_attack?(entity_manager, entity1, entity2)
