@@ -140,13 +140,14 @@ UIGroup.prototype.initHealthDisplay = function() {
     this.healthGraphics = this.game.add.graphics(0, 0, this.healthCircle);
     this.drawArc(this.healthGraphics, 0, 0, 44, -0.5*Math.PI, 1.5*Math.PI, 8, COLORS.BUTTON);
     this.drawArc(this.healthGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.HEALTH);
-    
+
     this.healthCircle.scale.x = 0;
     this.healthCircle.scale.y = 0;
     this.healthCircle.visible = false;
 }
 
 UIGroup.prototype.updateHealth = function(unit, newHealth) {
+    console.log(unit);
     // visual representation of remaining energy
     this.drawArc(this.healthGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.HEALTH);
     this.drawArc(this.healthGraphics, 0, 0, 32,

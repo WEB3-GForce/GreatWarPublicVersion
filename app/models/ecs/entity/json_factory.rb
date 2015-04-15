@@ -6,7 +6,7 @@
 	or entities to send to the frontend? JsonFactory has you covered. It will
 	handle both sending newly created entities as well as update actions like
 	movement and attack to the frontend.
-	
+
 	Note: It is the responsibility of the caller to ensure that the entities
 	are well-formed.
 =end
@@ -58,14 +58,14 @@ class JsonFactory
 		user_id_comp = entity_manager.get_components(entity, UserIdComponent).first
 
 		ai_comp = entity_manager.get_components(entity, AIComponent).first
-		player_type = "CPU" if ai_comp	
+		player_type = "CPU" if ai_comp
 
 		human_comp = entity_manager.get_components(entity, HumanComponent).first
 		player_type = "Human" if human_comp
 
 		return {"id"      => entity,
 		        "name"    => name_comp.name,
-		        "type"    => player_type, 
+		        "type"    => player_type,
 		        "userId"  => user_id_comp.id }
 	end
 
@@ -98,7 +98,7 @@ class JsonFactory
 	def self.piece(entity_manager, entity)
 		piece_hash          = Hash.new
 		piece_hash["id"]    = entity
-		
+
 		piece_comp = entity_manager.get_components(entity, PieceComponent).first
 		piece_hash["type"] = piece_comp.type.to_s
 
@@ -177,7 +177,7 @@ class JsonFactory
 		(0...entity_manager.row).each { |row|
 			(0...entity_manager.col).each { |col|
 				board_array.push self.square(entity_manager,
-					entity_manager.board[row][col][0])				
+					entity_manager.board[row][col][0])
 			}
 		}
 		return {"width"    => entity_manager.row,
@@ -190,7 +190,7 @@ class JsonFactory
 	# Arguments
 	#   entity_manager = the manager of the entities
 	#   entity         = the entity who lost energy
-	# 
+	#
 	# Returns
 	#   A hash that is ready to be jsoned
 	def self.update_energy(entity_manager, entity)
@@ -205,7 +205,7 @@ class JsonFactory
 	# Arguments
 	#   entity_manager = the manager of the entities
 	#   entity         = the entity who lost health
-	# 
+	#
 	# Returns
 	#   A hash that is ready to be jsoned
 	def self.update_health(entity_manager, entity)
@@ -213,7 +213,7 @@ class JsonFactory
 		if entity_manager.has_key? entity
 			cur_health = entity_manager.get_components(entity, HealthComponent).first.cur_health
 		end
-		return [{"action"    => "updateUnitsHealth",
+		return [{"action"    => "updateUnitHealth",
 		         "arguments" => [entity, cur_health]}]
 	end
 
@@ -222,7 +222,7 @@ class JsonFactory
 	# Arguments
 	#   entity_manager = the manager of the entities
 	#   units_array    = the entities to kill
-	# 
+	#
 	# Returns
 	#   A hash that is ready to be jsoned
 	def self.kill_units(entity_manager, units_array)
@@ -247,10 +247,10 @@ class JsonFactory
 		players.each { |player|
 			player_array.push self.player(entity_manager, player)
 		}
-	
+
 		turn_hash = self.turn(entity_manager, turn)
 		board     = self.board(entity_manager)
-		
+
 		piece_array = []
 		pieces.each { |piece|
 			piece_array.push self.piece(entity_manager, piece)
@@ -281,7 +281,7 @@ class JsonFactory
 		# return {"action" => "moveUnit",
 		#         "arguments" =>[moving_entity, path_array]
 		#        }
-      
+
         	actions = []
         	path[1, path.size].each { |square|
         		coordinates = self.square_path(entity_manager, square)
@@ -310,7 +310,7 @@ class JsonFactory
       # Returns
       #   a hash ready to be sent to the frontend.
       def self.attack_animate(entity_manager, type, attacking_entity, attacker_type, target_row, target_col)
-       		return [{"actions"   => "attack",
+       		return [{"action"   => "attack",
        		         "arguments" =>
        		            [attacking_entity,
        		             {"y" => target_row,
@@ -337,11 +337,11 @@ class JsonFactory
         		if item[0] == "melee" || item[0] == "ranged"
         			actions.concat self.attack_animate(entity_manager,
         				item[0], item[1], item[2], item[4], item[5])
-        			actions.concat self.update_health(entity_manager, item[2])
+        			actions.concat self.update_health(entity_manager, item[3])
         		elsif item[0] == "kill"
         			killed_units.push item[1]
         		end
-        	}        	
+        	}
         	actions.concat self.kill_units(entity_manager, killed_units) if !killed_units.empty?
        		return actions
 	end
@@ -380,7 +380,7 @@ class JsonFactory
 	#                  squares that can be moved to
 	#
 	# Returns
-	#   A hash that is ready to be jsoned	
+	#   A hash that is ready to be jsoned
 	def self.moveable_locations(entity_manager,  moving_entity, locations)
 		self.locations(entity_manager, moving_entity, locations, "move")
 	end
@@ -397,11 +397,11 @@ class JsonFactory
 	#                  squares that the entity can melee attack
 	#
 	# Returns
-	#   A hash that is ready to be jsoned	
+	#   A hash that is ready to be jsoned
 	def self.melee_attackable_locations(entity_manager,  melee_entity, locations)
 		self.locations(entity_manager, melee_entity, locations, "attack")
 	end
-	
+
 
 	# This function is used to return a response to a range_attackble_locations
 	# request. In particular, it contains the list of locations that the
@@ -414,7 +414,7 @@ class JsonFactory
 	#                  squares that can range attack
 	#
 	# Returns
-	#   A hash that is ready to be jsoned	
+	#   A hash that is ready to be jsoned
 	def self.range_attackable_locations(entity_manager,  range_entity, locations)
 		self.locations(entity_manager, range_entity, locations, "attack")
 	end
@@ -435,14 +435,14 @@ class JsonFactory
 
 
 	def self.actions(entity_manager, entity, can_move, can_melee, can_range)
-	
+
 		actions = []
-		
+
 		if can_move
 		 actions.push({"name" => "move",
 		               "cost" => entity_manager[entity][MotionComponent].first.energy_cost})
 		end
-	
+
 		if can_melee
 		 actions.push({"name" => "melee",
 		               "cost" => entity_manager[entity][MeleeAttackComponent].first.energy_cost})
