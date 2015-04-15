@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
 
   resources :gamas
+  
+  post "gamas/start" => "gamas#start"
 
   get 'sessions/new'
 

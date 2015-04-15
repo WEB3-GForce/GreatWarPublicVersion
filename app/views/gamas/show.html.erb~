@@ -19,6 +19,7 @@
 <p>
 	<% if(is_current_user_host?(@gama)) %>
 	<h1> Press below to start the game </h1>
+	<%= button_to 'Start Game', :controller => "gamas", :action => "start", :gama => @gama.id}%>
 	
 	<% end %>
 

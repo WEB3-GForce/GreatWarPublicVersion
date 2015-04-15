@@ -15,7 +15,7 @@ module GamasHelper
 	end
 
 	def players_in_game(game)
-		@players = User.where(:game => game.id)
+		@players = User.where(:game.to_s => game.id)
 		return @players
 	end
 
@@ -35,6 +35,11 @@ module GamasHelper
 	def is_current_user_host?(game)
 		user = current_user
 		return user.host && (user.game == game.id)
+	end
+	
+	def start_game(players, game)
+		puts players
+		puts game
 	end
 
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150412211934) do
+ActiveRecord::Schema.define(version: 20150415011636) do
 
   create_table "gamas", force: :cascade do |t|
     t.boolean  "pending"
@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 20150412211934) do
     t.string   "remember_hash"
     t.boolean  "admin"
     t.integer  "game"
+    t.boolean  "host"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true

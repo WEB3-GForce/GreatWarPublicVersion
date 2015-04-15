@@ -56,10 +56,10 @@ class GamasController < ApplicationController
 
     @gama = Gama.new(gama_params)
       if @gama.save
-        flash[:success] = "Gama Successfully Created!"
+        flash[:success] = "Game Successfully Created!"
         @gama.update_attribute(:pending, true)
     	@gama.update_attribute(:done, false)
-    	@gama.update_attribute(:host, true)
+   	current_user.update_attribute(:host, true)
         assign_game_to_current_user(@gama)
         redirect_to gamas_path
       else
@@ -68,7 +68,10 @@ class GamasController < ApplicationController
   end
   
   def start
-  	start_game
+  	@gama = Gama.find(params[:gama])
+  	@players = players_in_game(@gama)
+  	#puts @players
+  	start_game(@players, @gama)
   end
 
   # PATCH/PUT /Gamas/1
