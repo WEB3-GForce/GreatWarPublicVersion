@@ -5,8 +5,14 @@ class SocketController < WebsocketRails::BaseController
   @@game ||= Hash.new
 
   def self.init_game(users, game_id)
-    manager, start_json = Game.init_game(users)
+    user_ids = []
+    users.each { |record|
+      user_ids << record.id
+    }
+    manager, start_json = Game.init_game(user_ids)
     @@game[game_id] = { :manager => manager, :start_json => start_json }
+    p user_ids, game_id
+    return true
   end
 
   def rpc
@@ -28,8 +34,8 @@ class SocketController < WebsocketRails::BaseController
         method_params.unshift req_id
         
         response = Game.public_send(method_name, *method_params)
-        p response
     end
+    p response
 
     # # the front end expects to response to be an array, if it's not though,
     # # that's fine, it just needs to be sent as one regardless, hence this:

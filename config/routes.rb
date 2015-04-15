@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   get 'users/show'
 
   root             'static_pages#home'
+
+  get 'play'    => 'static_pages#play'
   get 'help'    => 'static_pages#help'
   get 'about'   => 'static_pages#about'
   get 'contact' => 'static_pages#contact'

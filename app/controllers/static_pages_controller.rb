@@ -11,6 +11,6 @@ class StaticPagesController < ApplicationController
   def lobby
   end
 
-  def index
+  def play
   end
 end
