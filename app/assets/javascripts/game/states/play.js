@@ -11,6 +11,8 @@ Play.prototype = {
         this.game.world.setBounds(0, 0,
 				  this.game.constants.WIDTH, this.game.constants.HEIGHT);
 
+        this.game.animatingAction = false;
+
         this.gameGroup = new GameGroup(this.game);
 
     	this.game.dispatcher.bind('rpc', (function(data) {
@@ -64,7 +66,7 @@ Play.prototype = {
 	    return;
 	}
 	this.currentAction = this.currentSequence.shift();
-	
+
 	// for debugging
 	console.log(this.currentAction);
 
@@ -73,8 +75,10 @@ Play.prototype = {
 	    this.currentAction.arguments
 	);
     	action.onComplete = (function() {
-	    this.executeSequence();
+            this.game.animatingAction = false;
+	        this.executeSequence();
 	}).bind(this);
+    this.game.animatingAction = true;
 	action.start();
     }
 };

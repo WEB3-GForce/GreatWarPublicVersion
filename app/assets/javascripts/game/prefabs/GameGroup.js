@@ -5,8 +5,6 @@ var GameGroup = function(game, parent) {
 
     this.gameBoard = new GameBoard(this.game);
     this.selected = null;
-    this.animatingAction = false; // don't let the user select a unit while another unit
-                                  // is performing an action
     this.unitGroup = new UnitGroup(this.game);
 
     this.marker = this.game.add.graphics();
@@ -126,7 +124,7 @@ GameGroup.prototype.interact = function(unit) {
 }
 
 GameGroup.prototype.select = function(unit) {
-    if (unit.isMine() && !this.animatingAction) {
+    if (unit.isMine() && !this.game.animatingAction) {
         this.selected = unit;
 	    this.ui.setUnit(this.selected);
 	    this.gameBoard.unhighlightAll();

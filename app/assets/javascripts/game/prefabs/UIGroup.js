@@ -260,12 +260,12 @@ UIGroup.prototype.showMenu = function(unit, actions) {
 UIGroup.prototype.hideMenu = function() {
     var t = this.game.add.tween(this.actionMenu.scale).to({x: 0, y: 0}, 200, Phaser.Easing.Back.In);
     t.onComplete.add(function() {
-	this.actionMenu.visible = false;
-	for (var i = 0; i < this.actions.length; i++) {
-	    this.actionMenu.remove(this.actions[i], true);
-	}
-	this.actions = [];
-	console.log(this.actionMenu);
+	    this.actionMenu.visible = false;
+	    for (var i = 0; i < this.actions.length; i++) {
+	        this.actionMenu.remove(this.actions[i], true);
+	    }
+	    this.actions = [];
+	    console.log(this.actionMenu);
     }, this);
     return t;
 }
