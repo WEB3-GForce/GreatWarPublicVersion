@@ -7,9 +7,9 @@ function Preload() {
 
 Preload.prototype = {
     preload: function() {
-	this.game.dispatcher = new WebSocketRails('localhost:3000/websocket');
+	this.game.dispatcher = new WebSocketRails(window.location.host+'/websocket');
 
-    	// pre-load bar from Yeoman example, will likely end up getting rid of this
+	// pre-load bar from Yeoman example, will likely end up getting rid of this
 	this.asset = this.add.sprite(this.width/2,this.height/2, 'preloader');
 	this.asset.anchor.setTo(0.5, 0.5);
 	this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
