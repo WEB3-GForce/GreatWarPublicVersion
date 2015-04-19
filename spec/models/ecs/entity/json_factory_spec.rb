@@ -258,13 +258,13 @@ describe JsonFactory do
         it "should return a hash of the entity with its updated health" do
             health_comp = manager.get_components(infantry, HealthComponent).first
             expect(JsonFactory.update_health(manager, infantry)).to eq(
-                [{"action" => "updateUnitsHealth",
+                [{"action" => "updateUnitHealth",
                   "arguments" => [infantry, health_comp.cur_health]}])
         end
         it "should return a hash with health set to 0 if an entity doesnt exit" do
             health_comp = manager.get_components(infantry, HealthComponent).first
             expect(JsonFactory.update_health(manager, "test")).to eq(
-                [{"action" => "updateUnitsHealth",
+                [{"action" => "updateUnitHealth",
                   "arguments" => ["test", 0]}])
         end
     end
@@ -321,7 +321,7 @@ describe JsonFactory do
             set_intermediate
             pos_comp = manager.get_components(command_bunker, PositionComponent).first
             expect(JsonFactory.attack_animate(manager, "ranged", infantry, "infantry", pos_comp.row, pos_comp.col)).to  (
-               eq([{"actions"   => "attack",
+               eq([{"action"   => "attack",
        		   "arguments" => [infantry, {"y" => pos_comp.row , "x"=> pos_comp.col},
        		                   "ranged", "infantry"]}]))
         end

@@ -192,9 +192,9 @@ public
 	def self.goliath(entity_manager, owner)
 		return self.create_entity(entity_manager,
 					  [PieceComponent.infantry,
-					   HealthComponent.new(30),
-					   MotionComponent.new(1),
-					   MeleeAttackComponent.new(20),
+					   HealthComponent.new(36),
+					   MotionComponent.new(-1, 1),
+					   MeleeAttackComponent.new(9),
 					   EnergyComponent.new(1),
 					   OwnedComponent.new(owner)])
 	end
@@ -211,11 +211,11 @@ public
 	def self.infantry(entity_manager, owner)
 		return self.create_entity(entity_manager,
 					  [PieceComponent.infantry,
-					   HealthComponent.new(10),
-					   EnergyComponent.new(10),
-					   MotionComponent.new(5),
-					   MeleeAttackComponent.new(10),
-					   RangeAttackComponent.new(10, 1, 4),
+					   HealthComponent.new(12),
+					   EnergyComponent.new(6),
+					   MotionComponent.new(-1, 2),
+					   MeleeAttackComponent.new(6, 4),
+					   RangeAttackComponent.new(6, 1, 2, [1.0], 4),
 					   OwnedComponent.new(owner)])
 	end
 
@@ -231,11 +231,11 @@ public
 	def self.machine_gun(entity_manager, owner)
 		return self.create_entity(entity_manager,
 					  [PieceComponent.machine_gun,
-					   HealthComponent.new(20),
-					   EnergyComponent.new(10),
-					   MotionComponent.new(3),
-					   MeleeAttackComponent.new(10),
-					   RangeAttackComponent.new(10, 3, 7),
+					   HealthComponent.new(12),
+					   EnergyComponent.new(6),
+					   MotionComponent.new(-1, 3),
+					   MeleeAttackComponent.new(6, 6),
+					   RangeAttackComponent.new(4, 1, 3, [1.0], 2),
 					   OwnedComponent.new(owner)])
 	end
 
@@ -251,10 +251,10 @@ public
 	def self.artillery(entity_manager, owner)
 		return self.create_entity(entity_manager,
 					  [PieceComponent.artillery,
-					   HealthComponent.new(10),
-					   EnergyComponent.new(10),
-					   MotionComponent.new(1),
-					   RangeAttackComponent.new(20, 5, 15),
+					   HealthComponent.new(12),
+					   EnergyComponent.new(6),
+					   MotionComponent.new(-1, 6),
+					   RangeAttackComponent.new(12, 3, 10, [1.0, 0.5, 0.25], 6),
 					   OwnedComponent.new(owner)])
 	end
 
