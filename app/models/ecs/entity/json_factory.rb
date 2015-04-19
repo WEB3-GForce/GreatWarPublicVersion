@@ -335,12 +335,15 @@ class JsonFactory
 	def self.attack(entity_manager, result)
         	actions = []
         	killed_units = []
+        	energy_updated = []
         	result.each { |item|
         		if item[0] == "melee" || item[0] == "ranged"
         			actions.concat self.attack_animate(entity_manager,
         				item[0], item[1], item[2], item[4], item[5])
         			actions.concat self.update_health(entity_manager, item[3])
-        			if entity_manager.has_key? item[1] and !entity_manager[item[1]].empty?
+        			if entity_manager.has_key? item[1] and !entity_manager[item[1]].empty? and
+        			   !energy_updated.include? item[1]
+        				energy_updated.push item[1]
         				actions.concat self.update_energy(entity_manager, item[1])
         			end
         		elsif item[0] == "kill"
