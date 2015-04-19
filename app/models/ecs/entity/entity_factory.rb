@@ -149,9 +149,9 @@ public
 	#
 	# Returns
 	#   the newly created Human Player Entity
-	def self.human_player(entity_manager, name, id=-1)
+	def self.human_player(entity_manager, name, id=-1, faction="blue")
 		return self.create_entity(entity_manager,
-					  [UserIdComponent.new(id),
+					  [UserIdComponent.new(id, faction),
 					   NameComponent.new(name),
 					   HumanComponent.new])
 	end
@@ -165,9 +165,9 @@ public
 	#
 	# Returns
 	#   the newly created AI Player Entity
-	def self.ai_player(entity_manager, name, id=-1)
+	def self.ai_player(entity_manager, name, id=-1, faction="blue")
 		return self.create_entity(entity_manager,
-					  [UserIdComponent.new(id),
+					  [UserIdComponent.new(id, faction),
 					   NameComponent.new(name),
 					   AIComponent.new])
 	end
@@ -415,12 +415,13 @@ public
 		
 		players = []
 		pieces = []
-		player_names.each_with_index { |name, name_index|
-			player = self.human_player(entity_manager, name)
+		factions = ["red", "blue", "green", "yellow"]
+		player_names.each_with_index { |name, index|
+			player = self.human_player(entity_manager, name, factions[index])
 			army   = self.create_army(entity_manager, player)
 			players.push player
 			pieces.concat army
-			place_methods[name_index].call(entity_manager, army)
+			place_methods[index].call(entity_manager, army)
 		}
 		
 		turn = self.turn_entity(entity_manager, players)

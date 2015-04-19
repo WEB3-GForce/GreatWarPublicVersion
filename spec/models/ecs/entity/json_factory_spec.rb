@@ -63,14 +63,14 @@ describe JsonFactory do
     context "when calling player" do
         it "should return a hash for a human" do
             expect(JsonFactory.player(manager, human1)).to eq(
-                {"id" => human1, "name" => "David",
-                 "type" => "Human", "userId" => -1})
+                {human1 => {"name" => "David",
+                 "type" => "Human", "userId" => -1, "faction" => "blue"}})
         end
 
         it "should return a hash for an ai" do
             expect(JsonFactory.player(manager, ai)).to eq(
-                {"id" => ai, "name" => "R.O.B",
-                 "type" => "CPU", "userId" => -1})
+                {ai => {"name" => "R.O.B",
+                 "type" => "CPU", "userId" => -1, "faction" => "blue"}})
         end
     end
 

@@ -63,10 +63,10 @@ class JsonFactory
 		human_comp = entity_manager.get_components(entity, HumanComponent).first
 		player_type = "Human" if human_comp
 
-		return {"id"      => entity,
-		        "name"    => name_comp.name,
-		        "type"    => player_type,
-		        "userId"  => user_id_comp.id }
+		return {entity  => {"name"    => name_comp.name,
+		                    "type"    => player_type,
+		                    "userId"  => user_id_comp.id,
+		                    "faction" => user_id_comp.faction }}
 	end
 
 	# Converts a turn entity into a hash object.
