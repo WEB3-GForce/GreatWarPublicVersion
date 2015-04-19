@@ -79,7 +79,8 @@ class JsonFactory
 	#   A hash that is ready to be jsoned
 	def self.turn(entity_manager, entity)
 		turn_comp = entity_manager.get_components(entity, TurnComponent).first
-		return {"playerid" => turn_comp.current_turn}
+		return {"playerid" => turn_comp.current_turn,
+		        "turnCount" => turn_comp.turn_count}
 	end
 
 	# This method is responsible for converting a piece entity into a json-
