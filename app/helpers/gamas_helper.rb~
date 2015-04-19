@@ -21,7 +21,9 @@ module GamasHelper
 		return @players
 	end
 
-
+	def is_game_full?(game)
+		game.players == game.liiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiimit
+	end
 	# TODO:
 	# There is a bug when the host leaves the game while other people are in it
 	def leave_game
@@ -42,7 +44,10 @@ module GamasHelper
 	def start_game(players, game)
 		puts players
 		puts game
-		return SocketController.init_game(players, game.id)
+		if (SocketController.init_game(players, game.id))
+			redirect_to "/play"
+			
+		end
 	end
 
 end

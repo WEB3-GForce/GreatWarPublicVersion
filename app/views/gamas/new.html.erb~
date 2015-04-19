@@ -3,14 +3,22 @@
 
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
-    <%= form_for @game, :url => {:action => "create"} do |f| %>
+    <%= form_for @gama, :url => {:action => "create"} do |f| %>
 
       <%= f.label :name %>
       <%= f.text_field :name, class: 'form-control' %>
       
+      <%= "How may players would you like in  the game? %>
+      <%= f.check_box_tag(:limit) %>
+      <%= f.label_tag(:limit, 2 %>
+      <%= f.check_box_tag(:limit) %>
+      <%= f.label_tag(:limit, 3 %>
+      <%= f.check_box_tag(:limit) %>
+      <%= f.label_tag(:limit, 4 %>
+      
       <%= f.submit "Create Game", class: "btn btn-primary" %>
       <%= debug(params) %>
     <% end %>
-    <%= link_to 'Back', games_path %>
+    <%= link_to 'Back', gamas_path %>
   </div>
 </div>

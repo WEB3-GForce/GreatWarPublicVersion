@@ -1,5 +1,6 @@
 class GamasController < ApplicationController
   #before_action :set_Gama, only: [:show, :edit, :update, :destroy]
+  before_action :has_game_started?, only: [:index, :show, :edit, :update, :new, :create]
 
   # GET /Gamas
   # GET /Gamas.json
@@ -26,11 +27,20 @@ class GamasController < ApplicationController
       @gama = Gama.find(user.game)
     
     elsif (user.game == 0 && params[:join] == "1")
-      
-      
-      @gama.update_attribute(:pending, false)
-      flash.now[:success] = "Gama Successfully Joined!"
-      assign_game_to_current_user(@gama)
+
+	if !is_game_full?(@gama)
+		if @gama.players == (@gama.limit - 1)
+			@gama.update_attribute(:pending, false)
+		end
+		
+		flash.now[:success] = "Gama Successfully Joined!"
+		assign_game_to_current_user(@gama)
+		@gama.update_attribute(:players, @gama.players + 1)
+		redirect_to "/play"
+	else
+		flash.now[:warning] = "Sorry, game is full"
+	end
+	      
     end
   end
 
@@ -59,6 +69,7 @@ class GamasController < ApplicationController
         flash[:success] = "Game Successfully Created!"
         @gama.update_attribute(:pending, true)
     	@gama.update_attribute(:done, false)
+    	@gama.update_attribute(:players, 1)
    	current_user.update_attribute(:host, true)
         assign_game_to_current_user(@gama)
         redirect_to gamas_path
@@ -107,5 +118,9 @@ class GamasController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def gama_params
       params.require(:gama).permit(:name, :pending, :done)
+    end
+    
+    def has_game_started?
+    	
     end
 end
