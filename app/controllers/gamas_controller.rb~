@@ -33,6 +33,7 @@ class GamasController < ApplicationController
       end
     
     elsif (user.game == 0 && params[:join] == "1")
+<<<<<<< HEAD
 
 	if !is_game_full?(@gama)
 		if @gama.players == (@gama.limit.to_i - 1)
@@ -48,10 +49,18 @@ class GamasController < ApplicationController
 		redirect_to games_path
 	end
 	  
-    elsif (user.game != 0 && params[:join] != "1")
+    elsif (user.game != 0 && params[:join] != "1" && user.game == @gama.id)
     	if !is_current_user_host?(Gama.find(user.game))
     		redirect_to "/play"
     	end    
+=======
+      
+      
+      @gama.update_attribute(:pending, false)
+      flash.now[:success] = "Game Successfully Joined!"
+      assign_game_to_current_user(@gama)
+      redirect_to "/play"
+>>>>>>> f5cd89e301897ee8d0e543a6b1964f5574614470
     end
   end
 
@@ -64,7 +73,6 @@ class GamasController < ApplicationController
     		redirect_to "/play"
       end 
       redirect_to gama_path(user.game)
-  
     else
       @gama = Gama.new
     end

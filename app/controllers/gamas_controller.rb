@@ -64,7 +64,6 @@ class GamasController < ApplicationController
     		redirect_to "/play"
       end 
       redirect_to gama_path(user.game)
-  
     else
       @gama = Gama.new
     end
