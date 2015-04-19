@@ -370,7 +370,7 @@ class JsonFactory
         				update_energy = self.update_energy(entity_manager, item[1])
         			end
         		elsif item[0] == "kill"
-        			actions.concat self.kill_units(entity_manager, item[1])
+        			actions.concat self.kill_units(entity_manager, [item[1]])
         		end
         	}
         	actions.concat update_energy

@@ -87,8 +87,8 @@ private
 					result[0].unshift(piece_comp.type.to_s)
 					result[0].unshift(attacking_entity)
 					result[0].unshift("ranged")
-					damage_info.push result[0]
 					damage_info.push result[1] if result[1] != nil
+					damage_info.push result[0]
 				}
 			}
 		}
