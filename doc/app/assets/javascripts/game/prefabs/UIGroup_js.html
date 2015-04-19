@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>UIGroup.js - RDoc Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../../../../../";
+</script>
+
+<script src="../../../../../js/jquery.js"></script>
+<script src="../../../../../js/darkfish.js"></script>
+
+<link href="../../../../../css/fonts.css" rel="stylesheet">
+<link href="../../../../../css/rdoc.css" rel="stylesheet">
+
+
+
+<body id="top" role="document" class="file">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="../../../../../index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="../../../../../table_of_contents.html#pages">Pages</a>
+    <a href="../../../../../table_of_contents.html#classes">Classes</a>
+    <a href="../../../../../table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="project-metadata">
+    <div id="fileindex-section" class="nav-section">
+  <h3>Pages</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="../../../../../app/assets/images/minecraftia_fnt.html">minecraftia.fnt</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/application_js.html">application.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/client_test_js.html">client_test.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/main_js.html">main.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/prefabs/GameBoard_js.html">GameBoard.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/prefabs/GameGroup_js.html">GameGroup.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/prefabs/UIGroup_js.html">UIGroup.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/prefabs/Unit_js.html">Unit.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/prefabs/UnitGroup_js.html">UnitGroup.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/prefabs/actions_js.html">actions.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/states/boot_js.html">boot.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/states/gameover_js.html">gameover.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/states/menu_js.html">menu.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/states/play_js.html">play.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/states/preload_js.html">preload.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/static_pages_coffee.html">static_pages.coffee</a>
+  
+    <li><a href="../../../../../app/assets/json/tiledTest_json.html">tiledTest.json</a>
+  
+    <li><a href="../../../../../app/assets/stylesheets/application_css.html">application.css</a>
+  
+    <li><a href="../../../../../app/assets/stylesheets/static_pages_scss.html">static_pages.scss</a>
+  
+    <li><a href="../../../../../app/models/ecs/CodingPractices_txt.html">CodingPractices</a>
+  
+    <li><a href="../../../../../app/models/ecs/READ_ME_txt.html">READ_ME</a>
+  
+    <li><a href="../../../../../app/models/ecs/system/AttackSystemDoc_txt.html">AttackSystemDoc</a>
+  
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-label="Page app/assets/javascripts/game/prefabs/UIGroup.js">
+
+<p>&#39;use strict&#39;;</p>
+
+<p>var COLORS = {</p>
+
+<pre>HEALTH: 0x7eb041,
+ENERGY: 0xfbb829,
+BUTTON: 0x556270,
+DEPLETED: 0xdadfe6</pre>
+
+<p>}</p>
+
+<p>var UIGroup = function(game, parent) {</p>
+
+<pre class="ruby"><span class="ruby-constant">Phaser</span>.<span class="ruby-constant">Group</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">this</span>, <span class="ruby-identifier">game</span>, <span class="ruby-identifier">parent</span>);
+
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">font</span> = { <span class="ruby-identifier">font</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;18px Helvetica&quot;</span>, <span class="ruby-identifier">fill</span><span class="ruby-operator">:</span> <span class="ruby-node">&quot;#ffffff&quot;</span> };
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">smallerFont</span> = { <span class="ruby-identifier">font</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;14px Helvetica&quot;</span>, <span class="ruby-identifier">fill</span><span class="ruby-operator">:</span> <span class="ruby-node">&quot;#ffffff&quot;</span> };
+
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">initActionMenu</span>();
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">initHealthDisplay</span>();
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">initUnitInfoUI</span>();
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">initPlayerInfoUI</span>();
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">initTileInfoUI</span>();
+</pre>
+
+<p>};</p>
+
+<p>UIGroup.prototype = Object.create(Phaser.Group.prototype);
+UIGroup.prototype.constructor = UIGroup;</p>
+
+<p>UIGroup.prototype.initPlayerInfoUI = function() {</p>
+
+<pre class="ruby"><span class="ruby-identifier">this</span>.<span class="ruby-identifier">playerInfo</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">group</span>();
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">playerInfo</span>.<span class="ruby-identifier">x</span> = <span class="ruby-value">8</span>;
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">playerInfo</span>.<span class="ruby-identifier">y</span> = <span class="ruby-value">8</span>;
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">playerInfo</span>.<span class="ruby-identifier">fixedToCamera</span> = <span class="ruby-keyword">true</span>;
+
+<span class="ruby-identifier">var</span> <span class="ruby-identifier">width</span> = <span class="ruby-value">288</span>;
+<span class="ruby-identifier">var</span> <span class="ruby-identifier">height</span> = <span class="ruby-value">64</span>;
+
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">playerInfoGraphics</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">graphics</span>(<span class="ruby-value">0</span>, <span class="ruby-value">0</span>, <span class="ruby-identifier">this</span>.<span class="ruby-identifier">playerInfo</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">playerInfoGraphics</span>.<span class="ruby-identifier">beginFill</span>(<span class="ruby-value">0x000000</span>, <span class="ruby-value">0.3</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">playerInfoGraphics</span>.<span class="ruby-identifier">drawRect</span>(<span class="ruby-value">0</span>, <span class="ruby-value">0</span>, <span class="ruby-identifier">width</span>, <span class="ruby-identifier">height</span>);
+
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">playerInfoGraphics</span>.<span class="ruby-identifier">beginFill</span>(<span class="ruby-constant">COLORS</span>.<span class="ruby-constant">HEALTH</span>, <span class="ruby-value">1</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">playerInfoGraphics</span>.<span class="ruby-identifier">drawRect</span>(<span class="ruby-value">64</span>, <span class="ruby-value">0</span>, <span class="ruby-identifier">width</span> <span class="ruby-operator">-</span> <span class="ruby-value">64</span>, <span class="ruby-value">32</span>);
+
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">playerName</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">bitmapText</span>(<span class="ruby-value">72</span>, <span class="ruby-value">4</span>, <span class="ruby-string">&#39;minecraftia&#39;</span>,
+                                           <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">constants</span>.<span class="ruby-constant">PLAYER_NAME</span>,
+                                           <span class="ruby-value">20</span>,
+                                           <span class="ruby-identifier">this</span>.<span class="ruby-identifier">playerInfo</span>);
+
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">turnNumber</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">bitmapText</span>(<span class="ruby-value">72</span>, <span class="ruby-value">36</span>, <span class="ruby-string">&#39;minecraftia&#39;</span>,
+                                           <span class="ruby-string">&quot;Day: &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">turnNumber</span>,
+                                           <span class="ruby-value">20</span>,
+                                           <span class="ruby-identifier">this</span>.<span class="ruby-identifier">playerInfo</span>);
+
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">playerPortrait</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">sprite</span>(<span class="ruby-value">8</span>, <span class="ruby-value">8</span>, <span class="ruby-string">&#39;generalPortrait&#39;</span>, <span class="ruby-identifier">this</span>.<span class="ruby-identifier">playerInfo</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">playerPortrait</span>.<span class="ruby-identifier">width</span> = <span class="ruby-value">64</span>;
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">playerPortrait</span>.<span class="ruby-identifier">height</span> = <span class="ruby-value">64</span>;
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">playerPortrait</span>.<span class="ruby-identifier">fixedToCamera</span> = <span class="ruby-keyword">true</span>;
+</pre>
+
+<p>}</p>
+
+<p>UIGroup.prototype.initTileInfoUI = function() {</p>
+
+<pre class="ruby"><span class="ruby-identifier">var</span> <span class="ruby-identifier">height</span> = <span class="ruby-value">160</span>;
+<span class="ruby-identifier">var</span> <span class="ruby-identifier">width</span> = <span class="ruby-value">96</span>;
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">tileInfo</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">group</span>();
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">tileInfo</span>.<span class="ruby-identifier">x</span> = <span class="ruby-value">8</span>;
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">tileInfo</span>.<span class="ruby-identifier">y</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitInfo</span>.<span class="ruby-identifier">y</span>;
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">tileInfo</span>.<span class="ruby-identifier">fixedToCamera</span> = <span class="ruby-keyword">true</span>;
+
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">tileGraphics</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">graphics</span>(<span class="ruby-value">0</span>, <span class="ruby-value">0</span>, <span class="ruby-identifier">this</span>.<span class="ruby-identifier">tileInfo</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">tileGraphics</span>.<span class="ruby-identifier">beginFill</span>(<span class="ruby-value">0x000000</span>, <span class="ruby-value">0.3</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">tileGraphics</span>.<span class="ruby-identifier">drawRect</span>(<span class="ruby-value">0</span>, <span class="ruby-value">0</span>, <span class="ruby-identifier">width</span>, <span class="ruby-identifier">height</span>);
+
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">tileTitle</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">bitmapText</span>(<span class="ruby-value">8</span>, <span class="ruby-value">8</span>, <span class="ruby-string">&#39;minecraftia&#39;</span>, <span class="ruby-string">&#39;&#39;</span>,
+                                          <span class="ruby-value">16</span>,
+                                          <span class="ruby-identifier">this</span>.<span class="ruby-identifier">tileInfo</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">currentTile</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">sprite</span>(<span class="ruby-value">8</span>, <span class="ruby-value">40</span>, <span class="ruby-string">&#39;terrain&#39;</span>, <span class="ruby-value">0</span>, <span class="ruby-identifier">this</span>.<span class="ruby-identifier">tileInfo</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">currentTile</span>.<span class="ruby-identifier">alpha</span> = <span class="ruby-value">0.7</span>;
+</pre>
+
+<p>}</p>
+
+<p>UIGroup.prototype.initUnitInfoUI = function() {</p>
+
+<pre class="ruby"><span class="ruby-identifier">var</span> <span class="ruby-identifier">height</span> = <span class="ruby-value">160</span>;
+<span class="ruby-identifier">var</span> <span class="ruby-identifier">width</span> = <span class="ruby-value">192</span>;
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitInfo</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">group</span>();
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitInfo</span>.<span class="ruby-identifier">x</span> = <span class="ruby-value">8</span>;
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitInfo</span>.<span class="ruby-identifier">y</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">height</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">height</span> <span class="ruby-operator">-</span> <span class="ruby-value">8</span>;
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitInfo</span>.<span class="ruby-identifier">fixedToCamera</span> = <span class="ruby-keyword">true</span>;
+
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitGraphics</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">graphics</span>(<span class="ruby-value">0</span>, <span class="ruby-value">0</span>, <span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitInfo</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitGraphics</span>.<span class="ruby-identifier">beginFill</span>(<span class="ruby-value">0x000000</span>, <span class="ruby-value">0.3</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitGraphics</span>.<span class="ruby-identifier">drawRect</span>(<span class="ruby-value">0</span>, <span class="ruby-value">0</span>, <span class="ruby-identifier">width</span>, <span class="ruby-identifier">height</span>);
+
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitType</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">bitmapText</span>(<span class="ruby-value">8</span>, <span class="ruby-value">8</span>, <span class="ruby-string">&#39;minecraftia&#39;</span>, <span class="ruby-string">&#39;&#39;</span>,
+                                         <span class="ruby-value">16</span>,
+                                         <span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitInfo</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">currentUnit</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">sprite</span>(<span class="ruby-value">8</span>, <span class="ruby-value">40</span>, <span class="ruby-string">&#39;trainer&#39;</span>, <span class="ruby-value">1</span>, <span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitInfo</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">currentUnit</span>.<span class="ruby-identifier">alpha</span> = <span class="ruby-value">0.7</span>;
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitHealth</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">bitmapText</span>(<span class="ruby-value">8</span>, <span class="ruby-value">80</span>, <span class="ruby-string">&#39;minecraftia&#39;</span>, <span class="ruby-string">&#39;&#39;</span>,
+                                           <span class="ruby-value">12</span>,
+                                           <span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitInfo</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitAttack</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">bitmapText</span>(<span class="ruby-value">8</span>, <span class="ruby-value">104</span>, <span class="ruby-string">&#39;minecraftia&#39;</span>, <span class="ruby-string">&#39;&#39;</span>,
+                                           <span class="ruby-value">12</span>,
+                                           <span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitInfo</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitEnergy</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">bitmapText</span>(<span class="ruby-value">8</span>, <span class="ruby-value">128</span>, <span class="ruby-string">&#39;minecraftia&#39;</span>, <span class="ruby-string">&#39;&#39;</span>,
+                                           <span class="ruby-value">12</span>,
+                                           <span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitInfo</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitInfo</span>.<span class="ruby-identifier">visible</span> = <span class="ruby-keyword">false</span>;
+</pre>
+
+<p>}</p>
+
+<p>UIGroup.prototype.drawArc = function(graphics, x, y, r, start, end, stroke,
+color) {</p>
+
+<pre>graphics.lineStyle(0);
+graphics.moveTo(x+r*Math.cos(start), y+r*Math.sin(start));
+graphics.lineStyle(stroke, color);
+graphics.arc(x, y, r, start, end);
+graphics.lineStyle(0);</pre>
+
+<p>}</p>
+
+<p>UIGroup.prototype.arcTween = function(graphics, x, y, r, start, end,
+stroke, color, duration, easing) {</p>
+
+<pre>var t = this.game.add.tween(graphics).to({}, duration, easing);
+t.onUpdateCallback(function(tween, fraction) {
+    this.drawArc(graphics, x, y, r, start, start + fraction*(end - start), stroke, color);
+}, this);
+t.onComplete.add(function() {
+    this.drawArc(graphics, x, y, r, start, end, stroke, color);
+}, this);
+return t;</pre>
+
+<p>}</p>
+
+<p>UIGroup.prototype.initActionMenu = function() {</p>
+
+<pre class="ruby"><span class="ruby-identifier">this</span>.<span class="ruby-identifier">actionMenu</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">group</span>();
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">actions</span> = [];
+
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">actionGraphics</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">graphics</span>(<span class="ruby-value">0</span>, <span class="ruby-value">0</span>, <span class="ruby-identifier">this</span>.<span class="ruby-identifier">actionMenu</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">drawArc</span>(<span class="ruby-identifier">this</span>.<span class="ruby-identifier">actionGraphics</span>, <span class="ruby-value">0</span>, <span class="ruby-value">0</span>, <span class="ruby-value">44</span>, <span class="ruby-value">-0.5</span><span class="ruby-operator">*</span><span class="ruby-constant">Math</span>.<span class="ruby-constant">PI</span>, <span class="ruby-value">1.5</span><span class="ruby-operator">*</span><span class="ruby-constant">Math</span>.<span class="ruby-constant">PI</span>, <span class="ruby-value">8</span>, <span class="ruby-constant">COLORS</span>.<span class="ruby-constant">BUTTON</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">drawArc</span>(<span class="ruby-identifier">this</span>.<span class="ruby-identifier">actionGraphics</span>, <span class="ruby-value">0</span>, <span class="ruby-value">0</span>, <span class="ruby-value">32</span>, <span class="ruby-value">-0.5</span><span class="ruby-operator">*</span><span class="ruby-constant">Math</span>.<span class="ruby-constant">PI</span>, <span class="ruby-value">1.5</span><span class="ruby-operator">*</span><span class="ruby-constant">Math</span>.<span class="ruby-constant">PI</span>, <span class="ruby-value">16</span>, <span class="ruby-constant">COLORS</span>.<span class="ruby-constant">ENERGY</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">actionMenu</span>.<span class="ruby-identifier">scale</span>.<span class="ruby-identifier">x</span> = <span class="ruby-value">0</span>;
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">actionMenu</span>.<span class="ruby-identifier">scale</span>.<span class="ruby-identifier">y</span> = <span class="ruby-value">0</span>;
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">actionMenu</span>.<span class="ruby-identifier">visible</span> = <span class="ruby-keyword">false</span>;
+</pre>
+
+<p>}</p>
+
+<p>UIGroup.prototype.initHealthDisplay = function() {</p>
+
+<pre class="ruby"><span class="ruby-identifier">this</span>.<span class="ruby-identifier">healthCircle</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">group</span>();
+
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">healthGraphics</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">graphics</span>(<span class="ruby-value">0</span>, <span class="ruby-value">0</span>, <span class="ruby-identifier">this</span>.<span class="ruby-identifier">healthCircle</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">drawArc</span>(<span class="ruby-identifier">this</span>.<span class="ruby-identifier">healthGraphics</span>, <span class="ruby-value">0</span>, <span class="ruby-value">0</span>, <span class="ruby-value">44</span>, <span class="ruby-value">-0.5</span><span class="ruby-operator">*</span><span class="ruby-constant">Math</span>.<span class="ruby-constant">PI</span>, <span class="ruby-value">1.5</span><span class="ruby-operator">*</span><span class="ruby-constant">Math</span>.<span class="ruby-constant">PI</span>, <span class="ruby-value">8</span>, <span class="ruby-constant">COLORS</span>.<span class="ruby-constant">BUTTON</span>);
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">drawArc</span>(<span class="ruby-identifier">this</span>.<span class="ruby-identifier">healthGraphics</span>, <span class="ruby-value">0</span>, <span class="ruby-value">0</span>, <span class="ruby-value">32</span>, <span class="ruby-value">-0.5</span><span class="ruby-operator">*</span><span class="ruby-constant">Math</span>.<span class="ruby-constant">PI</span>, <span class="ruby-value">1.5</span><span class="ruby-operator">*</span><span class="ruby-constant">Math</span>.<span class="ruby-constant">PI</span>, <span class="ruby-value">16</span>, <span class="ruby-constant">COLORS</span>.<span class="ruby-constant">HEALTH</span>);
+
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">healthCircle</span>.<span class="ruby-identifier">scale</span>.<span class="ruby-identifier">x</span> = <span class="ruby-value">0</span>;
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">healthCircle</span>.<span class="ruby-identifier">scale</span>.<span class="ruby-identifier">y</span> = <span class="ruby-value">0</span>;
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">healthCircle</span>.<span class="ruby-identifier">visible</span> = <span class="ruby-keyword">false</span>;
+</pre>
+
+<p>}</p>
+
+<p>UIGroup.prototype.updateHealth = function(unit, newHealth) {</p>
+
+<pre>console.log(unit);
+// visual representation of remaining energy
+this.drawArc(this.healthGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.HEALTH);
+this.drawArc(this.healthGraphics, 0, 0, 32,
+             -0.5*Math.PI, (-0.5 + 2*(1-unit.stats.health.current/unit.stats.health.max))*Math.PI,
+             16, COLORS.DEPLETED);
+
+this.healthCircle.x = unit.x + this.game.constants.TILE_SIZE/2;
+this.healthCircle.y = unit.y + this.game.constants.TILE_SIZE/2;
+this.healthCircle.visible = true;
+
+var showTween = this.game.add.tween(this.healthCircle.scale).to({x: 1, y: 1}, 200, Phaser.Easing.Quadratic.InOut);
+var healthTween = this.arcTween(this.healthGraphics, 0, 0, 32,
+                                (-0.5 + 2*(1-unit.stats.health.current/unit.stats.health.max))*Math.PI,
+                                (-0.5 + 2*(1-newHealth/unit.stats.health.max))*Math.PI,
+                                16, COLORS.DEPLETED, 300, Phaser.Easing.Quadratic.InOut);
+healthTween.onComplete.add(function() {
+    unit.stats.health.current = newHealth;
+}, this);
+var hideTween = this.game.add.tween(this.healthCircle.scale).to({x: 0, y: 0}, 200, Phaser.Easing.Quadratic.InOut, false, 300);
+hideTween.onComplete.add(function() {
+    this.healthCircle.visible = false;
+}, this);
+
+showTween.chain(healthTween);
+healthTween.chain(hideTween);
+return showTween;</pre>
+
+<p>}</p>
+
+<p>UIGroup.prototype.updateEnergy = function(unit, newEnergy) {</p>
+
+<pre>// visual representation of remaining energy
+this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.ENERGY);
+this.drawArc(this.actionGraphics, 0, 0, 32,
+             -0.5*Math.PI, (-0.5 + 2*(1-unit.stats.energy.current/unit.stats.energy.max))*Math.PI,
+             16, COLORS.DEPLETED);
+
+this.actionMenu.x = unit.x + this.game.constants.TILE_SIZE/2;
+this.actionMenu.y = unit.y + this.game.constants.TILE_SIZE/2;
+this.actionMenu.visible = true;
+
+var showTween = this.game.add.tween(this.actionMenu.scale).to({x: 1, y: 1}, 200, Phaser.Easing.Quadratic.InOut);
+var energyTween = this.arcTween(this.actionGraphics, 0, 0, 32,
+                                (-0.5 + 2*(1-unit.stats.energy.current/unit.stats.energy.max))*Math.PI,
+                                (-0.5 + 2*(1-newEnergy/unit.stats.energy.max))*Math.PI,
+                                16, COLORS.DEPLETED, 300, Phaser.Easing.Quadratic.InOut);
+energyTween.onComplete.add(function() {
+    unit.stats.energy.current = newEnergy;
+}, this);
+var hideTween = this.game.add.tween(this.actionMenu.scale).to({x: 0, y: 0}, 200, Phaser.Easing.Quadratic.InOut, false, 300);
+hideTween.onComplete.add(function() {
+    this.actionMenu.visible = false;
+}, this);
+
+showTween.chain(energyTween);
+energyTween.chain(hideTween);
+return showTween;</pre>
+
+<p>}</p>
+
+<p>UIGroup.prototype.setTile = function(tile) {</p>
+
+<pre class="ruby"><span class="ruby-identifier">this</span>.<span class="ruby-identifier">currentTile</span>.<span class="ruby-identifier">frame</span> = <span class="ruby-identifier">tile</span>.<span class="ruby-identifier">index</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>;
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">tileTitle</span>.<span class="ruby-identifier">text</span> = <span class="ruby-node">&quot;tile #&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">tile</span>.<span class="ruby-identifier">index</span>;
+</pre>
+
+<p>}</p>
+
+<p>UIGroup.prototype.setUnit = function(unit) {</p>
+
+<pre>if (unit) {
+    this.unitType.text = unit.type[0].toUpperCase() + unit.type.slice(1);
+    this.unitHealth.text = &quot;HP: &quot; + unit.stats.health.current + &quot;/&quot; + unit.stats.health.max;
+    this.unitEnergy.text = &quot;ENERGY: &quot; + unit.stats.energy.current + &quot;/&quot; + unit.stats.energy.max;
+    this.unitAttack.text = &quot;ATTACK: &quot; + unit.stats.range.attack;
+
+    this.currentUnit.key = UNIT_MAP[unit.type].IMAGE;
+
+    this.unitInfo.visible = true;
+    this.tileInfo.cameraOffset.x = 208;
+} else {
+    this.unitInfo.visible = false;
+    this.tileInfo.cameraOffset.x = 8;
+}</pre>
+
+<p>}</p>
+
+<p>UIGroup.prototype.showMenu = function(unit, actions) {</p>
+
+<pre>for (var i = 0; i &lt; actions.length; i++) {
+    // add each button to an array of actions
+    this.actions[i] = this.game.add.button(0, 0,
+                                           &#39;action-&#39; + actions[i].name,
+                                           function() {}, this,
+                                           0, 1
+                                          );
+    this.actions[i].inputEnabled = true;
+    this.actions[i].input.useHandCursor = true;
+    this.actions[i].anchor.setTo(0.5, 0.5);
+    this.actionMenu.add(this.actions[i]);
+    var angle = 2*Math.PI / actions.length * i - Math.PI/2;
+    var r = 80;
+    this.actions[i].x = r*Math.cos(angle);
+    this.actions[i].y = r*Math.sin(angle);
+}
+
+// visual representation of remaining energy
+this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.ENERGY);
+this.drawArc(this.actionGraphics, 0, 0, 32,
+             -0.5*Math.PI, (-0.5 + 2*(1-unit.stats.energy.current/unit.stats.energy.max))*Math.PI,
+             16, COLORS.DEPLETED);
+
+this.actionMenu.x = unit.x + this.game.constants.TILE_SIZE/2;
+this.actionMenu.y = unit.y + this.game.constants.TILE_SIZE/2;
+this.actionMenu.visible = true;
+return this.game.add.tween(this.actionMenu.scale).to({x: 1, y: 1}, 200, Phaser.Easing.Back.Out);</pre>
+
+<p>}</p>
+
+<p>UIGroup.prototype.hideMenu = function() {</p>
+
+<pre>var t = this.game.add.tween(this.actionMenu.scale).to({x: 0, y: 0}, 200, Phaser.Easing.Back.In);
+t.onComplete.add(function() {
+    this.actionMenu.visible = false;
+    for (var i = 0; i &lt; this.actions.length; i++) {
+        this.actionMenu.remove(this.actions[i], true);
+    }
+    this.actions = [];
+    console.log(this.actionMenu);
+}, this);
+return t;</pre>
+
+<p>}</p>
+
+<p>UIGroup.prototype.menuVisible = function() {</p>
+
+<pre class="ruby"><span class="ruby-keyword">return</span> <span class="ruby-identifier">this</span>.<span class="ruby-identifier">actionMenu</span>.<span class="ruby-identifier">visible</span>;
+</pre>
+
+<p>}</p>
+</main>
+
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://docs.seattlerb.org/rdoc/">RDoc</a> 4.2.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

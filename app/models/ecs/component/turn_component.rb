@@ -10,6 +10,8 @@ require_relative "./component.rb"
 =end
 class TurnComponent < Component
 
+	attr_accessor :players
+
 	# Initializes a new TurnComponent object
 	#
 	# Arguments

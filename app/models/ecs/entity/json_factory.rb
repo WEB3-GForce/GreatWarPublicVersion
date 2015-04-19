@@ -283,11 +283,12 @@ class JsonFactory
 		#        }
 
         	actions = []
+        	squares_path = []
         	path[1, path.size].each { |square|
-        		coordinates = self.square_path(entity_manager, square)
-        		actions.push({"action" => "moveUnit",
-        		              "arguments" => [moving_entity, coordinates] })
+        		squares_path.push self.square_path(entity_manager, square)
         	}
+        	actions.push({"action" => "moveUnit",
+        		      "arguments" => [moving_entity, squares_path] })
         	actions.concat self.update_energy(entity_manager, moving_entity)
        		return actions
 	end
