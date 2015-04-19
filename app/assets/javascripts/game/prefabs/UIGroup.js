@@ -55,52 +55,106 @@ UIGroup.prototype.initPlayerInfoUI = function() {
     this.playerPortrait.fixedToCamera = true;
 }
 
-UIGroup.prototype.initTileInfoUI = function() {
+UIGroup.prototype.initTileInfoHelper = function(group, x) {
     var height = 160;
     var width = 96;
-    this.tileInfo = this.game.add.group();
-    this.tileInfo.x = 8;
-    this.tileInfo.y = this.unitInfo.y;
-    this.tileInfo.fixedToCamera = true;
+    group.x = 8;
+    group.y = this.game.height - height - 8;
+    group.fixedToCamera = true;
 
-    this.tileGraphics = this.game.add.graphics(0, 0, this.tileInfo);
-    this.tileGraphics.beginFill(0x000000, 0.3);
-    this.tileGraphics.drawRect(0, 0, width, height);
+    group.graphics = this.game.add.graphics(0, 0, group);
+    group.graphics.beginFill(0x000000, 0.3);
+    group.graphics.drawRect(0, 0, width, height);
 
-    this.tileTitle = this.game.add.bitmapText(8, 8, 'minecraftia', '',
+    group.title = this.game.add.bitmapText(8, 8, 'minecraftia', '',
+					   16,
+					   group);
+    group.tile = this.game.add.sprite(8, 40, 'terrain', 0, group);
+    group.tile.alpha = 0.7;
+}
+
+UIGroup.prototype.initTileInfoUI = function() {
+    this.tileInfoPrimary = this.game.add.group();
+    this.tileInfoSecondary = this.game.add.group();
+    this.initTileInfoHelper(this.tileInfoPrimary, 8);
+    this.initTileInfoHelper(this.tileInfoSecondary, this.game.width - 96 - 8);
+    this.tileInfoSecondary.visible = false;
+}
+
+UIGroup.prototype.setTile = function(group, tile) {
+    if (tile) {
+	group.tile.frame = tile.index - 1;
+	group.title.text = "tile #" + tile.index;
+	group.visible = true;
+    } else {
+	group.visible = false;
+    }
+}
+UIGroup.prototype.setPrimaryTile = function(tile) {
+    this.setTile(this.tileInfoPrimary, tile);
+}
+UIGroup.prototype.setSecondaryTile = function(tile) {
+    this.setTile(this.tileInfoSecondary, tile);
+
+}
+
+UIGroup.prototype.setUnit = function(group, tileGroup, unit, x1, x2) {
+    if (unit) {
+        group.unitType.text = unit.type[0].toUpperCase() + unit.type.slice(1);
+    	group.health.text = "HP: " + unit.stats.health.current + "/" + unit.stats.health.max;
+    	group.energy.text = "ENERGY: " + unit.stats.energy.current + "/" + unit.stats.energy.max;
+        group.attack.text = "ATTACK: " + unit.stats.range.attack;
+
+	group.unit.key = UNIT_MAP[unit.type].IMAGE;
+
+    	group.visible = true;
+	tileGroup.cameraOffset.x = x2;
+    } else {
+	group.visible = false;
+        tileGroup.cameraOffset.x = x1;
+    }
+}
+UIGroup.prototype.setPrimaryUnit = function(unit) {
+    this.setUnit(this.unitInfoPrimary, this.tileInfoPrimary, unit, 8, 200);
+}
+UIGroup.prototype.setSecondaryUnit = function(unit) {
+    this.setUnit(this.unitInfoSecondary, this.tileInfoSecondary, unit,
+		 this.game.width - 96 - 8, this.game.width - 96 - 200);
+}
+
+UIGroup.prototype.initUnitInfoHelper = function(group, x) {
+    var height = 160;
+    var width = 192;
+    group.x = x;
+    group.y = this.game.height - height - 8;
+    group.fixedToCamera = true;
+
+    group.graphics = this.game.add.graphics(0, 0, group);
+    group.graphics.beginFill(0x000000, 0.3);
+    group.graphics.drawRect(0, 0, width, height);
+
+    group.unitType = this.game.add.bitmapText(8, 8, 'minecraftia', '',
 					      16,
-					      this.tileInfo);
-    this.currentTile = this.game.add.sprite(8, 40, 'terrain', 0, this.tileInfo);
-    this.currentTile.alpha = 0.7;
+					      group);
+    group.unit = this.game.add.sprite(8, 40, 'trainer', 1, group);
+    group.unit.alpha = 0.7;
+    group.health = this.game.add.bitmapText(8, 80, 'minecraftia', '',
+					    12,
+					    group);
+    group.attack = this.game.add.bitmapText(8, 104, 'minecraftia', '',
+					    12,
+					    group);
+    group.energy = this.game.add.bitmapText(8, 128, 'minecraftia', '',
+					    12,
+					    group);
+    group.visible = false;
 }
 
 UIGroup.prototype.initUnitInfoUI = function() {
-    var height = 160;
-    var width = 192;
-    this.unitInfo = this.game.add.group();
-    this.unitInfo.x = 8;
-    this.unitInfo.y = this.game.height - height - 8;
-    this.unitInfo.fixedToCamera = true;
-
-    this.unitGraphics = this.game.add.graphics(0, 0, this.unitInfo);
-    this.unitGraphics.beginFill(0x000000, 0.3);
-    this.unitGraphics.drawRect(0, 0, width, height);
-
-    this.unitType = this.game.add.bitmapText(8, 8, 'minecraftia', '',
-					     16,
-					     this.unitInfo);
-    this.currentUnit = this.game.add.sprite(8, 40, 'trainer', 1, this.unitInfo);
-    this.currentUnit.alpha = 0.7;
-    this.unitHealth = this.game.add.bitmapText(8, 80, 'minecraftia', '',
-					       12,
-					       this.unitInfo);
-    this.unitAttack = this.game.add.bitmapText(8, 104, 'minecraftia', '',
-					       12,
-					       this.unitInfo);
-    this.unitEnergy = this.game.add.bitmapText(8, 128, 'minecraftia', '',
-					       12,
-					       this.unitInfo);
-    this.unitInfo.visible = false;
+    this.unitInfoPrimary = this.game.add.group();
+    this.unitInfoSecondary = this.game.add.group();
+    this.initUnitInfoHelper(this.unitInfoPrimary, 8);
+    this.initUnitInfoHelper(this.unitInfoSecondary, this.game.width - 192 - 8);
 }
 
 UIGroup.prototype.drawArc = function(graphics, x, y, r, start, end, stroke, color) {
@@ -147,7 +201,6 @@ UIGroup.prototype.initHealthDisplay = function() {
 }
 
 UIGroup.prototype.updateHealth = function(unit, newHealth) {
-    console.log(unit);
     // visual representation of remaining energy
     this.drawArc(this.healthGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.HEALTH);
     this.drawArc(this.healthGraphics, 0, 0, 32,
@@ -205,28 +258,6 @@ UIGroup.prototype.updateEnergy = function(unit, newEnergy) {
     return showTween;
 }
 
-UIGroup.prototype.setTile = function(tile) {
-    this.currentTile.frame = tile.index - 1;
-    this.tileTitle.text = "tile #" + tile.index;
-}
-
-UIGroup.prototype.setUnit = function(unit) {
-    if (unit) {
-        this.unitType.text = unit.type[0].toUpperCase() + unit.type.slice(1);
-    	this.unitHealth.text = "HP: " + unit.stats.health.current + "/" + unit.stats.health.max;
-    	this.unitEnergy.text = "ENERGY: " + unit.stats.energy.current + "/" + unit.stats.energy.max;
-        this.unitAttack.text = "ATTACK: " + unit.stats.range.attack;
-
-	this.currentUnit.key = UNIT_MAP[unit.type].IMAGE;
-
-    	this.unitInfo.visible = true;
-	this.tileInfo.cameraOffset.x = 208;
-    } else {
-	this.unitInfo.visible = false;
-        this.tileInfo.cameraOffset.x = 8;
-    }
-}
-
 UIGroup.prototype.showMenu = function(unit, actions) {
     for (var i = 0; i < actions.length; i++) {
 	// add each button to an array of actions
@@ -265,7 +296,6 @@ UIGroup.prototype.hideMenu = function() {
 	        this.actionMenu.remove(this.actions[i], true);
 	    }
 	    this.actions = [];
-	    console.log(this.actionMenu);
     }, this);
     return t;
 }

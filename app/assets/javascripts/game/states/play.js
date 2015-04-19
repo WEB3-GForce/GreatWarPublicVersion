@@ -31,6 +31,24 @@ Play.prototype = {
     	           this.gameGroup.onClick(this.game.input.mousePointer.targetObject);
     	   }
     	}, this);
+
+        this.backgroundSound = this.game.add.audio('ambience');
+        this.backgroundSound.loop = true;
+        this.backgroundSound.play();
+
+        this.music = new Array(8);
+        for (var i = 0; i < 8; i++) {
+            this.music[i] = this.game.add.audio('music-'+i);
+            this.music[i].volume = 0.5;
+        }
+        for (var i = 0; i < 8; i++) {
+            this.music[i].onStop.add(function(next) {
+                return function() {                    
+                    this.music[next % 8].play();
+                };
+            }(i+1), this);
+        }
+        this.music[0].play();
     },
 
     update: function() {
