@@ -1,0 +1,4 @@
+class ChangeLimitTypeInGamas < ActiveRecord::Migration
+  def change
+  end
+end

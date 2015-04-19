@@ -8,13 +8,13 @@
       <%= f.label :name %>
       <%= f.text_field :name, class: 'form-control' %>
       
-      <%= "How may players would you like in  the game? %>
-      <%= f.check_box_tag(:limit) %>
-      <%= f.label_tag(:limit, 2 %>
-      <%= f.check_box_tag(:limit) %>
-      <%= f.label_tag(:limit, 3 %>
-      <%= f.check_box_tag(:limit) %>
-      <%= f.label_tag(:limit, 4 %>
+      <%= "How many players would you like in  the game?" %>
+      <%= f.radio_button(:limit, "2") %>
+      <%= f.label(:limit, 2) %>
+      <%= f.radio_button(:limit, "3") %>
+      <%= f.label(:limit, 3) %>
+      <%= f.radio_button(:limit, "4") %>
+      <%= f.label(:limit, 4) %>
       
       
       <%= f.submit "Create Game", class: "btn btn-primary" %>

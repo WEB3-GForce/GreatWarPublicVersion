@@ -22,7 +22,7 @@ module GamasHelper
 	end
 
 	def is_game_full?(game)
-		game.players == game.liiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiimit
+		game.players == game.limit
 	end
 	# TODO:
 	# There is a bug when the host leaves the game while other people are in it
@@ -34,6 +34,7 @@ module GamasHelper
 
 		game.update_attribute(:pending, true)
 		game.update_attribute(:host, false)
+		game.update_attributes(:players, game.players - 1)
 	end
 	
 	def is_current_user_host?(game)
@@ -42,8 +43,6 @@ module GamasHelper
 	end
 	
 	def start_game(players, game)
-		puts players
-		puts game
 		if (SocketController.init_game(players, game.id))
 			redirect_to "/play"
 			

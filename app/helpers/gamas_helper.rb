@@ -33,7 +33,8 @@ module GamasHelper
 		user.save!
 
 		game.update_attribute(:pending, true)
-		game.update_attribute(:host, false)
+		user.update_attribute(:host, false)
+		game.update_attributes(:players, game.players - 1)
 	end
 	
 	def is_current_user_host?(game)
@@ -42,8 +43,6 @@ module GamasHelper
 	end
 	
 	def start_game(players, game)
-		puts players
-		puts game
 		if (SocketController.init_game(players, game.id))
 			redirect_to "/play"
 			

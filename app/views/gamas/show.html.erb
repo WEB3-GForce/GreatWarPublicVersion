@@ -18,8 +18,12 @@
 
 <p>
 	<% if(is_current_user_host?(@gama)) %>
-	<h1> Press below to start the game </h1>
-	<%= button_to 'Start Game', :controller => "gamas", :action => "start", :gama => @gama.id %>
+		<% if is_game_full?(@gama) %>
+			<h1> The game is ready to start. Press below to start the game </h1>
+			<%= button_to 'Start Game', :controller => "gamas", :action => "start", :gama => @gama.id %>
+		<% else %>
+			<h1> The game is not yet full. Please wait until more people join. </h1>
+		<% end %>
 	
 	<% end %>
 
@@ -28,5 +32,5 @@
 </p>
 
 
-<%= link_to 'Leave', gamas_path(:leave => 1) %> |
+<!-- <%= link_to 'Leave', gamas_path(:leave => 1) %> | -->
 <%= link_to 'Back', gamas_path %>

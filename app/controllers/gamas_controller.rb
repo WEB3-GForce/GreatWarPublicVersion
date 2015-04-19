@@ -22,25 +22,36 @@ class GamasController < ApplicationController
     #current_user.Gama = 0
     #  current_user.save
     #@Gama.update_attribute(:pending, true)
-    if user.game != 0 && params[:join] == "1" && user.game != @gama.id
-      flash.now[:warning] = "You cannot join more than one Gama at a time. You have been redirected."
+    if user.game != 0 && user.game == @gama.id
+    	redirect_to "/play"
+      
+    elsif user.game != 0 && params[:join] == "1" && user.game != @gama.id
+      flash.now[:warning] = "You cannot join more than one Game at a time. You have been redirected."
       @gama = Gama.find(user.game)
+      if !is_current_user_host?(@gama)
+      	redirect_to "/play"
+      end
     
     elsif (user.game == 0 && params[:join] == "1")
 
 	if !is_game_full?(@gama)
-		if @gama.players == (@gama.limit - 1)
+		if @gama.players == (@gama.limit.to_i - 1)
 			@gama.update_attribute(:pending, false)
 		end
 		
-		flash.now[:success] = "Gama Successfully Joined!"
+		flash.now[:success] = "Game Successfully Joined!"
 		assign_game_to_current_user(@gama)
 		@gama.update_attribute(:players, @gama.players + 1)
 		redirect_to "/play"
 	else
 		flash.now[:warning] = "Sorry, game is full"
+		redirect_to games_path
 	end
-	      
+	  
+    elsif (user.game != 0 && params[:join] != "1" && user.game == @gama.id)
+    	if !is_current_user_host?(Gama.find(user.game))
+    		redirect_to "/play"
+    	end    
     end
   end
 
@@ -49,6 +60,9 @@ class GamasController < ApplicationController
     user = current_user
     if (user.game != 0)
       flash[:warning] = "You cannot join more than one Gama at a time. You have been redirected."
+      if !is_current_user_host?(Gama.find(user.game))
+    		redirect_to "/play"
+      end 
       redirect_to gama_path(user.game)
   
     else
