@@ -1,10 +1,13 @@
 <!-- <header class="navbar navbar-fixed-top navbar-inverse"> -->
-<header class="">
   <div id="banner">
   	<div id="banner-L">
+      <span class="website-title">
     <%= link_to "The Great War", root_path, id: "logo" %>
+      </span>
     	</div>
+      <div id="banner-R"></div>
       <!-- <ul class="nav navbar-nav navbar-right"> -->
+      <div class="clearB"></div>
       <div id="banner-Hnav">
       <ul class="nav">
         <li><%= link_to "Home", root_path %></li>
@@ -30,9 +33,10 @@
           </li>
         <% else %>
           <li><%= link_to "Log in", login_path %></li>
+          <li><%= link_to "About",   about_path %></li>
+          <li><%= link_to "Contact", contact_path %></li>
           <li><%= link_to "Help", help_path %></li>
         <% end %>
       </ul>
       </div>
   </div>
-</header>

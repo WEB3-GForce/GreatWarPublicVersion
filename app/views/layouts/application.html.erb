@@ -2,19 +2,32 @@
 <html>
   <head>
     <title><%= full_title(yield(:title)) %></title>
-    <%= stylesheet_link_tag "application", media: "all",
-                                           "data-turbolinks-track" => true %>
+        
+    <!-- SEO RELATED META TAGS -->
+    <meta name="revisit" content="2 days">
+    <meta name="robots" content="all, index, follow">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+
+    <meta content="english" name="language">
+    <meta content="public" http-equiv="cache-control">
+    <%= stylesheet_link_tag "application", "data-turbolinks-track" => true %>
     <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
     <%= csrf_meta_tags %>
     <%= render 'layouts/shim' %>
   </head>
   <body>
     <%= render 'layouts/header' %>
-    <div class="container">
+    <div id="cnt-box">
+      <div id="cnt-top"></div>
       <% flash.each do |message_type, message| %>
         <div class="alert alert-<%= message_type %>"><%= message %></div>
       <% end %>
+      <div id="cnt-filler">
       <%= yield %>
+      </div>
+      <div id="cnt-btm"></div>
+    </div>
       <%= render 'layouts/footer' %>
       <%= debug(params) if Rails.env.development? %>
     </div>

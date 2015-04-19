@@ -1,4 +1,4 @@
-require_relative '../controllers/socket_controller.rb'
+#require_relative '../controllers/socket_controller.rb'
 
 module GamasHelper
 
