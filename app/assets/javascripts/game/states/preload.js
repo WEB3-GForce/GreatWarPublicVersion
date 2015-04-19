@@ -35,7 +35,23 @@ Preload.prototype = {
 			      -1, 1, 1);
 
 	this.load.bitmapFont('minecraftia', 'assets/minecraftia.png', 'assets/minecraftia.fnt');
+
+    this.load.audio('ambience', ['assets/ambience.mp3']);
+
+    //+ Jonas Raoni Soares Silva
+    //@ http://jsfromhell.com/array/shuffle [v1.0]
+    shuffle = function(o){ //v1.0
+        for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+        return o;
+    };
+
+    order = shuffle([1, 2, 3, 4, 5, 6, 7, 8]);
+    for (var i = 0; i < 8; i++) {
+        this.load.audio('music-'+i, 'assets/music-'+order[i]+'.mp3');
+    }
+    
     },
+
     create: function() {
 	this.asset.cropEnabled = false;
     },

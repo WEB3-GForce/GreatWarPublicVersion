@@ -461,6 +461,30 @@ class JsonFactory
 		        "arguments" => [actions]}]
 	end
 
+
+	def self.remove_player(entity_manager, result)
+		remove_player_result = result[0]
+		game_over_result = result[1]
+
+		actions = []
+		if !remove_player_result.nil?
+			players_removed = remove_player_result[1]
+			players_removed.each { |player| 
+				actions.push({ "actions" => "eliminatePlayer",
+						  	   "arguments" => [player] })
+			}
+		end
+
+		if !game_over_result.nil?
+			winner = game_over_result[1]
+			actions.push({ "actions" => "gameOver", 
+						   "arguments" => [winner] })
+		end
+
+		return actions
+	end
+
+
 	# Actions to handle:
 	#   Attack
 	#   Attackable locations
