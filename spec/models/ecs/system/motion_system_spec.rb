@@ -1,5 +1,16 @@
 require_relative '../../../spec_helper'
 
+def debug_infantry(entity_manager, owner)
+	return EntityFactory.create_entity(entity_manager,
+				  [PieceComponent.infantry,
+				   HealthComponent.new(10),
+				   EnergyComponent.new(10),
+				   MotionComponent.new(5),
+				   MeleeAttackComponent.new(10),
+				   RangeAttackComponent.new(10, 1, 4),
+				   OwnedComponent.new(owner)])
+end
+
 describe MotionSystem do
 
 	let(:result1)      {[]}
@@ -7,10 +18,10 @@ describe MotionSystem do
 	let(:manager)           {EntityManager.new(3, 3)}
 	let(:human1)            {EntityFactory.human_player(manager, "David")}
 	let(:human2)            {EntityFactory.human_player(manager, "Vance")}
-	let(:infantry)          {EntityFactory.infantry(manager, human1)}
-	let(:infantry2)         {EntityFactory.infantry(manager, human1)}
-	let(:friend1)           {EntityFactory.infantry(manager, human1)}
-	let(:foe1)              {EntityFactory.infantry(manager, human2)}	
+	let(:infantry)          {debug_infantry(manager, human1)}
+	let(:infantry2)         {debug_infantry(manager, human1)}
+	let(:friend1)           {debug_infantry(manager, human1)}
+	let(:foe1)              {debug_infantry(manager, human2)}	
 	let(:flatland00)        {EntityFactory.flatland_square(manager)}
 	let(:flatland01)        {EntityFactory.flatland_square(manager)}
 	let(:flatland02)        {EntityFactory.flatland_square(manager)}

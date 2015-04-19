@@ -36,6 +36,9 @@ Preload.prototype = {
 
 	this.load.bitmapFont('minecraftia', 'assets/minecraftia.png', 'assets/minecraftia.fnt');
     },
+
+    this.load.audio('ambience', ['/assets/sounds/background/ambience.mp3']);
+
     create: function() {
 	this.asset.cropEnabled = false;
     },
