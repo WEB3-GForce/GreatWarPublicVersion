@@ -35,9 +35,9 @@
 
             <div id="social media">
               <% if logged_in? %>
-                <%= link_to "Sign up now!", current_user, class: "FBbutton" %>
+                <%= link_to "Sign up now!", current_user, class: "btn" %>
               <% else %>
-                <%= link_to "Sign up now!", signup_path, class: "FBbutton" %>
+                <%= link_to "Sign up now!", signup_path, class: "btn" %>
               <% end %>
             </div>
             <!-- <%= link_to image_tag("trenches_update.png", alt: "The Great War logo"),

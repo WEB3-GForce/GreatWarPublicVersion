@@ -24,7 +24,7 @@ body {
 	font-variant: normal;
 	text-transform: none;
 	text-decoration: none;
-	background-color: #353524;
+	background-color: #353524 !important;
 }
 
 #banner {
@@ -139,11 +139,11 @@ h1 {
 	padding: 2px;
 	margin: 0px 0px 8px 0px;
 	font-size: 120%;
-	color: #cdcdb4;
+	color: #cdcdb4 !important;
 	font-weight: bold;
 	font-style: normal;
 	text-decoration: none;
-}
+} 
 h2 {
 	padding: 2px;
 	margin: 0px 0px 8px 0px;
@@ -290,6 +290,9 @@ a.pl:hover {
 	position: relative;
 }
 
+.log {
+	margin: 20px 20px 20px 100px;
+}
 
 
 /* ==================== FOOTER ==================== */

@@ -19,10 +19,12 @@
   <body>
     <%= render 'layouts/header' %>
     <div id="cnt-box">
-      <div id="cnt-top"></div>
-      <% flash.each do |message_type, message| %>
+      <div id="cnt-top">
+        <% flash.each do |message_type, message| %>
         <div class="alert alert-<%= message_type %>"><%= message %></div>
-      <% end %>
+        <% end %>
+      </div>
+      
       <div id="cnt-filler">
       <%= yield %>
       </div>
