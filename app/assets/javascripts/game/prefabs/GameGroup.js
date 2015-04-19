@@ -41,15 +41,23 @@ GameGroup.prototype.update = function() {
 				       this.marker.y/this.game.constants.TILE_SIZE,
 				       this.gameBoard.terrainLayer);
 
-    this.ui.setTile(this.tile);
-
     if (this.game.input.mousePointer.targetObject &&
-    	this.game.input.mousePointer.targetObject.sprite instanceof Unit &&
-    	!this.selected) {
-	this.ui.setUnit(this.game.input.mousePointer.targetObject.sprite);
-    } else if (!this.selected) {
- 	this.ui.setUnit(null);
+    	this.game.input.mousePointer.targetObject.sprite instanceof Unit) {
+	this.unit = this.game.input.mousePointer.targetObject.sprite;
+    } else {
+	this.unit = null;
     }
+
+    if (this.selected) {
+	this.ui.setSecondaryTile(this.tile);
+	this.ui.setSecondaryUnit(this.unit);
+    } else {
+	this.ui.setSecondaryTile(null);
+	this.ui.setSecondaryUnit(null);
+	this.ui.setPrimaryTile(this.tile);
+	this.ui.setPrimaryUnit(this.unit);
+    }
+
 }
 
 GameGroup.prototype.onClick = function(targetObject) {
@@ -126,10 +134,10 @@ GameGroup.prototype.interact = function(unit) {
 GameGroup.prototype.select = function(unit) {
     if (unit.isMine() && !this.game.animatingAction) {
         this.selected = unit;
-	    this.ui.setUnit(this.selected);
-	    this.gameBoard.unhighlightAll();
-	    this.action = null;
-	    this.game.dispatcher.rpc("get_unit_actions", [this.selected.id]);
+	this.ui.setPrimaryUnit(this.selected);
+	this.gameBoard.unhighlightAll();
+	this.action = null;
+	this.game.dispatcher.rpc("get_unit_actions", [this.selected.id]);
     }
 }
 
