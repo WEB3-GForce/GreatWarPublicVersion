@@ -327,6 +327,15 @@ public
 		}
 	end
 
+	def self.place_army_top_left_demo(entity_manager, army_array)
+		army = army_array.dup
+		(5...10).each {|row|
+			(5...10).each { |col|
+				self.place_piece(entity_manager, army.shift, row, col)
+			}
+		}
+	end
+
 	# This function places an army in the 5x5 bottom left corner
 	#
 	# Arguments
@@ -344,6 +353,7 @@ public
 			}
 		}
 	end
+
 
 	# This function places an army in the 5x5 top right corner
 	#
@@ -382,6 +392,17 @@ public
 		}
 	end
 
+	def self.place_army_bottom_right_demo(entity_manager, army_array)
+		army    = army_array.dup
+		max_row  = entity_manager.row - 1
+		max_col = entity_manager.col - 1
+		(max_row-4).step(max_row-8, -1).each {|row|
+			(max_col-4).step(max_col-8, -1).each { |col|
+				self.place_piece(entity_manager, army.shift, row, col)
+			}
+		}
+	end
+
 	# This function creates all the entities needed for a new basic game
 	#
 	# Arguments
@@ -408,8 +429,8 @@ public
 
 		self.create_board_basic(entity_manager)
 		
-		place_methods = [EntityFactory.method(:place_army_top_left),
-				 EntityFactory.method(:place_army_bottom_right),
+		place_methods = [EntityFactory.method(:place_army_top_left_demo),
+				 EntityFactory.method(:place_army_bottom_right_demo),
 				 EntityFactory.method(:place_army_top_right),
 				 EntityFactory.method(:place_army_bottom_left)]
 		
