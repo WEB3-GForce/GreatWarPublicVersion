@@ -22,7 +22,7 @@ class TurnComponent < Component
 	#   The TurnComponent object is properly initialized
 	def initialize(player_entities)
 		@turn       = 0
-		@turn_count = 0
+		@turn_count = 1
 		@players    = player_entities
 	end
 
