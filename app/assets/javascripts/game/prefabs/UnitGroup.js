@@ -13,8 +13,8 @@ UnitGroup.prototype.find = function(id) {
     return this.idLookup[id];
 }
 
-UnitGroup.prototype.addUnit = function(id, type, x, y, player, stats) {
-    this.idLookup[id] = new Unit(this.game, id, type, x, y, player, stats)
+UnitGroup.prototype.addUnit = function(id, type, x, y, player, stats, faction) {
+    this.idLookup[id] = new Unit(this.game, id, type, x, y, player, stats, faction)
     this.add(this.idLookup[id]);
     return this.idLookup[id];
 }

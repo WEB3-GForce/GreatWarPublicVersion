@@ -14,13 +14,13 @@ var GameGroup = function(game, parent) {
 
     this.action = null;
 
-    this.turn = "test";
+    this.turn = null;
     this.game.turnNumber = 0;
 
     this.players = null;
-    this.game.constants.PLAYER_ID = "test";
+    this.game.constants.PLAYER_ID = null;
     // How are we going to do player names and stuff?
-    this.game.constants.PLAYER_NAME = "Pokemon General";
+    this.game.constants.PLAYER_NAME = null;
 
     this.ui = new UIGroup(this.game);
 };
@@ -142,28 +142,41 @@ GameGroup.prototype.select = function(unit) {
 }
 
 GameGroup.prototype.buttonClicked = function(button) {
-    this.action = button.key.replace('action-', '');
-    this.ui.hideMenu().start();
+    if (button.key.substring(0, "ui-") === "ui-") {
+	var action = button.key.replace('ui-', '');
+	switch (action) {
+	case 'expand':
+	    this.ui.showPlayerMenu();
+	    break;
+	case 'contract':
+	    break;
+	}
+    } else {
+	this.action = button.key.replace('action-', '');
+	this.ui.hideMenu().start();
 
-    switch (this.action) {
-    case 'move':
-	this.game.dispatcher.rpc("get_unit_moves", [this.selected.id]);
-	break;
-    case 'ranged':
-	this.game.dispatcher.rpc("get_unit_ranged_attacks", [this.selected.id]);
-	break;
-    case 'melee':
-	this.game.dispatcher.rpc("get_unit_melee_attacks", [this.selected.id]);
-	break;
-    case 'endTurn':
-    // this.game.dispatcher.rpc("end_turn", [this.turn]);
-    this.resetEnergy(this.turn);
-    this.turnNumber += 1;
-    break;
+	switch (this.action) {
+	case 'move':
+	    this.game.dispatcher.rpc("get_unit_moves", [this.selected.id]);
+	    break;
+	case 'ranged':
+	    this.game.dispatcher.rpc("get_unit_ranged_attacks", [this.selected.id]);
+	    break;
+	case 'melee':
+	    this.game.dispatcher.rpc("get_unit_melee_attacks", [this.selected.id]);
+	    break;
+	case 'endTurn':
+	    // this.game.dispatcher.rpc("end_turn", [this.turn]);
+	    this.resetEnergy(this.turn);
+	    this.turnNumber += 1;
+	    break;
+	}
     }
 }
 
 GameGroup.prototype.initGame = function(board, units, turn, players) {
+    this.game.world.setBounds(0, 0, board.width * 32, board.height * 32);
+
     for (var i = 0; i < board.width; i++) {
 	    for (var j = 0; j < board.height; j++) {
 	        this.gameBoard.setTile(i, j, board.squares[i*board.width+j].terrain);
@@ -176,16 +189,17 @@ GameGroup.prototype.initGame = function(board, units, turn, players) {
     // this.gameBoard.effects = effects;
 
     for (var i = 0; i < units.length; i++) {
-	    this.unitGroup.addUnit(units[i].id,
+	this.unitGroup.addUnit(units[i].id,
 			       units[i].type,
 			       units[i].x,
 			       units[i].y,
 			       units[i].player,
-			       units[i].stats);
+			       units[i].stats,
+			       players[units[i].player].faction);
     }
 
     this.turn = turn.playerid;
-    this.players = players;
+    this.players = players; // id corresponds to obj with name + type (red/blue)
     // There should be a better/different way to do this
     this.game.constants.PLAYER_ID = this.turn;
 
@@ -304,7 +318,8 @@ GameGroup.prototype.revealUnit = function(unit) {
 					   unit.x,
 					   unit.y,
 					   unit.player,
-					   unit.stats);
+					   unit.stats,
+					   this.players[unit.player].faction);
     addedUnit.alpha = 0;
     return new TweenAction(this.game.add.tween(addedUnit).to({alpha: 1}, 300));
 }

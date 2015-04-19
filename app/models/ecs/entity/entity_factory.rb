@@ -417,7 +417,7 @@ public
 		pieces = []
 		factions = ["red", "blue", "green", "yellow"]
 		player_names.each_with_index { |name, index|
-			player = self.human_player(entity_manager, name, factions[index])
+			player = self.human_player(entity_manager, name, -1, factions[index])
 			army   = self.create_army(entity_manager, player)
 			players.push player
 			pieces.concat army

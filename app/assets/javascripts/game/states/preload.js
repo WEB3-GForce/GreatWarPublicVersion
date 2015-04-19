@@ -25,10 +25,19 @@ Preload.prototype = {
 	this.load.spritesheet('action-move', '/assets/move.png', 48, 48);
 	this.load.spritesheet('action-melee', '/assets/melee.png', 48, 48);
 	this.load.spritesheet('action-ranged', '/assets/ranged.png', 48, 48);
+	this.load.spritesheet('ui-menu', '/assets/menu.png', 48, 24);
 
-	this.load.spritesheet('trainer', '/assets/trainer.png',
-			      this.game.constants.TILE_SIZE,
-			      this.game.constants.TILE_SIZE);
+	var types = ['infantry', 'machinegun', 'artillery', 'command'];
+	var colors = ['red', 'blue'];
+	for (var i = 0; i < types.length; i++) {
+	    for (var j = 0; j < colors.length; j++) {
+		var str = types[i] + '-' + colors[j];
+		this.load.spritesheet(str, '/assets/'+str+'.png',
+				      this.game.constants.TILE_SIZE,
+				      this.game.constants.TILE_SIZE);
+	    }
+	}
+
 	this.load.spritesheet('terrain', '/assets/tmw_desert_spacing.png',
 			      this.game.constants.TILE_SIZE,
 			      this.game.constants.TILE_SIZE,
@@ -40,16 +49,16 @@ Preload.prototype = {
 
     //+ Jonas Raoni Soares Silva
     //@ http://jsfromhell.com/array/shuffle [v1.0]
-    shuffle = function(o){ //v1.0
+    var shuffle = function(o){ //v1.0
         for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
         return o;
     };
 
-    order = shuffle([1, 2, 3, 4, 5, 6, 7, 8]);
+    var order = shuffle([1, 2, 3, 4, 5, 6, 7, 8]);
     for (var i = 0; i < 8; i++) {
         this.load.audio('music-'+i, 'assets/music-'+order[i]+'.mp3');
     }
-    
+
     },
 
     create: function() {
