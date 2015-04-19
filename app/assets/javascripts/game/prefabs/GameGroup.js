@@ -164,9 +164,6 @@ GameGroup.prototype.buttonClicked = function(button) {
 }
 
 GameGroup.prototype.initGame = function(board, units, turn, players) {
-    console.log(board);
-    console.log(this.game);
-
     this.game.world.setBounds(0, 0, board.width * 32, board.height * 32);
 
     for (var i = 0; i < board.width; i++) {
