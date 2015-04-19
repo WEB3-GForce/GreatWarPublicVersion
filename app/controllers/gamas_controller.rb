@@ -29,8 +29,9 @@ class GamasController < ApplicationController
       
       
       @gama.update_attribute(:pending, false)
-      flash.now[:success] = "Gama Successfully Joined!"
+      flash.now[:success] = "Game Successfully Joined!"
       assign_game_to_current_user(@gama)
+      redirect_to "/play"
     end
   end
 
@@ -40,7 +41,6 @@ class GamasController < ApplicationController
     if (user.game != 0)
       flash[:warning] = "You cannot join more than one Gama at a time. You have been redirected."
       redirect_to gama_path(user.game)
-  
     else
       @gama = Gama.new
     end
