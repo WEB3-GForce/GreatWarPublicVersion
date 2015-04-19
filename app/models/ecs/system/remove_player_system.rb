@@ -1,4 +1,5 @@
 require_relative "./system.rb"
+require_relative "./game_over_system.rb"
 
 =begin
 	The RemovePlayerSystem is used to remove players from the game. If the

@@ -5,6 +5,7 @@ require_relative "./system/motion_system.rb"
 require_relative "./system/melee_system.rb"
 require_relative "./system/range_system.rb"
 require_relative "./system/turn_system.rb"
+require_relative "./system/remove_player_system.rb"
 
 class Game
 
@@ -143,8 +144,12 @@ class Game
 
     def self.melee_attack(req_id, em, entity, row, col)
         target = em.board[row][col][1].first
-        result = MeleeSystem.update(em, entity, target)
-        return JsonFactory.attack(em, result)
+        attack_result = MeleeSystem.update(em, entity, target)
+        player_result = RemovePlayerSystem.update(em)
+
+        result = JsonFactory.attack(em, attack_result)
+        result += JsonFactory.remove_player(em, player_result)
+        return result
     end
 
     def self.ranged_attack(req_id, em, entity, row, col)
