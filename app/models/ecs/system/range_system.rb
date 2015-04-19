@@ -72,7 +72,7 @@ private
 		own_comp = entity_manager.get_components(attacking_entity, OwnedComponent).first
 		damage_info = []
 		kill_info = []
-
+		piece_comp = entity_manager.get_components(attacking_entity, PieceComponent).first
 		# Execute damage on targets within ranged attack's splash.
 		# Process direct target last in case it is removed via damage system.
 		damages.to_enum.with_index.reverse_each { |damage, dist|
@@ -84,19 +84,18 @@ private
 					next if occ_own_comp.owner == own_comp.owner
 					result = DamageSystem.update(entity_manager, occ, damage)
 					next if result.empty?
-					damage_info.concat result[0]
+					result[0].unshift(piece_comp.type.to_s)
+					result[0].unshift(attacking_entity)
+					result[0].unshift("ranged")
+					damage_info.push result[0]
 					kill_info.push result[1] if result[1] != nil
 				}
 			}
 		}
 
+		puts damage_info.to_s
 		return [] if damage_info.empty?		
-		
-		piece_comp = entity_manager.get_components(attacking_entity, PieceComponent).first
-		damage_info.unshift(piece_comp.type.to_s)
-		damage_info.unshift(attacking_entity)
-		damage_info.unshift("ranged")
-		return [damage_info].concat kill_info
+		return damage_info.concat kill_info
 	end
 
 #===============================================================================

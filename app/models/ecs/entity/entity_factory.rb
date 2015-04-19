@@ -232,7 +232,7 @@ public
 		return self.create_entity(entity_manager,
 					  [PieceComponent.machine_gun,
 					   HealthComponent.new(12),
-					   EnergyComponent.new(6),
+					   EnergyComponent.new(30),
 					   MotionComponent.new(-1, 3),
 					   MeleeAttackComponent.new(6, 6),
 					   RangeAttackComponent.new(4, 1, 3, [1.0], 2),
@@ -396,8 +396,8 @@ public
 		army    = army_array.dup
 		max_row  = entity_manager.row - 1
 		max_col = entity_manager.col - 1
-		(max_row-4).step(max_row-8, -1).each {|row|
-			(max_col-4).step(max_col-8, -1).each { |col|
+		(max_row-5).step(max_row-9, -1).each {|row|
+			(max_col-5).step(max_col-9, -1).each { |col|
 				self.place_piece(entity_manager, army.shift, row, col)
 			}
 		}

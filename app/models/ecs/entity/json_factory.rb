@@ -465,7 +465,8 @@ class JsonFactory
 
 	def self.remove_player(entity_manager, result)
 		remove_player_result = result[0]
-		game_over_result = result[1]
+		turn_change_result   = result[1]
+		game_over_result     = result[2]
 
 		actions = []
 		if !remove_player_result.nil?
@@ -475,11 +476,14 @@ class JsonFactory
 						  	   "arguments" => [player] })
 			}
 		end
-
 		if !game_over_result.nil?
 			winner = game_over_result[1]
 			actions.push({ "actions" => "gameOver", 
 						   "arguments" => [winner] })
+		end
+		if !turn_change_result.nil?
+		        turn = em.get_entities_with_components(TurnComponent).first
+		        actions.push(self.end_turn(entity_manager, turn))
 		end
 
 		return actions

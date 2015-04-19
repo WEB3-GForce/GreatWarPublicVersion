@@ -38,6 +38,8 @@ public
     	players.append entity_manager.get_entities_with_components([AIComponent])
         turn_comp = entity_manager.get_entities_with_components(TurnComponent).first
  
+ 	original_player = turn_comp.current_turn()
+ 	current_player  = turn_comp.current_turn()
     	players_removed = []
     	players.each { |player| 
     		unless self.is_alive?(entity_manager, player)
@@ -45,11 +47,17 @@ public
 
       			remove_army(entity_manager, player)
     			entity_manager.delete player 
-    			turn_comp.players.delete player 		
+    			turn_comp.players.delete player 
+    			if current_player == player
+    				current_player = turn_comp.next_turn(entity_manager)
+    			end		
     		end
     	}
+    	
     	result = nil
     	result = ["remove player", players_removed] if players_removed
-    	return [result, GameOverSystem.update(entity_manager)]
+    	turn_change = nil
+    	turn_change = ["turn", current_player] if original_player != current_player
+    	return [result, turn_change, GameOverSystem.update(entity_manager)]
     end
 end
