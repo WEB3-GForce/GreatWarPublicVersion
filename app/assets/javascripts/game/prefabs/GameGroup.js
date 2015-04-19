@@ -188,6 +188,7 @@ GameGroup.prototype.initGame = function(board, units, turn, players) {
     this.players = players;
     // There should be a better/different way to do this
     this.game.constants.PLAYER_ID = this.turn;
+
     return { start: function() { this.onComplete(); } }
 }
 
