@@ -1,21 +1,56 @@
-<div class="center jumbotron">
-  <h1>Welcome to The Great War</h1>
+<div id="col-L">
+       
+      
+      <div class="sb-box">
+        <div class="sb-top">
+          <div class="sb-title">Military Time</div>
+        </div>
+        <div class="sb-filler">
+        
+          <div class="sb-clock">
+          
+            <script type="text/javascript">new imageclock.display()</script><span id="clockspan0"><img src="../../assets/clockimages/c1.gif"><img src="../../assets/clockimages/c4.gif"><img src="../../assets/clockimages/colon.gif"><img src="../../assets/clockimages/c5.gif"><img src="../../assets/clockimages/c3.gif"><img src="../../assets/clockimages/colon.gif"><img src="../../assets/clockimages/c5.gif"><img src="../../assets/clockimages/c8.gif"><img src="../../assets/clockimages/cpm.gif"></span>
+          
+          </div>
+      
+        </div>
+        <div class="sb-footer"></div>
+      </div>   
+    
+    </div>
 
-  <h2>
-    This is the home page for the
-    <a href="#">The Great War</a>
-    Strategy Game.
-  </h2>
+<div id="col-R">
+    
+      <div class="main-box">
+        <div class="main-top"></div>
+        <div class="main-filler">
+        
+          <div class="main-info">
+            
+            <h1>The Great War</h1>
+            
+            <p>
+              Welcome to the Great War!          
+            </p>
 
-  <% if logged_in? %>
-  <%= link_to "Sign up now!", current_user, class: "btn btn-lg btn-primary" %>
-</div>
-  <% else %>
-  	<%= link_to "Sign up now!", signup_path, class: "btn btn-lg btn-primary" %>
-</div>
-  <% end %>
+            <div id="social media">
+              <% if logged_in? %>
+                <%= link_to "Sign up now!", current_user, class: "FBbutton" %>
+              <% else %>
+                <%= link_to "Sign up now!", signup_path, class: "FBbutton" %>
+              <% end %>
+            </div>
+            <!-- <%= link_to image_tag("trenches_update.png", alt: "The Great War logo"),
+                        '#' %>
+            <%= link_to image_tag("banner.png", alt: "The Great War banner"),
+                  '#' %>
+            -->
+          </div>
+        
+        </div>
+        <div class="main-footer"></div>
+      </div>
+      <div class="clearB" style="height:20px"></div>
+    
+    </div>
 
-<%= link_to image_tag("trenches_update.png", alt: "The Great War logo"),
-            '#' %>
-<%= link_to image_tag("banner.png", alt: "The Great War banner"),
-			'#' %>

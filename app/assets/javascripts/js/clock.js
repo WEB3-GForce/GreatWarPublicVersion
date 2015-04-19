@@ -1,6 +1,6 @@
 var imageclock=new Object()
 	//Enter path to clock digit images here, in order of 0-9, then "am/pm", then colon image:
-	imageclock.digits=["clockimages/c0.gif", "clockimages/c1.gif", "clockimages/c2.gif", "clockimages/c3.gif", "clockimages/c4.gif", "clockimages/c5.gif", "clockimages/c6.gif", "clockimages/c7.gif", "clockimages/c8.gif", "clockimages/c9.gif", "clockimages/cam.gif", "clockimages/cpm.gif", "clockimages/colon.gif"]
+	imageclock.digits=["../../assets/clockimages/c0.gif", "../../assets/clockimages/c1.gif", "../../assets/clockimages/c2.gif", "../../assets/clockimages/c3.gif", "../../assets/clockimages/c4.gif", "../../assets/clockimages/c5.gif", "../../assets/clockimages/c6.gif", "../../assets/clockimages/c7.gif", "../../assets/clockimages/c8.gif", "../../assets/clockimages/c9.gif", "../../assets/clockimages/cam.gif", "../../assets/clockimages/cpm.gif", "../../assets/clockimages/colon.gif"]
 	imageclock.instances=0
 	var preloadimages=[]
 	for (var i=0; i<imageclock.digits.length; i++){ //preload images
