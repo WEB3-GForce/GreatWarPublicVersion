@@ -1,9 +1,10 @@
 <!-- <header class="navbar navbar-fixed-top navbar-inverse"> -->
-<header class="">
+<header class="website-title"">
   <div id="banner">
   	<div id="banner-L">
     <%= link_to "The Great War", root_path, id: "logo" %>
     	</div>
+    <nav>
       <!-- <ul class="nav navbar-nav navbar-right"> -->
       <div id="banner-Hnav">
       <ul class="nav">
@@ -34,5 +35,6 @@
         <% end %>
       </ul>
       </div>
+    </nav>
   </div>
 </header>

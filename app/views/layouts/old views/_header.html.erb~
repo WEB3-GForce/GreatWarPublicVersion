@@ -1,12 +1,10 @@
 <!-- <header class="navbar navbar-fixed-top navbar-inverse"> -->
-<header class="">
-  <div id="banner">
-  	<div id="banner-L">
+<header class="website-title"">
+  <div class="container">
     <%= link_to "The Great War", root_path, id: "logo" %>
-    	</div>
+    <nav>
       <!-- <ul class="nav navbar-nav navbar-right"> -->
-      <div id="banner-Hnav">
-      <ul class="nav">
+      <ul class="nav dropdown">
         <li><%= link_to "Home", root_path %></li>
         <!-- Display Users and dropdown menu if the user is logged in,
         otherwise, we display a Log-in option -->
@@ -18,8 +16,7 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               Account <b class="caret"></b>
             </a>
-            <!-- <ul class="dropdown-menu"> -->
-            <ul class="dropdown">
+            <ul class="dropdown-menu">
               <li><%= link_to "Profile", current_user %></li>
               <li><%= link_to "Settings", edit_user_path(current_user) %></li>
               <li class="divider"></li>
@@ -33,6 +30,6 @@
           <li><%= link_to "Help", help_path %></li>
         <% end %>
       </ul>
-      </div>
+    </nav>
   </div>
 </header>

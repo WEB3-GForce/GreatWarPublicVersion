@@ -1,11 +1,9 @@
 <!-- <header class="navbar navbar-fixed-top navbar-inverse"> -->
-<header class="">
-  <div id="banner">
-  	<div id="banner-L">
+<header class="website-title"">
+  <div class="container">
     <%= link_to "The Great War", root_path, id: "logo" %>
-    	</div>
+    <nav>
       <!-- <ul class="nav navbar-nav navbar-right"> -->
-      <div id="banner-Hnav">
       <ul class="nav">
         <li><%= link_to "Home", root_path %></li>
         <!-- Display Users and dropdown menu if the user is logged in,
@@ -33,6 +31,6 @@
           <li><%= link_to "Help", help_path %></li>
         <% end %>
       </ul>
-      </div>
+    </nav>
   </div>
 </header>
