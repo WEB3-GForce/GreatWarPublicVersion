@@ -31,6 +31,10 @@ Play.prototype = {
     	           this.gameGroup.onClick(this.game.input.mousePointer.targetObject);
     	   }
     	}, this);
+
+        this.backgroundSound = this.game.add.audio('ambience');
+        this.backgroundSound.loop = true;
+        this.backgroundSound.play();
     },
 
     update: function() {
