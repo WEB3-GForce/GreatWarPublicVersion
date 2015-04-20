@@ -238,7 +238,8 @@ UIGroup.prototype.initHealthDisplay = function() {
     this.healthCircle.visible = false;
 }
 
-UIGroup.prototype.updateHealth = function(unit, newHealth) {
+UIGroup.prototype.updateHealth = function(unit, newHealth, callback, callbackContext) {
+    unit.getHit();
     // visual representation of remaining energy
     this.drawArc(this.healthGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.HEALTH);
     this.drawArc(this.healthGraphics, 0, 0, 32,
@@ -260,6 +261,8 @@ UIGroup.prototype.updateHealth = function(unit, newHealth) {
     var hideTween = this.game.add.tween(this.healthCircle.scale).to({x: 0, y: 0}, 200, Phaser.Easing.Quadratic.InOut, false, 300);
     hideTween.onComplete.add(function() {
     	this.healthCircle.visible = false;
+	unit.stop();
+	callback.bind(callbackContext)();
     }, this);
 
     showTween.chain(healthTween);
@@ -267,7 +270,7 @@ UIGroup.prototype.updateHealth = function(unit, newHealth) {
     return showTween;
 }
 
-UIGroup.prototype.updateEnergy = function(unit, newEnergy) {
+UIGroup.prototype.updateEnergy = function(unit, newEnergy, callback, callbackContext) {
     // visual representation of remaining energy
     this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.ENERGY);
     this.drawArc(this.actionGraphics, 0, 0, 32,
@@ -289,6 +292,7 @@ UIGroup.prototype.updateEnergy = function(unit, newEnergy) {
     var hideTween = this.game.add.tween(this.actionMenu.scale).to({x: 0, y: 0}, 200, Phaser.Easing.Quadratic.InOut, false, 300);
     hideTween.onComplete.add(function() {
     	this.actionMenu.visible = false;
+	callback.bind(callbackContext)();
     }, this);
 
     showTween.chain(energyTween);
