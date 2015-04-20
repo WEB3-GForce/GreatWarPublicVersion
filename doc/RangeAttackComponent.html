@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>class RangeAttackComponent - RDoc Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script src="./js/jquery.js"></script>
+<script src="./js/darkfish.js"></script>
+
+<link href="./css/fonts.css" rel="stylesheet">
+<link href="./css/rdoc.css" rel="stylesheet">
+
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="./index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="./table_of_contents.html#pages">Pages</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    <div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  
+  <p class="link"><a href="Component.html">Component</a>
+  
+</div>
+
+    <div id="includes-section" class="nav-section">
+  <h3>Included Modules</h3>
+
+  <ul class="link-list">
+  
+  
+    <li><a class="include" href="ENERGY_COST.html">ENERGY_COST</a>
+  
+  
+  </ul>
+</div>
+
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-c-new">::new</a>
+    
+    <li ><a href="#method-i-attack-3D">#attack=</a>
+    
+    <li ><a href="#method-i-max_range-3D">#max_range=</a>
+    
+    <li ><a href="#method-i-min_range-3D">#min_range=</a>
+    
+    <li ><a href="#method-i-to_s">#to_s</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-RangeAttackComponent">
+  <h1 id="class-RangeAttackComponent" class="class">
+    class RangeAttackComponent
+  </h1>
+
+  <section class="description">
+    
+<p>The <a href="RangeAttackComponent.html">RangeAttackComponent</a> is
+responsible for keeping stats pertaining to range attacks. In particular,
+it keeps track of the damage an entity will do for a given attack
+(@attack), the minimum range of the attack or the closest distance another
+entity can be for the opponent to attack (@min_range), and the maxmum range
+of the attack or the furthest away another entity can be for the opponent
+to attack (@max_range).</p>
+
+  </section>
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+    <section class="attribute-method-details" class="method-section">
+      <header>
+        <h3>Attributes</h3>
+      </header>
+
+      
+      <div id="attribute-i-attack" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">attack</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        
+        
+        </div>
+      </div>
+      
+      <div id="attribute-i-max_range" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">max_range</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        
+        
+        </div>
+      </div>
+      
+      <div id="attribute-i-min_range" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">min_range</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        
+        
+        </div>
+      </div>
+      
+      <div id="attribute-i-splash" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">splash</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        
+        
+        </div>
+      </div>
+      
+    </section>
+    
+
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+    
+      <div id="method-c-new" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">new</span><span
+            class="method-args">(attack, min_range, max_range, splash=[1.0], energy_cost=1)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Initializes a new <a
+href="RangeAttackComponent.html">RangeAttackComponent</a> object</p>
+
+<p>Arguments</p>
+
+<pre>attack    = the amount of damage done for the range attack
+min_range = the shortest distance the range attack can be used
+max_range = the maximum distance the range attack can be used</pre>
+
+<p>Postcondtion</p>
+
+<pre class="ruby"><span class="ruby-constant">The</span> <span class="ruby-constant">RangeAttackComponent</span> <span class="ruby-identifier">object</span> <span class="ruby-identifier">is</span> <span class="ruby-identifier">properly</span> <span class="ruby-identifier">initialized</span>
+</pre>
+          
+          
+
+          
+          <div class="method-source-code" id="new-source">
+            <pre><span class="ruby-comment"># File app/models/ecs/component/range_attack_component.rb, line 27</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">attack</span>, <span class="ruby-identifier">min_range</span>, <span class="ruby-identifier">max_range</span>, <span class="ruby-identifier">splash</span>=[<span class="ruby-value">1.0</span>], <span class="ruby-identifier">energy_cost</span>=<span class="ruby-value">1</span>)
+        <span class="ruby-ivar">@min_range</span> = <span class="ruby-value">0</span>
+        <span class="ruby-ivar">@max_range</span> = <span class="ruby-value">0</span>
+
+        <span class="ruby-keyword">self</span>.<span class="ruby-identifier">attack</span>    = <span class="ruby-identifier">attack</span>
+        <span class="ruby-keyword">self</span>.<span class="ruby-identifier">min_range</span> = <span class="ruby-identifier">min_range</span>
+        <span class="ruby-keyword">self</span>.<span class="ruby-identifier">max_range</span> = <span class="ruby-identifier">max_range</span>
+
+        <span class="ruby-ivar">@splash</span> = <span class="ruby-identifier">splash</span>
+
+        <span class="ruby-keyword">self</span>.<span class="ruby-identifier">energy_cost</span> = <span class="ruby-identifier">energy_cost</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-attack-3D" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">attack=</span><span
+            class="method-args">(attack)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Sets attack to a new attack</p>
+
+<p>Arguments</p>
+
+<pre class="ruby"><span class="ruby-identifier">attack</span> = <span class="ruby-identifier">the</span> <span class="ruby-identifier">new</span> <span class="ruby-identifier">attack</span>
+</pre>
+
+<p>Postcondition</p>
+
+<pre>@attack is set to the new attack or 0 if the new attack is negative</pre>
+          
+          
+
+          
+          <div class="method-source-code" id="attack-3D-source">
+            <pre><span class="ruby-comment"># File app/models/ecs/component/range_attack_component.rb, line 47</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">attack=</span>(<span class="ruby-identifier">attack</span>)
+        <span class="ruby-ivar">@attack</span> = [<span class="ruby-value">0</span>, <span class="ruby-identifier">attack</span>].<span class="ruby-identifier">max</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-max_range-3D" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">max_range=</span><span
+            class="method-args">(range)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Sets <a
+href="RangeAttackComponent.html#attribute-i-max_range">#max_range</a> to a
+new <a
+href="RangeAttackComponent.html#attribute-i-max_range">#max_range</a></p>
+
+<p>Arguments</p>
+
+<pre class="ruby"><span class="ruby-identifier">range</span> = <span class="ruby-identifier">the</span> <span class="ruby-identifier">new</span> <span class="ruby-identifier">max_range</span>
+</pre>
+
+<p>Postcondition</p>
+
+<pre>@max_range is set to the new range or 0 if the new range is negative
+@min_range is ensured to be less than or equal to @max_range</pre>
+          
+          
+
+          
+          <div class="method-source-code" id="max_range-3D-source">
+            <pre><span class="ruby-comment"># File app/models/ecs/component/range_attack_component.rb, line 72</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">max_range=</span>(<span class="ruby-identifier">range</span>)
+        <span class="ruby-ivar">@max_range</span> = [<span class="ruby-value">0</span>, <span class="ruby-identifier">range</span>].<span class="ruby-identifier">max</span>
+        <span class="ruby-ivar">@min_range</span> = [<span class="ruby-ivar">@min_range</span>, <span class="ruby-ivar">@max_range</span>].<span class="ruby-identifier">min</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-min_range-3D" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">min_range=</span><span
+            class="method-args">(range)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Sets <a
+href="RangeAttackComponent.html#attribute-i-min_range">#min_range</a> to a
+new <a
+href="RangeAttackComponent.html#attribute-i-min_range">#min_range</a></p>
+
+<p>Arguments</p>
+
+<pre class="ruby"><span class="ruby-identifier">range</span> = <span class="ruby-identifier">the</span> <span class="ruby-identifier">new</span> <span class="ruby-identifier">min_range</span>
+</pre>
+
+<p>Postcondition</p>
+
+<pre>@min_range is set to the new range or 0 if the new range is negative
+@max_range is ensured to be greater than or equal to @min_range</pre>
+          
+          
+
+          
+          <div class="method-source-code" id="min_range-3D-source">
+            <pre><span class="ruby-comment"># File app/models/ecs/component/range_attack_component.rb, line 59</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">min_range=</span>(<span class="ruby-identifier">range</span>)
+        <span class="ruby-ivar">@min_range</span> = [<span class="ruby-value">0</span>, <span class="ruby-identifier">range</span>].<span class="ruby-identifier">max</span>
+        <span class="ruby-ivar">@max_range</span> = [<span class="ruby-ivar">@min_range</span>, <span class="ruby-ivar">@max_range</span>].<span class="ruby-identifier">max</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-to_s" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">to_s</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Returns a string representation of the component</p>
+          
+          
+
+          
+          <div class="method-source-code" id="to_s-source">
+            <pre><span class="ruby-comment"># File app/models/ecs/component/range_attack_component.rb, line 78</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">to_s</span>
+        <span class="ruby-node">&quot;Range Attack: [attack = #{@attack}, range = #{@min_range}-#{@max_range}]&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://docs.seattlerb.org/rdoc/">RDoc</a> 4.2.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

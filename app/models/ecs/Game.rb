@@ -9,7 +9,8 @@ require_relative "./system/remove_player_system.rb"
 
 class Game
 
-    def self.init_game(users, rows=15, cols=15)
+    def self.init_game(users, rows=20, cols=20)
+      p users
         manager = EntityManager.new(rows, cols)
         players, turn, pieces = EntityFactory.create_game_basic(manager, users)
         start_json = JsonFactory.game_start(manager, players, turn, pieces)
@@ -145,17 +146,16 @@ class Game
     def self.melee_attack(req_id, em, entity, row, col)
         target = em.board[row][col][1].first
         attack_result = MeleeSystem.update(em, entity, target)
-        player_result = RemovePlayerSystem.update(em)
-
-        result = JsonFactory.attack(em, attack_result)
-        result += JsonFactory.remove_player(em, player_result)
+      # player_result = RemovePlayerSystem.update(em)
+        result = JsonFactory.melee_attack(em, attack_result)
+        # result += JsonFactory.remove_player(em, player_result)
         return result
     end
 
     def self.ranged_attack(req_id, em, entity, row, col)
         target = em.board[row][col][1].first
         result = RangeSystem.update(em, entity, target)
-        return JsonFactory.attack(em, result)
+        return JsonFactory.ranged_attack(em, result)
     end
 
     # End the turn for the current player.

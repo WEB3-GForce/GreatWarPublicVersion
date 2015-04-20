@@ -63,14 +63,14 @@ describe JsonFactory do
     context "when calling player" do
         it "should return a hash for a human" do
             expect(JsonFactory.player(manager, human1)).to eq(
-                {"id" => human1, "name" => "David",
-                 "type" => "Human", "userId" => -1})
+                {human1 => {"name" => "David",
+                 "type" => "Human", "userId" => -1, "faction" => "blue"}})
         end
 
         it "should return a hash for an ai" do
             expect(JsonFactory.player(manager, ai)).to eq(
-                {"id" => ai, "name" => "R.O.B",
-                 "type" => "CPU", "userId" => -1})
+                {ai => {"name" => "R.O.B",
+                 "type" => "CPU", "userId" => -1, "faction" => "blue"}})
         end
     end
 
@@ -305,12 +305,12 @@ describe JsonFactory do
             set_simple
             path = [flatland20, flatland10, flatland00]
             path_actions = []
+            path_trace = []
             path[1, path.size].each { |square|
-                result = JsonFactory.square_path(manager, square)
-                
-                 path_actions.push({"action" => "moveUnit",
-        		           "arguments" => [infantry, result] })
+                path_trace.push JsonFactory.square_path(manager, square)
             }
+            path_actions.push({"action" => "moveUnit",
+        		       "arguments" => [infantry, path_trace] })
             path_actions.concat(JsonFactory.update_energy(manager, infantry))
             expect(JsonFactory.move(manager, infantry, path)).to eq(path_actions)
         end

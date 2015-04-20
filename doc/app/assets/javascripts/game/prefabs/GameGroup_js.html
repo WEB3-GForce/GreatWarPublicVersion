@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>GameGroup.js - RDoc Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../../../../../";
+</script>
+
+<script src="../../../../../js/jquery.js"></script>
+<script src="../../../../../js/darkfish.js"></script>
+
+<link href="../../../../../css/fonts.css" rel="stylesheet">
+<link href="../../../../../css/rdoc.css" rel="stylesheet">
+
+
+
+<body id="top" role="document" class="file">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="../../../../../index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="../../../../../table_of_contents.html#pages">Pages</a>
+    <a href="../../../../../table_of_contents.html#classes">Classes</a>
+    <a href="../../../../../table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="project-metadata">
+    <div id="fileindex-section" class="nav-section">
+  <h3>Pages</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="../../../../../app/assets/images/minecraftia_fnt.html">minecraftia.fnt</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/application_js.html">application.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/client_test_js.html">client_test.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/main_js.html">main.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/prefabs/GameBoard_js.html">GameBoard.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/prefabs/GameGroup_js.html">GameGroup.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/prefabs/UIGroup_js.html">UIGroup.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/prefabs/Unit_js.html">Unit.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/prefabs/UnitGroup_js.html">UnitGroup.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/prefabs/actions_js.html">actions.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/states/boot_js.html">boot.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/states/gameover_js.html">gameover.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/states/menu_js.html">menu.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/states/play_js.html">play.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/states/preload_js.html">preload.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/static_pages_coffee.html">static_pages.coffee</a>
+  
+    <li><a href="../../../../../app/assets/json/tiledTest_json.html">tiledTest.json</a>
+  
+    <li><a href="../../../../../app/assets/stylesheets/application_css.html">application.css</a>
+  
+    <li><a href="../../../../../app/assets/stylesheets/static_pages_scss.html">static_pages.scss</a>
+  
+    <li><a href="../../../../../app/models/ecs/CodingPractices_txt.html">CodingPractices</a>
+  
+    <li><a href="../../../../../app/models/ecs/READ_ME_txt.html">READ_ME</a>
+  
+    <li><a href="../../../../../app/models/ecs/system/AttackSystemDoc_txt.html">AttackSystemDoc</a>
+  
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-label="Page app/assets/javascripts/game/prefabs/GameGroup.js">
+
+<p>&#39;use strict&#39;;</p>
+
+<p>var GameGroup = function(game, parent) {</p>
+
+<pre>Phaser.Group.call(this, game, parent);
+
+this.gameBoard = new GameBoard(this.game);
+this.selected = null;
+this.animatingAction = false; // don&#39;t let the user select a unit while another unit
+                              // is performing an action
+this.unitGroup = new UnitGroup(this.game);
+
+this.marker = this.game.add.graphics();
+this.marker.lineStyle(2, 0x000000, 1);
+this.marker.drawRect(0, 0, this.game.constants.TILE_SIZE, this.game.constants.TILE_SIZE);
+this.tile = null;
+
+this.action = null;
+
+this.turn = &quot;test&quot;;
+this.game.turnNumber = 0;
+
+this.players = null;
+this.game.constants.PLAYER_ID = &quot;test&quot;;
+// How are we going to do player names and stuff?
+this.game.constants.PLAYER_NAME = &quot;Pokemon General&quot;;
+
+this.ui = new UIGroup(this.game);</pre>
+
+<p>};</p>
+
+<p>GameGroup.prototype = Object.create(Phaser.Group.prototype);
+GameGroup.prototype.constructor = GameGroup;</p>
+
+<p>GameGroup.prototype.myTurn = function() {</p>
+
+<pre class="ruby"><span class="ruby-keyword">return</span> <span class="ruby-identifier">this</span>.<span class="ruby-identifier">turn</span> <span class="ruby-operator">===</span> <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">constants</span>.<span class="ruby-constant">PLAYER_ID</span>;
+</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.update = function() {</p>
+
+<pre>// moving the marker
+this.marker.x = this.gameBoard.highlightLayer.getTileX(this.game.input.activePointer.worldX) * this.game.constants.TILE_SIZE;
+this.marker.y = this.gameBoard.highlightLayer.getTileY(this.game.input.activePointer.worldY) * this.game.constants.TILE_SIZE;
+
+this.tile = this.gameBoard.getTile(this.marker.x/this.game.constants.TILE_SIZE,
+                                   this.marker.y/this.game.constants.TILE_SIZE,
+                                   this.gameBoard.terrainLayer);
+
+this.ui.setTile(this.tile);
+
+if (this.game.input.mousePointer.targetObject &amp;&amp;
+    this.game.input.mousePointer.targetObject.sprite instanceof Unit &amp;&amp;
+    !this.selected) {
+    this.ui.setUnit(this.game.input.mousePointer.targetObject.sprite);
+} else if (!this.selected) {
+    this.ui.setUnit(null);
+}</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.onClick = function(targetObject) {</p>
+
+<pre>if (targetObject === null) {
+            this.tileClicked();
+} else if (targetObject.sprite instanceof Unit) {
+            this.unitClicked(targetObject.sprite);
+} else if (targetObject.sprite instanceof Phaser.Button) {
+            this.buttonClicked(targetObject.sprite);
+}</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.tileClicked = function() {</p>
+
+<pre>if (!this.myTurn())
+    return;
+// tile
+if (this.selected) {
+    if (this.gameBoard.isHighlighted(this.tile.x, this.tile.y)) {
+        switch (this.action) {
+        case &#39;move&#39;:
+            this.game.dispatcher.rpc(&quot;move_unit&quot;, [
+                this.selected.id,
+                {
+                    x: this.tile.x,
+                    y: this.tile.y
+                }
+            ]);
+            break;
+        case &#39;ranged&#39;:
+            break;
+        case &#39;melee&#39;:
+            break;
+        }
+    }
+    this.selected = null;
+    this.action = null;
+    this.gameBoard.unhighlightAll();
+    this.ui.hideMenu().start();
+}</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.unitClicked = function(unit) {</p>
+
+<pre>if (!this.myTurn())
+    return;
+
+if (this.action) {
+            this.interact(unit);
+} else {
+            this.select(unit);
+}</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.interact = function(unit) {</p>
+
+<pre>if (this.gameBoard.isHighlighted(this.tile.x, this.tile.y)) {
+            if (unit.isMine()) {
+                // maybe later we have within-team interaction
+                this.select(unit); // just select the clicked unit for now though
+            } else {
+                // clicked enemy unit
+                if ((this.action === &#39;ranged&#39; || this.action === &#39;melee&#39;)) {
+                    this.game.dispatcher.rpc(&quot;attack&quot;, [
+                        this.selected.id,
+                        {x: this.tile.x, y: this.tile.y},
+                        this.action
+                    ]);
+                    this.selected = null;
+                }
+            }
+            this.gameBoard.unhighlightAll();
+            this.action = null;
+}</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.select = function(unit) {</p>
+
+<pre>if (unit.isMine() &amp;&amp; !this.animatingAction) {
+    this.selected = unit;
+        this.ui.setUnit(this.selected);
+        this.gameBoard.unhighlightAll();
+        this.action = null;
+        this.game.dispatcher.rpc(&quot;get_unit_actions&quot;, [this.selected.id]);
+}</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.buttonClicked = function(button) {</p>
+
+<pre>this.action = button.key.replace(&#39;action-&#39;, &#39;&#39;);
+this.ui.hideMenu().start();
+
+switch (this.action) {
+case &#39;move&#39;:
+    this.game.dispatcher.rpc(&quot;get_unit_moves&quot;, [this.selected.id]);
+    break;
+case &#39;ranged&#39;:
+    this.game.dispatcher.rpc(&quot;get_unit_ranged_attacks&quot;, [this.selected.id]);
+    break;
+case &#39;melee&#39;:
+    this.game.dispatcher.rpc(&quot;get_unit_melee_attacks&quot;, [this.selected.id]);
+    break;
+case &#39;endTurn&#39;:
+// this.game.dispatcher.rpc(&quot;end_turn&quot;, [this.turn]);
+this.resetEnergy(this.turn);
+this.turnNumber += 1;
+break;
+}</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.initGame = function(board, units, turn, players) {</p>
+
+<pre>for (var i = 0; i &lt; board.width; i++) {
+        for (var j = 0; j &lt; board.height; j++) {
+            this.gameBoard.setTile(i, j, board.squares[i*board.width+j].terrain);
+            if (board.squares[i*board.width+j].fow)
+                    this.gameBoard.addFog(i, j);
+        }
+}
+
+// effects is not passed right now
+// this.gameBoard.effects = effects;
+
+for (var i = 0; i &lt; units.length; i++) {
+        this.unitGroup.addUnit(units[i].id,
+                           units[i].type,
+                           units[i].x,
+                           units[i].y,
+                           units[i].player,
+                           units[i].stats);
+}
+
+this.turn = turn.playerid;
+this.players = players;
+// There should be a better/different way to do this
+this.game.constants.PLAYER_ID = this.turn;
+return { start: function() { this.onComplete(); } }</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.showUnitActions = function(unitActions) {</p>
+
+<pre>var action = {
+    gameGroup: this
+};
+action.start = function() {
+    if (this.gameGroup.ui.menuVisible()) {
+        var hideTween = this.gameGroup.ui.hideMenu();
+        hideTween.onComplete.add(function() {
+            var showTween = this.gameGroup.ui.showMenu(this.gameGroup.selected, unitActions);
+            showTween.onComplete.add(this.onComplete, this);
+            showTween.start();
+        }, this);
+        hideTween.start();
+    } else {
+        var showTween = this.gameGroup.ui.showMenu(this.gameGroup.selected, unitActions);
+        showTween.onComplete.add(this.onComplete, this);
+        showTween.start();
+    }
+};
+return action;</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.highlightSquares = function(type, squares) {</p>
+
+<pre>var action = {
+            squares: squares,
+            gameBoard: this.gameBoard,
+            type: type
+    };
+    action.start = function() {
+            for (var i = 0, square; square = this.squares[i]; i++) {
+                    var tile = this.gameBoard.getTile(square.x, square.y, this.gameBoard.terrainLayer);
+                    this.gameBoard.highlight(tile.x, tile.y, type);
+            }
+            this.onComplete();
+    };
+    return action;</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.revealFog = function(squares) {</p>
+
+<pre>var action = {
+        squares: squares,
+        gameBoard: this.gameBoard
+};
+action.start = function() {
+        for (var i = 0, square; square = this.squares[i]; i++) {
+                var tile = this.gameBoard.getTile(square.x, square.y, this.gameBoard.terrainLayer);
+                this.gameBoard.revealFog(tile.x, tile.y);
+        }
+        this.onComplete();
+};
+return action;</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.resetEnergy = function(playerId) {</p>
+
+<pre>var units = this.unitGroup.getAllByPlayer(playerId);
+for (var i = 0, unit; unit = units[i]; i++) {
+    unit.stats.ENERGY = unit.stats.MAX_ENERGY;
+}</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.updateUnitHealth = function(unit, health) {</p>
+
+<pre class="ruby"><span class="ruby-identifier">var</span> <span class="ruby-identifier">action</span> = {
+    <span class="ruby-identifier">ui</span><span class="ruby-operator">:</span> <span class="ruby-identifier">this</span>.<span class="ruby-identifier">ui</span>,
+    <span class="ruby-identifier">unit</span><span class="ruby-operator">:</span> <span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitGroup</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">unit</span>)
+}
+<span class="ruby-identifier">action</span>.<span class="ruby-identifier">tween</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">ui</span>.<span class="ruby-identifier">updateHealth</span>(<span class="ruby-identifier">action</span>.<span class="ruby-identifier">unit</span>, <span class="ruby-identifier">health</span>);
+<span class="ruby-identifier">action</span>.<span class="ruby-identifier">start</span> = <span class="ruby-identifier">function</span>() {
+    <span class="ruby-identifier">this</span>.<span class="ruby-identifier">tween</span>.<span class="ruby-identifier">onComplete</span>.<span class="ruby-identifier">add</span>(<span class="ruby-identifier">function</span>() {
+        <span class="ruby-identifier">this</span>.<span class="ruby-identifier">onComplete</span>();
+    }, <span class="ruby-identifier">this</span>);
+    <span class="ruby-identifier">this</span>.<span class="ruby-identifier">tween</span>.<span class="ruby-identifier">start</span>();
+}
+<span class="ruby-keyword">return</span> <span class="ruby-identifier">action</span>;
+</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.updateUnitEnergy = function(unitId, energyValue) {</p>
+
+<pre class="ruby"><span class="ruby-identifier">var</span> <span class="ruby-identifier">action</span> = {
+    <span class="ruby-identifier">unit</span><span class="ruby-operator">:</span> <span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitGroup</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">unitId</span>),
+    <span class="ruby-identifier">ui</span><span class="ruby-operator">:</span> <span class="ruby-identifier">this</span>.<span class="ruby-identifier">ui</span>
+};
+<span class="ruby-identifier">action</span>.<span class="ruby-identifier">tween</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">ui</span>.<span class="ruby-identifier">updateEnergy</span>(<span class="ruby-identifier">action</span>.<span class="ruby-identifier">unit</span>, <span class="ruby-identifier">energyValue</span>);
+
+<span class="ruby-identifier">action</span>.<span class="ruby-identifier">start</span> = <span class="ruby-identifier">function</span>() {
+    <span class="ruby-identifier">this</span>.<span class="ruby-identifier">tween</span>.<span class="ruby-identifier">onComplete</span>.<span class="ruby-identifier">add</span>(<span class="ruby-identifier">function</span>() {
+        <span class="ruby-identifier">this</span>.<span class="ruby-identifier">onComplete</span>();
+    }, <span class="ruby-identifier">this</span>);
+    <span class="ruby-identifier">this</span>.<span class="ruby-identifier">tween</span>.<span class="ruby-identifier">start</span>();
+};
+<span class="ruby-keyword">return</span> <span class="ruby-identifier">action</span>;
+</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.attack = function(unitId, square, type, unitType) {</p>
+
+<pre>var unit = this.unitGroup.find(unitId);
+// check if need to add an animation to the receiving square
+return new AnimationAction(unit, type + &quot;-attack&quot;);</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.moveUnit = function(unitId, square) {</p>
+
+<pre class="ruby"><span class="ruby-identifier">var</span> <span class="ruby-identifier">action</span> = {};
+<span class="ruby-identifier">action</span>.<span class="ruby-identifier">unit</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitGroup</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">unitId</span>);
+<span class="ruby-identifier">action</span>.<span class="ruby-identifier">start</span> = <span class="ruby-identifier">function</span>() {
+    <span class="ruby-identifier">this</span>.<span class="ruby-identifier">unit</span>.<span class="ruby-identifier">moveTo</span>(<span class="ruby-identifier">square</span>.<span class="ruby-identifier">x</span>, <span class="ruby-identifier">square</span>.<span class="ruby-identifier">y</span>, <span class="ruby-identifier">this</span>.<span class="ruby-identifier">onComplete</span>, <span class="ruby-identifier">this</span>);
+}
+<span class="ruby-keyword">return</span> <span class="ruby-identifier">action</span>;
+</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.revealUnit = function(unit) {</p>
+
+<pre class="ruby"><span class="ruby-identifier">var</span> <span class="ruby-identifier">addedUnit</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitGroup</span>.<span class="ruby-identifier">addUnit</span>(<span class="ruby-identifier">unit</span>.<span class="ruby-identifier">id</span>,
+                                       <span class="ruby-identifier">unit</span>.<span class="ruby-identifier">type</span>,
+                                       <span class="ruby-identifier">unit</span>.<span class="ruby-identifier">x</span>,
+                                       <span class="ruby-identifier">unit</span>.<span class="ruby-identifier">y</span>,
+                                       <span class="ruby-identifier">unit</span>.<span class="ruby-identifier">player</span>,
+                                       <span class="ruby-identifier">unit</span>.<span class="ruby-identifier">stats</span>);
+<span class="ruby-identifier">addedUnit</span>.<span class="ruby-identifier">alpha</span> = <span class="ruby-value">0</span>;
+<span class="ruby-keyword">return</span> <span class="ruby-identifier">new</span> <span class="ruby-constant">TweenAction</span>(<span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">tween</span>(<span class="ruby-identifier">addedUnit</span>).<span class="ruby-identifier">to</span>({<span class="ruby-identifier">alpha</span><span class="ruby-operator">:</span> <span class="ruby-value">1</span>}, <span class="ruby-value">300</span>));
+</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.killUnits = function(unitIds) {</p>
+
+<pre class="ruby"><span class="ruby-identifier">var</span> <span class="ruby-identifier">action</span> = {};
+<span class="ruby-identifier">action</span>.<span class="ruby-identifier">unitGroup</span> = <span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitGroup</span>;
+<span class="ruby-identifier">action</span>.<span class="ruby-identifier">units</span> = <span class="ruby-identifier">unitIds</span>.<span class="ruby-identifier">map</span>(<span class="ruby-identifier">function</span>(<span class="ruby-identifier">unitId</span>) {
+    <span class="ruby-keyword">return</span> <span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitGroup</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">unitId</span>);
+}, <span class="ruby-identifier">this</span>);
+<span class="ruby-identifier">action</span>.<span class="ruby-identifier">tweens</span> = <span class="ruby-identifier">unitIds</span>.<span class="ruby-identifier">map</span>(<span class="ruby-identifier">function</span>(<span class="ruby-identifier">unitId</span>, <span class="ruby-identifier">i</span>) {
+    <span class="ruby-keyword">return</span> <span class="ruby-identifier">this</span>.<span class="ruby-identifier">game</span>.<span class="ruby-identifier">add</span>.<span class="ruby-identifier">tween</span>(<span class="ruby-identifier">action</span>.<span class="ruby-identifier">units</span>[<span class="ruby-identifier">i</span>]).<span class="ruby-identifier">to</span>({<span class="ruby-identifier">alpha</span><span class="ruby-operator">:</span> <span class="ruby-value">0</span>}, <span class="ruby-value">300</span>);
+}, <span class="ruby-identifier">this</span>);
+<span class="ruby-identifier">action</span>.<span class="ruby-identifier">start</span> = <span class="ruby-identifier">function</span>() {
+    <span class="ruby-identifier">this</span>.<span class="ruby-identifier">tweens</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">onComplete</span>.<span class="ruby-identifier">add</span>(<span class="ruby-identifier">function</span>() {
+        <span class="ruby-identifier">this</span>.<span class="ruby-identifier">onComplete</span>();
+    }, <span class="ruby-identifier">this</span>);
+    <span class="ruby-identifier">this</span>.<span class="ruby-identifier">tweens</span>.<span class="ruby-identifier">map</span>(<span class="ruby-identifier">function</span>(<span class="ruby-identifier">tween</span>, <span class="ruby-identifier">i</span>) {
+        <span class="ruby-identifier">tween</span>.<span class="ruby-identifier">onComplete</span>.<span class="ruby-identifier">add</span>(<span class="ruby-identifier">function</span>() {
+            <span class="ruby-identifier">this</span>.<span class="ruby-identifier">unitGroup</span>.<span class="ruby-identifier">removeUnit</span>(<span class="ruby-identifier">this</span>.<span class="ruby-identifier">units</span>[<span class="ruby-identifier">i</span>].<span class="ruby-identifier">id</span>);
+        }, <span class="ruby-identifier">this</span>);
+    }, <span class="ruby-identifier">this</span>);
+    <span class="ruby-identifier">this</span>.<span class="ruby-identifier">tweens</span>.<span class="ruby-identifier">map</span>(<span class="ruby-identifier">function</span>(<span class="ruby-identifier">tween</span>, <span class="ruby-identifier">i</span>) {
+        <span class="ruby-identifier">tween</span>.<span class="ruby-identifier">start</span>();
+    }, <span class="ruby-identifier">this</span>);
+}
+<span class="ruby-keyword">return</span> <span class="ruby-identifier">action</span>;
+</pre>
+
+<p>}</p>
+
+<p>GameGroup.prototype.setTurn = function(playerId) {</p>
+
+<pre class="ruby"><span class="ruby-identifier">this</span>.<span class="ruby-identifier">gameGroup</span> = <span class="ruby-identifier">this</span>;
+<span class="ruby-keyword">return</span> {
+    <span class="ruby-identifier">start</span><span class="ruby-operator">:</span> <span class="ruby-identifier">function</span>() {
+        <span class="ruby-identifier">this</span>.<span class="ruby-identifier">gameGroup</span>.<span class="ruby-identifier">turn</span> = <span class="ruby-identifier">playerId</span>;
+        <span class="ruby-identifier">this</span>.<span class="ruby-identifier">onComplete</span>();
+    }
+};
+</pre>
+
+<p>}</p>
+</main>
+
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://docs.seattlerb.org/rdoc/">RDoc</a> 4.2.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

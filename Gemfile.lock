@@ -39,7 +39,6 @@ GEM
     ansi (1.5.0)
     arel (6.0.0)
     bcrypt (3.1.7)
-    bcrypt (3.1.7-x86-mingw32)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     bootstrap-sass (3.2.0.0)
@@ -88,7 +87,6 @@ GEM
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.5.1)
     ffi (1.9.8)
-    ffi (1.9.8-x86-mingw32)
     formatador (0.2.5)
     fuubar (2.0.0)
       rspec (~> 3.0)
@@ -130,7 +128,6 @@ GEM
       spork (>= 0.8.4)
     hiredis (0.6.0)
     hitimes (1.2.2)
-    hitimes (1.2.2-x86-mingw32)
     http_parser.rb (0.6.0)
     i18n (0.7.0)
     jbuilder (2.2.13)
@@ -167,13 +164,10 @@ GEM
     nenv (0.2.0)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
-    nokogiri (1.6.6.2-x86-mingw32)
-      mini_portile (~> 0.6.0)
     notiffany (0.0.6)
       nenv (~> 0.1)
       shellany (~> 0.0)
     pg (0.17.1)
-    pg (0.17.1-x86-mingw32)
     phaser-rails (2.2.2.0)
       railties (~> 4.0)
     protected_attributes (1.0.9)
@@ -182,11 +176,6 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    pry (0.10.1-x86-mingw32)
-      coderay (~> 1.1.0)
-      method_source (~> 0.8.1)
-      slop (~> 3.4)
-      win32console (~> 1.3)
     rack (1.6.0)
     rack-livereload (0.3.15)
       rack
@@ -266,8 +255,6 @@ GEM
     shellany (0.0.1)
     slop (3.6.0)
     spork (1.0.0rc4)
-    spork (1.0.0rc4-x86-mingw32)
-      win32-process
     spork-rails (4.0.0)
       rails (>= 3.0.0, < 5)
       spork (>= 1.0rc0)
@@ -279,7 +266,6 @@ GEM
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
     sqlite3 (1.3.9)
-    sqlite3 (1.3.9-x86-mingw32)
     therubyracer (0.12.2)
       libv8 (~> 3.16.14.0)
       ref
@@ -296,8 +282,6 @@ GEM
       coffee-rails
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    tzinfo-data (1.2015.3)
-      tzinfo (>= 1.0.0)
     uglifier (2.7.1)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
@@ -319,13 +303,9 @@ GEM
       redis-objects
       thin
     will_paginate (3.0.7)
-    win32-process (0.7.5)
-      ffi (>= 1.0.0)
-    win32console (1.3.2-x86-mingw32)
 
 PLATFORMS
   ruby
-  x86-mingw32
 
 DEPENDENCIES
   bcrypt (= 3.1.7)

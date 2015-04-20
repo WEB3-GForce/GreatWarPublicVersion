@@ -10,6 +10,9 @@ require_relative "./component.rb"
 =end
 class TurnComponent < Component
 
+	attr_accessor :players
+	attr_reader   :turn_count
+
 	# Initializes a new TurnComponent object
 	#
 	# Arguments
@@ -18,8 +21,9 @@ class TurnComponent < Component
 	# Postcondtion
 	#   The TurnComponent object is properly initialized
 	def initialize(player_entities)
-		@turn     = 0
-		@players  = player_entities
+		@turn       = 0
+		@turn_count = 1
+		@players    = player_entities
 	end
 
 	# Returns the player entity whose turn it currently is
@@ -35,6 +39,7 @@ class TurnComponent < Component
 	#   The moved, attacked, and special hashes are reset for the new player
 	def next_turn()
 		@turn = (@turn + 1) % @players.size
+		@turn_count += 1
 		self.current_turn
 	end
 

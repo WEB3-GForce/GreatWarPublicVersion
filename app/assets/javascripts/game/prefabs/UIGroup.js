@@ -33,26 +33,37 @@ UIGroup.prototype.initPlayerInfoUI = function() {
     var height = 64;
 
     this.playerInfoGraphics = this.game.add.graphics(0, 0, this.playerInfo);
-    this.playerInfoGraphics.beginFill(0x000000, 0.3);
+    this.playerInfoGraphics.beginFill(COLORS.BUTTON, 0.5);
     this.playerInfoGraphics.drawRect(0, 0, width, height);
 
     this.playerInfoGraphics.beginFill(COLORS.HEALTH, 1);
     this.playerInfoGraphics.drawRect(64, 0, width - 64, 32);
 
     this.playerName = this.game.add.bitmapText(72, 4, 'minecraftia',
-					       this.game.constants.PLAYER_NAME,
+					       "",
 					       20,
 					       this.playerInfo);
 
-    this.turnNumber = this.game.add.bitmapText(72, 36, 'minecraftia',
-					       "Day: " + this.game.turnNumber,
+    this.turnCount = this.game.add.bitmapText(72, 36, 'minecraftia',
+					       "",
 					       20,
 					       this.playerInfo);
 
-    this.playerPortrait = this.game.add.sprite(8, 8, 'generalPortrait', this.playerInfo);
+    this.playerPortrait = this.game.add.sprite(0, 0, 'generalPortrait', 0, this.playerInfo);
     this.playerPortrait.width = 64;
     this.playerPortrait.height = 64;
-    this.playerPortrait.fixedToCamera = true;
+
+    // this.playerMenu = this.game.add.button(width-48, height,
+    // 					   'ui-expand',
+    // 					   function() {}, this,
+    // 					   0, 1, 0, 0, this.playerInfo);
+    // this.playerMenu.inputEnabled = true;
+    // this.playerMenu.input.useHandCursor = true;
+    // this.playerMenu.alpha = 0.7;
+}
+UIGroup.prototype.setPlayer = function(name, turn) {
+    this.playerName.text = name;
+    this.turnCount.text = "Day: " + turn;
 }
 
 UIGroup.prototype.initTileInfoHelper = function(group, x) {
@@ -63,7 +74,7 @@ UIGroup.prototype.initTileInfoHelper = function(group, x) {
     group.fixedToCamera = true;
 
     group.graphics = this.game.add.graphics(0, 0, group);
-    group.graphics.beginFill(0x000000, 0.3);
+    group.graphics.beginFill(COLORS.BUTTON, 0.5);
     group.graphics.drawRect(0, 0, width, height);
 
     group.title = this.game.add.bitmapText(8, 8, 'minecraftia', '',
@@ -105,7 +116,7 @@ UIGroup.prototype.setUnit = function(group, tileGroup, unit, x1, x2) {
     	group.energy.text = "ENERGY: " + unit.stats.energy.current + "/" + unit.stats.energy.max;
         group.attack.text = "ATTACK: " + unit.stats.range.attack;
 
-	group.unit.key = UNIT_MAP[unit.type].IMAGE;
+	group.unit.loadTexture(UNIT_MAP[unit.type].IMAGE + '-' + unit.faction);
 
     	group.visible = true;
 	tileGroup.cameraOffset.x = x2;
@@ -130,13 +141,13 @@ UIGroup.prototype.initUnitInfoHelper = function(group, x) {
     group.fixedToCamera = true;
 
     group.graphics = this.game.add.graphics(0, 0, group);
-    group.graphics.beginFill(0x000000, 0.3);
+    group.graphics.beginFill(COLORS.BUTTON, 0.5);
     group.graphics.drawRect(0, 0, width, height);
 
     group.unitType = this.game.add.bitmapText(8, 8, 'minecraftia', '',
 					      16,
 					      group);
-    group.unit = this.game.add.sprite(8, 40, 'trainer', 1, group);
+    group.unit = this.game.add.sprite(8, 40, 'artillery-red', 1, group);
     group.unit.alpha = 0.7;
     group.health = this.game.add.bitmapText(8, 80, 'minecraftia', '',
 					    12,
@@ -200,7 +211,8 @@ UIGroup.prototype.initHealthDisplay = function() {
     this.healthCircle.visible = false;
 }
 
-UIGroup.prototype.updateHealth = function(unit, newHealth) {
+UIGroup.prototype.updateHealth = function(unit, newHealth, callback, callbackContext) {
+    unit.getHit();
     // visual representation of remaining energy
     this.drawArc(this.healthGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.HEALTH);
     this.drawArc(this.healthGraphics, 0, 0, 32,
@@ -222,6 +234,8 @@ UIGroup.prototype.updateHealth = function(unit, newHealth) {
     var hideTween = this.game.add.tween(this.healthCircle.scale).to({x: 0, y: 0}, 200, Phaser.Easing.Quadratic.InOut, false, 300);
     hideTween.onComplete.add(function() {
     	this.healthCircle.visible = false;
+	unit.stop();
+	callback.bind(callbackContext)();
     }, this);
 
     showTween.chain(healthTween);
@@ -229,7 +243,7 @@ UIGroup.prototype.updateHealth = function(unit, newHealth) {
     return showTween;
 }
 
-UIGroup.prototype.updateEnergy = function(unit, newEnergy) {
+UIGroup.prototype.updateEnergy = function(unit, newEnergy, callback, callbackContext) {
     // visual representation of remaining energy
     this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.ENERGY);
     this.drawArc(this.actionGraphics, 0, 0, 32,
@@ -251,6 +265,7 @@ UIGroup.prototype.updateEnergy = function(unit, newEnergy) {
     var hideTween = this.game.add.tween(this.actionMenu.scale).to({x: 0, y: 0}, 200, Phaser.Easing.Quadratic.InOut, false, 300);
     hideTween.onComplete.add(function() {
     	this.actionMenu.visible = false;
+	callback.bind(callbackContext)();
     }, this);
 
     showTween.chain(energyTween);

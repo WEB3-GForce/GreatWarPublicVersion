@@ -45,7 +45,6 @@ module GamasHelper
 	def start_game(players, game)
 		if (SocketController.init_game(players, game.id))
 			redirect_to "/play"
-			
 		end
 	end
 
