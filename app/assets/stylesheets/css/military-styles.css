@@ -66,6 +66,14 @@ body {
 	padding: 0px;
 	margin: 0px 0px 0px 68px;
 }
+#col-M {
+	display: inline-block;
+	width: 602px;
+	position: relative;
+	overflow: hidden;
+	padding: 0px;
+	margin: 0px 0px 0px 200px;
+}
 #col-R {
 	width: 602px;
 	position: relative;
@@ -146,7 +154,7 @@ h1 {
 } 
 h2 {
 	padding: 2px;
-	margin: 0px 0px 8px 0px;
+	margin: 0px 0px 15px 240px;
 	font-size: 115%;
 	color: #cdcdb4;
 	font-weight: bold;
@@ -292,6 +300,10 @@ a.pl:hover {
 
 .log {
 	margin: 20px 20px 20px 100px;
+}
+
+label {
+	color: #c4b470;
 }
 
 
@@ -640,5 +652,27 @@ a.YTbutton:hover {
 }
 a.YTbutton:active {
 	background-position: 0 0;
+}
+
+
+
+/* ==================== Buttons ==================== */
+
+.btn {
+	margin: 0 0 0 200px;
+}
+
+.btn1 {
+	margin: 0 0 0 210px;
+}
+
+.btn2 {
+	margin: 0 0 0 0px;
+}
+
+
+.radio-control-label {
+	width: 100%;
+	margin: 0 0 0 233px;
 }
 
