@@ -75,15 +75,18 @@ UIGroup.prototype.checkPlayerInfoUIPosition = function(mouse) {
     if (mouse.x < 320) {
         if (this.portraitLeft) {
             this.playerInfo.forEach(function(comp) {
-                comp.x = this.game.width - 8 - comp.width + comp.left;
+                comp.x = this.game.width - 8 - comp.width;
+                if (comp.isPlayerPortrait) {
+                    comp.x += comp.left;
+                }
             }, this);
         }
         this.portraitLeft = false;
     } else {
         if (!this.portraitLeft) {
             this.playerInfo.forEach(function(comp) {
-                if (!comp.isPlayerPortrait) {
-                    comp.x = 8 + comp.left;
+                if (!comp.isPlayerPortrait){
+                    comp.x = comp.left;
                 } else {
                     comp.x = 0;
                 }
