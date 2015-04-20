@@ -1,11 +1,11 @@
 source 'https://rubygems.org'
 
-ruby '2.1.2'
+ruby '2.1.5'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.0'
 #gem 'rails_12factor'
 # Use sqlite3 as the database for Active Record
-#gem 'pg'
+# gem 'pg'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -53,7 +53,7 @@ group :development, :test do
   gem 'spork-rails'
   gem 'fuubar'
   gem 'factory_girl_rails'
-  
+
   # guard
   gem 'guard-rspec'
   gem 'guard-livereload', require: false
