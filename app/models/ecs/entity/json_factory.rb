@@ -63,10 +63,10 @@ class JsonFactory
 		human_comp = entity_manager.get_components(entity, HumanComponent).first
 		player_type = "Human" if human_comp
 
-		return {"id"      => entity,
-		        "name"    => name_comp.name,
-		        "type"    => player_type,
-		        "userId"  => user_id_comp.id }
+		return {entity  => {"name"    => name_comp.name,
+		                    "type"    => player_type,
+		                    "userId"  => user_id_comp.id,
+		                    "faction" => user_id_comp.faction }}
 	end
 
 	# Converts a turn entity into a hash object.
@@ -79,7 +79,8 @@ class JsonFactory
 	#   A hash that is ready to be jsoned
 	def self.turn(entity_manager, entity)
 		turn_comp = entity_manager.get_components(entity, TurnComponent).first
-		return {"playerid" => turn_comp.current_turn}
+		return {"playerid" => turn_comp.current_turn,
+		        "turnCount" => turn_comp.turn_count}
 	end
 
 	# This method is responsible for converting a piece entity into a json-
@@ -236,32 +237,29 @@ class JsonFactory
 	#
 	# Arguments
 	#   entity_manager = the manager of the entities
-	#   players        = an array of player entities
-	#   turn           = the turn entity denoting whose turn it is.
-	#   pieces         = an array of all the pieces in the game
 	#
 	# Returns
 	#   A hash that is ready to be jsoned
-	def self.game_start(entity_manager, players, turn, pieces)
-		player_array = []
-		players.each { |player|
-			player_array.push self.player(entity_manager, player)
+	def self.game_start(entity_manager)
+		player_hash = []
+		entity_manager.each_entity(UserIdComponent) { |player|
+			player_hash.merge! self.player(entity_manager, player)
 		}
 
+		turn = entity_manager.get_entities_with_components(TurnComponent).first
 		turn_hash = self.turn(entity_manager, turn)
 		board     = self.board(entity_manager)
 
 		piece_array = []
-		pieces.each { |piece|
+		entity_manager.each_entity(OwnedComponent) { |piece|
 			piece_array.push self.piece(entity_manager, piece)
-		}
+        }
 
-          return [{
-            "action" => "initGame",
-            "arguments" => [board, piece_array, turn_hash, player_array]
-          }]
+		return [{
+		"action" => "initGame",
+		"arguments" => [board, piece_array, turn_hash, player_hash]
+		}]
 	end
-
 
 	# This returns the results of a move command to the frontend. It specifies
 	# the entity that moved along with the path it moved upon.
@@ -283,11 +281,12 @@ class JsonFactory
 		#        }
 
         	actions = []
+        	squares_path = []
         	path[1, path.size].each { |square|
-        		coordinates = self.square_path(entity_manager, square)
-        		actions.push({"action" => "moveUnit",
-        		              "arguments" => [moving_entity, coordinates] })
+        		squares_path.push self.square_path(entity_manager, square)
         	}
+        	actions.push({"action" => "moveUnit",
+        		      "arguments" => [moving_entity, squares_path] })
         	actions.concat self.update_energy(entity_manager, moving_entity)
        		return actions
 	end
@@ -330,25 +329,50 @@ class JsonFactory
 	#
 	# Returns
 	#   A hash that is ready to be jsoned
-	def self.attack(entity_manager, result)
+	def self.melee_attack(entity_manager, result)
         	actions = []
         	killed_units = []
+        	update_energy = []
         	result.each { |item|
         		if item[0] == "melee" || item[0] == "ranged"
         			actions.concat self.attack_animate(entity_manager,
         				item[0], item[1], item[2], item[4], item[5])
         			actions.concat self.update_health(entity_manager, item[3])
-        			if entity_manager.has_key? item[1] and !entity_manager[item[1]].empty?
-        				actions.concat self.update_energy(entity_manager, item[1])
+        			if (entity_manager.has_key? item[1] and !entity_manager[item[1]].empty? and
+                                    update_energy.empty?)
+        				update_energy.concat self.update_energy(entity_manager, item[1])
         			end
         		elsif item[0] == "kill"
         			killed_units.push item[1]
         		end
         	}
         	actions.concat self.kill_units(entity_manager, killed_units) if !killed_units.empty?
-       		return actions
+       		return actions.concat update_energy
 	end
 
+	def self.ranged_attack(entity_manager, result)
+        	actions = []
+        	killed_units = []
+        	update_energy = nil
+        	attack_animate = nil
+        	result.each { |item|
+        		if item[0] == "ranged"
+        			if !attack_animate
+        				attack_animate = self.attack_animate(entity_manager,
+        				item[0], item[1], item[2], item[4], item[5])
+        			end
+        			actions.concat self.update_health(entity_manager, item[3])
+        			if entity_manager.has_key? item[1] and !entity_manager[item[1]].empty? and
+        			   !update_energy
+        				update_energy = self.update_energy(entity_manager, item[1])
+        			end
+        		elsif item[0] == "kill"
+        			actions.concat self.kill_units(entity_manager, [item[1]])
+        		end
+        	}
+        	actions.concat update_energy
+       		return attack_animate.concat actions
+	end
 
 	# This is the helper function that performs the main work for requests
 	# to determine where a unit can move or attack.
@@ -463,7 +487,8 @@ class JsonFactory
 
 	def self.remove_player(entity_manager, result)
 		remove_player_result = result[0]
-		game_over_result = result[1]
+		turn_change_result   = result[1]
+		game_over_result     = result[2]
 
 		actions = []
 		if !remove_player_result.nil?
@@ -473,11 +498,14 @@ class JsonFactory
 						  	   "arguments" => [player] })
 			}
 		end
-
 		if !game_over_result.nil?
 			winner = game_over_result[1]
 			actions.push({ "actions" => "gameOver", 
 						   "arguments" => [winner] })
+		end
+		if !turn_change_result.nil?
+		        turn = em.get_entities_with_components(TurnComponent).first
+		        actions.push(self.end_turn(entity_manager, turn))
 		end
 
 		return actions

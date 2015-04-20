@@ -11,12 +11,11 @@ class SocketController < WebsocketRails::BaseController
     }
     manager, start_json = Game.init_game(user_ids)
     @@game[game_id] = { :manager => manager, :start_json => start_json }
+
     p user_ids, game_id
-    return true
   end
 
   def rpc
-    # TODO
     method_name = message['action']
     method_params = message['arguments']
 
@@ -25,11 +24,9 @@ class SocketController < WebsocketRails::BaseController
 
     p method_name
 
-    # Should separate initialization call to backend from that to frontend,
-    # since we only need to call it once on backend, but multiple times on
-    # frontend.
+    manager = @@game[game_id][:manager]
     if method_name == 'init_game'
-        response = @@game[game_id][:start_json]
+        response = Game.get_game_state(req_id, manager)
     elsif Game.respond_to? method_name      
         manager = @@game[game_id][:manager]
 

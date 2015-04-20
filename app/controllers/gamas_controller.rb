@@ -22,7 +22,7 @@ class GamasController < ApplicationController
     #current_user.Gama = 0
     #  current_user.save
     #@Gama.update_attribute(:pending, true)
-    if user.game != 0 && user.game == @gama.id
+    if user.game != 0 && user.game == @gama.id && !is_current_user_host?(@gama)
     	redirect_to "/play"
       
     elsif user.game != 0 && params[:join] == "1" && user.game != @gama.id

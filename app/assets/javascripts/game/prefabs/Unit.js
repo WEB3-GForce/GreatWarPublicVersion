@@ -1,51 +1,53 @@
 'use strict';
-
-var ORIENTATION_MAP = {
-    down: 1,
-    left: 4,
-    right: 7,
-    up: 10
-}
-
 var UNIT_MAP = {
     'artillery':
     {
         NAME: 'Artillery',
-        IMAGE: 'trainer'
+        IMAGE: 'artillery'
     },
     'command_bunker':
     {
         NAME: 'Bunker',
-        IMAGE: 'trainer'
+        IMAGE: 'command'
     },
     'infantry':
     {
         NAME: 'Infantry',
-        IMAGE: 'trainer'
+        IMAGE: 'infantry'
     },
     'machine_gun':
     {
         NAME: 'Machine Gun',
-        IMAGE: 'trainer'
+        IMAGE: 'machinegun'
     },
 }
 
-var Unit = function(game, id, type, x, y, player, stats) {
+var Unit = function(game, id, type, x, y, player, stats, faction) {
+    var image = UNIT_MAP[type].IMAGE + '-' + faction;
+
     Phaser.Sprite.call(this, game,
 		       x*game.constants.TILE_SIZE,
 		       y*game.constants.TILE_SIZE,
-		       UNIT_MAP[type].IMAGE, 1);
+		       image, 0);
+
+    this.animations.add('walk-right', [1, 2, 3, 2]);
+    this.animations.add('walk-left', [4, 5, 6, 5]);
+    this.animations.add('walk-down', [8, 9, 10, 9]);
+    this.animations.add('walk-up', [11, 12, 13, 12]);
+    this.animations.add('get-hit', [0, 7]);
 
     this.id = id;
-    this.orientation = "down";
+    if (faction === "blue") {
+	this.orientation = "left";
+	this.animations.add('melee-attack', [4, 5, 6, 5]);
+	this.animations.add('ranged-attack', [4, 5, 6, 5]);
+    } else {
+	this.orientation = "right";
+	this.animations.add('melee-attack', [1, 2, 3, 2]);
+	this.animations.add('ranged-attack', [1, 2, 3, 2]);
+    }
     this.type = type;
-
-    this.animations.add('walk-left', [3, 4, 5, 4]);
-    this.animations.add('walk-right', [6, 7, 8, 7]);
-    this.animations.add('walk-down', [0, 1, 2, 1]);
-    this.animations.add('walk-up', [9, 10, 11, 10]);
-    this.animations.add('melee-attack', [0, 3, 6, 9]);
-    this.animations.add('ranged-attack', [1, 4, 7, 10]);
+    this.faction = faction;
 
     this.inputEnabled = true;
     this.input.useHandCursor = true;
@@ -61,15 +63,10 @@ Unit.prototype.isMine = function() {
     return this.player === this.game.constants.PLAYER_ID;
 }
 
-Unit.prototype.changeOrientation = function(orientation) {
-    this.orientation = orientation;
-    this.frame = ORIENTATION_MAP[orientation];
-}
-
 Unit.prototype.moveAdjacent = function(orientation) {
     this.orientation = orientation;
     var animation = "walk-" + orientation;
-    this.animations.play(animation, 6, true);
+    this.animations.play(animation, 12, true);
     var update;
     switch (orientation) {
     case "down":
@@ -85,59 +82,70 @@ Unit.prototype.moveAdjacent = function(orientation) {
 	update = {y: this.y - this.game.constants.TILE_SIZE};
 	break;
     }
-    return this.game.add.tween(this).to(update, 200, Phaser.Easing.Linear.None, true);
+    return this.game.add.tween(this).to(update, 150, Phaser.Easing.Linear.None, true);
 }
 
 Unit.prototype.stop = function() {
     this.animations.stop();
-    this.frame = ORIENTATION_MAP[this.orientation];
+    this.frame = 0;
 }
 
-Unit.prototype.moveTo = function(x, y, callback, callbackContext) {
+Unit.prototype.moveTo = function(x, y, stop, callback, callbackContext) {
     if (this.x/this.game.constants.TILE_SIZE < x) {
 	this.moveAdjacent("right").onComplete.add(function() {
-	    this.moveTo(x, y, callback, callbackContext);
+	    this.moveTo(x, y, stop, callback, callbackContext);
 	}, this);
 	return;
     }
     if (this.x/this.game.constants.TILE_SIZE > x) {
 	this.moveAdjacent("left").onComplete.add(function() {
-	    this.moveTo(x, y, callback, callbackContext);
+	    this.moveTo(x, y, stop, callback, callbackContext);
 	}, this);
 	return;
     }
     if (this.y/this.game.constants.TILE_SIZE < y) {
 	this.moveAdjacent("down").onComplete.add(function() {
-	    this.moveTo(x, y, callback, callbackContext);
+	    this.moveTo(x, y, stop, callback, callbackContext);
 	}, this);
 	return;
     }
     if (this.y/this.game.constants.TILE_SIZE > y) {
 	this.moveAdjacent("up").onComplete.add(function() {
-	    this.moveTo(x, y, callback, callbackContext);
+	    this.moveTo(x, y, stop, callback, callbackContext);
 	}, this);
 	return;
     }
-    this.stop();
+    if (stop)
+	this.stop();
     if (callback) {
 	callback.bind(callbackContext)();
     }
 }
 
-// Unit.prototype.attack = function(unit, type) {
-//     var givenDamage = type === 'melee' ? this.stats.ATK * 2 : this.stats.ATK;
-//    var receivedDamage = type === 'melee' ? unit.stats.ATK * 2 : unit.stats.ATK;
-//    if (!unit.damage(givenDamage))
-//	this.damage(receivedDamage);
-// }
+Unit.prototype.attack = function(square, type) {
+    var update = {};
+    if (this.x/this.game.constants.TILE_SIZE < square.x)
+	update.x = [this.x + this.game.constants.TILE_SIZE/2, this.x];
+    else if (this.x/this.game.constants.TILE_SIZE > square.x)
+	update.x = [this.x - this.game.constants.TILE_SIZE/2, this.x];
+    if (this.y/this.game.constants.TILE_SIZE < square.y)
+	update.y = [this.y + this.game.constants.TILE_SIZE/2, this.y];
+    else if (this.y/this.game.constants.TILE_SIZE > square.y)
+	update.y = [this.y - this.game.constants.TILE_SIZE/2, this.y];
 
-// returns whether unit died
-// Unit.prototype.damage = function(atk) {
-//    this.stats.HP -= atk - this.stats.DEF;
-//    if (this.stats.HP <= 0) {
-//	this.destroy();
-//	return true;
-//    } else {
-//	return false;
-//    }
-// }
+    var tween = this.game.add.tween(this).to(update, 300);
+    tween.interpolation(function(v, k){
+            return Phaser.Math.linearInterpolation(v, k);
+    });
+    tween.onStart.add(function() {
+	this.animations.play(type + "-attack", 16, true);
+    }, this);
+    tween.onComplete.add(function() {
+	this.stop();
+    }, this);
+    return tween;
+}
+
+Unit.prototype.getHit = function() {
+    this.animations.play("get-hit", 8, true);
+}

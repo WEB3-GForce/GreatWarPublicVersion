@@ -24,7 +24,7 @@
 
 		<p>
 			<% if(is_current_user_host?(@gama)) %>
-				<% if is_game_full?(@gama) %>
+				<% if true # is_game_full?(@gama) %>
 					<h1> The game is ready to start. Press below to start the game </h1>
 					<%= button_to 'Start Game', :controller => "gamas", :action => "start", :gama => @gama.id %>
 				<% else %>
