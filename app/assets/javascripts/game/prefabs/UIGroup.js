@@ -59,13 +59,34 @@ UIGroup.prototype.initPlayerInfoUI = function() {
     this.playerPortrait.width = 64;
     this.playerPortrait.height = 64;
     // MASSIVE HACK:
-    this.playerPortrait.left = -1 * width + 64;
+    this.playerPortrait.left = width - 64;
     this.playerPortrait.isPlayerPortrait = true;
 
+    this.endTurnButton = this.game.add.graphics(width - 72, height, this.playerInfo);
+    this.endTurnButton.beginFill(COLORS.BUTTON, 0.5);
+    this.endTurnButton.drawRect(0, 0, 72, 20);
+    this.endTurnButton.left = width - 72;
+
+    this.endTurnButtonSprite = this.game.add.sprite(0,0);
+    this.endTurnButtonSprite.width = 72;
+    this.endTurnButtonSprite.height = 20;
+    this.endTurnButtonSprite.addChild(this.endTurnButton);
+    this.endTurnButtonSprite.inputEnabled = true;
+    this.endTurnButtonSprite.input.useHandCursor = true;
+    this.endTurnButtonSprite.events.onInputDown.add(function() {
+        this.gameGroup.buttonClicked({key: 'action-endTurn'});
+    }, this);
+
+    this.endTurn = this.game.add.bitmapText(width - 72, height, 'minecraftia',
+            'End Turn',
+            18,
+            this.playerInfo);
+    this.endTurn.left = width - 72;
+
     // this.playerMenu = this.game.add.button(width-48, height,
-    // 					   'ui-expand',
-    // 					   function() {}, this,
-    // 					   0, 1, 0, 0, this.playerInfo);
+    //					   'ui-expand',
+    //					   function() {}, this,
+    //					   0, 1, 0, 0, this.playerInfo);
     // this.playerMenu.inputEnabled = true;
     // this.playerMenu.input.useHandCursor = true;
     // this.playerMenu.alpha = 0.7;
@@ -75,10 +96,7 @@ UIGroup.prototype.checkPlayerInfoUIPosition = function(mouse) {
     if (mouse.x < 320) {
         if (this.portraitLeft) {
             this.playerInfo.forEach(function(comp) {
-                comp.x = this.game.width - 8 - comp.width;
-                if (comp.isPlayerPortrait) {
-                    comp.x += comp.left;
-                }
+                comp.x = this.game.width - 8 - comp.width - comp.left;
             }, this);
         }
         this.portraitLeft = false;

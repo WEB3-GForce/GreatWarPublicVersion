@@ -2,7 +2,7 @@
 
 var UnitGroup = function(game, parent) {
     Phaser.Group.call(this, game, parent);
-    
+
     this.idLookup = {};
 };
 
@@ -26,7 +26,7 @@ UnitGroup.prototype.removeUnit = function(id) {
 }
 
 UnitGroup.prototype.getAllByPlayer = function(playerId) {
-    units = [];
+    var units = [];
     for (var unit in this.idLookup) {
         if (unit.player == playerId) {
             units.push(unit);

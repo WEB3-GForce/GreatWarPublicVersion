@@ -23,6 +23,7 @@ var GameGroup = function(game, parent) {
     this.game.constants.PLAYER_NAME = null;
 
     this.ui = new UIGroup(this.game);
+    this.ui.gameGroup = this;
 };
 
 GameGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -169,7 +170,7 @@ GameGroup.prototype.buttonClicked = function(button) {
 	    this.game.dispatcher.rpc("get_unit_melee_attacks", [this.selected.id]);
 	    break;
 	case 'endTurn':
-	    // this.game.dispatcher.rpc("end_turn", [this.turn]);
+	    this.game.dispatcher.rpc("end_turn", [this.turn]);
 	    this.resetEnergy(this.turn);
 	    this.turnNumber += 1;
 	    break;
@@ -364,11 +365,12 @@ GameGroup.prototype.killUnits = function(unitIds) {
     return action;
 }
 
-GameGroup.prototype.setTurn = function(playerId) {
+GameGroup.prototype.setTurn = function(turn) {
     this.gameGroup = this;
     return {
 	start: function() {
-	    this.gameGroup.turn = playerId;
+	    this.gameGroup.turn = turn.playerid;
+        this.gameGroup.turnNumber = turn.turnCount;
 	    this.onComplete();
 	}
     };
