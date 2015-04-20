@@ -12,8 +12,12 @@ class Game
     def self.init_game(users, rows=15, cols=15)
         manager = EntityManager.new(rows, cols)
         players, turn, pieces = EntityFactory.create_game_basic(manager, users)
-        start_json = JsonFactory.game_start(manager, players, turn, pieces)
+        start_json = JsonFactory.game_start(manager)
         return manager, start_json
+    end
+
+    def self.get_game_state(req_id, em)
+        return JsonFactory.game_start(em)
     end
 
     def self.each_coord(req_id, em)

@@ -236,32 +236,29 @@ class JsonFactory
 	#
 	# Arguments
 	#   entity_manager = the manager of the entities
-	#   players        = an array of player entities
-	#   turn           = the turn entity denoting whose turn it is.
-	#   pieces         = an array of all the pieces in the game
 	#
 	# Returns
 	#   A hash that is ready to be jsoned
-	def self.game_start(entity_manager, players, turn, pieces)
+	def self.game_start(entity_manager)
 		player_array = []
-		players.each { |player|
+		entity_manager.each_entity(UserIdComponent) { |player|
 			player_array.push self.player(entity_manager, player)
 		}
 
+		turn = entity_manager.get_entities_with_components(TurnComponent).first
 		turn_hash = self.turn(entity_manager, turn)
 		board     = self.board(entity_manager)
 
 		piece_array = []
-		pieces.each { |piece|
+		entity_manager.each_entity(OwnedComponent) { |piece|
 			piece_array.push self.piece(entity_manager, piece)
-		}
+        }
 
-          return [{
-            "action" => "initGame",
-            "arguments" => [board, piece_array, turn_hash, player_array]
-          }]
+		return [{
+			"action" => "initGame",
+			"arguments" => [board, piece_array, turn_hash, player_array]
+		}]
 	end
-
 
 	# This returns the results of a move command to the frontend. It specifies
 	# the entity that moved along with the path it moved upon.

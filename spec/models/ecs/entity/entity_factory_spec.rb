@@ -306,7 +306,7 @@ describe EntityFactory do
 	end
 
 	it "should create a new basic game with 1 player" do
-		game_bundle = EntityFactory.create_game_basic(manager, ["David"])
+		game_bundle = EntityFactory.create_game_basic(manager, {1 => "David"})
 		turn_comp   = manager[game_bundle[1]][TurnComponent][0]
 		player1     = game_bundle[0][0]
 		army1       = game_bundle[2][0...25]
@@ -321,7 +321,8 @@ describe EntityFactory do
 	end
 
 	it "should create a new basic game with 2 player" do
-		game_bundle = EntityFactory.create_game_basic(manager, ["David", "Charlie"])
+		game_bundle = EntityFactory.create_game_basic(manager, {1 => "David", 
+			2 => "Charlie"})
 		turn_comp   = manager[game_bundle[1]][TurnComponent][0]
 		player1     = game_bundle[0][0]
 		army1       = game_bundle[2][0...25]
@@ -344,7 +345,8 @@ describe EntityFactory do
 	end
 
 	it "should create a new basic game with 3 player" do
-		game_bundle = EntityFactory.create_game_basic(manager, ["David", "Charlie", "Jack"])
+		game_bundle = EntityFactory.create_game_basic(manager, {1 => "David", 
+			2 => "Charlie", 3 => "Jack"})
 		turn_comp   = manager[game_bundle[1]][TurnComponent][0]
 		player1     = game_bundle[0][0]
 		army1       = game_bundle[2][0...25]
@@ -375,7 +377,8 @@ describe EntityFactory do
 	end
 
 	it "should create a new basic game with 4 player" do
-		game_bundle = EntityFactory.create_game_basic(manager, ["David", "Charlie", "Jack", "Steve"])
+		game_bundle = EntityFactory.create_game_basic(manager, {1 => "David", 
+			2 => "Charlie", 3 => "Jack", 4 => "Steve"})
 		turn_comp   = manager[game_bundle[1]][TurnComponent][0]
 		player1     = game_bundle[0][0]
 		army1       = game_bundle[2][0...25]

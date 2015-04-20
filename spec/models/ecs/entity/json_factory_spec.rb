@@ -290,8 +290,8 @@ describe JsonFactory do
             pieces.each { |piece|
                 pieces_array.push JsonFactory.piece(manager, piece)
             }
-
-            expect(JsonFactory.game_start(manager, players, turn, pieces)).to eq(
+            turn = EntityFactory.turn_entity(manager, [human1, ai])
+            expect(JsonFactory.game_start(manager)).to eq(
                 [{"action" => "initGame", 
                  "arguments" => [JsonFactory.board(manager),
                                  pieces_array,
