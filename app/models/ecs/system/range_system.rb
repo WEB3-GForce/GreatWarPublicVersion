@@ -88,14 +88,14 @@ private
 					result[0].unshift(attacking_entity)
 					result[0].unshift("ranged")
 					damage_info.push result[0]
-					kill_info.push result[1] if result[1] != nil
+					damage_info.push result[1] if result[1] != nil
 				}
 			}
 		}
 
 		puts damage_info.to_s
 		return [] if damage_info.empty?		
-		return damage_info.concat kill_info
+		return damage_info.reverse
 	end
 
 #===============================================================================
