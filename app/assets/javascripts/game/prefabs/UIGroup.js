@@ -44,8 +44,8 @@ UIGroup.prototype.initPlayerInfoUI = function() {
 					       20,
 					       this.playerInfo);
 
-    this.turnNumber = this.game.add.bitmapText(72, 36, 'minecraftia',
-					       "Day: " + this.game.turnNumber,
+    this.turnCount = this.game.add.bitmapText(72, 36, 'minecraftia',
+					       "",
 					       20,
 					       this.playerInfo);
 
@@ -60,6 +60,10 @@ UIGroup.prototype.initPlayerInfoUI = function() {
     // this.playerMenu.inputEnabled = true;
     // this.playerMenu.input.useHandCursor = true;
     // this.playerMenu.alpha = 0.7;
+}
+UIGroup.prototype.setPlayer = function(name, turn) {
+    this.playerName.text = name;
+    this.turnCount.text = "Day: " + turn;
 }
 
 UIGroup.prototype.initTileInfoHelper = function(group, x) {

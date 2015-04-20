@@ -15,12 +15,10 @@ var GameGroup = function(game, parent) {
     this.action = null;
 
     this.turn = null;
-    this.game.turnNumber = 0;
-
+    this.turnCount = null;
     this.players = null;
     this.game.constants.PLAYER_ID = null;
     // How are we going to do player names and stuff?
-    this.game.constants.PLAYER_NAME = null;
 
     this.ui = new UIGroup(this.game);
 };
@@ -168,7 +166,6 @@ GameGroup.prototype.buttonClicked = function(button) {
 	case 'endTurn':
 	    // this.game.dispatcher.rpc("end_turn", [this.turn]);
 	    this.resetEnergy(this.turn);
-	    this.turnNumber += 1;
 	    break;
 	}
     }
@@ -199,7 +196,9 @@ GameGroup.prototype.initGame = function(board, units, turn, players) {
     }
 
     this.turn = turn.playerid;
+    this.turnCount = turn.turnCount;
     this.players = players; // id corresponds to obj with name + type (red/blue)
+    this.ui.setPlayer(this.players[turn.playerid].name, this.turnCount);
     // There should be a better/different way to do this
     this.game.constants.PLAYER_ID = this.turn;
 
@@ -361,11 +360,14 @@ GameGroup.prototype.killUnits = function(unitIds) {
     return action;
 }
 
-GameGroup.prototype.setTurn = function(playerId) {
-    this.gameGroup = this;
+GameGroup.prototype.setTurn = function(playerId, turnCount) {
     return {
+	gameGroup: this,
+	ui: this.ui,
 	start: function() {
 	    this.gameGroup.turn = playerId;
+	    this.gameGroup.turnCount = turnCount;
+	    this.ui.setPlayer(this.gameGroup.players[playerId].name, turnCount);
 	    this.onComplete();
 	}
     };

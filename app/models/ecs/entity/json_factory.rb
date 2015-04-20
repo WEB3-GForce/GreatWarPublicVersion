@@ -341,9 +341,9 @@ class JsonFactory
         			actions.concat self.attack_animate(entity_manager,
         				item[0], item[1], item[2], item[4], item[5])
         			actions.concat self.update_health(entity_manager, item[3])
-        			if entity_manager.has_key? item[1] and !entity_manager[item[1]].empty? and
-        			   !energy_updated.include? item[1]
-        				update_energy .concat self.update_energy(entity_manager, item[1])
+        			if (entity_manager.has_key? item[1] and !entity_manager[item[1]].empty? and
+                                    update_energy.empty?)
+        				update_energy.concat self.update_energy(entity_manager, item[1])
         			end
         		elsif item[0] == "kill"
         			killed_units.push item[1]
@@ -370,7 +370,7 @@ class JsonFactory
         				update_energy = self.update_energy(entity_manager, item[1])
         			end
         		elsif item[0] == "kill"
-        			actions.concat self.kill_units(entity_manager, item[1])
+        			actions.concat self.kill_units(entity_manager, [item[1]])
         		end
         	}
         	actions.concat update_energy
