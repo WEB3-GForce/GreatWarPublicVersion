@@ -112,22 +112,22 @@ GameGroup.prototype.unitClicked = function(unit) {
 
 GameGroup.prototype.interact = function(unit) {
     if (this.gameBoard.isHighlighted(this.tile.x, this.tile.y)) {
-		if (unit.isMine()) {
-		    // maybe later we have within-team interaction
-		    this.select(unit); // just select the clicked unit for now though
-		} else {
-		    // clicked enemy unit
-		    if ((this.action === 'ranged' || this.action === 'melee')) {
-			this.game.dispatcher.rpc("attack", [
-			    this.selected.id,
-			    {x: this.tile.x, y: this.tile.y},
-			    this.action
-			]);
-			this.selected = null;
-		    }
-		}
-		this.gameBoard.unhighlightAll();
-		this.action = null;
+	if (unit.isMine()) {
+	    // maybe later we have within-team interaction
+	    this.select(unit); // just select the clicked unit for now though
+	} else {
+	    // clicked enemy unit
+	    if ((this.action === 'ranged' || this.action === 'melee')) {
+		this.game.dispatcher.rpc("attack", [
+		    this.selected.id,
+		    {x: this.tile.x, y: this.tile.y},
+		    this.action
+		]);
+		this.selected = null;
+	    }
+	}
+	this.gameBoard.unhighlightAll();
+	this.action = null;
     }
 }
 
@@ -271,11 +271,8 @@ GameGroup.prototype.updateUnitHealth = function(unit, health) {
     	ui: this.ui,
     	unit: this.unitGroup.find(unit)
     }
-    action.tween = this.ui.updateHealth(action.unit, health);
     action.start = function() {
-    	this.tween.onComplete.add(function() {
-    	    this.onComplete();
-    	}, this);
+	this.tween = this.ui.updateHealth(action.unit, health, this.onComplete, this);
     	this.tween.start();
     }
     return action;
@@ -286,21 +283,27 @@ GameGroup.prototype.updateUnitEnergy = function(unitId, energyValue) {
 	unit: this.unitGroup.find(unitId),
 	ui: this.ui
     };
-    action.tween = this.ui.updateEnergy(action.unit, energyValue);
 
     action.start = function() {
-    	this.tween.onComplete.add(function() {
-    	    this.onComplete();
-    	}, this);
+	this.tween = this.ui.updateEnergy(action.unit, energyValue, this.onComplete, this);
     	this.tween.start();
     };
     return action;
 }
 
 GameGroup.prototype.attack = function(unitId, square, type, unitType) {
-    var unit = this.unitGroup.find(unitId);
     // check if need to add an animation to the receiving square
-    return new AnimationAction(unit, type + "-attack");
+    var action = {
+	unit: this.unitGroup.find(unitId),
+	unitGroup: this.unitGroup
+    };
+
+    action.start = function() {
+	this.tween = this.unit.attack(square, type);
+	this.tween.onComplete.add(this.onComplete, this);
+	this.tween.start();
+    }
+    return action;
 }
 
 GameGroup.prototype.moveUnit = function(unitId, squares) {

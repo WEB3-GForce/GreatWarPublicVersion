@@ -121,20 +121,26 @@ Unit.prototype.moveTo = function(x, y, stop, callback, callbackContext) {
     }
 }
 
-// Unit.prototype.attack = function(unit, type) {
-//     var givenDamage = type === 'melee' ? this.stats.ATK * 2 : this.stats.ATK;
-//    var receivedDamage = type === 'melee' ? unit.stats.ATK * 2 : unit.stats.ATK;
-//    if (!unit.damage(givenDamage))
-//	this.damage(receivedDamage);
-// }
+Unit.prototype.attack = function(square, type) {
+    var update = {};
+    if (this.x/this.game.constants.TILE_SIZE < square.x)
+	update.x = [this.x + this.game.constants.TILE_SIZE/2, this.x];
+    else if (this.x/this.game.constants.TILE_SIZE > square.x)
+	update.x = [this.x - this.game.constants.TILE_SIZE/2, this.x];
+    if (this.y/this.game.constants.TILE_SIZE < square.y)
+	update.y = [this.y + this.game.constants.TILE_SIZE/2, this.y];
+    else if (this.y/this.game.constants.TILE_SIZE > square.y)
+	update.y = [this.y - this.game.constants.TILE_SIZE/2, this.y];
 
-// returns whether unit died
-// Unit.prototype.damage = function(atk) {
-//    this.stats.HP -= atk - this.stats.DEF;
-//    if (this.stats.HP <= 0) {
-//	this.destroy();
-//	return true;
-//    } else {
-//	return false;
-//    }
-// }
+    var tween = this.game.add.tween(this).to(update, 300);
+    tween.interpolation(function(v, k){
+            return Phaser.Math.linearInterpolation(v, k);
+    });
+    tween.onStart.add(function() {
+	this.animations.play(type + "-attack", 6, true);
+    }, this);
+    tween.onComplete.add(function() {
+	this.stop();
+    }, this);
+    return tween;
+}
