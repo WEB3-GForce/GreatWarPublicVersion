@@ -1,0 +1,195 @@
+﻿/* Some stylesheet reset */
+.nav, .nav ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	line-height: 100%;
+}
+
+/* The main container */
+.nav {
+	/* Layout and positioning */
+	display: block;
+	position: relative;
+	height: 26px;
+	width: 940px; /* CHANGE this if you want another width or remove it if you want the width of the container */
+	border-radius: 3px;
+	border: 0px;
+
+	/* Background and effects */
+}
+
+.nav>li {
+	display: block;
+	position: relative;
+	float: left;
+	margin: 0;
+	padding: 0 1px 0 0;
+	border-right-style: solid;
+	border-right-width: 1px;
+	border-right-color: #D8CD97;
+	height: 26px;
+	line-height: 50%;
+}
+
+/* The main navigation links */
+.nav>li>a {
+	/* Layout */
+	display: block;
+	padding: 11px 20px;
+/* Typography */font-weight: normal;
+	text-decoration: none;
+	color: #333333;
+	font-size: 100%;
+}
+
+/* The hover state of the navigation links */
+.nav>li>a:hover, .nav>li:hover>a {
+	color:#6A6A46;
+}
+
+.nav>li:first-child>a {
+	border-top-left-radius: 3px;
+	border-bottom-left-radius: 3px;
+}
+
+.nav>.dropdown>a {
+	padding-right: 26px;
+}
+
+/* The arrow indicating a dropdown menu */
+.nav>.dropdown>a::after {
+	 content: "";
+	 position: absolute;
+	 top: 14px;
+	 right: 11px;
+	 width: 4px;
+	 height: 4px;
+	 border-bottom: 1px solid #333;
+	 border-right: 1px solid #333;
+	 -webkit-transform: rotate(45deg);
+	 -ms-transform: rotate(45deg);
+	 -moz-transform: rotate(45deg);
+	 -o-transform: rotate(45deg);
+	}
+
+/* Changing the color of the arrow on hover */
+.nav>.dropdown>a:hover::after, .nav>.dropdown:hover>a::after {
+	border-color: #6A6A46;
+}
+
+.nav ul {
+	position: relative;
+	position: absolute;
+	left: -9999px;
+	display: block;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+}
+
+/* Level 1 submenus */
+.nav>li>ul {
+	padding-top: 0px;
+	z-index: 99;
+	border-top: 1px solid #c9c9c9;
+	top: 29px;
+}
+
+/* Making the level 1 submenu to appear on hover */
+.nav>li:hover>ul {
+	left: -1px;
+}
+
+/* Level 2+ submenus */
+.nav ul ul {
+	left: -9999px;
+	top: 0px;
+	z-index: 999;
+}
+
+/* Making the level 2+ submenu to appear on hover */
+.nav ul>li:hover>ul {
+	left: 120px;
+	top: -1px;
+}
+
+/* The submenu link containers */
+.nav ul li {
+	position: relative;
+	display: block;
+	border-left: 1px solid #c1c1c1;
+	border-right: 1px solid #c1c1c1;
+
+	/* Creating the slide effect. The list elements which contain the links have 0 height. On hover, they will expand */
+	height: 0px;
+	-webkit-transition: height .3s;
+	-moz-transition: height .3s;
+	-o-transition: height .3s;
+	-ms-transition: height .3s;
+}
+
+/* Expanding the list elements which contain the links */
+.nav li:hover>ul>li {
+	height: 25px;
+}
+
+.nav ul li:hover>ul>li:first-child {
+	height: 26px;
+}
+
+/* The links of the submenus */
+.nav ul li a {
+	/* Layout */
+	display: block;
+	width: 90px;
+	padding: 6px 10px 6px 20px;
+	border-bottom: 1px solid #e1e1e1;
+
+	/* Typography */
+	font-size: 12px;
+	color: #333333;
+	font-family: Helvetica, Arial, sans-serif;
+	text-decoration: none;
+	
+	/* Background & effects */
+	background: #C9BA75;
+	-webkit-transition: background .3s;
+	-moz-transition: background .3s;
+	-ms-transition: background .3s;
+	-o-transition: background .3s;
+	transition: background .3s;
+}
+
+/* The hover state of the links */
+.nav ul li>a:hover, .nav ul li:hover>a {
+	background: #e9e9e9;
+	color: #a1a1a1;
+}
+
+.nav ul ul>li:first-child>a {
+	border-top: 1px solid #c1c1c1;
+}
+
+.nav ul>li:last-child>a {
+	border-bottom: 1px solid #c1c1c1;
+}
+
+
+/* The arrow indicating a level 2+ submenu */
+.nav ul>.dropdown>a::after {
+	content: "";
+	 position: absolute;
+	 top: 10px;
+	 right: 8px;
+	 width: 4px;
+	 height: 4px;
+	 border-bottom: 1px solid #333333;
+	 border-right: 1px solid #333333;
+	 -webkit-transform: rotate(-45deg);
+	 -ms-transform: rotate(-45deg);
+	 -moz-transform: rotate(-45deg);
+	 -o-transform: rotate(-45deg);
+}
+
+.nav ul>.dropdown:hover>a::after, .nav ul>.dropdown>a:hover::after {
+	border-color: #6a6a46;
+}

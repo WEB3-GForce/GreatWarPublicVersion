@@ -1,24 +1,38 @@
 <% provide(:title, 'All Games') %>
-<h1>All Games</h1>
+<h1 class="log">All Games</h1>
 
-<ul class="games">
-  <% @gamas.each do |game| %>
-    <li>
-      <%= link_to game.name, :controller => 'gamas', :action => 'show', :id => game.id, :join => 0 %>
-        <% if game_pending?(game) %>
-          <strong>Game is Pending. Would you like to
-          <%= link_to 'join?', :controller => 'gamas', :action => 'show', :id => game.id, :join => 1 %></strong> 
-        <% else %>
+<div id="col-M">
+  <div class="main-box">
+    <div class="main-top"></div>
+      <div class="main-filler">
+            
+      <div class="main-info">
+        <ul class="games">
+          <% @gamas.each do |game| %>
+            <li>
+              <%= link_to game.name, :controller => 'gamas', :action => 'show', :id => game.id, :join => 0 %>
+                <% if game_pending?(game) %>
+                  <strong>Game is Pending. Would you like to
+                  <%= link_to 'join?', :controller => 'gamas', :action => 'show', :id => game.id, :join => 1 %></strong> 
+                <% else %>
 
-          <% if game_done?(game) %>
-            <strong>Game is Over.</strong> 
-          <% else %>
-            <strong> Game is on-going.</strong>
-          <% end %> 
-        <% end %>
-        <br></br>
-    </li>
-  <% end %>
-</ul>
+                  <% if game_done?(game) %>
+                    <strong>Game is Over.</strong> 
+                  <% else %>
+                    <strong> Game is on-going.</strong>
+                  <% end %> 
+                <% end %>
+                <br></br>
+            </li>
+          <% end %>
+        </ul>
 
-<%= link_to 'Create Game', new_gama_path %>
+        <div>
+        <%= link_to 'Create Game', new_gama_path %>
+        </div>
+      </div>
+    </div>
+    <div class="main-footer"></div>
+  </div>
+  <div class="clearB" style="height:20px"></div>
+</div>

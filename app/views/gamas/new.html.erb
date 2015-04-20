@@ -1,5 +1,5 @@
 <% provide(:title, 'New Game') %>
-<h1>New Game</h1>
+<h1 class="log">New Game</h1>
 
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
@@ -8,7 +8,18 @@
       <%= f.label :name %>
       <%= f.text_field :name, class: 'form-control' %>
       
-      <%= f.submit "Create Game", class: "btn btn-primary" %>
+      <%= f.label "How many players would you like in  the game?" %>
+      
+      <%= f.label :limit, 2, :class=>"radio-control-label" %>
+      <%= f.radio_button :limit, "2" %>
+      <%= f.label :limit, 3, :class=>"radio-control-label"  %>
+      <%= f.radio_button :limit, "3" %>
+      <%= f.label :limit, 4, :class=>"radio-control-label" %>
+      <%= f.radio_button :limit, "4" %>
+      
+      
+      
+      <%= f.submit "Create Game", class: "btn2 btn btn-primary" %>
       <%= debug(params) %>
     <% end %>
     <%= link_to 'Back', gamas_path %>
