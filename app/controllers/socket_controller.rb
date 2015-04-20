@@ -46,9 +46,16 @@ class SocketController < WebsocketRails::BaseController
     response = [response] unless response.kind_of?(Array)
 
     if response
-      send_message :rpc, {
-        :sequence => response
-      }
+      public_calls = ['move_unit', 'attack', 'end_turn']
+      if public_calls.include? method_name
+        broadcast_message :rpc, {
+            :sequence => response
+        }
+      else
+        send_message :rpc, {
+            :sequence => response
+        }
+      end
     end
   end
 end
