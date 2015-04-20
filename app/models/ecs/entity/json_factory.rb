@@ -243,9 +243,9 @@ class JsonFactory
 	# Returns
 	#   A hash that is ready to be jsoned
 	def self.game_start(entity_manager, players, turn, pieces)
-		player_array = []
+		player_hash = {}
 		players.each { |player|
-			player_array.push self.player(entity_manager, player)
+			player_hash.merge! self.player(entity_manager, player)
 		}
 
 		turn_hash = self.turn(entity_manager, turn)
@@ -258,7 +258,7 @@ class JsonFactory
 
           return [{
             "action" => "initGame",
-            "arguments" => [board, piece_array, turn_hash, player_array]
+            "arguments" => [board, piece_array, turn_hash, player_hash]
           }]
 	end
 

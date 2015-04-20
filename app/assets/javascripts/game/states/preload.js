@@ -25,10 +25,19 @@ Preload.prototype = {
 	this.load.spritesheet('action-move', '/assets/move.png', 48, 48);
 	this.load.spritesheet('action-melee', '/assets/melee.png', 48, 48);
 	this.load.spritesheet('action-ranged', '/assets/ranged.png', 48, 48);
+	this.load.spritesheet('ui-menu', '/assets/menu.png', 48, 24);
 
-	this.load.spritesheet('trainer', '/assets/trainer.png',
-			      this.game.constants.TILE_SIZE,
-			      this.game.constants.TILE_SIZE);
+	var types = ['infantry', 'machinegun', 'artillery', 'command'];
+	var colors = ['red', 'blue'];
+	for (var i = 0; i < types.length; i++) {
+	    for (var j = 0; j < colors.length; j++) {
+		var str = types[i] + '-' + colors[j];
+		this.load.spritesheet(str, '/assets/'+str+'.png',
+				      this.game.constants.TILE_SIZE,
+				      this.game.constants.TILE_SIZE);
+	    }
+	}
+
 	this.load.spritesheet('terrain', '/assets/tmw_desert_spacing.png',
 			      this.game.constants.TILE_SIZE,
 			      this.game.constants.TILE_SIZE,
