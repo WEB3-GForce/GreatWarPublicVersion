@@ -30,7 +30,7 @@ GameGroup.prototype.myTurn = function() {
     return this.turn === this.game.constants.PLAYER_ID;
 }
 
-GameGroup.prototype.update = function() {
+GameGroup.prototype.update = function(mouse) {
     // moving the marker
     this.marker.x = this.gameBoard.highlightLayer.getTileX(this.game.input.activePointer.worldX) * this.game.constants.TILE_SIZE;
     this.marker.y = this.gameBoard.highlightLayer.getTileY(this.game.input.activePointer.worldY) * this.game.constants.TILE_SIZE;
@@ -41,20 +41,23 @@ GameGroup.prototype.update = function() {
 
     if (this.game.input.mousePointer.targetObject &&
     	this.game.input.mousePointer.targetObject.sprite instanceof Unit) {
-	this.unit = this.game.input.mousePointer.targetObject.sprite;
+	        this.unit = this.game.input.mousePointer.targetObject.sprite;
     } else {
-	this.unit = null;
+	    this.unit = null;
     }
 
     if (this.selected) {
-	this.ui.setSecondaryTile(this.tile);
-	this.ui.setSecondaryUnit(this.unit);
+	    this.ui.setSecondaryTile(this.tile);
+	    this.ui.setSecondaryUnit(this.unit);
     } else {
-	this.ui.setSecondaryTile(null);
-	this.ui.setSecondaryUnit(null);
-	this.ui.setPrimaryTile(this.tile);
-	this.ui.setPrimaryUnit(this.unit);
+	    this.ui.setSecondaryTile(null);
+	    this.ui.setSecondaryUnit(null);
+	    this.ui.setPrimaryTile(this.tile);
+	    this.ui.setPrimaryUnit(this.unit);
     }
+
+    this.ui.checkPlayerInfoUIPosition({x: this.game.input.mousePointer.x,
+        y: this.game.input.mousePointer.y});
 
 }
 
