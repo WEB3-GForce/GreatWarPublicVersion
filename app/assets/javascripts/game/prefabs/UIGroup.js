@@ -208,6 +208,7 @@ UIGroup.prototype.initHealthDisplay = function() {
 }
 
 UIGroup.prototype.updateHealth = function(unit, newHealth, callback, callbackContext) {
+    unit.getHit();
     // visual representation of remaining energy
     this.drawArc(this.healthGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.HEALTH);
     this.drawArc(this.healthGraphics, 0, 0, 32,
@@ -229,6 +230,7 @@ UIGroup.prototype.updateHealth = function(unit, newHealth, callback, callbackCon
     var hideTween = this.game.add.tween(this.healthCircle.scale).to({x: 0, y: 0}, 200, Phaser.Easing.Quadratic.InOut, false, 300);
     hideTween.onComplete.add(function() {
     	this.healthCircle.visible = false;
+	unit.stop();
 	callback.bind(callbackContext)();
     }, this);
 

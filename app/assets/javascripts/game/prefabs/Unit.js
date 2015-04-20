@@ -34,6 +34,7 @@ var Unit = function(game, id, type, x, y, player, stats, faction) {
     this.animations.add('walk-left', [4, 5, 6, 5]);
     this.animations.add('walk-down', [8, 9, 10, 9]);
     this.animations.add('walk-up', [11, 12, 13, 12]);
+    this.animations.add('get-hit', [0, 7]);
 
     this.id = id;
     if (faction === "blue") {
@@ -65,7 +66,7 @@ Unit.prototype.isMine = function() {
 Unit.prototype.moveAdjacent = function(orientation) {
     this.orientation = orientation;
     var animation = "walk-" + orientation;
-    this.animations.play(animation, 6, true);
+    this.animations.play(animation, 12, true);
     var update;
     switch (orientation) {
     case "down":
@@ -81,7 +82,7 @@ Unit.prototype.moveAdjacent = function(orientation) {
 	update = {y: this.y - this.game.constants.TILE_SIZE};
 	break;
     }
-    return this.game.add.tween(this).to(update, 200, Phaser.Easing.Linear.None, true);
+    return this.game.add.tween(this).to(update, 150, Phaser.Easing.Linear.None, true);
 }
 
 Unit.prototype.stop = function() {
@@ -137,10 +138,14 @@ Unit.prototype.attack = function(square, type) {
             return Phaser.Math.linearInterpolation(v, k);
     });
     tween.onStart.add(function() {
-	this.animations.play(type + "-attack", 6, true);
+	this.animations.play(type + "-attack", 16, true);
     }, this);
     tween.onComplete.add(function() {
 	this.stop();
     }, this);
     return tween;
+}
+
+Unit.prototype.getHit = function() {
+    this.animations.play("get-hit", 8, true);
 }
