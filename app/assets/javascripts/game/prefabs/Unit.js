@@ -89,32 +89,33 @@ Unit.prototype.stop = function() {
     this.frame = 0;
 }
 
-Unit.prototype.moveTo = function(x, y, callback, callbackContext) {
+Unit.prototype.moveTo = function(x, y, stop, callback, callbackContext) {
     if (this.x/this.game.constants.TILE_SIZE < x) {
 	this.moveAdjacent("right").onComplete.add(function() {
-	    this.moveTo(x, y, callback, callbackContext);
+	    this.moveTo(x, y, stop, callback, callbackContext);
 	}, this);
 	return;
     }
     if (this.x/this.game.constants.TILE_SIZE > x) {
 	this.moveAdjacent("left").onComplete.add(function() {
-	    this.moveTo(x, y, callback, callbackContext);
+	    this.moveTo(x, y, stop, callback, callbackContext);
 	}, this);
 	return;
     }
     if (this.y/this.game.constants.TILE_SIZE < y) {
 	this.moveAdjacent("down").onComplete.add(function() {
-	    this.moveTo(x, y, callback, callbackContext);
+	    this.moveTo(x, y, stop, callback, callbackContext);
 	}, this);
 	return;
     }
     if (this.y/this.game.constants.TILE_SIZE > y) {
 	this.moveAdjacent("up").onComplete.add(function() {
-	    this.moveTo(x, y, callback, callbackContext);
+	    this.moveTo(x, y, stop, callback, callbackContext);
 	}, this);
 	return;
     }
-    this.stop();
+    if (stop)
+	this.stop();
     if (callback) {
 	callback.bind(callbackContext)();
     }

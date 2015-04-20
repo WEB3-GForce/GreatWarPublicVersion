@@ -303,11 +303,20 @@ GameGroup.prototype.attack = function(unitId, square, type, unitType) {
     return new AnimationAction(unit, type + "-attack");
 }
 
-GameGroup.prototype.moveUnit = function(unitId, square) {
+GameGroup.prototype.moveUnit = function(unitId, squares) {
     var action = {};
     action.unit = this.unitGroup.find(unitId);
+    action.move = function(squares) {
+	if (squares.length === 1) {
+	    this.unit.moveTo(squares[0].x, squares[0].y, true, this.onComplete, this);
+	    return;
+	}
+	this.unit.moveTo(squares[0].x, squares[0].y, false, function() {
+	    this.move(squares.slice(1))
+	}, this);
+    }
     action.start = function() {
-    	this.unit.moveTo(square.x, square.y, this.onComplete, this);
+	this.move(squares);
     }
     return action;
 }
