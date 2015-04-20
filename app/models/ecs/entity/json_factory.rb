@@ -332,10 +332,10 @@ class JsonFactory
 	#
 	# Returns
 	#   A hash that is ready to be jsoned
-	def self.attack(entity_manager, result)
+	def self.melee_attack(entity_manager, result)
         	actions = []
         	killed_units = []
-        	energy_updated = []
+        	update_energy = []
         	result.each { |item|
         		if item[0] == "melee" || item[0] == "ranged"
         			actions.concat self.attack_animate(entity_manager,
@@ -343,17 +343,39 @@ class JsonFactory
         			actions.concat self.update_health(entity_manager, item[3])
         			if entity_manager.has_key? item[1] and !entity_manager[item[1]].empty? and
         			   !energy_updated.include? item[1]
-        				energy_updated.push item[1]
-        				actions.concat self.update_energy(entity_manager, item[1])
+        				update_energy .concat self.update_energy(entity_manager, item[1])
         			end
         		elsif item[0] == "kill"
         			killed_units.push item[1]
         		end
         	}
         	actions.concat self.kill_units(entity_manager, killed_units) if !killed_units.empty?
-       		return actions
+       		return actions.concat update_energy
 	end
 
+	def self.ranged_attack(entity_manager, result)
+        	actions = []
+        	killed_units = []
+        	update_energy = nil
+        	attack_animate = nil
+        	result.each { |item|
+        		if item[0] == "ranged"
+        			if !attack_animate
+        				attack_animate = self.attack_animate(entity_manager,
+        				item[0], item[1], item[2], item[4], item[5])
+        			end
+        			actions.concat self.update_health(entity_manager, item[3])
+        			if entity_manager.has_key? item[1] and !entity_manager[item[1]].empty? and
+        			   !update_energy
+        				update_energy = self.update_energy(entity_manager, item[1])
+        			end
+        		elsif item[0] == "kill"
+        			actions.concat self.kill_units(entity_manager, item[1])
+        		end
+        	}
+        	actions.concat update_energy
+       		return attack_animate.concat actions
+	end
 
 	# This is the helper function that performs the main work for requests
 	# to determine where a unit can move or attack.
