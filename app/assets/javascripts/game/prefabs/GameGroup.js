@@ -15,7 +15,7 @@ var GameGroup = function(game, parent) {
     this.action = null;
 
     this.turn = null;
-    this.game.turnNumber = 0;
+    this.game.turnNumber = 1;
 
     this.players = null;
     this.game.constants.PLAYER_ID = null;
@@ -107,7 +107,8 @@ GameGroup.prototype.unitClicked = function(unit) {
     if (!this.myTurn())
 	return;
 
-    if (this.action) {
+    if (this.action && this.action !== 'endTurn') {
+        console.log(this.action);
 		this.interact(unit);
     } else {
 		this.select(unit);
@@ -138,10 +139,10 @@ GameGroup.prototype.interact = function(unit) {
 GameGroup.prototype.select = function(unit) {
     if (unit.isMine() && !this.game.animatingAction) {
         this.selected = unit;
-	this.ui.setPrimaryUnit(this.selected);
-	this.gameBoard.unhighlightAll();
-	this.action = null;
-	this.game.dispatcher.rpc("get_unit_actions", [this.selected.id]);
+	    this.ui.setPrimaryUnit(this.selected);
+	    this.gameBoard.unhighlightAll();
+	    this.action = null;
+	    this.game.dispatcher.rpc("get_unit_actions", [this.selected.id]);
     }
 }
 
@@ -170,7 +171,7 @@ GameGroup.prototype.buttonClicked = function(button) {
 	    this.game.dispatcher.rpc("get_unit_melee_attacks", [this.selected.id]);
 	    break;
 	case 'endTurn':
-	    this.game.dispatcher.rpc("end_turn", [this.turn]);
+	    this.game.dispatcher.rpc("end_turn", []); // backend will know whose turn to end
 	    this.resetEnergy(this.turn);
 	    this.turnNumber += 1;
 	    break;
@@ -366,12 +367,16 @@ GameGroup.prototype.killUnits = function(unitIds) {
 }
 
 GameGroup.prototype.setTurn = function(turn) {
-    this.gameGroup = this;
-    return {
-	start: function() {
+    var action = {
+        game: this.game,
+        gameGroup: this
+    };
+    action.start = function() {
 	    this.gameGroup.turn = turn.playerid;
+        this.game.constants.PLAYER_ID = turn.playerid; // DEMO CODE PLZ REMOVE
         this.gameGroup.turnNumber = turn.turnCount;
+        this.gameGroup.ui.turnNumber.text = 'Day: ' + turn.turnCount;
 	    this.onComplete();
 	}
-    };
+    return action;
 }

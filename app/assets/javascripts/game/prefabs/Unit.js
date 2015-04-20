@@ -60,6 +60,9 @@ Unit.prototype = Object.create(Phaser.Sprite.prototype);
 Unit.prototype.constructor = Unit;
 
 Unit.prototype.isMine = function() {
+    console.log("checking player");
+    console.log(this.player);
+    console.log(this.game.constants.PLAYER_ID);
     return this.player === this.game.constants.PLAYER_ID;
 }
 

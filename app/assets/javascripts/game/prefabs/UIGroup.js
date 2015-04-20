@@ -53,7 +53,9 @@ UIGroup.prototype.initPlayerInfoUI = function() {
 					       "Day: " + this.game.turnNumber,
 					       20,
 					       this.playerInfo);
-    this.turnNumber.left = 72
+    this.turnNumber.left = 72;
+    // another hack:
+    this.turnNumber.isTurnNumber = true;
 
     this.playerPortrait = this.game.add.sprite(0, 0, 'generalPortrait', 0, this.playerInfo);
     this.playerPortrait.width = 64;
@@ -62,26 +64,27 @@ UIGroup.prototype.initPlayerInfoUI = function() {
     this.playerPortrait.left = width - 64;
     this.playerPortrait.isPlayerPortrait = true;
 
-    this.endTurnButton = this.game.add.graphics(width - 72, height, this.playerInfo);
+    this.endTurnButton = this.game.add.graphics(0, 0);
     this.endTurnButton.beginFill(COLORS.BUTTON, 0.5);
-    this.endTurnButton.drawRect(0, 0, 72, 20);
-    this.endTurnButton.left = width - 72;
+    this.endTurnButton.drawRect(0, 0, 72, 35);
 
-    this.endTurnButtonSprite = this.game.add.sprite(0,0);
+    this.endTurn = this.game.add.bitmapText(0, 8, 'minecraftia',
+            'End Turn',
+            18);
+    this.endTurn.width = 72;
+
+    this.endTurnButtonSprite = this.game.add.sprite(this.game.width - 168, 77);
     this.endTurnButtonSprite.width = 72;
-    this.endTurnButtonSprite.height = 20;
+    this.endTurnButtonSprite.height = 35;
     this.endTurnButtonSprite.addChild(this.endTurnButton);
+    this.endTurnButtonSprite.addChild(this.endTurn);
     this.endTurnButtonSprite.inputEnabled = true;
     this.endTurnButtonSprite.input.useHandCursor = true;
     this.endTurnButtonSprite.events.onInputDown.add(function() {
         this.gameGroup.buttonClicked({key: 'action-endTurn'});
     }, this);
+    this.endTurnButtonSprite.fixedToCamera = true;
 
-    this.endTurn = this.game.add.bitmapText(width - 72, height, 'minecraftia',
-            'End Turn',
-            18,
-            this.playerInfo);
-    this.endTurn.left = width - 72;
 
     // this.playerMenu = this.game.add.button(width-48, height,
     //					   'ui-expand',
@@ -97,6 +100,9 @@ UIGroup.prototype.checkPlayerInfoUIPosition = function(mouse) {
         if (this.portraitLeft) {
             this.playerInfo.forEach(function(comp) {
                 comp.x = this.game.width - 8 - comp.width - comp.left;
+                if (comp.isTurnNumber) {
+                    comp.x -= 72;
+                }
             }, this);
         }
         this.portraitLeft = false;

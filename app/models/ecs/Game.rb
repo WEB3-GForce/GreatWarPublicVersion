@@ -9,7 +9,7 @@ require_relative "./system/remove_player_system.rb"
 
 class Game
 
-    def self.init_game(rows=10, cols=10, player_names=["Player 1", "Player 2"])
+    def self.init_game(rows=25, cols=25, player_names=["Player 1", "Player 2"])
         manager = EntityManager.new(rows, cols)
         players, turn, pieces = EntityFactory.create_game_basic(manager, player_names)
         start_json = JsonFactory.game_start(manager, players, turn, pieces)
@@ -160,9 +160,9 @@ class Game
 
     # End the turn for the current player.
     def self.end_turn(req_id, em)
-        if em[TurnSystem.current_turn(em)][UserIdComponent][0].id != req_id
-            return {}
-        end
+        # if em[TurnSystem.current_turn(em)][UserIdComponent][0].id != req_id
+        #    return {}
+        # end
 
         TurnSystem.update(em)
         turn = em.get_entities_with_components(TurnComponent).first
