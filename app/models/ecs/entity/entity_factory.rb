@@ -149,9 +149,9 @@ public
 	#
 	# Returns
 	#   the newly created Human Player Entity
-	def self.human_player(entity_manager, name, id=-1)
+	def self.human_player(entity_manager, name, id=-1, faction="blue")
 		return self.create_entity(entity_manager,
-					  [UserIdComponent.new(id),
+					  [UserIdComponent.new(id, faction),
 					   NameComponent.new(name),
 					   HumanComponent.new])
 	end
@@ -165,9 +165,9 @@ public
 	#
 	# Returns
 	#   the newly created AI Player Entity
-	def self.ai_player(entity_manager, name, id=-1)
+	def self.ai_player(entity_manager, name, id=-1, faction="blue")
 		return self.create_entity(entity_manager,
-					  [UserIdComponent.new(id),
+					  [UserIdComponent.new(id, faction),
 					   NameComponent.new(name),
 					   AIComponent.new])
 	end
@@ -212,7 +212,7 @@ public
 		return self.create_entity(entity_manager,
 					  [PieceComponent.infantry,
 					   HealthComponent.new(12),
-					   EnergyComponent.new(6),
+					   EnergyComponent.new(18),
 					   MotionComponent.new(-1, 2),
 					   MeleeAttackComponent.new(6, 4),
 					   RangeAttackComponent.new(6, 1, 2, [1.0], 4),
@@ -232,7 +232,7 @@ public
 		return self.create_entity(entity_manager,
 					  [PieceComponent.machine_gun,
 					   HealthComponent.new(12),
-					   EnergyComponent.new(6),
+					   EnergyComponent.new(30),
 					   MotionComponent.new(-1, 3),
 					   MeleeAttackComponent.new(6, 6),
 					   RangeAttackComponent.new(4, 1, 3, [1.0], 2),
@@ -327,6 +327,15 @@ public
 		}
 	end
 
+	def self.place_army_top_left_demo(entity_manager, army_array)
+		army = army_array.dup
+		(5...10).each {|row|
+			(5...10).each { |col|
+				self.place_piece(entity_manager, army.shift, row, col)
+			}
+		}
+	end
+
 	# This function places an army in the 5x5 bottom left corner
 	#
 	# Arguments
@@ -344,6 +353,7 @@ public
 			}
 		}
 	end
+
 
 	# This function places an army in the 5x5 top right corner
 	#
@@ -382,6 +392,17 @@ public
 		}
 	end
 
+	def self.place_army_bottom_right_demo(entity_manager, army_array)
+		army    = army_array.dup
+		max_row  = entity_manager.row - 1
+		max_col = entity_manager.col - 1
+		(max_row-5).step(max_row-9, -1).each {|row|
+			(max_col-5).step(max_col-9, -1).each { |col|
+				self.place_piece(entity_manager, army.shift, row, col)
+			}
+		}
+	end
+
 	# This function creates all the entities needed for a new basic game
 	#
 	# Arguments
@@ -405,18 +426,20 @@ public
 	#   When initializing a new game, this is the only method that needs
 	#   to be called.     
 	def self.create_game_basic(entity_manager, users)
-
+          p "hello"
 		self.create_board_basic(entity_manager)
 		
-		place_methods = [EntityFactory.method(:place_army_top_left),
-				 EntityFactory.method(:place_army_bottom_right),
+		place_methods = [EntityFactory.method(:place_army_top_left_demo),
+				 EntityFactory.method(:place_army_bottom_right_demo),
 				 EntityFactory.method(:place_army_top_right),
 				 EntityFactory.method(:place_army_bottom_left)]
 		
 		players = []
 		pieces = []
+		factions = ["red", "blue", "green", "yellow"]
+          p users
 		users.each_with_index { |(id, name), index|
-			player = self.human_player(entity_manager, name, id)
+			player = self.human_player(entity_manager, name, id, factions[index])
 			army   = self.create_army(entity_manager, player)
 			players.push player
 			pieces.concat army

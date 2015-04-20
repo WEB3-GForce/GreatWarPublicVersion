@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>preload.js - RDoc Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../../../../../";
+</script>
+
+<script src="../../../../../js/jquery.js"></script>
+<script src="../../../../../js/darkfish.js"></script>
+
+<link href="../../../../../css/fonts.css" rel="stylesheet">
+<link href="../../../../../css/rdoc.css" rel="stylesheet">
+
+
+
+<body id="top" role="document" class="file">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="../../../../../index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="../../../../../table_of_contents.html#pages">Pages</a>
+    <a href="../../../../../table_of_contents.html#classes">Classes</a>
+    <a href="../../../../../table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="project-metadata">
+    <div id="fileindex-section" class="nav-section">
+  <h3>Pages</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="../../../../../app/assets/images/minecraftia_fnt.html">minecraftia.fnt</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/application_js.html">application.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/client_test_js.html">client_test.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/main_js.html">main.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/prefabs/GameBoard_js.html">GameBoard.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/prefabs/GameGroup_js.html">GameGroup.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/prefabs/UIGroup_js.html">UIGroup.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/prefabs/Unit_js.html">Unit.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/prefabs/UnitGroup_js.html">UnitGroup.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/prefabs/actions_js.html">actions.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/states/boot_js.html">boot.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/states/gameover_js.html">gameover.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/states/menu_js.html">menu.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/states/play_js.html">play.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/game/states/preload_js.html">preload.js</a>
+  
+    <li><a href="../../../../../app/assets/javascripts/static_pages_coffee.html">static_pages.coffee</a>
+  
+    <li><a href="../../../../../app/assets/json/tiledTest_json.html">tiledTest.json</a>
+  
+    <li><a href="../../../../../app/assets/stylesheets/application_css.html">application.css</a>
+  
+    <li><a href="../../../../../app/assets/stylesheets/static_pages_scss.html">static_pages.scss</a>
+  
+    <li><a href="../../../../../app/models/ecs/CodingPractices_txt.html">CodingPractices</a>
+  
+    <li><a href="../../../../../app/models/ecs/READ_ME_txt.html">READ_ME</a>
+  
+    <li><a href="../../../../../app/models/ecs/system/AttackSystemDoc_txt.html">AttackSystemDoc</a>
+  
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-label="Page app/assets/javascripts/game/states/preload.js">
+
+<p>&#39;use strict&#39;;</p>
+
+<p>function Preload() {</p>
+
+<pre class="ruby"><span class="ruby-identifier">this</span>.<span class="ruby-identifier">asset</span> = <span class="ruby-identifier">null</span>;
+<span class="ruby-identifier">this</span>.<span class="ruby-identifier">ready</span> = <span class="ruby-keyword">false</span>;
+</pre>
+
+<p>}</p>
+
+<p>Preload.prototype = {</p>
+
+<pre>preload: function() {
+    this.game.dispatcher = new WebSocketRails(&#39;localhost:3000/websocket&#39;);
+
+    // pre-load bar from Yeoman example, will likely end up getting rid of this
+    this.asset = this.add.sprite(this.width/2,this.height/2, &#39;preloader&#39;);
+    this.asset.anchor.setTo(0.5, 0.5);
+    this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
+    this.load.setPreloadSprite(this.asset);
+
+    this.load.tilemap(&#39;tileset&#39;, &#39;/assets/tiledTest.json&#39;, null, Phaser.Tilemap.TILED_JSON);
+    this.load.image(&#39;tmw_desert_spacing&#39;, &#39;/assets/tmw_desert_spacing.png&#39;); // tileset used
+    this.load.image(&#39;fog&#39;, &#39;/assets/fog.png&#39;);
+    this.load.image(&#39;highlight&#39;, &#39;/assets/highlight.png&#39;);
+
+    this.load.image(&#39;generalPortrait&#39;, &#39;/assets/generalPortrait.png&#39;);
+
+    this.load.spritesheet(&#39;action-move&#39;, &#39;/assets/move.png&#39;, 48, 48);
+    this.load.spritesheet(&#39;action-melee&#39;, &#39;/assets/melee.png&#39;, 48, 48);
+    this.load.spritesheet(&#39;action-ranged&#39;, &#39;/assets/ranged.png&#39;, 48, 48);
+
+    this.load.spritesheet(&#39;trainer&#39;, &#39;/assets/trainer.png&#39;,
+                          this.game.constants.TILE_SIZE,
+                          this.game.constants.TILE_SIZE);
+    this.load.spritesheet(&#39;terrain&#39;, &#39;/assets/tmw_desert_spacing.png&#39;,
+                          this.game.constants.TILE_SIZE,
+                          this.game.constants.TILE_SIZE,
+                          -1, 1, 1);
+
+    this.load.bitmapFont(&#39;minecraftia&#39;, &#39;assets/minecraftia.png&#39;, &#39;assets/minecraftia.fnt&#39;);
+},
+create: function() {
+    this.asset.cropEnabled = false;
+},
+update: function() {
+    if(!!this.ready) {
+        this.game.state.start(&#39;play&#39;); // toggle between menu and play for testing
+    }
+},
+onLoadComplete: function() {
+    this.ready = true;
+}</pre>
+
+<p>};</p>
+</main>
+
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://docs.seattlerb.org/rdoc/">RDoc</a> 4.2.0.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

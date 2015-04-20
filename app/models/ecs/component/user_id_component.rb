@@ -5,7 +5,7 @@ require_relative "./component.rb"
 =end
 class UserIdComponent < Component
   
-    attr_reader :id
+    attr_reader(:id, :faction)
 
     # Initializes a new NameComponent object
     #
@@ -14,8 +14,9 @@ class UserIdComponent < Component
     #
     # Postcondtion
     #   The NameComponent object is properly initialized
-    def initialize(id)
-        @id = id
+    def initialize(id, faction)
+        @id      = id
+        @faction = faction
     end
 
     # Returns a string representation of the component  
