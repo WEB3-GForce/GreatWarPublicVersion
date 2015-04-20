@@ -62,8 +62,10 @@ class GamasController < ApplicationController
       flash[:warning] = "You cannot join more than one Gama at a time. You have been redirected."
       if !is_current_user_host?(Gama.find(user.game))
     		redirect_to "/play"
+      else
+        redirect_to gama_path(user.game)
       end 
-      redirect_to gama_path(user.game)
+      
     else
       @gama = Gama.new
     end
