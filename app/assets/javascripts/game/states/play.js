@@ -13,6 +13,7 @@ Play.prototype = {
     	    this.game.channel = this.game.dispatcher.subscribe(data.channel);
 
 	    this.game.channel.bind('init_game', (function(data) {
+	    	console.log("starting game")
 		this.game.dispatcher.rpc('init_game', {});
     	    }).bind(this));
 
@@ -23,6 +24,9 @@ Play.prototype = {
 	    this.game.channel.bind('rpc', (function(data) {
 		this.sequences.push(data.sequence);
     	    }).bind(this));
+
+            this.game.dispatcher.trigger('get_game', {});
+        
     	}).bind(this));
 
 	this.game.dispatcher.trigger('get_channel', {});

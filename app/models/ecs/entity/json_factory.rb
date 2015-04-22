@@ -241,7 +241,7 @@ class JsonFactory
 	# Returns
 	#   A hash that is ready to be jsoned
 	def self.game_start(entity_manager)
-		player_hash = []
+		player_hash = {}
 		entity_manager.each_entity(UserIdComponent) { |player|
 			player_hash.merge! self.player(entity_manager, player)
 		}

@@ -14,4 +14,5 @@ WebsocketRails::EventMap.describe do
 
   subscribe :rpc, 'socket#rpc'
   subscribe :get_channel, 'socket#get_channel'
+  subscribe :get_game, 'socket#get_game'
 end
