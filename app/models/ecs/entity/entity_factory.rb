@@ -149,9 +149,9 @@ public
 	#
 	# Returns
 	#   the newly created Human Player Entity
-	def self.human_player(entity_manager, name, id=-1, faction="blue")
+	def self.human_player(entity_manager, name, id=-1, channel="", faction="blue")
 		return self.create_entity(entity_manager,
-					  [UserIdComponent.new(id, faction),
+					  [UserIdComponent.new(id, channel, faction),
 					   NameComponent.new(name),
 					   HumanComponent.new])
 	end
@@ -426,7 +426,6 @@ public
 	#   When initializing a new game, this is the only method that needs
 	#   to be called.     
 	def self.create_game_basic(entity_manager, users)
-          p "hello"
 		self.create_board_basic(entity_manager)
 		
 		place_methods = [EntityFactory.method(:place_army_top_left_demo),
@@ -437,9 +436,9 @@ public
 		players = []
 		pieces = []
 		factions = ["red", "blue", "green", "yellow"]
-          p users
-		users.each_with_index { |(id, name), index|
-			player = self.human_player(entity_manager, name, id, factions[index])
+
+		users.each_with_index { |user, index|
+			player = self.human_player(entity_manager, user.name, user.id, user.channel, factions[index])
 			army   = self.create_army(entity_manager, player)
 			players.push player
 			pieces.concat army

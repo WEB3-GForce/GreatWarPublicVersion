@@ -1,7 +1,9 @@
 module SessionsHelper
 	def log_in(user)
-		user.update_attribute :logged, true
-		session[:user_id] = user.id
+          user.channel = User.new_token
+          user.logged = true
+          user.save
+          session[:user_id] = user.id
 	end
 
 	# Returns the current logged-in user (if any).

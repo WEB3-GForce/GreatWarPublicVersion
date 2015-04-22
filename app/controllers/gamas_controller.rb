@@ -49,7 +49,6 @@ class GamasController < ApplicationController
     if @gama.save
       flash[:success] = "Game Successfully Created!"
       user.update_attribute(:host, true)
-      # auto join
       redirect_to '/play'
     else
       render 'new'
@@ -64,9 +63,12 @@ class GamasController < ApplicationController
           redirect_to games_path
         else
           @gama.users << user
+          @gama.save
+          @gama.notify(user)
           if @gama.full?
             @gama.pending = false
-            # notify socket controller to do stuff
+            @gama.save
+            @gama.start
           end
           flash[:success] = "Game successfully joined!"
           redirect_to "/play"

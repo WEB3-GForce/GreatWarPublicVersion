@@ -7,6 +7,30 @@ function Play() {
 
 Play.prototype = {
     create: function() {
+    	this.game.dispatcher.bind('setChannel', (function(data) {
+	    console.log(data);
+
+    	    this.game.channel = this.game.dispatcher.subscribe(data.channel);
+
+	    this.game.channel.bind('init_game', (function(data) {
+		this.game.dispatcher.rpc('init_game', {});
+    	    }).bind(this));
+
+	    this.game.channel.bind('userJoined', (function(data) {
+		console.log(data);
+	    }).bind(this));
+
+	    this.game.channel.bind('rpc', (function(data) {
+		this.sequences.push(data.sequence);
+    	    }).bind(this));
+    	}).bind(this));
+
+	this.game.dispatcher.trigger('get_channel', {});
+
+    	this.game.dispatcher.rpc = function(action, args) {
+    	    this.trigger("rpc", {action: action, arguments: args});
+    	}
+
     	// size of world, as opposed to window
         this.game.world.setBounds(0, 0,
 				  this.game.constants.WIDTH, this.game.constants.HEIGHT);
@@ -14,15 +38,6 @@ Play.prototype = {
         this.game.animatingAction = false;
 
         this.gameGroup = new GameGroup(this.game);
-
-    	this.game.dispatcher.bind('rpc', (function(data) {
-            this.sequences.push(data.sequence);
-    	}).bind(this));
-
-    	this.game.dispatcher.rpc = function(action, args) {
-    	    this.trigger("rpc", {action: action, arguments: args});
-    	}
-    	this.game.dispatcher.rpc("init_game", {});
 
         // deciding dragging vs. clicking:
     	this.game.input.onUp.add(function() {
@@ -36,15 +51,15 @@ Play.prototype = {
         this.backgroundSound.loop = true;
         this.backgroundSound.play();
 
-        this.music = new Array(4);
-        for (var i = 0; i < 4; i++) {
+        this.music = new Array(1);
+        for (var i = 0; i < 1; i++) {
             this.music[i] = this.game.add.audio('music-'+i);
             this.music[i].volume = 0.5;
         }
-        for (var i = 0; i < 4; i++) {
+        for (var i = 0; i < 1; i++) {
             this.music[i].onStop.add(function(next) {
                 return function() {                    
-                    this.music[next % 4].play();
+                    this.music[next % 1].play();
                 };
             }(i+1), this);
         }
