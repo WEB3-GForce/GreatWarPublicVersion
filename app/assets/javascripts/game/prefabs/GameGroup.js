@@ -198,9 +198,7 @@ GameGroup.prototype.initGame = function(board, units, turn, players) {
     this.turn = turn.playerid;
     this.turnCount = turn.turnCount;
     this.players = players; // id corresponds to obj with name + type (red/blue)
-    console.log("before");
     // this.ui.setPlayer(this.players[turn.playerid].name, this.turnCount);
-    console.log("here");
     // There should be a better/different way to do this
     this.game.constants.PLAYER_ID = this.turn;
 

@@ -62,6 +62,7 @@ class User < ActiveRecord::Base
   end
 
   def leave_game
+    # self.gama.surrender(self)
     self.gama_id = nil
     self.host = false
     self.save

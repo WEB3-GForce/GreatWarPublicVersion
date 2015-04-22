@@ -1,5 +1,7 @@
 'use strict';
 
+var game;
+
 $(document).on('page:change', function () {
     var constants = {
 	WIDTH: 960,
@@ -12,7 +14,12 @@ $(document).on('page:change', function () {
     if (document.getElementById('the-great-war') === null)
 	return;
 
-    var game = new Phaser.Game(constants.CAMERA_WIDTH, constants.CAMERA_HEIGHT, Phaser.CANVAS, document.getElementById('the-great-war'));
+    if (game) {
+	game.dispatcher.bind("setChannel", function() {});
+	game.dispatcher.unsubscribe(game.channel.name);
+    }
+
+    game = new Phaser.Game(constants.CAMERA_WIDTH, constants.CAMERA_HEIGHT, Phaser.CANVAS, document.getElementById('the-great-war'));
 
     game.constants = constants;
     // Game States

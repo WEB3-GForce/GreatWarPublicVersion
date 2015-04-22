@@ -9,7 +9,6 @@ class SocketController < WebsocketRails::BaseController
   end
 
   def self.init_game(users, game_id)
-    p "hello"
     manager, start_json = Game.init_game(users)
     @@game[game_id] = { :manager => manager, :start_json => start_json }
 
@@ -25,7 +24,7 @@ class SocketController < WebsocketRails::BaseController
   def get_game
     p 'get_game', @@game[current_user.gama_id].nil?
     if !@@game[current_user.gama_id].nil?
-      WebsocketRails[current_user.channel].trigger :init_game, {}
+      WebsocketRails[current_user.channel].trigger :initGame, {}
     end
   end
 
@@ -59,7 +58,7 @@ class SocketController < WebsocketRails::BaseController
     if response
       public_calls = ['move_unit', 'attack', 'end_turn']
       if public_calls.include? method_name
-        Game.get_user_channels(req_id, em).each do |channel|
+        Game.get_user_channels(manager).each do |channel|
           WebsocketRails[channel].trigger :rpc, {
             :sequence => response
           }
