@@ -72,7 +72,6 @@ GameGroup.prototype.update = function(mouse) {
 	        this.resetEnergy(this.turn);
         } else if (key.keyCode === q) {
             this.game.dispatcher.rpc("leave_game", []);
-            this.gameOver("asdf");
         }
     }).bind(this);
 }
@@ -130,7 +129,6 @@ GameGroup.prototype.unitClicked = function(unit) {
 	return;
 
     if (this.action) {
-        console.log(this.action);
 		this.interact(unit);
     } else {
 		this.select(unit);
@@ -285,7 +283,7 @@ GameGroup.prototype.revealFog = function(squares) {
 GameGroup.prototype.resetEnergy = function(playerId) {
     var units = this.unitGroup.getAllByPlayer(playerId);
     for (var i = 0, unit; unit = units[i]; i++) {
-        unit.stats.ENERGY = unit.stats.MAX_ENERGY;
+        unit.stats.energy.current = unit.stats.energy.max;
     }
 }
 
@@ -317,14 +315,14 @@ GameGroup.prototype.updateUnitEnergy = function(unitId, energyValue) {
 GameGroup.prototype.attack = function(unitId, square, type, unitType) {
     // check if need to add an animation to the receiving square
     var action = {
-	unit: this.unitGroup.find(unitId),
-	unitGroup: this.unitGroup
+    	unit: this.unitGroup.find(unitId),
+	    unitGroup: this.unitGroup
     };
 
     action.start = function() {
-	this.tween = this.unit.attack(square, type);
-	this.tween.onComplete.add(this.onComplete, this);
-	this.tween.start();
+	    this.tween = this.unit.attack(square, type);
+	    this.tween.onComplete.add(this.onComplete, this);
+	    this.tween.start();
     }
     return action;
 }

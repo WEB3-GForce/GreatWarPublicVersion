@@ -28,8 +28,8 @@ UnitGroup.prototype.removeUnit = function(id) {
 UnitGroup.prototype.getAllByPlayer = function(playerId) {
     var units = [];
     for (var unit in this.idLookup) {
-        if (unit.player == playerId) {
-            units.push(unit);
+        if (this.idLookup[unit].player == playerId) {
+            units.push(this.idLookup[unit]);
         }
     }
     return units;

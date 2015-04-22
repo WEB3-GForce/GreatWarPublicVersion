@@ -60,9 +60,6 @@ Unit.prototype = Object.create(Phaser.Sprite.prototype);
 Unit.prototype.constructor = Unit;
 
 Unit.prototype.isMine = function() {
-    console.log("checking player");
-    console.log(this.player);
-    console.log(this.game.constants.PLAYER_ID);
     return this.player === this.game.constants.PLAYER_ID;
 }
 
@@ -128,23 +125,23 @@ Unit.prototype.moveTo = function(x, y, stop, callback, callbackContext) {
 Unit.prototype.attack = function(square, type) {
     var update = {};
     if (this.x/this.game.constants.TILE_SIZE < square.x)
-	update.x = [this.x + this.game.constants.TILE_SIZE/2, this.x];
+	    update.x = [this.x + this.game.constants.TILE_SIZE/2, this.x];
     else if (this.x/this.game.constants.TILE_SIZE > square.x)
-	update.x = [this.x - this.game.constants.TILE_SIZE/2, this.x];
+	    update.x = [this.x - this.game.constants.TILE_SIZE/2, this.x];
     if (this.y/this.game.constants.TILE_SIZE < square.y)
-	update.y = [this.y + this.game.constants.TILE_SIZE/2, this.y];
+	    update.y = [this.y + this.game.constants.TILE_SIZE/2, this.y];
     else if (this.y/this.game.constants.TILE_SIZE > square.y)
-	update.y = [this.y - this.game.constants.TILE_SIZE/2, this.y];
+	    update.y = [this.y - this.game.constants.TILE_SIZE/2, this.y];
 
     var tween = this.game.add.tween(this).to(update, 300);
     tween.interpolation(function(v, k){
             return Phaser.Math.linearInterpolation(v, k);
     });
     tween.onStart.add(function() {
-	this.animations.play(type + "-attack", 16, true);
+	    this.animations.play(type + "-attack", 16, true);
     }, this);
     tween.onComplete.add(function() {
-	this.stop();
+	    this.stop();
     }, this);
     return tween;
 }
