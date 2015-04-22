@@ -13,14 +13,13 @@ class SocketController < WebsocketRails::BaseController
   end
 
   def self.init_game(users, game_id)
-    user_ids = []
-    users.each { |record|
-      user_ids << record.id
-    }
-    manager, start_json = Game.init_game(user_ids)
+    p "hello"
+    manager, start_json = Game.init_game(users)
     @@game[game_id] = { :manager => manager, :start_json => start_json }
 
-    p user_ids, game_id
+    Game.get_user_channels(manager).each do |channel|
+      WebsocketRails[channel].trigger :init_game, {}
+    end
   end
 
   def rpc
@@ -35,7 +34,7 @@ class SocketController < WebsocketRails::BaseController
     manager = @@game[game_id][:manager]
     if method_name == 'init_game'
         response = Game.get_game_state(req_id, manager)
-    elsif Game.respond_to? method_name      
+    elsif Game.respond_to? method_name
         manager = @@game[game_id][:manager]
 
         method_params.unshift manager
@@ -53,12 +52,14 @@ class SocketController < WebsocketRails::BaseController
     if response
       public_calls = ['move_unit', 'attack', 'end_turn']
       if public_calls.include? method_name
-        broadcast_message :rpc, {
+        Game.get_user_channels(req_id, em).each do |channel|
+          WebsocketRails[channel].trigger :rpc, {
             :sequence => response
-        }
+          }
+        end
       else
-        send_message :rpc, {
-            :sequence => response
+        WebsocketRails[current_user.channel].trigger :rpc, {
+          :sequence => response
         }
       end
     end

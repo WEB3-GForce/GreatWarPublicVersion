@@ -11,19 +11,23 @@ Play.prototype = {
 	    console.log(data);
 
     	    this.game.channel = this.game.dispatcher.subscribe(data.channel);
-	    this.game.channel.bind('rpc', (function(data) {
-		this.sequences.push(data.sequence);
+
+	    this.game.channel.bind('init_game', (function(data) {
+		this.game.dispatcher.rpc('init_game', {});
     	    }).bind(this));
 
 	    this.game.channel.bind('userJoined', (function(data) {
 		console.log(data);
 	    }).bind(this));
+
+	    this.game.channel.bind('rpc', (function(data) {
+		this.sequences.push(data.sequence);
+    	    }).bind(this));
     	}).bind(this));
 
 	this.game.dispatcher.trigger('get_channel', {});
 
     	this.game.dispatcher.rpc = function(action, args) {
-	    console.log(action);
     	    this.trigger("rpc", {action: action, arguments: args});
     	}
 

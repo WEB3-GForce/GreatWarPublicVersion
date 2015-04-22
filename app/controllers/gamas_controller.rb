@@ -63,9 +63,11 @@ class GamasController < ApplicationController
           redirect_to games_path
         else
           @gama.users << user
+          @gama.save
           @gama.notify(user)
           if @gama.full?
             @gama.pending = false
+            @gama.save
             @gama.start
           end
           flash[:success] = "Game successfully joined!"
