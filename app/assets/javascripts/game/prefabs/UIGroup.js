@@ -30,15 +30,13 @@ UIGroup.prototype.initPlayerInfoUI = function() {
     this.playerInfo.fixedToCamera = true;
 
     var width = 288;
-    var height = 64;
+    var height = 100;
 
     this.playerInfoGraphics = this.game.add.graphics(0, 0, this.playerInfo);
     this.playerInfoGraphics.beginFill(COLORS.BUTTON, 0.5);
     this.playerInfoGraphics.drawRect(0, 0, width, height);
-
-    this.playerInfoGraphics.width = width;
-    this.playerInfoGraphics.height = height;
-    this.playerInfoGraphics.left = 0;
+    this.playerInfoGraphics.leftPos = 0;
+    this.playerInfoGraphics.rightPos = this.game.width - width - 16;
 
     this.playerInfoGraphics.beginFill(COLORS.HEALTH, 1);
     this.playerInfoGraphics.drawRect(64, 0, width - 64, 32);
@@ -47,73 +45,49 @@ UIGroup.prototype.initPlayerInfoUI = function() {
 					       "",
 					       20,
 					       this.playerInfo);
-    this.playerName.left = 72;
+    this.playerName.leftPos = 72;
+    this.playerName.rightPos = this.game.width - 232;
 
     this.turnNumber = this.game.add.bitmapText(72, 36, 'minecraftia',
 					       "Day: " + this.game.turnNumber,
 					       20,
 					       this.playerInfo);
-    this.turnNumber.left = 72;
-    // another hack:
-    this.turnNumber.isTurnNumber = true;
+    this.turnNumber.leftPos = 72;
+    this.turnNumber.rightPos = this.game.width - 232;
 
     this.playerPortrait = this.game.add.sprite(0, 0, 'generalPortrait', 0, this.playerInfo);
     this.playerPortrait.width = 64;
     this.playerPortrait.height = 64;
-    // MASSIVE HACK:
-    this.playerPortrait.left = width - 64;
-    this.playerPortrait.isPlayerPortrait = true;
+    this.playerPortrait.leftPos = 0;
+    this.playerPortrait.rightPos = this.game.width - width - 16;
 
-    this.endTurnButton = this.game.add.graphics(0, 0);
-    this.endTurnButton.beginFill(COLORS.BUTTON, 0.5);
-    this.endTurnButton.drawRect(0, 0, 72, 35);
+    this.endTurn = this.game.add.bitmapText(0, 66, 'minecraftia',
+            '         Press "z" to\n            End Turn',
+            12,
+            this.playerInfo);
+    this.endTurn.leftPos = 0;
+    this.endTurn.rightPos = this.game.width - width - 16;
 
-    this.endTurn = this.game.add.bitmapText(0, 8, 'minecraftia',
-            'End Turn',
-            18);
-    this.endTurn.width = 72;
-
-    this.endTurnButtonSprite = this.game.add.sprite(this.game.width - 168, 77);
-    this.endTurnButtonSprite.width = 72;
-    this.endTurnButtonSprite.height = 35;
-    this.endTurnButtonSprite.addChild(this.endTurnButton);
-    this.endTurnButtonSprite.addChild(this.endTurn);
-    this.endTurnButtonSprite.inputEnabled = true;
-    this.endTurnButtonSprite.input.useHandCursor = true;
-    this.endTurnButtonSprite.events.onInputDown.add(function() {
-        this.gameGroup.buttonClicked({key: 'action-endTurn'});
-    }, this);
-    this.endTurnButtonSprite.fixedToCamera = true;
-
-
-    // this.playerMenu = this.game.add.button(width-48, height,
-    //					   'ui-expand',
-    //					   function() {}, this,
-    //					   0, 1, 0, 0, this.playerInfo);
-    // this.playerMenu.inputEnabled = true;
-    // this.playerMenu.input.useHandCursor = true;
-    // this.playerMenu.alpha = 0.7;
+    this.endGame = this.game.add.bitmapText(width/2, 66, 'minecraftia',
+            '        Press "q" to\n         Surrender',
+            12,
+            this.playerInfo);
+    this.endGame.leftPos = width/2;
+    this.endGame.rightPos = this.game.width - 16 - width/2;
 }
 
 UIGroup.prototype.checkPlayerInfoUIPosition = function(mouse) {
     if (mouse.x < 320) {
         if (this.portraitLeft) {
             this.playerInfo.forEach(function(comp) {
-                comp.x = this.game.width - 8 - comp.width - comp.left;
-                if (comp.isTurnNumber) {
-                    comp.x -= 72;
-                }
+                comp.x = comp.rightPos;
             }, this);
         }
         this.portraitLeft = false;
     } else {
         if (!this.portraitLeft) {
             this.playerInfo.forEach(function(comp) {
-                if (!comp.isPlayerPortrait){
-                    comp.x = comp.left;
-                } else {
-                    comp.x = 0;
-                }
+                comp.x = comp.leftPos;
             }, this);
         }
         this.portraitLeft = true;

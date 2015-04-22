@@ -62,6 +62,18 @@ GameGroup.prototype.update = function(mouse) {
     this.ui.checkPlayerInfoUIPosition({x: this.game.input.mousePointer.x,
         y: this.game.input.mousePointer.y});
 
+    // check if end turn or end game
+    this.game.input.keyboard.onDownCallback = (function(key) {
+        var z = 90;
+        var q = 81;
+
+        if (key.keyCode === z) {
+	        this.game.dispatcher.rpc("end_turn", []); // backend will know whose turn to end
+	        this.resetEnergy(this.turn);
+        } else if (key.keyCode === q) {
+
+        }
+    }).bind(this);
 }
 
 GameGroup.prototype.onClick = function(targetObject) {
@@ -107,7 +119,7 @@ GameGroup.prototype.unitClicked = function(unit) {
     if (!this.myTurn())
 	return;
 
-    if (this.action && this.action !== 'endTurn') {
+    if (this.action) {
         console.log(this.action);
 		this.interact(unit);
     } else {
@@ -170,11 +182,6 @@ GameGroup.prototype.buttonClicked = function(button) {
 	case 'melee':
 	    this.game.dispatcher.rpc("get_unit_melee_attacks", [this.selected.id]);
 	    break;
-	case 'endTurn':
-	    this.game.dispatcher.rpc("end_turn", []); // backend will know whose turn to end
-	    this.resetEnergy(this.turn);
-	    this.turnNumber += 1;
-	    break;
 	}
     }
 }
@@ -207,6 +214,7 @@ GameGroup.prototype.initGame = function(board, units, turn, players) {
     this.players = players; // id corresponds to obj with name + type (red/blue)
     // There should be a better/different way to do this
     this.game.constants.PLAYER_ID = this.turn;
+    this.ui.playerName.text = players[this.turn].name;
 
     return { start: function() { this.onComplete(); } }
 }
