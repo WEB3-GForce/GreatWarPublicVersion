@@ -71,9 +71,19 @@ GameGroup.prototype.update = function(mouse) {
 	        this.game.dispatcher.rpc("end_turn", []); // backend will know whose turn to end
 	        this.resetEnergy(this.turn);
         } else if (key.keyCode === q) {
-
+            this.game.dispatcher.rpc("leave_game", []);
+            this.gameOver("asdf");
         }
     }).bind(this);
+}
+
+GameGroup.prototype.gameOver = function(playerId) {
+    if (this.player == playerId) {
+        this.game.endGameMessage = "You Win!"
+    } else {
+        this.game.endGameMessage = "You Lose!"
+    }
+    this.game.state.start('gameover');
 }
 
 GameGroup.prototype.onClick = function(targetObject) {
