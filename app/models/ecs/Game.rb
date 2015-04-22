@@ -32,7 +32,7 @@ class Game
         return {"hello" => "Marvin"}
     end
 
-    def self.verify(req_id, em, entity)
+    def self.verify_owner(req_id, em, entity)
         entity_requester = nil
         em.each_entity(UserIdComponent) { |e|
             if em[e][UserIdComponent][0].id == req_id
@@ -42,6 +42,10 @@ class Game
         }
         entity_owner = em[entity][OwnedComponent][0].owner;
         return entity_requester == entity_owner
+    end
+    
+    def self.verify_turn(req_id, em)
+        return em[TurnSystem.current_turn(em)][UserIdComponent][0].id == req_id
     end
 
     def self.get_full_info(req_id, em, row, col)
@@ -146,7 +150,6 @@ class Game
         target = em.board[row][col][1].first
         attack_result = MeleeSystem.update(em, entity, target)
         player_result = RemovePlayerSystem.update(em)
-
         result = JsonFactory.melee_attack(em, attack_result)
         result += JsonFactory.remove_player(em, player_result)
         return result
@@ -167,6 +170,15 @@ class Game
         TurnSystem.update(em)
         turn = em.get_entities_with_components(TurnComponent).first
         return JsonFactory.end_turn(em, turn)
+    end
+
+    def self.leave_game(req_id, em)
+        em.each_entity(UserIdComponent) { |e|
+            if em[e][UserIdComponent][0].id == req_id
+                result = RemovePlayerSystem.remove_player(em, entity)
+                return JsonFactory.remove_player(em, result)
+            end
+        }
     end
 
 end
