@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150422000129) do
+ActiveRecord::Schema.define(version: 20150422014516) do
 
   create_table "gamas", force: :cascade do |t|
     t.boolean  "pending"
@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(version: 20150422000129) do
     t.boolean  "admin"
     t.boolean  "host"
     t.integer  "gama_id"
+    t.string   "channel"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true

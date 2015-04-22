@@ -4,6 +4,14 @@ require_relative '../helpers/sessions_helper.rb'
 class SocketController < WebsocketRails::BaseController
   @@game ||= Hash.new
 
+  def get_channel
+    send_message :setChannel, {channel: current_user.channel}
+  end
+
+  def self.user_joined(user, new_user)
+    WebsocketRails[user.channel].trigger("userJoined", {name: new_user.name})
+  end
+
   def self.init_game(users, game_id)
     user_ids = []
     users.each { |record|
@@ -20,7 +28,7 @@ class SocketController < WebsocketRails::BaseController
     method_params = message['arguments']
 
     req_id = current_user.id
-    game_id = current_user.game
+    game_id = current_user.gama_id
 
     p method_name
 

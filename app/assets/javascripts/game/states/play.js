@@ -7,6 +7,26 @@ function Play() {
 
 Play.prototype = {
     create: function() {
+    	this.game.dispatcher.bind('setChannel', (function(data) {
+	    console.log(data);
+
+    	    this.game.channel = this.game.dispatcher.subscribe(data.channel);
+	    this.game.channel.bind('rpc', (function(data) {
+		this.sequences.push(data.sequence);
+    	    }).bind(this));
+
+	    this.game.channel.bind('userJoined', (function(data) {
+		console.log(data);
+	    }).bind(this));
+    	}).bind(this));
+
+	this.game.dispatcher.trigger('get_channel', {});
+
+    	this.game.dispatcher.rpc = function(action, args) {
+	    console.log(action);
+    	    this.trigger("rpc", {action: action, arguments: args});
+    	}
+
     	// size of world, as opposed to window
         this.game.world.setBounds(0, 0,
 				  this.game.constants.WIDTH, this.game.constants.HEIGHT);
@@ -14,15 +34,6 @@ Play.prototype = {
         this.game.animatingAction = false;
 
         this.gameGroup = new GameGroup(this.game);
-
-    	this.game.dispatcher.bind('rpc', (function(data) {
-            this.sequences.push(data.sequence);
-    	}).bind(this));
-
-    	this.game.dispatcher.rpc = function(action, args) {
-    	    this.trigger("rpc", {action: action, arguments: args});
-    	}
-    	this.game.dispatcher.rpc("init_game", {});
 
         // deciding dragging vs. clicking:
     	this.game.input.onUp.add(function() {

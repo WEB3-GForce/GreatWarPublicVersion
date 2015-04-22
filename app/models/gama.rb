@@ -14,4 +14,16 @@ class Gama < ActiveRecord::Base
   def done?
     self.done
   end
+
+  def notify(new_user)
+    self.users.each do |user|
+      if user.id != new_user.id
+        SocketController.user_joined(user, new_user)
+      end
+    end
+  end
+
+  def start
+    SocketController.init_game(self.users, self.id)
+  end
 end
