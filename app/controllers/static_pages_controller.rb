@@ -9,6 +9,7 @@ class StaticPagesController < ApplicationController
   end
 
   def lobby
+    @user = current_user
   end
 
   def play
