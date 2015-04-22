@@ -2,15 +2,16 @@ Rails.application.routes.draw do
 
   resources :gamas
   
-  post "gamas/start" => "gamas#start"
-
   get 'sessions/new'
 
   get 'users/new'
 
   get 'users/show'
 
-  root             'static_pages#home'
+  root 'static_pages#home'
+
+  match '/join/:id', to: 'gamas#join', via: [:put]
+  match '/leave/:id', to: 'gamas#leave', via: [:put]
 
   get 'play'    => 'static_pages#play'
   get 'help'    => 'static_pages#help'

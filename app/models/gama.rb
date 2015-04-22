@@ -1,5 +1,17 @@
 class Gama < ActiveRecord::Base
-	attr_accessible :name, :pending, :done, :limit, :players
+  attr_accessible :name, :pending, :done, :limit
+  
+  has_many :users
 
-	#validates :name,  presence: true, length: { maximum: 50 }
+  def full?
+    self.users.count == self.limit
+  end
+
+  def pending?
+    self.pending
+  end
+
+  def done?
+    self.done
+  end
 end

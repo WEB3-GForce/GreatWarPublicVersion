@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150419015416) do
+ActiveRecord::Schema.define(version: 20150422000129) do
 
   create_table "gamas", force: :cascade do |t|
     t.boolean  "pending"
@@ -20,7 +20,6 @@ ActiveRecord::Schema.define(version: 20150419015416) do
     t.datetime "updated_at", null: false
     t.string   "name"
     t.string   "limit"
-    t.integer  "players"
   end
 
   create_table "users", force: :cascade do |t|
@@ -32,10 +31,11 @@ ActiveRecord::Schema.define(version: 20150419015416) do
     t.boolean  "logged"
     t.string   "remember_hash"
     t.boolean  "admin"
-    t.integer  "game"
     t.boolean  "host"
+    t.integer  "gama_id"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
+  add_index "users", ["gama_id"], name: "index_users_on_gama_id"
 
 end

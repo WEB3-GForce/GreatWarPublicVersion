@@ -1,17 +1,16 @@
 class GamasController < ApplicationController
-  #before_action :set_Gama, only: [:show, :edit, :update, :destroy]
-  before_action :has_game_started?, only: [:index, :show, :edit, :update, :new, :create]
+  before_action :set_Gama, only: [:show, :edit, :update, :destroy, :join]
 
   # GET /Gamas
   # GET /Gamas.json
   def index
     @gamas = Gama.all
     user = current_user
-    if user.game != 0 && params[:leave] == "1"
+
+    if user.gama && params[:leave] == "1"
+      user.leave_game
       flash.now[:success] = "You have left your current Gama"
-      leave_game
     end
-    
   end
 
   # GET /Gamas/1
@@ -19,56 +18,20 @@ class GamasController < ApplicationController
   def show
     @gama = Gama.find(params[:id])
     user = current_user
-    #current_user.Gama = 0
-    #  current_user.save
-    #@Gama.update_attribute(:pending, true)
-    if user.game != 0 && user.game == @gama.id && !is_current_user_host?(@gama)
-    	redirect_to "/play"
-      
-    elsif user.game != 0 && params[:join] == "1" && user.game != @gama.id
-      flash.now[:warning] = "You cannot join more than one Game at a time. You have been redirected."
-      @gama = Gama.find(user.game)
-      if !is_current_user_host?(@gama)
-      	redirect_to "/play"
-      end
-    
-    elsif (user.game == 0 && params[:join] == "1")
 
-	if !is_game_full?(@gama)
-		if @gama.players == (@gama.limit.to_i - 1)
-			@gama.update_attribute(:pending, false)
-		end
-		
-		flash.now[:success] = "Game Successfully Joined!"
-		assign_game_to_current_user(@gama)
-		@gama.update_attribute(:players, @gama.players + 1)
-		redirect_to "/play"
-	else
-		flash.now[:warning] = "Sorry, game is full"
-		redirect_to games_path
-	end
-	  
-    elsif (user.game != 0 && params[:join] != "1" && user.game == @gama.id)
-    	if !is_current_user_host?(Gama.find(user.game))
-    		redirect_to "/play"
-    	end    
+    if user.gama_id == @gama.id
+    	redirect_to "/play"
     end
   end
 
   # GET /Gamas/new
   def new
     user = current_user
-    if (user.game != 0)
+    if user.gama
       flash[:warning] = "You cannot join more than one Gama at a time. You have been redirected."
-      if !is_current_user_host?(Gama.find(user.game))
-    		redirect_to "/play"
-      else
-        redirect_to gama_path(user.game)
-      end 
-      
-    else
-      @gama = Gama.new
+      redirect_to "/play"
     end
+    @gama = Gama.new
   end
 
   # GET /Gamas/1/edit
@@ -78,28 +41,50 @@ class GamasController < ApplicationController
   # POST /Gamas
   # POST /Gamas.json
   def create
+    user = current_user
+    @gama = user.build_gama(gama_params)
+    @gama.limit = 2
+    @gama.pending = true
+    @gama.done = false
+    if @gama.save
+      flash[:success] = "Game Successfully Created!"
+      user.update_attribute(:host, true)
+      # auto join
+      redirect_to '/play'
+    else
+      render 'new'
+    end
+  end
 
-    @gama = Gama.new(gama_params)
-      if @gama.save
-        flash[:success] = "Game Successfully Created!"
-        @gama.update_attribute(:pending, true)
-    	@gama.update_attribute(:done, false)
-    	@gama.update_attribute(:players, 1)
-   	current_user.update_attribute(:host, true)
-        assign_game_to_current_user(@gama)
-        redirect_to gamas_path
-      else
-        render 'new'
-      end
+  def join
+    user = current_user
+    if !user.gama
+        if @gama.full?
+          flash[:warning] = "Sorry, game is full."
+          redirect_to games_path
+        else
+          @gama.users << user
+          if @gama.full?
+            @gama.pending = false
+            # notify socket controller to do stuff
+          end
+          flash[:success] = "Game successfully joined!"
+          redirect_to "/play"
+        end
+    else
+      flash[:warning] = "You are already in a game."
+      redirect_to "/play"
+    end
+  end
+
+  def leave
+    user = current_user
+    user.leave_game
+    # notify other players
+    flash[:success] = "You've left the game."
+    redirect_to gamas_path
   end
   
-  def start
-  	@gama = Gama.find(params[:gama])
-  	@players = players_in_game(@gama)
-  	#puts @players
-  	start_game(@players, @gama)
-  end
-
   # PATCH/PUT /Gamas/1
   # PATCH/PUT /Gamas/1.json
   def update
@@ -132,10 +117,6 @@ class GamasController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def gama_params
-      params.require(:gama).permit(:name, :pending, :done)
-    end
-    
-    def has_game_started?
-    	
+      params.require(:gama).permit(:name)
     end
 end

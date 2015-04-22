@@ -9,14 +9,14 @@
           <div class="main-info">
             
             <h1>Welcome to the Lobby!</h1>
-
-			<h3 class="text-primary text-center">Would you like to:</h3>
-
-			<%= link_to "Join Game", gamas_path, class: "btn1 btn btn-lg btn-primary" %>
-			<h2> OR </h2>
-			<%= link_to "Create Game", new_gama_path, class: "btn3 btn btn-lg btn-primary" %>
-        
-        </div>
+	    <% if !@user.gama %>
+	    <%= link_to "Join Game", gamas_path, class: "btn btn-lg btn-primary" %>
+	    <%= link_to "Create Game", new_gama_path, class: "btn btn-lg btn-primary" %>
+	    <% else %>
+	    <%= link_to "Return to Game", "/play", class: "btn btn-lg btn-primary" %>
+	    <%= button_to "Leave Game", "/leave/#{@user.gama_id}", class: "btn btn-lg btn-primary", method: :put %>
+            <% end %>
+          </div>
         <div class="main-footer"></div>
       </div>
       <div class="clearB" style="height:20px"></div>
