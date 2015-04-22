@@ -165,7 +165,7 @@ UIGroup.prototype.setSecondaryTile = function(tile) {
 
 UIGroup.prototype.setUnit = function(group, tileGroup, unit, x1, x2) {
     if (unit) {
-        group.unitType.text = unit.type[0].toUpperCase() + unit.type.slice(1);
+        group.unitType.text = unit.type[0].toUpperCase() + unit.type.replace('_', ' ').slice(1);
     	group.health.text = "HP: " + unit.stats.health.current + "/" + unit.stats.health.max;
     	group.energy.text = "ENERGY: " + unit.stats.energy.current + "/" + unit.stats.energy.max;
         group.attack.text = "ATTACK: " + unit.stats.range.attack;
