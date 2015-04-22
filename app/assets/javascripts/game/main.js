@@ -1,6 +1,6 @@
 'use strict';
 
-window.onload = function () {
+$(document).on('page:change', function () {
     var constants = {
 	WIDTH: 960,
 	HEIGHT: 960,
@@ -9,7 +9,10 @@ window.onload = function () {
 	TILE_SIZE: 32
     }
 
-    var game = new Phaser.Game(constants.CAMERA_WIDTH, constants.CAMERA_HEIGHT, Phaser.CANVAS, 'the-great-war');
+    if (document.getElementById('the-great-war') === null)
+	return;
+
+    var game = new Phaser.Game(constants.CAMERA_WIDTH, constants.CAMERA_HEIGHT, Phaser.CANVAS, document.getElementById('the-great-war'));
 
     game.constants = constants;
     // Game States
@@ -20,4 +23,4 @@ window.onload = function () {
     game.state.add('preload', Preload);
 
     game.state.start('boot');
-};
+});
