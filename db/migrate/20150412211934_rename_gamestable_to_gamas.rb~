@@ -1,4 +1,0 @@
-class RenameGamestableToGamas < ActiveRecord::Migration
-  def change
-  end
-end
