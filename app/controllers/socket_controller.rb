@@ -4,10 +4,6 @@ require_relative '../helpers/sessions_helper.rb'
 class SocketController < WebsocketRails::BaseController
   @@game ||= Hash.new
 
-  def get_channel
-    send_message :setChannel, {channel: current_user.channel}
-  end
-
   def self.user_joined(user, new_user)
     WebsocketRails[user.channel].trigger("userJoined", {name: new_user.name})
   end
@@ -19,6 +15,17 @@ class SocketController < WebsocketRails::BaseController
 
     Game.get_user_channels(manager).each do |channel|
       WebsocketRails[channel].trigger :init_game, {}
+    end
+  end
+  
+  def get_channel
+    send_message :setChannel, {channel: current_user.channel}
+  end
+  
+  def get_game
+    p 'get_game', @@game[current_user.gama_id].nil?
+    if !@@game[current_user.gama_id].nil?
+      WebsocketRails[current_user.channel].trigger :init_game, {}
     end
   end
 

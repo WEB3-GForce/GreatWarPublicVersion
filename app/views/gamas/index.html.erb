@@ -15,7 +15,7 @@
 		<span class="label label-primary">Pending</span>
                 <% elsif game.done? %>
 		<span class="label label-warning">Done</span>
-                <% else %>
+                <% elsif game.full? %>
 		<span class="label label-success">In Game</span>
                 <% end %> 
 
