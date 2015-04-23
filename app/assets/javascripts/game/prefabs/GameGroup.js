@@ -50,11 +50,13 @@ GameGroup.prototype.update = function(mouse) {
     }
 
     if (this.selected) {
+        this.tile.name = 'Flatland';
 	    this.ui.setSecondaryTile(this.tile);
 	    this.ui.setSecondaryUnit(this.unit);
     } else {
 	    this.ui.setSecondaryTile(null);
 	    this.ui.setSecondaryUnit(null);
+        this.tile.name = 'Flatland';
 	    this.ui.setPrimaryTile(this.tile);
 	    this.ui.setPrimaryUnit(this.unit);
     }
@@ -74,6 +76,10 @@ GameGroup.prototype.update = function(mouse) {
             this.game.dispatcher.rpc("leave_game", []);
         }
     }).bind(this);
+}
+
+GameGroup.prototype.eliminatePlayer = function(playerId) {
+
 }
 
 GameGroup.prototype.gameOver = function(playerId) {
@@ -204,12 +210,11 @@ GameGroup.prototype.initGame = function(board, units, turn, players) {
 		        this.gameBoard.addFog(i, j);
 	    }
     }
-
     // effects is not passed right now
     // this.gameBoard.effects = effects;
 
     for (var i = 0; i < units.length; i++) {
-	this.unitGroup.addUnit(units[i].id,
+	    this.unitGroup.addUnit(units[i].id,
 			       units[i].type,
 			       units[i].x,
 			       units[i].y,
@@ -217,6 +222,7 @@ GameGroup.prototype.initGame = function(board, units, turn, players) {
 			       units[i].stats,
 			       players[units[i].player].faction);
     }
+    console.log(units[10]);
 
     this.turn = turn.playerid;
     this.players = players; // id corresponds to obj with name + type (red/blue)

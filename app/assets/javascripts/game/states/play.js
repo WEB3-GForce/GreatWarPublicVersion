@@ -55,6 +55,7 @@ Play.prototype = {
         }
 
         this.shakeTimerMax = 80;
+
     },
 
     update: function() {
@@ -94,7 +95,7 @@ Play.prototype = {
 	    }
 	    this.currentAction = this.currentSequence.shift();
 
-        if (this.currentAction.arguments[3] == 'artillery') {
+        if (this.currentAction && this.currentAction.arguments[3] == 'artillery') {
             this.cameraPos = {x: this.game.camera.x, y: this.game.camera.y};
             this.shakeTimer = this.shakeTimerMax;
         }

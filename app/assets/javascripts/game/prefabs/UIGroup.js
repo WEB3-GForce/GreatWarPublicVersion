@@ -122,11 +122,11 @@ UIGroup.prototype.initTileInfoUI = function() {
 
 UIGroup.prototype.setTile = function(group, tile) {
     if (tile) {
-	group.tile.frame = tile.index - 1;
-	group.title.text = "tile #" + tile.index;
-	group.visible = true;
+	    group.tile.frame = tile.index - 1;
+	    group.title.text = tile.name;
+	    group.visible = true;
     } else {
-	group.visible = false;
+	    group.visible = false;
     }
 }
 UIGroup.prototype.setPrimaryTile = function(tile) {
