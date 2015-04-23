@@ -50,7 +50,7 @@ public
         end
 
     	result = ["remove player", player]
-    	turn = current_player ? ["turn", current_player] : nil
+    	turn = change_turn ? ["turn", current_player] : nil
     	return [result, turn, GameOverSystem.update(entity_manager)]
     end
 

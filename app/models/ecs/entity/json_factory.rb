@@ -508,7 +508,7 @@ class JsonFactory
 		end
 		if !turn_change_result.nil?
 		        turn = em.get_entities_with_components(TurnComponent).first
-		        actions.push(self.end_turn(entity_manager, turn))
+		        actions.concat(self.end_turn(entity_manager, turn))
 		end
 
 		return actions
