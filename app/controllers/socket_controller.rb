@@ -13,16 +13,16 @@ class SocketController < WebsocketRails::BaseController
     @@game[game_id] = { :manager => manager, :start_json => start_json }
 
     Game.get_user_channels(manager).each do |channel|
-      WebsocketRails[channel].trigger :init_game, {}
+      p channel
+      WebsocketRails[channel].trigger :initGame, {}
     end
   end
   
   def get_channel
-    send_message :setChannel, {channel: current_user.channel}
+    send_message :setChannel, {channel: current_user.channel, name: current_user.name}
   end
   
   def get_game
-    p 'get_game', @@game[current_user.gama_id].nil?
     if !@@game[current_user.gama_id].nil?
       WebsocketRails[current_user.channel].trigger :initGame, {}
     end

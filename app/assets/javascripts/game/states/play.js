@@ -7,31 +7,17 @@ function Play() {
 
 Play.prototype = {
     create: function() {
-    	this.game.dispatcher.bind('setChannel', (function(data) {
-	    console.log(data);
-
-    	    this.game.channel = this.game.dispatcher.subscribe(data.channel);
-	    
-	    this.game.channel.bind('initGame', (function(data) {
-		this.game.dispatcher.rpc('init_game', {});
-    	    }).bind(this));
-
-	    this.game.channel.bind('userJoined', (function(data) {
-		console.log(data);
-	    }).bind(this));
-
-	    this.game.channel.bind('rpc', (function(data) {
-		this.sequences.push(data.sequence);
-    	    }).bind(this));
-
-            this.game.dispatcher.trigger('get_game', {});
+	// back-end to front-end
+	this.game.channel.bind('rpc', (function(data) {
+	    this.sequences.push(data.sequence);
     	}).bind(this));
 
-	this.game.dispatcher.trigger('get_channel', {});
-
+	// front-end to back-end
     	this.game.dispatcher.rpc = function(action, args) {
     	    this.trigger("rpc", {action: action, arguments: args});
     	}
+
+	this.game.dispatcher.rpc('init_game', {});
 
     	// size of world, as opposed to window
         this.game.world.setBounds(0, 0,

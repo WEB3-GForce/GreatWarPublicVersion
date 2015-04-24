@@ -21,6 +21,7 @@ Preload.prototype = {
 	this.load.image('highlight', '/assets/highlight.png');
 
 	this.load.image('generalPortrait', '/assets/generalPortrait.png');
+	this.load.image('lobby', '/assets/lobby.jpg');
 
 	this.load.spritesheet('action-move', '/assets/move.png', 48, 48);
 	this.load.spritesheet('action-melee', '/assets/melee.png', 48, 48);
@@ -45,19 +46,19 @@ Preload.prototype = {
 
 	this.load.bitmapFont('minecraftia', 'assets/minecraftia.png', 'assets/minecraftia.fnt');
 
-    this.load.audio('ambience', ['assets/ambience.mp3']);
+	this.load.audio('ambience', ['assets/ambience.mp3']);
 
-    //+ Jonas Raoni Soares Silva
-    //@ http://jsfromhell.com/array/shuffle [v1.0]
-    var shuffle = function(o){ //v1.0
-        for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
-        return o;
-    };
+	//+ Jonas Raoni Soares Silva
+	//@ http://jsfromhell.com/array/shuffle [v1.0]
+	var shuffle = function(o){ //v1.0
+            for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+            return o;
+	};
 
-    var order = [1];// shuffle([1, 2, 3, 4, 5, 6, 7, 8]);
-    for (var i = 0; i < 1; i++) {
-        this.load.audio('music-'+i, 'assets/music-'+order[i]+'.mp3');
-    }
+	var order = [1];// shuffle([1, 2, 3, 4, 5, 6, 7, 8]);
+	for (var i = 0; i < 1; i++) {
+            this.load.audio('music-'+i, 'assets/music-'+order[i]+'.mp3');
+	}
 
     },
 
@@ -66,7 +67,7 @@ Preload.prototype = {
     },
     update: function() {
 	if(!!this.ready) {
-	    this.game.state.start('play'); // toggle between menu and play for testing
+	    this.game.state.start('menu'); // toggle between menu and play for testing
 	}
     },
     onLoadComplete: function() {
