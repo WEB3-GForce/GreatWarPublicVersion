@@ -8,12 +8,19 @@ class SocketController < WebsocketRails::BaseController
     WebsocketRails[user.channel].trigger("userJoined", {name: new_user.name})
   end
 
+  def self.gameover(gama_id)
+    manager = @@game[gama_id][:manager]
+
+    Game.get_user_channels(manager).each do |channel|
+      WebsocketRails[channel].trigger :gameover, {}
+    end
+  end
+
   def self.init_game(users, game_id)
     manager, start_json = Game.init_game(users)
     @@game[game_id] = { :manager => manager, :start_json => start_json }
 
     Game.get_user_channels(manager).each do |channel|
-      p channel
       WebsocketRails[channel].trigger :initGame, {}
     end
   end

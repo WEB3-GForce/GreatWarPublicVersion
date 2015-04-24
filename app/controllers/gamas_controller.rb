@@ -81,7 +81,7 @@ class GamasController < ApplicationController
 
   def leave
     user = current_user
-    user.leave_game
+    user.gama.surrender(user)
     # notify other players
     flash[:success] = "You've left the game."
     redirect_to gamas_path
