@@ -25,8 +25,8 @@ UIGroup.prototype.constructor = UIGroup;
 
 UIGroup.prototype.initPlayerInfoUI = function() {
     this.playerInfo = this.game.add.group();
-    this.playerInfo.x = 8;
-    this.playerInfo.y = 8;
+    this.playerInfo.cameraOffset.x = 8;
+    this.playerInfo.cameraOffset.y = 8;
     this.playerInfo.fixedToCamera = true;
 
     var width = 288;
@@ -36,6 +36,10 @@ UIGroup.prototype.initPlayerInfoUI = function() {
     this.playerInfoGraphics.beginFill(COLORS.BUTTON, 0.5);
     this.playerInfoGraphics.drawRect(0, 0, width, height);
 
+    this.playerInfoGraphics.width = width;
+    this.playerInfoGraphics.height = height;
+    // this.playerInfoGraphics.left = 0;
+
     this.playerInfoGraphics.beginFill(COLORS.HEALTH, 1);
     this.playerInfoGraphics.drawRect(64, 0, width - 64, 32);
 
@@ -43,15 +47,20 @@ UIGroup.prototype.initPlayerInfoUI = function() {
 					       "",
 					       20,
 					       this.playerInfo);
+    // this.playerName.left = 72;
 
     this.turnCount = this.game.add.bitmapText(72, 36, 'minecraftia',
 					       "",
 					       20,
 					       this.playerInfo);
+    // this.turnNumber.left = 72;
 
     this.playerPortrait = this.game.add.sprite(0, 0, 'generalPortrait', 0, this.playerInfo);
     this.playerPortrait.width = 64;
     this.playerPortrait.height = 64;
+    // MASSIVE HACK:
+    // this.playerPortrait.left = -1 * width + 64;
+    // this.playerPortrait.isPlayerPortrait = true;
 
     // this.playerMenu = this.game.add.button(width-48, height,
     // 					   'ui-expand',
@@ -66,11 +75,36 @@ UIGroup.prototype.setPlayer = function(name, turn) {
     this.turnCount.text = "Day: " + turn;
 }
 
+UIGroup.prototype.checkPlayerInfoUIPosition = function(mouse) {
+    // if (mouse.x < 320) {
+    //     if (this.portraitLeft) {
+    //         this.playerInfo.forEach(function(comp) {
+    //             comp.x = this.game.constants.CAMERA_WIDTH - 8 - comp.width;
+    //             if (comp.isPlayerPortrait) {
+    //                 comp.x += comp.left;
+    //             }
+    //         }, this);
+    //     }
+    //     this.portraitLeft = false;
+    // } else {
+    //     if (!this.portraitLeft) {
+    //         this.playerInfo.forEach(function(comp) {
+    //             if (!comp.isPlayerPortrait){
+    //                 comp.x = comp.left;
+    //             } else {
+    //                 comp.x = 0;
+    //             }
+    //         }, this);
+    //     }
+    //     this.portraitLeft = true;
+    // }
+}
+
 UIGroup.prototype.initTileInfoHelper = function(group, x) {
     var height = 160;
     var width = 96;
-    group.x = 8;
-    group.y = this.game.height - height - 8;
+    group.cameraOffset.x = x;
+    group.cameraOffset.y = this.game.constants.CAMERA_HEIGHT - height - 8;
     group.fixedToCamera = true;
 
     group.graphics = this.game.add.graphics(0, 0, group);
@@ -88,7 +122,7 @@ UIGroup.prototype.initTileInfoUI = function() {
     this.tileInfoPrimary = this.game.add.group();
     this.tileInfoSecondary = this.game.add.group();
     this.initTileInfoHelper(this.tileInfoPrimary, 8);
-    this.initTileInfoHelper(this.tileInfoSecondary, this.game.width - 96 - 8);
+    this.initTileInfoHelper(this.tileInfoSecondary, this.game.constants.CAMERA_WIDTH - 96 - 8);
     this.tileInfoSecondary.visible = false;
 }
 
@@ -130,14 +164,14 @@ UIGroup.prototype.setPrimaryUnit = function(unit) {
 }
 UIGroup.prototype.setSecondaryUnit = function(unit) {
     this.setUnit(this.unitInfoSecondary, this.tileInfoSecondary, unit,
-		 this.game.width - 96 - 8, this.game.width - 96 - 200);
+		 this.game.constants.CAMERA_WIDTH - 96 - 8, this.game.constants.CAMERA_WIDTH - 96 - 200);
 }
 
 UIGroup.prototype.initUnitInfoHelper = function(group, x) {
     var height = 160;
     var width = 192;
-    group.x = x;
-    group.y = this.game.height - height - 8;
+    group.cameraOffset.x = x;
+    group.cameraOffset.y = this.game.constants.CAMERA_HEIGHT - height - 8;
     group.fixedToCamera = true;
 
     group.graphics = this.game.add.graphics(0, 0, group);
@@ -165,7 +199,7 @@ UIGroup.prototype.initUnitInfoUI = function() {
     this.unitInfoPrimary = this.game.add.group();
     this.unitInfoSecondary = this.game.add.group();
     this.initUnitInfoHelper(this.unitInfoPrimary, 8);
-    this.initUnitInfoHelper(this.unitInfoSecondary, this.game.width - 192 - 8);
+    this.initUnitInfoHelper(this.unitInfoSecondary, this.game.constants.CAMERA_WIDTH - 192 - 8);
 }
 
 UIGroup.prototype.drawArc = function(graphics, x, y, r, start, end, stroke, color) {

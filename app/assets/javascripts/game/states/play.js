@@ -51,7 +51,6 @@ Play.prototype = {
                 };
             }(i+1), this);
         }
-        this.music[0].play();
     },
 
     update: function() {

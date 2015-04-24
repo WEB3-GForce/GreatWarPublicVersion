@@ -60,7 +60,7 @@ group :development, :test do
   gem 'spork-rails'
   gem 'fuubar'
   gem 'factory_girl_rails'
-  
+
   # guard
   gem 'guard-rspec'
   gem 'guard-livereload', require: false

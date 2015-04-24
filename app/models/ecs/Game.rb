@@ -10,10 +10,10 @@ require_relative "./system/remove_player_system.rb"
 class Game
 
     def self.init_game(users, rows=20, cols=20)
-      manager = EntityManager.new(rows, cols)
-      players, turn, pieces = EntityFactory.create_game_basic(manager, users)
-      start_json = JsonFactory.game_start(manager)
-      return manager, start_json
+        manager = EntityManager.new(rows, cols)
+        players, turn, pieces = EntityFactory.create_game_basic(manager, users)
+        start_json = JsonFactory.game_start(manager)
+        return manager, start_json
     end
 
     def self.get_game_state(req_id, em)
