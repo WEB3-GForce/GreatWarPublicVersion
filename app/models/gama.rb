@@ -1,6 +1,8 @@
 class Gama < ActiveRecord::Base
   attr_accessible :name, :pending, :done, :limit
   
+  validates :name, presence: true, length: { maximum: 50 }, uniqueness: true
+  
   has_many :users
 
   def full?
