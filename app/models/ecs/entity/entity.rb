@@ -23,9 +23,12 @@ class Entity < String
 
 	# Initializes a new Entity
 	#
+	# Arguments
+	#   string = the value to intialize to the entity, nil for a uuid
+	#
 	# Postcondition
-	#  A new entity is created. It is represented as a uuid string to ensure
-	#  that each entity is uniquely identifiable.
+	#  A new entity is created. It is represented as the string specified or
+	#  the uuid string to ensure that each entity is uniquely identifiable.
 	def initialize(string=nil)
 		string = SecureRandom.uuid if string == nil
 		super string
