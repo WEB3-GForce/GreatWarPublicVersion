@@ -12,8 +12,7 @@ class Game
     def self.init_game(users, rows=20, cols=20)
         manager = EntityManager.new(rows, cols)
         players, turn, pieces = EntityFactory.create_game_basic(manager, users)
-        start_json = JsonFactory.game_start(manager)
-        return manager, start_json
+        return manager
     end
 
     def self.get_game_state(req_id, em)
@@ -180,6 +179,19 @@ class Game
         return JsonFactory.end_turn(em, turn)
     end
 
+
+    def self.save(id, manager)
+      $redis.set(id, Marshal::dump(manager))
+    end
+    
+    def self.get(id)
+      manager = $redis.get(id)
+      if manager
+        Marshal::load(manager)
+      else
+        nil
+      end
+    end
 end
 
 #g = Game.new
