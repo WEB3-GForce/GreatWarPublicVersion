@@ -96,12 +96,12 @@ On that note, let's look at how each return result is formatted:
 		
 	would be transformed into this for the MeleeSystem:
 	
-		[["melee", "attacking_entity", "entity#1", 0, 1, 10]]
+		[["melee", "attacking_entity", "attacking_entity_type", "entity#1", 0, 1, 10]]
 	
 	Each higher level attack system should add its result. The easiest way
 	to do this programatically is:
 	
-		(result[0].unshift attacking_entity).unshift type_of_attack if !result.empty?
+		(result[0].unshift attacking_entity_type).unshift(attacking_entity).unshift type_of_attack if !result.empty?
 
 	where result is the return result of the DamageSystem.
 

@@ -4,7 +4,7 @@ require_relative "./energy_system.rb"
 =begin
 	The TurnSystem is responsible for handling turn-related issues. It keeps
 	track of which player's turn it is and executes the appropriate updates
-    (e.g. replenshing entity energies) upon updating to the next turn.
+        (e.g. replenshing entity energies) upon updating to the next turn.
 =end
 class TurnSystem < System
 

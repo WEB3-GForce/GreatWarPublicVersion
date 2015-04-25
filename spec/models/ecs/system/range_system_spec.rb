@@ -504,7 +504,6 @@ describe RangeSystem do
                           PositionComponent.new(row+1, col+2))
                     manager.board[row+1][col+2] = [flatland3, [infantry3]]
                     result = RangeSystem.update(manager, infantry, infantry2)
-                    puts result.to_s
                     expect(result.size).to eq 4
                     expect(result[0][0]).to eq "ranged"
                     expect(result[0].size).to eq 7
