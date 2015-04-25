@@ -179,6 +179,11 @@ class Game
         return JsonFactory.end_turn(em, turn)
     end
 
+    def self.store(id, manager)
+      gama = Gama.find(id)
+      gama.manager = Marshal::dump(manager)
+      gama.save
+    end
 
     def self.save(id, manager)
       $redis.set(id, Marshal::dump(manager))
@@ -189,7 +194,12 @@ class Game
       if manager
         Marshal::load(manager)
       else
-        nil
+        gama = Gama.find(id)
+        if gama.manager
+          Marshal::load(gama.manager)
+        else
+          nil
+        end
       end
     end
 end
