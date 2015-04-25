@@ -93,7 +93,6 @@ private
 			}
 		}
 
-		puts damage_info.to_s
 		return [] if damage_info.empty?		
 		return damage_info.reverse
 	end

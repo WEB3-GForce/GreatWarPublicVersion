@@ -429,8 +429,8 @@ public
 
 		self.create_board_basic(entity_manager)
 		
-		place_methods = [EntityFactory.method(:place_army_top_left_demo),
-				 EntityFactory.method(:place_army_bottom_right_demo),
+		place_methods = [EntityFactory.method(:place_army_top_left),
+				 EntityFactory.method(:place_army_bottom_right),
 				 EntityFactory.method(:place_army_top_right),
 				 EntityFactory.method(:place_army_bottom_left)]
 		
