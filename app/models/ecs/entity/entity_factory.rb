@@ -495,14 +495,14 @@ public
 		a = lambda { |player| self.artillery(entity_manager, player) }
 		b = lambda { |player| self.command_bunker(entity_manager, player) }
 
-		i1 = lambda { i(p1) }
-		m1 = lambda { m(p1) }
-		a1 = lambda { a(p1) }
-		b1 = lambda { b(p1) }
-		i2 = lambda { i(p2) }
-		m2 = lambda { m(p2) }
-		a2 = lambda { a(p2) }
-		b2 = lambda { b(p2) }
+		i1 = lambda { i[p1] }
+		m1 = lambda { m[p1] }
+		a1 = lambda { a[p1] }
+		b1 = lambda { b[p1] }
+		i2 = lambda { i[p2] }
+		m2 = lambda { m[p2] }
+		a2 = lambda { a[p2] }
+		b2 = lambda { b[p2] }
 
 		units = [ a1, nil, nil,  i1,  i1, nil, nil, nil, nil, nil, nil, 
 		         nil,  b1,  m1,  i1,  i1, nil, nil, nil, nil, nil, nil, 
@@ -521,7 +521,7 @@ public
 			(0...entity_manager.col).each { |col|
 				next if units[row][col].nil?
 
-				pieces << units[row][col]
+				pieces << units[row][col].call
 				self.place_piece(entity_manager, pieces[-1], row, col)
 			}
 		}
