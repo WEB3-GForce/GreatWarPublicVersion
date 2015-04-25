@@ -507,7 +507,7 @@ class JsonFactory
 						   "arguments" => [winner] })
 		end
 		if !turn_change_result.nil?
-		        turn = em.get_entities_with_components(TurnComponent).first
+		        turn = entity_manager.get_entities_with_components(TurnComponent).first
 		        actions.concat(self.end_turn(entity_manager, turn))
 		end
 

@@ -175,7 +175,7 @@ class Game
     def self.leave_game(req_id, em)
         em.each_entity(UserIdComponent) { |e|
             if em[e][UserIdComponent][0].id == req_id
-                result = RemovePlayerSystem.remove_player(em, entity)
+                result = RemovePlayerSystem.remove_player(em, e)
                 return JsonFactory.remove_player(em, result)
             end
         }
@@ -183,6 +183,9 @@ class Game
 
 end
 
-#g = Game.new
+#manager, t = Game.init_game
+
+#p Game.leave_game(-1, manager)
+
 
 #puts g
