@@ -47,7 +47,7 @@ describe MotionComponent do
 		end
 	end
 
-	context "when ,ax_movement > 0" do
+	context "when max_movement > 0" do
 
 		it "should be able to move" do
 			expect(basic_motion.can_move?).to be true

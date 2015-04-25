@@ -17,6 +17,7 @@ class MeleeAttackComponent < Component
 	#
 	# Arguments
 	#   attack = damage dealt during a melee attack
+	#   energy_cost = the amount of energy used to perform an attack
 	#
 	# Postcondtion
 	#   The MeleeAttackComponent object is properly initialized
@@ -38,7 +39,7 @@ class MeleeAttackComponent < Component
   
   	# Returns a string representation of the component
 	def to_s
-		"Melee Attack: #{@attack}"
+		"Melee Attack: [damage = #{@attack}, cost #{self.energy_cost}]"
 	end
 
 end
