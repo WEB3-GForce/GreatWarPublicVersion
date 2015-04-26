@@ -154,9 +154,9 @@ public
 	#
 	# Returns
 	#   the newly created Human Player Entity
-	def self.human_player(entity_manager, name, id=-1, channel="", faction="blue")
+	def self.human_player(entity_manager, name, id=-1, channel="", gravatar="", faction="blue")
 		return self.create_entity(entity_manager,
-					  [UserIdComponent.new(id, channel, faction),
+					  [UserIdComponent.new(id, channel, gravatar, faction),
 					   NameComponent.new(name),
 					   HumanComponent.new])
 	end
@@ -505,7 +505,7 @@ public
 
 		users.each_with_index { |user, index|
 			player = self.human_player(entity_manager, user.name, user.id, 
-			                           user.channel, factions[index])
+			                           user.channel, user.gravatar, factions[index])
 			players.push player
 		}
 
