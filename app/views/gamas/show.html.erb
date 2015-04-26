@@ -7,12 +7,12 @@
             
       <div class="main-info">
 		<p>
-			<% if game_pending?(@gama) %>
+			<% if @gama.pending? %>
 		  <strong>Game <%= @gama.name %> is Pending. Would you like to
 		  	<%= link_to 'join?', '#' %></strong> 
 		  	<% else %>
 
-		  		<% if game_done?(@gama) %>
+		  		<% if @gama.done? %>
 			  		<strong>Game <%= @gama.name %> is Over.</strong> 
 			  	<% else %>
 			  		<strong> Game <%= @gama.name %> is on-going.</strong>
@@ -23,10 +23,10 @@
 		</p>
 
 		<p>
-			<% if(is_current_user_host?(@gama)) %>
-				<% if true # is_game_full?(@gama) %>
+			<% if current_user.is_host?(@gama) %>
+				<% if @gama.full? %>
 					<h1> The game is ready to start. Press below to start the game </h1>
-					<%= button_to 'Start Game', :controller => "gamas", :action => "start", :gama => @gama.id %>
+					<%= button_to 'Start Game', @gama.start %>
 				<% else %>
 					<h1> The game is not yet full. Please wait until more people join. </h1>
 				<% end %>

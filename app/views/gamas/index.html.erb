@@ -7,32 +7,68 @@
       <div class="main-filler">
             
       <div class="main-info">
-        <ul class="games">
+      	<table class="table table-bordered">
+      		<thead>
+          				<tr>
+          					<th>Game</th>
+          					<th>Status</th>
+          					<th>Players in Game</th>
+          					<th>join/leave</th>
+          				</tr>
+          			</thead>
+          			<tbody>
           <% @gamas.each do |game| %>
-            <li>
-              <%= link_to game.name, :controller => 'gamas', :action => 'show', :id => game.id %>
-                <% if game.pending? %>
-		<span class="label label-primary">Pending</span>
-                <% elsif game.done? %>
-		<span class="label label-warning">Done</span>
-                <% elsif game.full? %>
-		<span class="label label-success">In Game</span>
-                <% end %> 
-
-		<% if game.pending? %>
-		<%= button_to "join?", "/join/#{game.id}", {method: :put, class: "btn btn-primary"} %>
-		<% end %>
-                <br></br>
-            </li>
-          <% end %>
-        </ul>
-
-        <div>
-        <%= link_to 'Create Game', new_gama_path %>
-        </div>
-      </div>
+          		
+          			
+          			
+          				<tr>
+          					<td class="name"><%= link_to game.name, :controller => 'gamas', :action => 'show', :id => game.id %></td>
+          					<td>
+		          				<% if game.pending? %>
+												<span class="label label-primary">Pending</span>
+			                <% elsif game.done? %>
+												<span class="label label-warning">Done</span>
+			                <% elsif game.full? %>
+												<span class="label label-success">In Game</span>
+			                <% end %> 
+		              	</td>
+          				
+          				
+          					<td>
+	          					<% if !game.users.empty? %>
+										    <div class ="list-group">
+										    	<ul class ="list-group">
+											    	<% game.users.each do |user| %>
+											    		<li class="list-group-item"><%=user.name%></li>
+											    	<%end%>
+										    	</ul>
+										    </div>
+										  <%end%>
+										</td>
+          				
+          				
+          					<td>
+	          					<div class="btn-group">
+									    	<% if current_user.gama && current_user.gama_id == game.id %>
+												<%= button_to "Leave?", "/leave/#{game.id}", {method: :put, class: "btn btn-default btn-leave"} %>
+												<% elsif game.pending? %>
+												<%= button_to "Join?", "/join/#{game.id}", {method: :put, class: "btn btn-default"} %>
+												<% end %>
+											</div>
+										</td>
+          				</tr>
+        <% end %>
+          			</tbody>
+          		</table>
+					   
+					    <div>
+			        <%= link_to 'Create Game', new_gama_path %>
+			        </div>
+			</div>
+			<div class="main-footer"></div>
+     </div>
+      <div class="clearB" style="height:20px"></div>
     </div>
-    <div class="main-footer"></div>
-  </div>
-  <div class="clearB" style="height:20px"></div>
-</div>
+    
+    </div>
+  
