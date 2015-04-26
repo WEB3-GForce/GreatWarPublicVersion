@@ -1,9 +1,9 @@
 'use strict';
 
 var HIGHLIGHT_TYPES = {
-    move: 51,
-    attack: 52,
-    special: 53
+    move: 1138,
+    attack: 1139,
+    special: 1140
 };
 
 var TILE_MAP  = {
@@ -13,11 +13,18 @@ var TILE_MAP  = {
 var GameBoard = function(game) {
     Phaser.Tilemap.call(this, game, 'tileset');
 
-    this.addTilesetImage('tmw_desert_spacing', // tileset name, findable in the json
-			 'tmw_desert_spacing'
-			);
+    this.addTilesetImage('fe', 'fe');
     this.addTilesetImage('fog', 'fog');
     this.addTilesetImage('highlight', 'highlight');
+
+    var types = ['infantry', 'machinegun', 'artillery', 'command'];
+    var colors = ['red', 'blue'];
+    for (var i = 0; i < types.length; i++) {
+	for (var j = 0; j < colors.length; j++) {
+	    var str = types[i] + '-' + colors[j];
+	    this.addTilesetImage(str, str);
+	}
+    }
 
     this.terrainLayer = this.createLayer('terrainLayer'); // saved name of the layer
     this.fogLayer = this.createLayer('fogLayer');
