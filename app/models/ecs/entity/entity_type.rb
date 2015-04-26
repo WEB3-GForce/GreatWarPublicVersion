@@ -188,6 +188,6 @@ class EntityType
 	# Returns
 	#   whether the entity can build trenches
 	def self.trench_builder_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [TrenchBuilderEntity])
+		entity_manager.has_components(entity, [TrenchBuilderComponent])
 	end
 end

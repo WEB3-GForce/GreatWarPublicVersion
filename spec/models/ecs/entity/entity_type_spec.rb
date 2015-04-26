@@ -207,7 +207,7 @@ describe EntityType do
 		it "should properly not produce false positives" do
 			expect(EntityType.trench_builder_entity?(manager, machine_gun_entity)).to be false
 			expect(EntityType.trench_builder_entity?(manager, artillery_entity)).to be false
-			expect(EntityType.dtrench_builder_entity?(manager, command_bunker_entity)).to be false
+			expect(EntityType.trench_builder_entity?(manager, command_bunker_entity)).to be false
 		end
 	end
 end
