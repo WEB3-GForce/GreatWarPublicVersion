@@ -394,7 +394,6 @@ GameGroup.prototype.killUnits = function(unitIds) {
 }
 
 GameGroup.prototype.setTurn = function(playerId, turnCount) {
-    console.log(playerId, turnCount, this.players);
     return {
 	gameGroup: this,
 	ui: this.ui,
