@@ -1,0 +1,35 @@
+<div id="col-R">
+    
+      <div class="main-box">
+        <div class="main-top"></div>
+        <div class="main-filler">
+        
+          <div class="main-info">
+            
+            <h1>The Great War</h1>
+            
+            <p>
+              Welcome to the Great War!          
+            </p>
+
+            <div id="social media">
+              <% if logged_in? %>
+                <%= link_to "Sign up now!", current_user, class: "btn" %>
+              <% else %>
+                <%= link_to "Sign up now!", signup_path, class: "btn" %>
+              <% end %>
+            </div>
+            <!-- <%= link_to image_tag("trenches_update.png", alt: "The Great War logo"),
+                        '#' %>
+            <%= link_to image_tag("banner.png", alt: "The Great War banner"),
+                  '#' %>
+            -->
+          </div>
+        
+        </div>
+        <div class="main-footer"></div>
+      </div>
+      <div class="clearB" style="height:20px"></div>
+    
+    </div>
+

@@ -6,25 +6,27 @@ require_relative "./component.rb"
 =end
 class UserIdComponent < Component
   
-    attr_reader(:id, :faction)
+  attr_reader(:id, :channel, :faction)
+  
+  # Initializes a new UserIdComponent object
+  #
+  # Arguments
+  #   id = the unique identifier
+  #   faction = which faction the entity belongs to (typically a color like
+  #             red, blue, etc.)
+  #
+  # Postcondtion
 
-    # Initializes a new UserIdComponent object
-    #
-    # Arguments
-    #   id = the unique identifier
-    #   faction = which faction the entity belongs to (typically a color like
-    #             red, blue, etc.)
-    #
-    # Postcondtion
-    #   The UserIdComponent object is properly initialized
-    def initialize(id, faction)
-        @id      = id
-        @faction = faction
-    end
-
-    # Returns a string representation of the component  
-    def to_s
-        "[User ID: #{@id}, Faction: #{@faction}]"
-    end
+  #   The NameComponent object is properly initialized
+  def initialize(id, channel, faction)
+    @id      = id
+    @channel = channel
+    @faction = faction
+  end
+  
+  # Returns a string representation of the component  
+  def to_s
+    "[User ID: #{@id}, Faction: #{@faction}]"
+  end
 end
 

@@ -8,19 +8,24 @@ GameOver.prototype = {
 
     },
     create: function () {
-	var style = { font: '65px Arial', fill: '#ffffff', align: 'center'};
-	this.titleText = this.game.add.text(this.game.width / 2,100, 'Game Over!', style);
-	this.titleText.anchor.setTo(0.5, 0.5);
+	this.game.add.image(0, 0, 'lobby');
 
-	this.congratsText = this.game.add.text(this.game.width / 2, 200, this.game.endGameMessage, { font: '32px Arial', fill: '#ffffff', align: 'center'});
-	this.congratsText.anchor.setTo(0.5, 0.5);
+	this.graphics = this.game.add.graphics(0, 0);
+	this.graphics.beginFill(COLORS.SLATE, 0.7);
+	this.graphics.drawRect(80, 80, 480, 480);
 
-	// this.instructionText = this.game.add.text(this.game.width / 2, 300, 'Click To Play Again', { font: '16px Arial', fill: '#ffffff', align: 'center'});
-	// this.instructionText.anchor.setTo(0.5, 0.5);
+	this.title = this.game.add.bitmapText(this.game.constants.CAMERA_WIDTH / 2, 160,
+					      'minecraftia',
+					      "THE GREAT WAR",
+					      32);
+	this.title.anchor.set(0.5, 0.5);
+	this.subtitle = this.game.add.bitmapText(this.game.constants.CAMERA_WIDTH / 2, 200,
+						 'minecraftia',
+						 "Gameover",
+						 16);
+	this.subtitle.anchor.set(0.5, 0.5);
     },
     update: function () {
-	if(this.game.input.activePointer.justPressed()) {
-	    this.game.state.start('play');
-	}
+
     }
 };

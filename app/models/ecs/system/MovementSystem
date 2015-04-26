@@ -1,0 +1,7 @@
+ require_relative "System.rb"
+
+ class MovementSystem
+ 	def sel.update(entity_manager)
+ 		
+ 	end
+ end

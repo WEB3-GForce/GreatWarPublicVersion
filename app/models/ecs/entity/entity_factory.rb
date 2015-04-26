@@ -1,6 +1,7 @@
 #require "enumerable/standard_deviation"
 #require "rubystats"
 
+require 'ostruct'
 require_relative "./entity.rb"
 require_relative "./entity_manager.rb"
 Dir[File.dirname(__FILE__) + '/../component/*.rb'].each {|file| require_relative file }
@@ -148,9 +149,9 @@ public
 	#
 	# Returns
 	#   the newly created Human Player Entity
-	def self.human_player(entity_manager, name, id=-1, faction="blue")
+	def self.human_player(entity_manager, name, id=-1, channel="", faction="blue")
 		return self.create_entity(entity_manager,
-					  [UserIdComponent.new(id, faction),
+					  [UserIdComponent.new(id, channel, faction),
 					   NameComponent.new(name),
 					   HumanComponent.new])
 	end
@@ -406,7 +407,7 @@ public
 	#
 	# Arguments
 	#   entity_manager = the entity manager to add the new entities to
-	#   player_names   = the names of the players to have (max 4)
+	#   users          = map of player ids => names (max 4)
 	#
 	# Returns
 	#   an array of the following entities:
@@ -424,8 +425,7 @@ public
 	#
 	#   When initializing a new game, this is the only method that needs
 	#   to be called.     
-	def self.create_game_basic(entity_manager, player_names)
-
+	def self.create_game_basic(entity_manager, users)
 		self.create_board_basic(entity_manager)
 		
 		place_methods = [EntityFactory.method(:place_army_top_left),
@@ -436,8 +436,9 @@ public
 		players = []
 		pieces = []
 		factions = ["red", "blue", "green", "yellow"]
-		player_names.each_with_index { |name, index|
-			player = self.human_player(entity_manager, name, -1, factions[index])
+
+		users.each_with_index { |user, index|
+			player = self.human_player(entity_manager, user.name, user.id, user.channel, factions[index])
 			army   = self.create_army(entity_manager, player)
 			players.push player
 			pieces.concat army
@@ -448,32 +449,37 @@ public
 		return [players, turn, pieces]
 	end
 
-	def self.create_game_demo(entity_manager, player_names)
-		# Board 
-		tf = lambda { self.flatland_square(entity_manager) }
-		tm = lambda { self.mountain_square(entity_manager) }
-		th = lambda { self.hill_square(entity_manager) }
-		tt = lambda { self.trench_square(entity_manager) }
-		tr = lambda { self.river_square(entity_manager) }
+	def self.create_game(entity_manager, users, terrainIds, pieceIds)
+		rows = entity_manager.row
+		cols = entity_manager.col
 
-		terrains = [th, th, tt, tt, tf, tf, tf, tf, th, th, th, 
-		            th, th, tt, tt, tf, tf, tf, tf, th, tm, th, 
-		            tt, tt, tt, tt, tf, tf, tf, tf, th, th, th, 
-		            tt, tt, tt, tt, tf, tf, tf, tf, tf, tf, tf, 
-		            tf, tf, tf, tf, tf, tf, tf, tf, tf, tf, tf, 
-		            tr, tr, tr, tr, tr, tr, tr, tr, tr, tr, tr, 
-		            tf, tf, tf, tf, tf, tf, tf, tf, tf, tf, tf, 
-		            tf, tf, tf, tf, tf, tf, tf, tt, tt, tt, tt, 
-		            th, th, th, tf, tf, tf, tf, tt, tt, tt, tt, 
-		            th, tm, th, tf, tf, tf, tf, tt, tt, th, th,
-		            th, th, th, tf, tf, tf, tf, tt, tt, th, th ]
+		# Board
+		flatland = lambda { self.flatland_square(entity_manager) }
+		mountain = lambda { self.mountain_square(entity_manager) }
+		hill = lambda { self.hill_square(entity_manager) }
+		trench = lambda { self.trench_square(entity_manager) }
+		river = lambda { self.river_square(entity_manager) }
 
-		entity_manager.row = 11
-		entity_manager.col = 11
+		terrainCreator = {}
+		terrainCreator.default = flatland
+		[-1, 68, 67, 99].each { |id| terrainCreator[id] = flatland }
+		[-2, 567, 750, 751, 683, 546, 385, 353, 387, 619, 481, 583, 461, 578, 
+		 453, 385, 560, 491, 551, 618, 554, 681, 745, 712, 627, 680, 464, 588, 
+		 595, 782, 522, 427, 582, 614, 780, 747, 522, 427, 466, 433, 593, 213, 
+		 53, 57, 221, 55, 125, 21, 123, 91, 21, 53, 25, 40, 509, 380, 381, 382, 
+		 507, 383, 508, 470, 380, 509, 472, 508, 474, 509].each { |id| 
+		 	terrainCreator[id] = mountain
+		}
+		[-3, 685, 686, 653, 685, 654, 655].each { |id| terrainCreator[id] = hill }
+		[-4].each { |id| terrainCreator[id] = trench }
+		[-5, 631, 636, 632, 635, 636, 603, 604, 599, 539, 631, 629, 635, 573, 
+		 597, 630, 571, 600].each { |id| 
+			terrainCreator[id] = river 
+		}
 
-		(0...entity_manager.row).each { |row|
-			(0...entity_manager.col).each { |col|
-				square = terrains[row][col].call
+		(0...rows).each { |row|
+			(0...cols).each { |col|
+				square = terrainCreator[terrainIds[row*cols + col]].call
 				entity_manager.add_component(square,
 						PositionComponent.new(row, col))
 				entity_manager.board[row][col] = [square, []]
@@ -481,9 +487,15 @@ public
 		}
 
 		# Players
-		p1 = self.human_player(entity_manager, player_names[0], -1, "red")
-		p2 = self.human_player(entity_manager, player_names[1], -1, "blue")
-		players = [p1, p2]
+		players = []
+
+		factions = ["red", "blue", "green", "yellow"]
+
+		users.each_with_index { |user, index|
+			player = self.human_player(entity_manager, user.name, user.id, 
+			                           user.channel, factions[index])
+			players.push player
+		}
 
 		# Turn
 		turn = self.turn_entity(entity_manager, players)
@@ -494,38 +506,29 @@ public
 		a = lambda { |player| self.artillery(entity_manager, player) }
 		b = lambda { |player| self.command_bunker(entity_manager, player) }
 
-		i1 = lambda { i[p1] }
-		m1 = lambda { m[p1] }
-		a1 = lambda { a[p1] }
-		b1 = lambda { b[p1] }
-		i2 = lambda { i[p2] }
-		m2 = lambda { m[p2] }
-		a2 = lambda { a[p2] }
-		b2 = lambda { b[p2] }
-
-		units = [ a1, nil, nil,  i1,  i1, nil, nil, nil, nil, nil, nil, 
-		         nil,  b1,  m1,  i1,  i1, nil, nil, nil, nil, nil, nil, 
-		         nil,  m1,  m1,  i1,  i1, nil, nil, nil, nil, nil, nil, 
-		          i1,  i1,  i1,  i1, nil, nil, nil, nil, nil, nil, nil, 
-		          i1,  i1,  i1, nil, nil, nil, nil, nil, nil, nil, nil, 
-		         nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 
-		         nil, nil, nil, nil, nil, nil, nil, nil,  i2,  i2,  i2,  
-		         nil, nil, nil, nil, nil, nil, nil,  i2,  i2,  i2,  i2,  
-		         nil, nil, nil, nil, nil, nil,  i2,  i2,  m2,  m2, nil, 
-		         nil, nil, nil, nil, nil, nil,  i2,  i2,  m2,  b2, nil,
-		         nil, nil, nil, nil, nil, nil,  i2,  i2, nil, nil,  a2 ]
+		pieceCreator = {}
+		[-10, 1095].each { |id| pieceCreator[id] = lambda { i[players[0]] } }
+		[-11, 1123].each { |id| pieceCreator[id] = lambda { m[players[0]] } }
+		[-12, 1039].each { |id| pieceCreator[id] = lambda { a[players[0]] } }
+		[-13, 1067].each { |id| pieceCreator[id] = lambda { b[players[0]] } }
+		[-20, 1081].each { |id| pieceCreator[id] = lambda { i[players[1]] } }
+		[-21, 1109].each { |id| pieceCreator[id] = lambda { m[players[1]] } }
+		[-22, 1025].each { |id| pieceCreator[id] = lambda { a[players[1]] } }
+		[-23, 1053].each { |id| pieceCreator[id] = lambda { b[players[1]] } }
 
 		pieces = []
-		(0...entity_manager.row).each { |row|
-			(0...entity_manager.col).each { |col|
-				next if units[row][col].nil?
+		(0...rows).each { |row|
+			(0...cols).each { |col|
+				unit = pieceCreator[pieceIds[row*cols + col]]
 
-				pieces << units[row][col].call
+				next if unit.nil?
+
+				pieces << unit.call
 				self.place_piece(entity_manager, pieces[-1], row, col)
 			}
 		}
 
-		return [players, turn, pieces]
+		return entity_manager
 	end
 
 =begin
@@ -565,3 +568,32 @@ public
 
 end
 
+# rows = 11
+# cols = 11
+# terrainIds = [-3, -3, -4, -4, -1, -1, -1, -1, -3, -3, -3, 
+#               -3, -3, -4, -4, -1, -1, -1, -1, -3, -2, -3, 
+#               -4, -4, -4, -4, -1, -1, -1, -1, -3, -3, -3, 
+#               -4, -4, -4, -4, -1, -1, -1, -1, -1, -1, -1, 
+#               -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+#               -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, 
+#               -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+#               -1, -1, -1, -1, -1, -1, -1, -4, -4, -4, -4, 
+#               -3, -3, -3, -1, -1, -1, -1, -4, -4, -4, -4, 
+#               -3, -2, -3, -1, -1, -1, -1, -4, -4, -3, -3,
+#               -3, -3, -3, -1, -1, -1, -1, -4, -4, -3, -3 ]
+# pieceIds = [ -12, nil, nil, -10, -10, nil, nil, nil, nil, nil, nil, 
+#              nil, -13, -11, -10, -10, nil, nil, nil, nil, nil, nil, 
+#              nil, -11, -11, -10, -10, nil, nil, nil, nil, nil, nil, 
+#              -10, -10, -10, -10, nil, nil, nil, nil, nil, nil, nil, 
+#              -10, -10, -10, nil, nil, nil, nil, nil, nil, nil, nil, 
+#              nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 
+#              nil, nil, nil, nil, nil, nil, nil, nil, -20, -20, -20,  
+#              nil, nil, nil, nil, nil, nil, nil, -20, -20, -20, -20,  
+#              nil, nil, nil, nil, nil, nil, -20, -20, -21, -21, nil, 
+#              nil, nil, nil, nil, nil, nil, -20, -20, -21, -23, nil,
+#              nil, nil, nil, nil, nil, nil, -20, -20, nil, nil, -22 ]
+# users = [OpenStruct.new({name: "1", id: -1, channel: "NA"}),
+#          OpenStruct.new({name: "2", id: -1, channel: "NA"}), ]
+# entity_manager = EntityManager.new(rows, cols)
+# EntityFactory.create_game(entity_manager, nil, nil, nil)
+# puts entity_manager

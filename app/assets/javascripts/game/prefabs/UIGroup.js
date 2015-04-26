@@ -25,8 +25,8 @@ UIGroup.prototype.constructor = UIGroup;
 
 UIGroup.prototype.initPlayerInfoUI = function() {
     this.playerInfo = this.game.add.group();
-    this.playerInfo.x = 8;
-    this.playerInfo.y = 8;
+    this.playerInfo.cameraOffset.x = 8;
+    this.playerInfo.cameraOffset.y = 8;
     this.playerInfo.fixedToCamera = true;
 
     var width = 288;
@@ -35,6 +35,7 @@ UIGroup.prototype.initPlayerInfoUI = function() {
     this.playerInfoGraphics = this.game.add.graphics(0, 0, this.playerInfo);
     this.playerInfoGraphics.beginFill(COLORS.BUTTON, 0.5);
     this.playerInfoGraphics.drawRect(0, 0, width, height);
+
     this.playerInfoGraphics.leftPos = 0;
     this.playerInfoGraphics.rightPos = this.game.width - width - 16;
 
@@ -49,29 +50,30 @@ UIGroup.prototype.initPlayerInfoUI = function() {
     this.playerName.rightPos = this.game.width - 232;
 
     this.turnCount = this.game.add.bitmapText(72, 36, 'minecraftia',
-					       "",
-					       20,
-					       this.playerInfo);
-    this.turnNumber.leftPos = 72;
-    this.turnNumber.rightPos = this.game.width - 232;
+					      "",
+					      20,
+					      this.playerInfo);
+    this.turnCount.leftPos = 72;
+    this.turnCount.rightPos = this.game.width - 232;
 
     this.playerPortrait = this.game.add.sprite(0, 0, 'generalPortrait', 0, this.playerInfo);
     this.playerPortrait.width = 64;
     this.playerPortrait.height = 64;
+
     this.playerPortrait.leftPos = 0;
     this.playerPortrait.rightPos = this.game.width - width - 16;
 
     this.endTurn = this.game.add.bitmapText(0, 66, 'minecraftia',
-            '         Press "z" to\n            End Turn',
-            12,
-            this.playerInfo);
+					    '         Press "z" to\n            End Turn',
+					    12,
+					    this.playerInfo);
     this.endTurn.leftPos = 0;
     this.endTurn.rightPos = this.game.width - width - 16;
 
     this.endGame = this.game.add.bitmapText(width/2, 66, 'minecraftia',
-            '        Press "q" to\n         Surrender',
-            12,
-            this.playerInfo);
+					    '        Press "q" to\n         Surrender',
+					    12,
+					    this.playerInfo);
     this.endGame.leftPos = width/2;
     this.endGame.rightPos = this.game.width - 16 - width/2;
 }
@@ -101,8 +103,8 @@ UIGroup.prototype.checkPlayerInfoUIPosition = function(mouse) {
 UIGroup.prototype.initTileInfoHelper = function(group, x) {
     var height = 160;
     var width = 96;
-    group.x = 8;
-    group.y = this.game.height - height - 8;
+    group.cameraOffset.x = x;
+    group.cameraOffset.y = this.game.constants.CAMERA_HEIGHT - height - 8;
     group.fixedToCamera = true;
 
     group.graphics = this.game.add.graphics(0, 0, group);
@@ -120,17 +122,17 @@ UIGroup.prototype.initTileInfoUI = function() {
     this.tileInfoPrimary = this.game.add.group();
     this.tileInfoSecondary = this.game.add.group();
     this.initTileInfoHelper(this.tileInfoPrimary, 8);
-    this.initTileInfoHelper(this.tileInfoSecondary, this.game.width - 96 - 8);
+    this.initTileInfoHelper(this.tileInfoSecondary, this.game.constants.CAMERA_WIDTH - 96 - 8);
     this.tileInfoSecondary.visible = false;
 }
 
 UIGroup.prototype.setTile = function(group, tile) {
     if (tile) {
-	    group.tile.frame = tile.index - 1;
-	    group.title.text = tile.name;
-	    group.visible = true;
+	group.tile.frame = tile.index - 1;
+	group.title.text = tile.index; // tile.name;
+	group.visible = true;
     } else {
-	    group.visible = false;
+	group.visible = false;
     }
 }
 UIGroup.prototype.setPrimaryTile = function(tile) {
@@ -162,14 +164,14 @@ UIGroup.prototype.setPrimaryUnit = function(unit) {
 }
 UIGroup.prototype.setSecondaryUnit = function(unit) {
     this.setUnit(this.unitInfoSecondary, this.tileInfoSecondary, unit,
-		 this.game.width - 96 - 8, this.game.width - 96 - 200);
+		 this.game.constants.CAMERA_WIDTH - 96 - 8, this.game.constants.CAMERA_WIDTH - 96 - 200);
 }
 
 UIGroup.prototype.initUnitInfoHelper = function(group, x) {
     var height = 160;
     var width = 192;
-    group.x = x;
-    group.y = this.game.height - height - 8;
+    group.cameraOffset.x = x;
+    group.cameraOffset.y = this.game.constants.CAMERA_HEIGHT - height - 8;
     group.fixedToCamera = true;
 
     group.graphics = this.game.add.graphics(0, 0, group);
@@ -197,7 +199,7 @@ UIGroup.prototype.initUnitInfoUI = function() {
     this.unitInfoPrimary = this.game.add.group();
     this.unitInfoSecondary = this.game.add.group();
     this.initUnitInfoHelper(this.unitInfoPrimary, 8);
-    this.initUnitInfoHelper(this.unitInfoSecondary, this.game.width - 192 - 8);
+    this.initUnitInfoHelper(this.unitInfoSecondary, this.game.constants.CAMERA_WIDTH - 192 - 8);
 }
 
 UIGroup.prototype.drawArc = function(graphics, x, y, r, start, end, stroke, color) {
@@ -338,11 +340,11 @@ UIGroup.prototype.showMenu = function(unit, actions) {
 UIGroup.prototype.hideMenu = function() {
     var t = this.game.add.tween(this.actionMenu.scale).to({x: 0, y: 0}, 200, Phaser.Easing.Back.In);
     t.onComplete.add(function() {
-	    this.actionMenu.visible = false;
-	    for (var i = 0; i < this.actions.length; i++) {
-	        this.actionMenu.remove(this.actions[i], true);
-	    }
-	    this.actions = [];
+	this.actionMenu.visible = false;
+	for (var i = 0; i < this.actions.length; i++) {
+	    this.actionMenu.remove(this.actions[i], true);
+	}
+	this.actions = [];
     }, this);
     return t;
 }
