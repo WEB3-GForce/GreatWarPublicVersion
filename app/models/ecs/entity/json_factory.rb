@@ -456,8 +456,9 @@ class JsonFactory
 	# Returns
 	#   A hash that is ready to be jsoned
 	def self.end_turn(entity_manager, entity)
+          turnHash = self.turn(entity_manager, entity)
 		return [{"action"    => "setTurn",
-		        "arguments" => [self.turn(entity_manager, entity)]}]
+		        "arguments" => [turnHash["playerid"], turnHash["turnCount"]]}]
 	end
 
 

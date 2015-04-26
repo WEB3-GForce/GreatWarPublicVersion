@@ -2,14 +2,12 @@ require_relative '../models/ecs/Game.rb'
 require_relative '../helpers/sessions_helper.rb'
 
 class SocketController < WebsocketRails::BaseController
-  @@game ||= Hash.new
-
   def self.user_joined(user, new_user)
     WebsocketRails[user.channel].trigger("userJoined", {name: new_user.name})
   end
 
   def self.gameover(gama_id)
-    manager = @@game[gama_id][:manager]
+    manager = Game.get(gama_id)
 
     Game.get_user_channels(manager).each do |channel|
       WebsocketRails[channel].trigger :gameover, {}
@@ -17,8 +15,9 @@ class SocketController < WebsocketRails::BaseController
   end
 
   def self.init_game(users, game_id)
-    manager, start_json = Game.init_game(users)
-    @@game[game_id] = { :manager => manager, :start_json => start_json }
+    manager = Game.init_game(users)
+    Game.save(game_id, manager)
+    Game.store(game_id, manager)
 
     Game.get_user_channels(manager).each do |channel|
       WebsocketRails[channel].trigger :initGame, {}
@@ -30,7 +29,7 @@ class SocketController < WebsocketRails::BaseController
   end
   
   def get_game
-    if !@@game[current_user.gama_id].nil?
+    unless Game.get(current_user.gama_id).nil?
       WebsocketRails[current_user.channel].trigger :initGame, {}
     end
   end
@@ -44,17 +43,17 @@ class SocketController < WebsocketRails::BaseController
 
     p method_name
 
-    manager = @@game[game_id][:manager]
+    manager = Game.get(game_id)
     if method_name == 'init_game'
         response = Game.get_game_state(req_id, manager)
     elsif Game.respond_to? method_name
-        manager = @@game[game_id][:manager]
-
         method_params.unshift manager
         method_params.unshift req_id
 
         response = Game.public_send(method_name, *method_params)
     end
+    Game.save(game_id, manager)
+    # Game.store(game_id, manager) # probably only want to store after a turn ends
 
     p response
 
