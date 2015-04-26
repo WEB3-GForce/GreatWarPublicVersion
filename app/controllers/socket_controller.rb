@@ -53,7 +53,8 @@ class SocketController < WebsocketRails::BaseController
         response = Game.public_send(method_name, *method_params)
     end
     Game.save(game_id, manager)
-    # Game.store(game_id, manager) # probably only want to store after a turn ends
+    if method_name == 'end_turn'
+      Game.store(game_id, manager) # probably only want to store after a turn ends
 
     p response
 

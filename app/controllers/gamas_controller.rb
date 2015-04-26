@@ -9,7 +9,7 @@ class GamasController < ApplicationController
 
     if user.gama && params[:leave] == "1"
       user.leave_game
-      flash.now[:success] = "You have left your current Gama"
+      flash.now[:success] = "You have left your current Game"
     end
   end
 

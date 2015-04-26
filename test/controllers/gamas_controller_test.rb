@@ -1,14 +1,14 @@
 require 'test_helper'
 
-class GamesControllerTest < ActionController::TestCase
+class GamasControllerTest < ActionController::TestCase
   setup do
-    @game = games(:one)
+    @gama = gamas(:one)
   end
 
   test "should get index" do
     get :index
     assert_response :success
-    assert_not_nil assigns(:games)
+    assert_not_nil assigns(:gamas)
   end
 
   test "should get new" do
@@ -18,32 +18,32 @@ class GamesControllerTest < ActionController::TestCase
 
   test "should create game" do
     assert_difference('Game.count') do
-      post :create, game: { done: @game.done, pending: @game.pending }
+      post :create, gama: { done: @gama.done, pending: @gama.pending }
     end
 
-    assert_redirected_to game_path(assigns(:game))
+    assert_redirected_to gama_path(assigns(:gama))
   end
 
   test "should show game" do
-    get :show, id: @game
+    get :show, id: @gama
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, id: @game
+    get :edit, id: @gama
     assert_response :success
   end
 
   test "should update game" do
-    patch :update, id: @game, game: { done: @game.done, pending: @game.pending }
-    assert_redirected_to game_path(assigns(:game))
+    patch :update, id: @gama, gama: { done: @gama.done, pending: @gama.pending }
+    assert_redirected_to game_path(assigns(:gama))
   end
 
   test "should destroy game" do
     assert_difference('Game.count', -1) do
-      delete :destroy, id: @game
+      delete :destroy, id: @gama
     end
 
-    assert_redirected_to games_path
+    assert_redirected_to gamas_path
   end
 end

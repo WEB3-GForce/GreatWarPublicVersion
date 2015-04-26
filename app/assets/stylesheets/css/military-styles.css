@@ -205,7 +205,13 @@ p {
 	font-style: normal;
 }
 
+th {
+	font-size: 150%;
+}
 
+.name {
+	font-size: 130%;
+}
 
 
 
@@ -299,7 +305,11 @@ a.pl:hover {
 }
 
 .log {
-	margin: 20px 20px 20px 100px;
+	margin: 20px 20px 20px 100px !important;
+}
+
+.pagination {
+	margin: 20px 20px 20px 50px !important;
 }
 
 label {
@@ -674,9 +684,23 @@ a.YTbutton:active {
 	margin: 0 0 0 200px;
 }
 
+.btn-default {
+	background-color: #AA9A66 !important;
+}
+
+.btn-leave {
+	background-color: #B74934 !important;
+}
+
 
 .radio-control-label {
 	width: 100%;
 	margin: 0 0 0 233px;
+}
+
+.center {
+     float: none;
+     margin-left: auto;
+     margin-right: auto;
 }
 
