@@ -462,11 +462,21 @@ public
 		river = lambda { self.river_square(entity_manager) }
 
 		terrainCreator = {}
-		[-1].each { |id| terrainCreator[id] = flatland }
-		[-2].each { |id| terrainCreator[id] = mountain }
-		[-3].each { |id| terrainCreator[id] = hill }
+		terrainCreator.default = flatland
+		[-1, 68, 67, 99].each { |id| terrainCreator[id] = flatland }
+		[-2, 567, 750, 751, 683, 546, 385, 353, 387, 619, 481, 583, 461, 578, 
+		 453, 385, 560, 491, 551, 618, 554, 681, 745, 712, 627, 680, 464, 588, 
+		 595, 782, 522, 427, 582, 614, 780, 747, 522, 427, 466, 433, 593, 213, 
+		 53, 57, 221, 55, 125, 21, 123, 91, 21, 53, 25, 40, 509, 380, 381, 382, 
+		 507, 383, 508, 470, 380, 509, 472, 508, 474, 509].each { |id| 
+		 	terrainCreator[id] = mountain
+		}
+		[-3, 685, 686, 653, 685, 654, 655].each { |id| terrainCreator[id] = hill }
 		[-4].each { |id| terrainCreator[id] = trench }
-		[-5].each { |id| terrainCreator[id] = river }
+		[-5, 631, 636, 632, 635, 636, 603, 604, 599, 539, 631, 629, 635, 573, 
+		 597, 630, 571, 600].each { |id| 
+			terrainCreator[id] = river 
+		}
 
 		(0...rows).each { |row|
 			(0...cols).each { |col|
@@ -498,14 +508,14 @@ public
 		b = lambda { |player| self.command_bunker(entity_manager, player) }
 
 		pieceCreator = {}
-		[-10].each { |id| pieceCreator[id] = lambda { i[players[0]] } }
-		[-11].each { |id| pieceCreator[id] = lambda { m[players[0]] } }
-		[-12].each { |id| pieceCreator[id] = lambda { a[players[0]] } }
-		[-13].each { |id| pieceCreator[id] = lambda { b[players[0]] } }
-		[-20].each { |id| pieceCreator[id] = lambda { i[players[1]] } }
-		[-21].each { |id| pieceCreator[id] = lambda { m[players[1]] } }
-		[-22].each { |id| pieceCreator[id] = lambda { a[players[1]] } }
-		[-23].each { |id| pieceCreator[id] = lambda { b[players[1]] } }
+		[-10, 1095].each { |id| pieceCreator[id] = lambda { i[players[0]] } }
+		[-11, 1123].each { |id| pieceCreator[id] = lambda { m[players[0]] } }
+		[-12, 1039].each { |id| pieceCreator[id] = lambda { a[players[0]] } }
+		[-13, 1067].each { |id| pieceCreator[id] = lambda { b[players[0]] } }
+		[-20, 1081].each { |id| pieceCreator[id] = lambda { i[players[1]] } }
+		[-21, 1109].each { |id| pieceCreator[id] = lambda { m[players[1]] } }
+		[-22, 1025].each { |id| pieceCreator[id] = lambda { a[players[1]] } }
+		[-23, 1053].each { |id| pieceCreator[id] = lambda { b[players[1]] } }
 
 		pieces = []
 		(0...rows).each { |row|
