@@ -44,7 +44,7 @@ class DamageSystem < System
 		
 		boosts.each {|boost|
 			if boost == BoostComponent.defense
-				damage = (damage * boost.percent).round
+				damage = (damage / boost.amount).round
 			end
 		}
 				

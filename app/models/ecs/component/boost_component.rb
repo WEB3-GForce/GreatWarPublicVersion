@@ -6,6 +6,10 @@ require_relative "./component.rb"
 	a defense boost would give any units standing on it a boost in defense.
 	A move_cost "boost" would increase the energy needed to cross the 
 	terrain.
+	
+	For example, a defense boost of 2 means that attacks will take 1/2 less
+	damage. A move_cost of 2 means that it would cost x2 the regular amount
+	to move onto it.
 =end
 class BoostComponent < Component
 
@@ -14,24 +18,25 @@ private
 	#
 	# Arguments
 	#   type   = the type of boost given.
-	#   percent = a ratio of the boost. For example, 0.5 = 50% boost.
+	#   amount = a ratio of the boost. Boosts should be doubles like 2.0
+	#            For example, a 2.0 move_cost means the movement cost is doubled.
 	#
 	# Postcondtion
 	#   The BoostComponent object is properly initialized
-	def initialize(type, percent)
+	def initialize(type, amount)
 		@type = type
-		@percent = percent
+		@amount = amount
 	end
 
 public
 
-	attr_reader(:type, :percent)
+	attr_reader(:type, :amount)
 
 	# These are the static boost objects. If a boost is needed,
 	# these should be used. Since they are static, DO NOT MODIFY THESE
 	# OUTSIDE THIS FILE.
-	@defense        = BoostComponent.new(:defense,   0.5)
-	@move_cost      = BoostComponent.new(:move_cost, 0.5)
+	@defense        = BoostComponent.new(:defense,   2.0)
+	@move_cost      = BoostComponent.new(:move_cost, 2.0)
 
 	# Getter methods for the class instance variables
 	def self.defense      ; @defense    ; end
@@ -39,7 +44,7 @@ public
 
 	# Returns a string representation of the component
 	def to_s
-		"Boost : [Type = #{@type}, Percent = #{@percent}]"
+		"Boost : [Type = #{@type}, Amoung = #{@amount}]"
 	end
 end
 
