@@ -161,7 +161,7 @@ their position on the board has to be exactly 1.</pre>
 
           
           <div class="method-source-code" id="adjacent-3F-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/system/motion_system.rb, line 368</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/system/motion_system.rb, line 413</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">adjacent?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>, <span class="ruby-identifier">entity2</span>)
         <span class="ruby-keyword">return</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">distance</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>, <span class="ruby-identifier">entity2</span>) <span class="ruby-operator">==</span> <span class="ruby-value">1</span>
 <span class="ruby-keyword">end</span></pre>
@@ -205,7 +205,7 @@ their position on the board has to be exactly 1.</pre>
 
           
           <div class="method-source-code" id="distance-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/system/motion_system.rb, line 382</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/system/motion_system.rb, line 427</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">distance</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>, <span class="ruby-identifier">entity2</span>)
         <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-constant">EntityType</span>.<span class="ruby-identifier">placed_entity?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>) <span class="ruby-operator">||</span>
            <span class="ruby-operator">!</span><span class="ruby-constant">EntityType</span>.<span class="ruby-identifier">placed_entity?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity2</span>)  
@@ -262,7 +262,7 @@ indeed reach the new_square, the new_square is not occupied, etc.</pre>
 
           
           <div class="method-source-code" id="make_move-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/system/motion_system.rb, line 292</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/system/motion_system.rb, line 340</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">make_move</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>, <span class="ruby-identifier">new_square</span>)
         <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-constant">EntityType</span>.<span class="ruby-identifier">moveable_entity?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>) <span class="ruby-operator">||</span>
            <span class="ruby-operator">!</span><span class="ruby-constant">EntityType</span>.<span class="ruby-identifier">square_entity?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">new_square</span>)
@@ -338,7 +338,7 @@ entity can&#39;t move anywhere or isn&#39;t a moveable entity).</pre>
 
           
           <div class="method-source-code" id="moveable_locations-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/system/motion_system.rb, line 255</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/system/motion_system.rb, line 303</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">moveable_locations</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
         <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-constant">EntityType</span>.<span class="ruby-identifier">moveable_entity?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
                 <span class="ruby-keyword">return</span> []
@@ -399,14 +399,12 @@ entity can&#39;t move anywhere or isn&#39;t a moveable entity).</pre>
 
 <pre>The piece is removed from the occupant array of the board and all
 of its PositionComponent&#39;s are destroyed.</pre>
-
-<p>TODO If entities can ever have multiple positions, this must be expanded.</p>
           
           
 
           
           <div class="method-source-code" id="remove_piece-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/system/motion_system.rb, line 342</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/system/motion_system.rb, line 387</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">remove_piece</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
         <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-constant">EntityType</span>.<span class="ruby-identifier">placed_entity?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>) <span class="ruby-operator">||</span>
            <span class="ruby-operator">!</span><span class="ruby-constant">EntityType</span>.<span class="ruby-identifier">piece_entity?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)  

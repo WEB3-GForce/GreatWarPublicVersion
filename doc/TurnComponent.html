@@ -94,10 +94,7 @@
 <p>The <a href="TurnComponent.html">TurnComponent</a> is responsible for
 keeping track of turn information for the game. It contains a list of
 players and keeps track of which player&#39;s turn it currently is. It also
-keeps track of entities the player has moved, has made attacked, or has
-made perform a special action (such as digging trenches). This ensures that
-a player can not have pieces        act more times than they should be able
-to.</p>
+keeps track of the current turn count.</p>
 
   </section>
 
@@ -111,6 +108,40 @@ to.</p>
 
     
 
+    
+    <section class="attribute-method-details" class="method-section">
+      <header>
+        <h3>Attributes</h3>
+      </header>
+
+      
+      <div id="attribute-i-players" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">players</span><span
+            class="attribute-access-type">[RW]</span>
+        </div>
+
+        <div class="method-description">
+        
+        
+        
+        </div>
+      </div>
+      
+      <div id="attribute-i-turn_count" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">turn_count</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        
+        
+        </div>
+      </div>
+      
+    </section>
     
 
     
@@ -149,10 +180,11 @@ to.</p>
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/component/turn_component.rb, line 20</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/component/turn_component.rb, line 21</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">player_entities</span>)
-        <span class="ruby-ivar">@turn</span>     = <span class="ruby-value">0</span>
-        <span class="ruby-ivar">@players</span>  = <span class="ruby-identifier">player_entities</span>
+        <span class="ruby-ivar">@turn</span>       = <span class="ruby-value">0</span>
+        <span class="ruby-ivar">@turn_count</span> = <span class="ruby-value">1</span>
+        <span class="ruby-ivar">@players</span>    = <span class="ruby-identifier">player_entities</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -191,7 +223,7 @@ to.</p>
 
           
           <div class="method-source-code" id="current_turn-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/component/turn_component.rb, line 26</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/component/turn_component.rb, line 28</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">current_turn</span>()
         <span class="ruby-ivar">@players</span>[<span class="ruby-ivar">@turn</span>]
 <span class="ruby-keyword">end</span></pre>
@@ -223,16 +255,16 @@ turn.</p>
 
 <p>Postcondtion</p>
 
-<pre>The old player&#39;s turn is ended and the new player now has a turn.
-The moved, attacked, and special hashes are reset for the new player</pre>
+<pre>The old player&#39;s turn is ended and the new player now has a turn.</pre>
           
           
 
           
           <div class="method-source-code" id="next_turn-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/component/turn_component.rb, line 36</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/component/turn_component.rb, line 37</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">next_turn</span>()
         <span class="ruby-ivar">@turn</span> = (<span class="ruby-ivar">@turn</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>) <span class="ruby-operator">%</span> <span class="ruby-ivar">@players</span>.<span class="ruby-identifier">size</span>
+        <span class="ruby-ivar">@turn_count</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
         <span class="ruby-keyword">self</span>.<span class="ruby-identifier">current_turn</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
@@ -264,7 +296,7 @@ The moved, attacked, and special hashes are reset for the new player</pre>
 
           
           <div class="method-source-code" id="to_s-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/component/turn_component.rb, line 42</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/component/turn_component.rb, line 44</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">to_s</span>
         <span class="ruby-keyword">return</span> <span class="ruby-node">&quot;Turn =&gt; #{self.current_turn}, Players =&gt; #{@players}, &quot;</span>
 <span class="ruby-keyword">end</span></pre>

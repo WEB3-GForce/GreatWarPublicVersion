@@ -139,14 +139,12 @@ validate/execute a ranged attack.</p>
 
 <pre class="ruby"><span class="ruby-constant">An</span> <span class="ruby-identifier">array</span> <span class="ruby-identifier">of</span> <span class="ruby-identifier">square</span> <span class="ruby-identifier">entities</span> <span class="ruby-identifier">the</span> <span class="ruby-identifier">entity</span> <span class="ruby-identifier">can</span> <span class="ruby-identifier">range</span> <span class="ruby-identifier">attack</span>
 </pre>
-
-<p>TODO change return to target unit entities?</p>
           
           
 
           
           <div class="method-source-code" id="attackable_locations-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/system/range_system.rb, line 116</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/system/range_system.rb, line 111</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">attackable_locations</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
         <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-constant">EntityType</span>.<span class="ruby-identifier">range_entity?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>) <span class="ruby-keyword">or</span> 
                         <span class="ruby-operator">!</span><span class="ruby-constant">EntityType</span>.<span class="ruby-identifier">placed_entity?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>) <span class="ruby-keyword">or</span>
@@ -200,7 +198,7 @@ validate/execute a ranged attack.</p>
 
           
           <div class="method-source-code" id="attackable_range-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/system/range_system.rb, line 142</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/system/range_system.rb, line 137</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">attackable_range</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
         <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-constant">EntityType</span>.<span class="ruby-identifier">range_entity?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>) <span class="ruby-keyword">or</span> 
                         <span class="ruby-operator">!</span><span class="ruby-constant">EntityType</span>.<span class="ruby-identifier">placed_entity?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>) <span class="ruby-keyword">or</span>
@@ -255,15 +253,15 @@ validate/execute a ranged attack.</p>
 <p>Returns</p>
 
 <pre>[] if nothing happens
-Else an array of the form [[&quot;ranged&quot;, entit1, entity2_damage_info]] for an
+Else an array of the form [[&quot;ranged&quot;, entity1, entity1_type, entity2_damage_info]] for an
 attack that succeeds but does not kill, and
-[[&quot;ranged&quot;, entity1, entity2_damage_info], [entity2_kill_info]] if it does kill.</pre>
+[[&quot;ranged&quot;, entity1, entity1_type, entity2_damage_info], [entity2_kill_info]] if it does kill.</pre>
           
           
 
           
           <div class="method-source-code" id="update-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/system/range_system.rb, line 175</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/system/range_system.rb, line 170</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity1</span>, <span class="ruby-identifier">entity2</span>)
         <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-keyword">self</span>.<span class="ruby-identifier">valid_attack?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity1</span>, <span class="ruby-identifier">entity2</span>)
                 <span class="ruby-keyword">return</span> []

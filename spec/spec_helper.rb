@@ -14,6 +14,9 @@
 # users commonly want.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+require 'simplecov'
+SimpleCov.start
+
 
 Dir[File.dirname(__FILE__) + '/../app/models/ecs/component/*.rb'].each {|file| require_relative file }
 Dir[File.dirname(__FILE__) + '/../app/models/ecs/entity/*.rb'].each {|file| require_relative file }
