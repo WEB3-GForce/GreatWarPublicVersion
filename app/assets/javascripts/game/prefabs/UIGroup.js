@@ -48,8 +48,8 @@ UIGroup.prototype.initPlayerInfoUI = function() {
     this.playerName.leftPos = 72;
     this.playerName.rightPos = this.game.width - 232;
 
-    this.turnNumber = this.game.add.bitmapText(72, 36, 'minecraftia',
-					       "Day: " + this.game.turnNumber,
+    this.turnCount = this.game.add.bitmapText(72, 36, 'minecraftia',
+					       "",
 					       20,
 					       this.playerInfo);
     this.turnNumber.leftPos = 72;
@@ -74,6 +74,10 @@ UIGroup.prototype.initPlayerInfoUI = function() {
             this.playerInfo);
     this.endGame.leftPos = width/2;
     this.endGame.rightPos = this.game.width - 16 - width/2;
+}
+UIGroup.prototype.setPlayer = function(name, turn) {
+    this.playerName.text = name;
+    this.turnCount.text = "Day: " + turn;
 }
 
 UIGroup.prototype.checkPlayerInfoUIPosition = function(mouse) {

@@ -15,12 +15,11 @@ var GameGroup = function(game, parent) {
     this.action = null;
 
     this.turn = null;
-    this.game.turnNumber = 1;
+    this.turnCount = null;
 
     this.players = null;
     this.game.constants.PLAYER_ID = null;
     // How are we going to do player names and stuff?
-    this.game.constants.PLAYER_NAME = null;
 
     this.ui = new UIGroup(this.game);
     this.ui.gameGroup = this;
@@ -196,6 +195,10 @@ GameGroup.prototype.buttonClicked = function(button) {
 	case 'melee':
 	    this.game.dispatcher.rpc("get_unit_melee_attacks", [this.selected.id]);
 	    break;
+	case 'endTurn':
+	    // this.game.dispatcher.rpc("end_turn", [this.turn]);
+	    this.resetEnergy(this.turn);
+	    break;
 	}
     }
 }
@@ -225,7 +228,9 @@ GameGroup.prototype.initGame = function(board, units, turn, players) {
     console.log(units[10]);
 
     this.turn = turn.playerid;
+    this.turnCount = turn.turnCount;
     this.players = players; // id corresponds to obj with name + type (red/blue)
+    this.ui.setPlayer(this.players[turn.playerid].name, this.turnCount);
     // There should be a better/different way to do this
     this.game.constants.PLAYER_ID = this.turn;
     this.ui.playerName.text = players[this.turn].name;
@@ -388,16 +393,14 @@ GameGroup.prototype.killUnits = function(unitIds) {
     return action;
 }
 
-GameGroup.prototype.setTurn = function(turn) {
-    var action = {
-        game: this.game,
-        gameGroup: this
-    };
-    action.start = function() {
-	    this.gameGroup.turn = turn.playerid;
-        this.game.constants.PLAYER_ID = turn.playerid; // DEMO CODE PLZ REMOVE
-        this.gameGroup.turnNumber = turn.turnCount;
-        this.gameGroup.ui.turnNumber.text = 'Day: ' + turn.turnCount;
+GameGroup.prototype.setTurn = function(playerId, turnCount) {
+    return {
+	gameGroup: this,
+	ui: this.ui,
+	start: function() {
+	    this.gameGroup.turn = playerId;
+	    this.gameGroup.turnCount = turnCount;
+	    this.ui.setPlayer(this.gameGroup.players[playerId].name, turnCount);
 	    this.onComplete();
 	}
     return action;

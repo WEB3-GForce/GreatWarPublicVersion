@@ -146,6 +146,7 @@ GEM
     notiffany (0.0.6)
       nenv (~> 0.1)
       shellany (~> 0.0)
+    pg (0.18.1)
     phaser-rails (2.2.2.0)
       railties (~> 4.0)
     pry (0.10.1)
@@ -302,6 +303,7 @@ DEPENDENCIES
   guard-spork
   jbuilder (~> 2.0)
   jquery-rails
+  pg
   phaser-rails
   rack-livereload
   rails (= 4.2.0)

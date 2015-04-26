@@ -149,9 +149,9 @@ class Game
     def self.melee_attack(req_id, em, entity, row, col)
         target = em.board[row][col][1].first
         attack_result = MeleeSystem.update(em, entity, target)
-        player_result = RemovePlayerSystem.update(em)
+      # player_result = RemovePlayerSystem.update(em)
         result = JsonFactory.melee_attack(em, attack_result)
-        result += JsonFactory.remove_player(em, player_result)
+        # result += JsonFactory.remove_player(em, player_result)
         return result
     end
 
