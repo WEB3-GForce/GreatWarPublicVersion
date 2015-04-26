@@ -38,9 +38,18 @@ class DamageSystem < System
 			return []
 		end
 		
+		pos_comp = entity_manager.get_components(entity, PositionComponent).first
+		terrain = entity_manager.board[pos_comp.row][pos_comp.col][0]
+		boosts  = entity_manager.get_components(terrain, BoostComponent)
+		
+		boosts.each {|boost|
+			if boost == BoostComponent.defense
+				damage = (damage * boost.percent).round
+			end
+		}
+				
 		health = entity_manager.get_components(entity, HealthComponent).first
 		health.cur_health -= damage
-		pos_comp = entity_manager.get_components(entity, PositionComponent).first
 		
 		result = KillSystem.update(entity_manager, entity)
 		return [[entity, pos_comp.row, pos_comp.col, damage]].concat result

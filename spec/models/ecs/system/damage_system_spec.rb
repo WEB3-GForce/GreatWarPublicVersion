@@ -17,6 +17,7 @@ describe DamageSystem do
 	let(:human1)     {EntityFactory.human_player(manager, "David")}
 	let(:infantry)   {debug_infantry(manager, human1)}
 	let(:flatland)   {EntityFactory.flatland_square(manager)}
+	let(:trench)   {EntityFactory.trench_square(manager)}
 	let(:row)        {1}
 	let(:col)        {1}
 
@@ -44,6 +45,22 @@ describe DamageSystem do
 					      PositionComponent.new(row, col))
 			result = DamageSystem.update(manager, infantry, 5)
 			expect(result).to eq [[infantry, 1, 1, 5]]
+		end
+
+
+		it "should take defense boosts into account" do
+			setup()
+			manager.board[row][col][1].push infantry
+			manager.add_component(infantry,
+					      PositionComponent.new(row, col))
+			manager.board[row][col][0] = trench
+
+			health = manager.get_components(infantry, HealthComponent).first.cur_health
+			result = DamageSystem.update(manager, infantry, 5)
+			new_health = manager.get_components(infantry, HealthComponent).first.cur_health
+
+			expect(result).to eq [[infantry, 1, 1, 3]]
+			expect(new_health).to eq (health - 3)
 		end
 
 		it "should return the proper array for dead entities" do
