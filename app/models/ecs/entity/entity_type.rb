@@ -178,4 +178,16 @@ class EntityType
 	def self.range_immuned_entity?(entity_manager, entity)
 		entity_manager.has_components(entity, [RangeAttackImmunityComponent])
 	end
+
+	# Determines whether the entity can build entities
+	#
+	# Arguments
+	#   entity_manager = the manager that holds the entities
+	#   entity         = the entity to check
+	#
+	# Returns
+	#   whether the entity can build trenches
+	def self.trench_builder_entity?(entity_manager, entity)
+		entity_manager.has_components(entity, [TrenchBuilderEntity])
+	end
 end
