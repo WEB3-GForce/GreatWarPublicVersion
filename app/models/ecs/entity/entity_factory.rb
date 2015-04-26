@@ -48,10 +48,11 @@ public
 	#
 	# Returns
 	#   the newly created Square Entity 
-	def self.flatland_square(entity_manager)
+	def self.flatland_square(entity_manager, id=0)
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.flatland,
-					   OccupiableComponent.new])
+					   OccupiableComponent.new,
+					   SpriteComponent.new(id)])
 	end
 
 	# This function creates a new mountain square for boards. Mountains are
@@ -63,10 +64,11 @@ public
 	#
 	# Returns
 	#   the newly created Square Entity	
-	def self.mountain_square(entity_manager)
+	def self.mountain_square(entity_manager, id=0)
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.mountain,
-					   ImpassableComponent.new])
+					   ImpassableComponent.new,
+					   SpriteComponent.new(id)])
 	end
 
 	# This function creates a new hill square for boards. Hills are the
@@ -80,10 +82,11 @@ public
 	#
 	# Returns
 	#   the newly created Square Entity	
-	def self.hill_square(entity_manager)
+	def self.hill_square(entity_manager, id=0)
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.hill,
-					   OccupiableComponent.new])
+					   OccupiableComponent.new,
+					   SpriteComponent.new(id)])
 	end
 
 	# This function creates a new trench square for boards. Trenches are
@@ -99,10 +102,11 @@ public
 	#
 	# Returns
 	#   the newly created Square Entity
-	def self.trench_square(entity_manager)
+	def self.trench_square(entity_manager, id=0)
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.trench,
-					   OccupiableComponent.new])
+					   OccupiableComponent.new,
+					   SpriteComponent.new(id)])
 	end
 
 	# This function creates a new river square for boards. Rivers are
@@ -114,9 +118,10 @@ public
 	#
 	# Returns
 	#   the newly created Square Entity
-	def self.river_square(entity_manager)
+	def self.river_square(entity_manager, id=0)
 		return self.create_entity(entity_manager,
-					  [TerrainComponent.river])
+					  [TerrainComponent.river,
+					   SpriteComponent.new(id)])
 	end
 
 	# This function populates the board in the most basic way possible. It
@@ -455,11 +460,11 @@ public
 		cols = entity_manager.col
 
 		# Board
-		flatland = lambda { self.flatland_square(entity_manager) }
-		mountain = lambda { self.mountain_square(entity_manager) }
-		hill = lambda { self.hill_square(entity_manager) }
-		trench = lambda { self.trench_square(entity_manager) }
-		river = lambda { self.river_square(entity_manager) }
+		flatland = lambda { |id| self.flatland_square(entity_manager, id) }
+		mountain = lambda { |id| self.mountain_square(entity_manager, id) }
+		hill = lambda { |id| self.hill_square(entity_manager, id) }
+		trench = lambda { |id| self.trench_square(entity_manager, id) }
+		river = lambda { |id| self.river_square(entity_manager, id) }
 
 		terrainCreator = {}
 		terrainCreator.default = flatland
@@ -480,7 +485,8 @@ public
 
 		(0...rows).each { |row|
 			(0...cols).each { |col|
-				square = terrainCreator[terrainIds[row*cols + col]].call
+				id = terrainIds[row*cols + col]
+				square = terrainCreator[id].call(id)
 				entity_manager.add_component(square,
 						PositionComponent.new(row, col))
 				entity_manager.board[row][col] = [square, []]
@@ -596,5 +602,5 @@ end
 # users = [OpenStruct.new({name: "1", id: -1, channel: "NA"}),
 #          OpenStruct.new({name: "2", id: -1, channel: "NA"}), ]
 # entity_manager = EntityManager.new(rows, cols)
-# EntityFactory.create_game(entity_manager, nil, nil, nil)
+# EntityFactory.create_game(entity_manager, users, terrainIds, pieceIds)
 # puts entity_manager
