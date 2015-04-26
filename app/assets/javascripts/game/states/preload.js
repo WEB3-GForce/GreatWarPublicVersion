@@ -15,11 +15,10 @@ Preload.prototype = {
 	this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
 	this.load.setPreloadSprite(this.asset);
 
-	this.load.tilemap('tileset', '/assets/tiledTest.json', null, Phaser.Tilemap.TILED_JSON);
-	this.load.image('tmw_desert_spacing', '/assets/tmw_desert_spacing.png'); // tileset used
+	this.load.tilemap('tileset', '/assets/demo.json', null, Phaser.Tilemap.TILED_JSON);
+	this.load.image('fe', '/assets/fe.png'); // tileset used
 	this.load.image('fog', '/assets/fog.png');
 	this.load.image('highlight', '/assets/highlight.png');
-    this.load.image('mountain', '/assets/AWMountain.png');
 
 	this.load.image('generalPortrait', '/assets/generalPortrait.png');
 	this.load.image('lobby', '/assets/lobby.jpg');
@@ -29,7 +28,7 @@ Preload.prototype = {
 	this.load.spritesheet('action-ranged', '/assets/ranged.png', 48, 48);
 	this.load.spritesheet('ui-menu', '/assets/menu.png', 48, 24);
 
-    this.load.spritesheet('explosion', '/assets/explosion.png', 32, 32);
+	this.load.spritesheet('explosion', '/assets/explosion.png', 32, 32);
 
 	var types = ['infantry', 'machinegun', 'artillery', 'command'];
 	var colors = ['red', 'blue'];
@@ -42,10 +41,9 @@ Preload.prototype = {
 	    }
 	}
 
-	this.load.spritesheet('terrain', '/assets/tmw_desert_spacing.png',
+	this.load.spritesheet('terrain', '/assets/fe.png',
 			      this.game.constants.TILE_SIZE,
-			      this.game.constants.TILE_SIZE,
-			      -1, 1, 1);
+			      this.game.constants.TILE_SIZE);
 
 	this.load.bitmapFont('minecraftia', 'assets/minecraftia.png', 'assets/minecraftia.fnt');
 

@@ -207,13 +207,13 @@ GameGroup.prototype.buttonClicked = function(button) {
 GameGroup.prototype.initGame = function(board, units, turn, players, me) {
     this.game.world.setBounds(0, 0, board.width * 32, board.height * 32);
 
-    for (var i = 0; i < board.width; i++) {
-	for (var j = 0; j < board.height; j++) {
-	    this.gameBoard.setTile(i, j, board.squares[i*board.width+j].terrain);
-	    if (board.squares[i*board.width+j].fow)
-		this.gameBoard.addFog(i, j);
-	}
-    }
+    // for (var i = 0; i < board.width; i++) {
+    // 	for (var j = 0; j < board.height; j++) {
+    // 	    this.gameBoard.setTile(i, j, board.squares[i*board.width+j].terrain);
+    // 	    if (board.squares[i*board.width+j].fow)
+    // 		this.gameBoard.addFog(i, j);
+    // 	}
+    // }
     // effects is not passed right now
     // this.gameBoard.effects = effects;
 

@@ -129,7 +129,7 @@ UIGroup.prototype.initTileInfoUI = function() {
 UIGroup.prototype.setTile = function(group, tile) {
     if (tile) {
 	group.tile.frame = tile.index - 1;
-	group.title.text = tile.name;
+	group.title.text = tile.index; // tile.name;
 	group.visible = true;
     } else {
 	group.visible = false;
