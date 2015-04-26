@@ -46,7 +46,7 @@ Play.prototype = {
         }
         for (var i = 0; i < 1; i++) {
             this.music[i].onStop.add(function(next) {
-                return function() {                    
+                return function() {
                     this.music[next % 1].play();
                 };
             }(i+1), this);

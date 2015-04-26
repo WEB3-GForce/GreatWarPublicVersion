@@ -19,7 +19,6 @@ Preload.prototype = {
 	this.load.image('tmw_desert_spacing', '/assets/tmw_desert_spacing.png'); // tileset used
 	this.load.image('fog', '/assets/fog.png');
 	this.load.image('highlight', '/assets/highlight.png');
-    this.load.image('mountain', '/assets/AWMountain.png');
 
 	this.load.image('generalPortrait', '/assets/generalPortrait.png');
 	this.load.image('lobby', '/assets/lobby.jpg');

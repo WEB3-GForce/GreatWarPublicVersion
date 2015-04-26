@@ -26,7 +26,7 @@ private
 	#   components     = the list of components to add
 	#
 	# Returns
-	#   the newly created Entity 
+	#   the newly created Entity
 	def self.create_entity(entity_manager, components)
 		# The first uses production entities, the second debugging ones.
 		#entity = Entity.new
@@ -47,7 +47,7 @@ public
 	#   entity_manager = the entity manager to add the new entity to
 	#
 	# Returns
-	#   the newly created Square Entity 
+	#   the newly created Square Entity
 	def self.flatland_square(entity_manager)
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.flatland,
@@ -62,7 +62,7 @@ public
 	#   entity_manager = the entity manager to add the new entity to
 	#
 	# Returns
-	#   the newly created Square Entity	
+	#   the newly created Square Entity
 	def self.mountain_square(entity_manager)
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.mountain,
@@ -79,7 +79,7 @@ public
 	#   entity_manager = the entity manager to add the new entity to
 	#
 	# Returns
-	#   the newly created Square Entity	
+	#   the newly created Square Entity
 	def self.hill_square(entity_manager)
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.hill,
@@ -129,7 +129,7 @@ public
 	#   the board is properly created
 	#
 	# Note
-	#   Each 
+	#   Each
 	def self.create_board_basic(entity_manager)
 		(0...entity_manager.row).each { |row|
 			(0...entity_manager.col).each { |col|
@@ -213,7 +213,7 @@ public
 		return self.create_entity(entity_manager,
 					  [PieceComponent.infantry,
 					   HealthComponent.new(12),
-					   EnergyComponent.new(18),
+					   EnergyComponent.new(6),
 					   MotionComponent.new(-1, 2),
 					   MeleeAttackComponent.new(6, 4),
 					   RangeAttackComponent.new(6, 1, 2, [1.0], 4),
@@ -233,7 +233,7 @@ public
 		return self.create_entity(entity_manager,
 					  [PieceComponent.machine_gun,
 					   HealthComponent.new(12),
-					   EnergyComponent.new(30),
+					   EnergyComponent.new(6),
 					   MotionComponent.new(-1, 3),
 					   MeleeAttackComponent.new(6, 6),
 					   RangeAttackComponent.new(4, 1, 3, [1.0], 2),
@@ -272,7 +272,7 @@ public
 	def self.command_bunker(entity_manager, owner)
 		return self.create_entity(entity_manager,
 					  [PieceComponent.command_bunker,
-					   HealthComponent.new(30),
+					   HealthComponent.new(12),
 					   EnergyComponent.new(10),
 					   RangeAttackImmunityComponent.new,
 					   OwnedComponent.new(owner)])
@@ -413,7 +413,7 @@ public
 	# Returns
 	#   an array of the following entities:
 	#
-	#   [turn_entity, 
+	#   [turn_entity,
 	#    [player_entity1, player_entity2, ...],
 	#    [piece_entity1, piece_entity2, piece_entity3, ....]
 	#   ]
@@ -422,18 +422,18 @@ public
 	#   it is the responsiblity of the caller to make sure
 	#   number_of_players <= 4
 	#
-	#   The basic game uses a plain board only with flatlands  
+	#   The basic game uses a plain board only with flatlands
 	#
 	#   When initializing a new game, this is the only method that needs
-	#   to be called.     
+	#   to be called.
 	def self.create_game_basic(entity_manager, users)
 		self.create_board_basic(entity_manager)
-		
+
 		place_methods = [EntityFactory.method(:place_army_top_left),
 				 EntityFactory.method(:place_army_bottom_right),
 				 EntityFactory.method(:place_army_top_right),
 				 EntityFactory.method(:place_army_bottom_left)]
-		
+
 		players = []
 		pieces = []
 		factions = ["red", "blue", "green", "yellow"]
@@ -445,7 +445,7 @@ public
 			pieces.concat army
 			place_methods[index].call(entity_manager, army)
 		}
-		
+
 		turn = self.turn_entity(entity_manager, players)
 		return [players, turn, pieces]
 	end
@@ -483,7 +483,7 @@ public
 		factions = ["red", "blue", "green", "yellow"]
 
 		users.each_with_index { |user, index|
-			player = self.human_player(entity_manager, user.name, user.id, 
+			player = self.human_player(entity_manager, user.name, user.id,
 			                           user.channel, factions[index])
 			players.push player
 		}
@@ -524,8 +524,8 @@ public
 
 =begin
 	// TODO Talk with Vance and David about code so we can write tests for it
-	
-	def self.board1(entity_manager, clutter=0.25)	
+
+	def self.board1(entity_manager, clutter=0.25)
 		0.upto(n-1).each {|i|
 			0.upto(n-1).each {|j|
 				entity_manager.board[i][j] = self.tile_flatland(entity_manager)
@@ -561,26 +561,26 @@ end
 
 # rows = 11
 # cols = 11
-# terrainIds = [-3, -3, -4, -4, -1, -1, -1, -1, -3, -3, -3, 
-#               -3, -3, -4, -4, -1, -1, -1, -1, -3, -2, -3, 
-#               -4, -4, -4, -4, -1, -1, -1, -1, -3, -3, -3, 
-#               -4, -4, -4, -4, -1, -1, -1, -1, -1, -1, -1, 
-#               -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-#               -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, 
-#               -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-#               -1, -1, -1, -1, -1, -1, -1, -4, -4, -4, -4, 
-#               -3, -3, -3, -1, -1, -1, -1, -4, -4, -4, -4, 
+# terrainIds = [-3, -3, -4, -4, -1, -1, -1, -1, -3, -3, -3,
+#               -3, -3, -4, -4, -1, -1, -1, -1, -3, -2, -3,
+#               -4, -4, -4, -4, -1, -1, -1, -1, -3, -3, -3,
+#               -4, -4, -4, -4, -1, -1, -1, -1, -1, -1, -1,
+#               -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+#               -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5,
+#               -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+#               -1, -1, -1, -1, -1, -1, -1, -4, -4, -4, -4,
+#               -3, -3, -3, -1, -1, -1, -1, -4, -4, -4, -4,
 #               -3, -2, -3, -1, -1, -1, -1, -4, -4, -3, -3,
 #               -3, -3, -3, -1, -1, -1, -1, -4, -4, -3, -3 ]
-# pieceIds = [ -12, nil, nil, -10, -10, nil, nil, nil, nil, nil, nil, 
-#              nil, -13, -11, -10, -10, nil, nil, nil, nil, nil, nil, 
-#              nil, -11, -11, -10, -10, nil, nil, nil, nil, nil, nil, 
-#              -10, -10, -10, -10, nil, nil, nil, nil, nil, nil, nil, 
-#              -10, -10, -10, nil, nil, nil, nil, nil, nil, nil, nil, 
-#              nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 
-#              nil, nil, nil, nil, nil, nil, nil, nil, -20, -20, -20,  
-#              nil, nil, nil, nil, nil, nil, nil, -20, -20, -20, -20,  
-#              nil, nil, nil, nil, nil, nil, -20, -20, -21, -21, nil, 
+# pieceIds = [ -12, nil, nil, -10, -10, nil, nil, nil, nil, nil, nil,
+#              nil, -13, -11, -10, -10, nil, nil, nil, nil, nil, nil,
+#              nil, -11, -11, -10, -10, nil, nil, nil, nil, nil, nil,
+#              -10, -10, -10, -10, nil, nil, nil, nil, nil, nil, nil,
+#              -10, -10, -10, nil, nil, nil, nil, nil, nil, nil, nil,
+#              nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
+#              nil, nil, nil, nil, nil, nil, nil, nil, -20, -20, -20,
+#              nil, nil, nil, nil, nil, nil, nil, -20, -20, -20, -20,
+#              nil, nil, nil, nil, nil, nil, -20, -20, -21, -21, nil,
 #              nil, nil, nil, nil, nil, nil, -20, -20, -21, -23, nil,
 #              nil, nil, nil, nil, nil, nil, -20, -20, nil, nil, -22 ]
 # users = [OpenStruct.new({name: "1", id: -1, channel: "NA"}),

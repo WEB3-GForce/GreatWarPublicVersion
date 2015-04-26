@@ -82,6 +82,9 @@ GameBoard.prototype.drawGrid = function() {
 }
 
 GameBoard.prototype.setTile = function(x, y, type) {
+    if (type != 'flatland') {
+        type = 'flatland';
+    }
     this.putTile(TILE_MAP[type].index, x, y, this.terrainLayer);
 }
 
