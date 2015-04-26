@@ -61,8 +61,7 @@ private
 	end
 
 	# Executes a ranged attack.
-	# Returns array of form [["ranged", attacking_entity, damage_info, ...], kill_info...] if successful
-	# TODO update tests
+	# Returns array of form [["ranged", attacking_entity, attacker_type, damage_info, ...], kill_info...] if successful
 	def self.perform_attack(entity_manager, attacking_entity, attacked_entity)
 		rattack = entity_manager.get_components(attacking_entity, RangeAttackComponent).first
 
@@ -93,7 +92,6 @@ private
 			}
 		}
 
-		puts damage_info.to_s
 		return [] if damage_info.empty?		
 		return damage_info.reverse
 	end
@@ -109,9 +107,6 @@ public
 	#
 	# Returns
 	#   An array of square entities the entity can range attack
-	#
-	# TODO change return to target unit entities?
-	#
 	def self.attackable_locations(entity_manager, entity)
 		if !EntityType.range_entity?(entity_manager, entity) or 
 				!EntityType.placed_entity?(entity_manager, entity) or
@@ -167,9 +162,9 @@ public
 	#
 	# Returns
 	#   [] if nothing happens
-	#   Else an array of the form [["ranged", entit1, entity2_damage_info]] for an
+	#   Else an array of the form [["ranged", entity1, entity1_type, entity2_damage_info]] for an
 	#   attack that succeeds but does not kill, and
-	#   [["ranged", entity1, entity2_damage_info], [entity2_kill_info]] if it does kill.
+	#   [["ranged", entity1, entity1_type, entity2_damage_info], [entity2_kill_info]] if it does kill.
 	#
 	def self.update(entity_manager, entity1, entity2)
 		if !self.valid_attack?(entity_manager, entity1, entity2)

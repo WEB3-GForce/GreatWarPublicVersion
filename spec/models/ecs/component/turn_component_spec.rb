@@ -18,10 +18,13 @@ describe TurnComponent do
 
 	it "should initialize itself properly" do
 		turn_comp = TurnComponent.new([player1, player2, player3, player4])
+		expect(turn_comp.players).to eq([player1, player2, player3, player4])
+		expect(turn_comp.turn_count).to eq(1)
 	end
 
 	it "should keep track of turns" do
 		expect(basic_turn.current_turn).to eq(player1)
+		expect(basic_turn.turn_count).to eq(1)
 	end
 
 	context "when moving to the next turn" do
@@ -29,15 +32,19 @@ describe TurnComponent do
 		it "should properly cycle through each player" do
 			expect(basic_turn.next_turn).to eq(player2)
 			expect(basic_turn.current_turn).to eq(player2)
+			expect(basic_turn.turn_count).to eq(2)
 			
 			expect(basic_turn.next_turn).to eq(player3)
 			expect(basic_turn.current_turn).to eq(player3)
+			expect(basic_turn.turn_count).to eq(3)
 			
 			expect(basic_turn.next_turn).to eq(player4)
 			expect(basic_turn.current_turn).to eq(player4)
+			expect(basic_turn.turn_count).to eq(4)
 
 			expect(basic_turn.next_turn).to eq(player1)
 			expect(basic_turn.current_turn).to eq(player1)
+			expect(basic_turn.turn_count).to eq(5)
 		end
 	end
 

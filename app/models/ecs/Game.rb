@@ -9,7 +9,7 @@ require_relative "./system/remove_player_system.rb"
 
 class Game
 
-    def self.init_game(rows=10, cols=10, player_names=["Player 1", "Player 2"])
+    def self.init_game(rows=25, cols=25, player_names=["Player 1", "Player 2"])
         manager = EntityManager.new(rows, cols)
         players, turn, pieces = EntityFactory.create_game_basic(manager, player_names)
         start_json = JsonFactory.game_start(manager, players, turn, pieces)
@@ -32,7 +32,7 @@ class Game
         return {"hello" => "Marvin"}
     end
 
-    def self.verify(req_id, em, entity)
+    def self.verify_owner(req_id, em, entity)
         entity_requester = nil
         em.each_entity(UserIdComponent) { |e|
             if em[e][UserIdComponent][0].id == req_id
@@ -42,6 +42,10 @@ class Game
         }
         entity_owner = em[entity][OwnedComponent][0].owner;
         return entity_requester == entity_owner
+    end
+    
+    def self.verify_turn(req_id, em)
+        return em[TurnSystem.current_turn(em)][UserIdComponent][0].id == req_id
     end
 
     def self.get_full_info(req_id, em, row, col)
@@ -159,17 +163,29 @@ class Game
 
     # End the turn for the current player.
     def self.end_turn(req_id, em)
-        if em[TurnSystem.current_turn(em)][UserIdComponent][0].id != req_id
-            return {}
-        end
+        # if em[TurnSystem.current_turn(em)][UserIdComponent][0].id != req_id
+        #    return {}
+        # end
 
         TurnSystem.update(em)
         turn = em.get_entities_with_components(TurnComponent).first
         return JsonFactory.end_turn(em, turn)
     end
 
+    def self.leave_game(req_id, em)
+        em.each_entity(UserIdComponent) { |e|
+            if em[e][UserIdComponent][0].id == req_id
+                result = RemovePlayerSystem.remove_player(em, e)
+                return JsonFactory.remove_player(em, result)
+            end
+        }
+    end
+
 end
 
-#g = Game.new
+#manager, t = Game.init_game
+
+#p Game.leave_game(-1, manager)
+
 
 #puts g

@@ -19,6 +19,7 @@ Preload.prototype = {
 	this.load.image('tmw_desert_spacing', '/assets/tmw_desert_spacing.png'); // tileset used
 	this.load.image('fog', '/assets/fog.png');
 	this.load.image('highlight', '/assets/highlight.png');
+    this.load.image('mountain', '/assets/AWMountain.png');
 
 	this.load.image('generalPortrait', '/assets/generalPortrait.png');
 
@@ -26,6 +27,8 @@ Preload.prototype = {
 	this.load.spritesheet('action-melee', '/assets/melee.png', 48, 48);
 	this.load.spritesheet('action-ranged', '/assets/ranged.png', 48, 48);
 	this.load.spritesheet('ui-menu', '/assets/menu.png', 48, 24);
+
+    this.load.spritesheet('explosion', '/assets/explosion.png', 32, 32);
 
 	var types = ['infantry', 'machinegun', 'artillery', 'command'];
 	var colors = ['red', 'blue'];

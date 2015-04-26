@@ -77,11 +77,13 @@ describe JsonFactory do
     context "when calling turn" do
         it "should return a hash for a turn entity" do
             expect(JsonFactory.turn(manager, turn)).to eq(
-                {"playerid" => human1})
+                {"playerid" => human1,
+                 "turnCount" => 1})
                 
             manager.get_components(turn, TurnComponent).first.next_turn
             expect(JsonFactory.turn(manager, turn)).to eq(
-                {"playerid" => ai})
+                {"playerid" => ai,
+                 "turnCount" => 2})
         end
     end
 
@@ -281,9 +283,9 @@ describe JsonFactory do
         it "should return a hash of the game_start" do
             set_intermediate
             players = [human1, ai]
-            player_array = []
+            player_hash = {}
             players.each { |player|
-                player_array.push JsonFactory.player(manager, player)
+                player_hash.merge!(JsonFactory.player(manager, player))
             }
             pieces = [infantry, machine_gun, artillery, command_bunker]
             pieces_array = []
@@ -296,7 +298,7 @@ describe JsonFactory do
                  "arguments" => [JsonFactory.board(manager),
                                  pieces_array,
                                  JsonFactory.turn(manager, turn),
-                                 player_array]}])
+                                 player_hash]}])
         end
     end
 

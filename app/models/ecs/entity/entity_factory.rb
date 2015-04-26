@@ -429,8 +429,8 @@ public
 
 		self.create_board_basic(entity_manager)
 		
-		place_methods = [EntityFactory.method(:place_army_top_left_demo),
-				 EntityFactory.method(:place_army_bottom_right_demo),
+		place_methods = [EntityFactory.method(:place_army_top_left),
+				 EntityFactory.method(:place_army_bottom_right),
 				 EntityFactory.method(:place_army_top_right),
 				 EntityFactory.method(:place_army_bottom_left)]
 		
@@ -446,6 +446,86 @@ public
 		}
 		
 		turn = self.turn_entity(entity_manager, players)
+		return [players, turn, pieces]
+	end
+
+	def self.create_game_demo(entity_manager, player_names)
+		# Board 
+		tf = lambda { self.flatland_square(entity_manager) }
+		tm = lambda { self.mountain_square(entity_manager) }
+		th = lambda { self.hill_square(entity_manager) }
+		tt = lambda { self.trench_square(entity_manager) }
+		tr = lambda { self.river_square(entity_manager) }
+
+		terrains = [th, th, tt, tt, tf, tf, tf, tf, th, th, th, 
+		            th, th, tt, tt, tf, tf, tf, tf, th, tm, th, 
+		            tt, tt, tt, tt, tf, tf, tf, tf, th, th, th, 
+		            tt, tt, tt, tt, tf, tf, tf, tf, tf, tf, tf, 
+		            tf, tf, tf, tf, tf, tf, tf, tf, tf, tf, tf, 
+		            tr, tr, tr, tr, tr, tr, tr, tr, tr, tr, tr, 
+		            tf, tf, tf, tf, tf, tf, tf, tf, tf, tf, tf, 
+		            tf, tf, tf, tf, tf, tf, tf, tt, tt, tt, tt, 
+		            th, th, th, tf, tf, tf, tf, tt, tt, tt, tt, 
+		            th, tm, th, tf, tf, tf, tf, tt, tt, th, th,
+		            th, th, th, tf, tf, tf, tf, tt, tt, th, th ]
+
+		entity_manager.row = 11
+		entity_manager.col = 11
+
+		(0...entity_manager.row).each { |row|
+			(0...entity_manager.col).each { |col|
+				square = terrains[row][col].call
+				entity_manager.add_component(square,
+						PositionComponent.new(row, col))
+				entity_manager.board[row][col] = [square, []]
+			}
+		}
+
+		# Players
+		p1 = self.human_player(entity_manager, player_names[0], -1, "red")
+		p2 = self.human_player(entity_manager, player_names[1], -1, "blue")
+		players = [p1, p2]
+
+		# Turn
+		turn = self.turn_entity(entity_manager, players)
+
+		# Pieces
+		i = lambda { |player| self.infantry(entity_manager, player) }
+		m = lambda { |player| self.machine_gun(entity_manager, player) }
+		a = lambda { |player| self.artillery(entity_manager, player) }
+		b = lambda { |player| self.command_bunker(entity_manager, player) }
+
+		i1 = lambda { i[p1] }
+		m1 = lambda { m[p1] }
+		a1 = lambda { a[p1] }
+		b1 = lambda { b[p1] }
+		i2 = lambda { i[p2] }
+		m2 = lambda { m[p2] }
+		a2 = lambda { a[p2] }
+		b2 = lambda { b[p2] }
+
+		units = [ a1, nil, nil,  i1,  i1, nil, nil, nil, nil, nil, nil, 
+		         nil,  b1,  m1,  i1,  i1, nil, nil, nil, nil, nil, nil, 
+		         nil,  m1,  m1,  i1,  i1, nil, nil, nil, nil, nil, nil, 
+		          i1,  i1,  i1,  i1, nil, nil, nil, nil, nil, nil, nil, 
+		          i1,  i1,  i1, nil, nil, nil, nil, nil, nil, nil, nil, 
+		         nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 
+		         nil, nil, nil, nil, nil, nil, nil, nil,  i2,  i2,  i2,  
+		         nil, nil, nil, nil, nil, nil, nil,  i2,  i2,  i2,  i2,  
+		         nil, nil, nil, nil, nil, nil,  i2,  i2,  m2,  m2, nil, 
+		         nil, nil, nil, nil, nil, nil,  i2,  i2,  m2,  b2, nil,
+		         nil, nil, nil, nil, nil, nil,  i2,  i2, nil, nil,  a2 ]
+
+		pieces = []
+		(0...entity_manager.row).each { |row|
+			(0...entity_manager.col).each { |col|
+				next if units[row][col].nil?
+
+				pieces << units[row][col].call
+				self.place_piece(entity_manager, pieces[-1], row, col)
+			}
+		}
+
 		return [players, turn, pieces]
 	end
 

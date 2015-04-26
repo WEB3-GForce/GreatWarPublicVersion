@@ -1,19 +1,22 @@
 require_relative "./component.rb"
 
 =begin
-    The UserIdComponent is used to uniquely identify player entities.
+    The UserIdComponent is used to uniquely identify player entities. It also
+    contains other important info like which faction the entity belongs to.
 =end
 class UserIdComponent < Component
   
     attr_reader(:id, :faction)
 
-    # Initializes a new NameComponent object
+    # Initializes a new UserIdComponent object
     #
     # Arguments
-    #   name = the name of the entity
+    #   id = the unique identifier
+    #   faction = which faction the entity belongs to (typically a color like
+    #             red, blue, etc.)
     #
     # Postcondtion
-    #   The NameComponent object is properly initialized
+    #   The UserIdComponent object is properly initialized
     def initialize(id, faction)
         @id      = id
         @faction = faction
@@ -21,7 +24,7 @@ class UserIdComponent < Component
 
     # Returns a string representation of the component  
     def to_s
-        "User ID: #{@id}"
+        "[User ID: #{@id}, Faction: #{@faction}]"
     end
 end
 

@@ -122,7 +122,7 @@ describe TurnSystem do
         end
     end
 
-    context "when calling current_turn_entities_each" do
+    context "when calling current_turn_entities" do
         it "should return all entities belonging to the current player" do
             manager = EntityManager.new(3, 3)
             human1 = EntityFactory.human_player(manager, "Gates")

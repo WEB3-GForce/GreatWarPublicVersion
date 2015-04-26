@@ -15,7 +15,7 @@ describe MeleeSystem do
 
 	let(:manager)    {EntityManager.new(3, 3)}
 	let(:human1)     {EntityFactory.human_player(manager, "David")}
-    let(:human2)     {EntityFactory.human_player(manager, "Goliath")}
+        let(:human2)     {EntityFactory.human_player(manager, "Goliath")}
 	let(:infantry)   {debug_infantry(manager, human1)}
 	let(:infantry2)  {debug_infantry(manager, human2)}
 	let(:infantry3)  {debug_infantry(manager, human2)}

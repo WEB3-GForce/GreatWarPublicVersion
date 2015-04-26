@@ -7,7 +7,8 @@ require_relative "./energy_module.rb"
 	will do for a given attack (@attack), the minimum range of the attack
 	or the closest distance another entity can be for the opponent to attack
 	(@min_range), and the maxmum range of the attack or the furthest away
-	another entity can be for the opponent to attack (@max_range).
+	another entity can be for the opponent to attack (@max_range). It also
+	tracks how much damage an attack deals to nearby squares (@splash).
 =end
 class RangeAttackComponent < Component
 
@@ -21,6 +22,12 @@ class RangeAttackComponent < Component
 	#   attack    = the amount of damage done for the range attack
 	#   min_range = the shortest distance the range attack can be used
 	#   max_range = the maximum distance the range attack can be used
+	#   splash    = an array specifying what percentage of attack damage
+	#               is applied to pieces at a given range. For example,
+	#               [1.0, 0.5] means the entity on the square directly
+	#               attacked will receive 1.0*attack as damage while all
+	#               entities a distance of 1 away will receive 0.5*attack.
+	#   energy_cost = the amount of energy used to attack.
 	#
 	# Postcondtion
 	#   The RangeAttackComponent object is properly initialized
@@ -76,7 +83,7 @@ class RangeAttackComponent < Component
 
   	# Returns a string representation of the component 	
 	def to_s
-		"Range Attack: [attack = #{@attack}, range = #{@min_range}-#{@max_range}]"
+		"Range Attack: [attack = #{@attack}, splash = #{@splash}, range = #{@min_range}-#{@max_range}]"
 	end
 end
 
