@@ -9,10 +9,45 @@ require_relative "./system/remove_player_system.rb"
 
 class Game
 
-    def self.init_game(users, rows=20, cols=20)
-        manager = EntityManager.new(rows, cols)
-        players, turn, pieces = EntityFactory.create_game_basic(manager, users)
-        return manager
+    def self.init_game(users, path=nil)
+        if path.nil?
+            rows = 11
+            cols = 11
+            terrainIds = [-3, -3, -4, -4, -1, -1, -1, -1, -3, -3, -3, 
+                          -3, -3, -4, -4, -1, -1, -1, -1, -3, -2, -3, 
+                          -4, -4, -4, -4, -1, -1, -1, -1, -3, -3, -3, 
+                          -4, -4, -4, -4, -1, -1, -1, -1, -1, -1, -1, 
+                          -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+                          -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, 
+                          -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
+                          -1, -1, -1, -1, -1, -1, -1, -4, -4, -4, -4, 
+                          -3, -3, -3, -1, -1, -1, -1, -4, -4, -4, -4, 
+                          -3, -2, -3, -1, -1, -1, -1, -4, -4, -3, -3,
+                          -3, -3, -3, -1, -1, -1, -1, -4, -4, -3, -3 ]
+            pieceIds = [ -12, nil, nil, -10, -10, nil, nil, nil, nil, nil, nil, 
+                         nil, -13, -11, -10, -10, nil, nil, nil, nil, nil, nil, 
+                         nil, -11, -11, -10, -10, nil, nil, nil, nil, nil, nil, 
+                         -10, -10, -10, -10, nil, nil, nil, nil, nil, nil, nil, 
+                         -10, -10, -10, nil, nil, nil, nil, nil, nil, nil, nil, 
+                         nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 
+                         nil, nil, nil, nil, nil, nil, nil, nil, -20, -20, -20,  
+                         nil, nil, nil, nil, nil, nil, nil, -20, -20, -20, -20,  
+                         nil, nil, nil, nil, nil, nil, -20, -20, -21, -21, nil, 
+                         nil, nil, nil, nil, nil, nil, -20, -20, -21, -23, nil,
+                         nil, nil, nil, nil, nil, nil, -20, -20, nil, nil, -22 ]
+        else
+            file = File.read(path)
+            hash = JSON.parse(file)
+
+            rows = hash['height']
+            cols = hash['width']
+            terrainIds = hash['layers'][0]['data']
+            pieceIds = hash['layers'][1]['data']
+        end
+
+        em = EntityManager.new(rows, cols)
+        em = EntityFactory.create_game(em, users, terrainIds, pieceIds)
+        return em
     end
 
     def self.get_game_state(req_id, em)
@@ -222,9 +257,7 @@ class Game
     end
 end
 
-#manager, t = Game.init_game
-
-#p Game.leave_game(-1, manager)
-
-
-#puts g
+# users = [OpenStruct.new({name: "1", id: -1, channel: "NA"}),
+#          OpenStruct.new({name: "2", id: -1, channel: "NA"}), ]
+# em = Game.init_game(users)
+# puts em
