@@ -49,16 +49,22 @@ GameGroup.prototype.update = function(mouse) {
 	this.unit = null;
     }
 
+    // deal with tile info stuff:
+    this.tile.name = "Flatland";
+    this.tile.defense = 0;
+    this.tile.movementCost = 1;
+    // this.tile.name = this.gameBoard.TILE_MAP[index].name;
+    // this.tile.defense = this.gameBoard.effects;
+    // this.tile.movementCost = this.gameBoard.effects;
+
     if (this.selected) {
-        this.tile.name = 'Flatland';
-	this.ui.setSecondaryTile(this.tile);
-	this.ui.setSecondaryUnit(this.unit);
+	    this.ui.setSecondaryTile(this.tile);
+	    this.ui.setSecondaryUnit(this.unit);
     } else {
-	this.ui.setSecondaryTile(null);
-	this.ui.setSecondaryUnit(null);
-        this.tile.name = 'Flatland';
-	this.ui.setPrimaryTile(this.tile);
-	this.ui.setPrimaryUnit(this.unit);
+	    this.ui.setSecondaryTile(null);
+	    this.ui.setSecondaryUnit(null);
+	    this.ui.setPrimaryTile(this.tile);
+	    this.ui.setPrimaryUnit(this.unit);
     }
 
     this.ui.checkPlayerInfoUIPosition({x: this.game.input.mousePointer.x,
@@ -70,8 +76,10 @@ GameGroup.prototype.update = function(mouse) {
         var q = 81;
 
         if (key.keyCode === z) {
-	    this.game.dispatcher.rpc("end_turn", []); // backend will know whose turn to end
-	    this.resetEnergy(this.turn);
+            if (this.turn == this.game.constants.PLAYER_ID) {
+	            this.game.dispatcher.rpc("end_turn", []); // backend will know whose turn to end
+	            this.resetEnergy(this.turn);
+            }
         } else if (key.keyCode === q) {
             this.game.dispatcher.rpc("leave_game", []);
         }
@@ -204,7 +212,7 @@ GameGroup.prototype.buttonClicked = function(button) {
     }
 }
 
-GameGroup.prototype.initGame = function(board, units, turn, players, me) {
+GameGroup.prototype.initGame = function(board, units, turn, players, me, effects) {
     var action = {
 	gameGroup: this
     };
@@ -220,8 +228,8 @@ GameGroup.prototype.initGame = function(board, units, turn, players, me) {
 		}
 	}
 
-	// effects is not passed right now
-	// this.gameGroup.gameBoard.effects = effects;
+	this.gameGroup.gameBoard.effects = effects;
+    console.log(effects);
 
 	for (var i = 0; i < units.length; i++) {
 	    this.gameGroup.unitGroup.addUnit(units[i].id,
@@ -237,7 +245,6 @@ GameGroup.prototype.initGame = function(board, units, turn, players, me) {
 	this.gameGroup.turnCount = turn.turnCount;
 	this.gameGroup.players = players; // id corresponds to obj with name + type (red/blue)
 	this.gameGroup.game.constants.PLAYER_ID = me;
-
 
 	var playerIds = Object.keys(players);
 	for (var i = 0; i < playerIds.length; i++) {
@@ -417,7 +424,9 @@ GameGroup.prototype.setTurn = function(playerId, turnCount) {
 	    this.gameGroup.turn = playerId;
 	    this.gameGroup.turnCount = turnCount;
 	    this.ui.setPlayer(playerId, this.gameGroup.players[playerId], turnCount);
-	    this.onComplete();
+	    var tween = this.ui.setTurnInfo(this.gameGroup.players[playerId]);
+	    tween.onComplete.add(this.onComplete, this);
+	    tween.start();
 	}
     }
 }

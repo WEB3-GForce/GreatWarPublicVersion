@@ -5,7 +5,8 @@ var COLORS = {
     ENERGY: 0xfbb829,
     BUTTON: 0x556270,
     DEPLETED: 0xdadfe6,
-    HOVER: 0x1693a5
+    HOVER: 0x1693a5,
+    RED: 0xFF4040
 }
 
 var UIGroup = function(game, parent) {
@@ -19,6 +20,7 @@ var UIGroup = function(game, parent) {
     this.initUnitInfoUI();
     this.initPlayerInfoUI();
     this.initTileInfoUI();
+    this.initTurnInfoUI();
 };
 
 UIGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -37,9 +39,9 @@ UIGroup.prototype.initPlayerInfoUI = function() {
     this.playerInfoGraphics.beginFill(COLORS.BUTTON, 0.5);
     this.playerInfoGraphics.drawRect(0, 0, width, height);
 
-    this.playerInfoGraphics.beginFill(COLORS.HEALTH, 1);
+    this.playerInfoGraphics.beginFill(COLORS.RED, 1);
     this.playerInfoGraphics.drawRect(64, 0, width - 64, 32);
-    this.playerInfoGraphics.beginFill(COLORS.HOVER, 1);
+    this.playerInfoGraphics.beginFill(COLORS.ENERGY, 1);
     this.playerInfoGraphics.drawRect(64, 32, width - 64, 32);
 
     this.playerName = this.game.add.bitmapText(72, 4, 'minecraftia',
@@ -67,11 +69,16 @@ UIGroup.prototype.initPlayerInfoUI = function() {
 					    this.playerInfo);
 }
 UIGroup.prototype.setPlayer = function(playerId, player, turn) {
+    if (player.faction == "red")
+	this.playerInfoGraphics.beginFill(COLORS.RED, 1);
+    else
+	this.playerInfoGraphics.beginFill(COLORS.HOVER, 1);
+    this.playerInfoGraphics.drawRect(64, 0, 288 - 64, 32);
     this.playerPortrait.loadTexture(playerId);
     this.playerPortrait.width = 64;
     this.playerPortrait.height = 64;
     this.playerName.text = player.name;
-    this.turnCount.text = "Day: " + turn;
+    this.turnCount.text = "Day " + turn;
 }
 
 UIGroup.prototype.checkPlayerInfoUIPosition = function(mouse) {
@@ -102,6 +109,13 @@ UIGroup.prototype.initTileInfoHelper = function(group, x) {
 					   group);
     group.tile = this.game.add.sprite(8, 40, 'terrain', 0, group);
     group.tile.alpha = 0.7;
+
+    group.defense = this.game.add.bitmapText(7, 80, 'minecraftia',
+            'DEF:  0',
+            12, group);
+    group.movementCost = this.game.add.bitmapText(7, 104, 'minecraftia',
+            'MOV:  1',
+            12, group);
 }
 
 UIGroup.prototype.initTileInfoUI = function() {
@@ -114,11 +128,13 @@ UIGroup.prototype.initTileInfoUI = function() {
 
 UIGroup.prototype.setTile = function(group, tile) {
     if (tile) {
-	group.tile.frame = tile.index - 1;
-	group.title.text = tile.index; // tile.name;
-	group.visible = true;
+	    group.tile.frame = tile.index - 1;
+	    group.title.text = tile.name;
+        group.defense.text = 'DEF:  ' + tile.defense;
+        group.movementCost.text = 'MOV:  ' + tile.movementCost;
+	    group.visible = true;
     } else {
-	group.visible = false;
+	    group.visible = false;
     }
 }
 UIGroup.prototype.setPrimaryTile = function(tile) {
@@ -132,9 +148,9 @@ UIGroup.prototype.setSecondaryTile = function(tile) {
 UIGroup.prototype.setUnit = function(group, tileGroup, unit, x1, x2) {
     if (unit) {
         group.unitType.text = unit.type[0].toUpperCase() + unit.type.replace('_', ' ').slice(1);
-    	group.health.text = "HP: " + unit.stats.health.current + "/" + unit.stats.health.max;
-    	group.energy.text = "ENERGY: " + unit.stats.energy.current + "/" + unit.stats.energy.max;
-        group.attack.text = "ATTACK: " + unit.stats.range.attack;
+    	group.health.text = "HP:  " + unit.stats.health.current + "/" + unit.stats.health.max;
+    	group.energy.text = "ENERGY:  " + unit.stats.energy.current + "/" + unit.stats.energy.max;
+        group.attack.text = "ATTACK:  " + unit.stats.range.attack;
 
 	group.unit.loadTexture(UNIT_MAP[unit.type].IMAGE + '-' + unit.faction);
 
@@ -337,4 +353,35 @@ UIGroup.prototype.hideMenu = function() {
 
 UIGroup.prototype.menuVisible = function() {
     return this.actionMenu.visible;
+}
+
+UIGroup.prototype.initTurnInfoUI = function() {
+    this.turnInfo = this.game.add.group();
+    this.turnInfo.alpha = 0;
+    this.turnInfo.fixedToCamera = true;
+
+    var width = this.game.constants.CAMERA_WIDTH;
+    var height = 100;
+
+    this.turnInfoGraphics = this.game.add.graphics(0, 0, this.turnInfo);
+    this.turnInfoGraphics.beginFill(COLORS.HOVER, 0.7);
+    this.turnInfoGraphics.drawRect(0, this.game.constants.CAMERA_HEIGHT / 2 - height / 2,
+				   width, height);
+
+    this.turnText = this.game.add.bitmapText(width / 2, this.game.constants.CAMERA_HEIGHT / 2, 'minecraftia',
+					     "",
+					     20,
+					     this.turnInfo);
+    this.turnText.anchor.setTo(0.5, 0.5);
+}
+UIGroup.prototype.setTurnInfo = function(player) {
+    this.turnText.text = player.name + "'s turn";
+    this.turnInfoGraphics.clear();
+    if (player.faction == "red")
+	this.turnInfoGraphics.beginFill(COLORS.RED, 0.7);
+    else
+	this.turnInfoGraphics.beginFill(COLORS.HOVER, 0.7);
+    this.turnInfoGraphics.drawRect(0, this.game.constants.CAMERA_HEIGHT / 2 - 50,
+				   this.game.constants.CAMERA_WIDTH, 100);
+    return this.game.add.tween(this.turnInfo).to({alpha: [0, 1, 1, 1, 1, 0]}, 1200);
 }
