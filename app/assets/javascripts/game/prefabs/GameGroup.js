@@ -1,3 +1,4 @@
+
 'use strict';
 
 var GameGroup = function(game, parent) {
@@ -16,11 +17,13 @@ var GameGroup = function(game, parent) {
 
     this.turn = null;
     this.turnCount = null;
+
     this.players = null;
     this.game.constants.PLAYER_ID = null;
     // How are we going to do player names and stuff?
 
     this.ui = new UIGroup(this.game);
+    this.ui.gameGroup = this;
 };
 
 GameGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -41,33 +44,60 @@ GameGroup.prototype.update = function(mouse) {
 
     if (this.game.input.mousePointer.targetObject &&
     	this.game.input.mousePointer.targetObject.sprite instanceof Unit) {
-	        this.unit = this.game.input.mousePointer.targetObject.sprite;
+	this.unit = this.game.input.mousePointer.targetObject.sprite;
     } else {
-	    this.unit = null;
+	this.unit = null;
     }
 
     if (this.selected) {
-	    this.ui.setSecondaryTile(this.tile);
-	    this.ui.setSecondaryUnit(this.unit);
+        this.tile.name = 'Flatland';
+	this.ui.setSecondaryTile(this.tile);
+	this.ui.setSecondaryUnit(this.unit);
     } else {
-	    this.ui.setSecondaryTile(null);
-	    this.ui.setSecondaryUnit(null);
-	    this.ui.setPrimaryTile(this.tile);
-	    this.ui.setPrimaryUnit(this.unit);
+	this.ui.setSecondaryTile(null);
+	this.ui.setSecondaryUnit(null);
+        this.tile.name = 'Flatland';
+	this.ui.setPrimaryTile(this.tile);
+	this.ui.setPrimaryUnit(this.unit);
     }
 
     this.ui.checkPlayerInfoUIPosition({x: this.game.input.mousePointer.x,
-        y: this.game.input.mousePointer.y});
+				       y: this.game.input.mousePointer.y});
 
+    // check if end turn or end game
+    this.game.input.keyboard.onDownCallback = (function(key) {
+        var z = 90;
+        var q = 81;
+
+        if (key.keyCode === z) {
+	    this.game.dispatcher.rpc("end_turn", []); // backend will know whose turn to end
+	    this.resetEnergy(this.turn);
+        } else if (key.keyCode === q) {
+            this.game.dispatcher.rpc("leave_game", []);
+        }
+    }).bind(this);
+}
+
+GameGroup.prototype.eliminatePlayer = function(playerId) {
+
+}
+
+GameGroup.prototype.gameOver = function(playerId) {
+    if (this.player == playerId) {
+        this.game.endGameMessage = "You Win!"
+    } else {
+        this.game.endGameMessage = "You Lose!"
+    }
+    this.game.state.start('gameover');
 }
 
 GameGroup.prototype.onClick = function(targetObject) {
     if (targetObject === null) {
-		this.tileClicked();
+	this.tileClicked();
     } else if (targetObject.sprite instanceof Unit) {
-		this.unitClicked(targetObject.sprite);
+	this.unitClicked(targetObject.sprite);
     } else if (targetObject.sprite instanceof Phaser.Button) {
-		this.buttonClicked(targetObject.sprite);
+	this.buttonClicked(targetObject.sprite);
     }
 }
 
@@ -105,9 +135,9 @@ GameGroup.prototype.unitClicked = function(unit) {
 	return;
 
     if (this.action) {
-		this.interact(unit);
+	this.interact(unit);
     } else {
-		this.select(unit);
+	this.select(unit);
     }
 }
 
@@ -174,17 +204,16 @@ GameGroup.prototype.buttonClicked = function(button) {
     }
 }
 
-GameGroup.prototype.initGame = function(board, units, turn, players) {
+GameGroup.prototype.initGame = function(board, units, turn, players, me) {
     this.game.world.setBounds(0, 0, board.width * 32, board.height * 32);
 
     for (var i = 0; i < board.width; i++) {
-	    for (var j = 0; j < board.height; j++) {
-	        this.gameBoard.setTile(i, j, board.squares[i*board.width+j].terrain);
-	        if (board.squares[i*board.width+j].fow)
-		        this.gameBoard.addFog(i, j);
-	    }
+	for (var j = 0; j < board.height; j++) {
+	    this.gameBoard.setTile(i, j, board.squares[i*board.width+j].terrain);
+	    if (board.squares[i*board.width+j].fow)
+		this.gameBoard.addFog(i, j);
+	}
     }
-
     // effects is not passed right now
     // this.gameBoard.effects = effects;
 
@@ -201,9 +230,10 @@ GameGroup.prototype.initGame = function(board, units, turn, players) {
     this.turn = turn.playerid;
     this.turnCount = turn.turnCount;
     this.players = players; // id corresponds to obj with name + type (red/blue)
-    // this.ui.setPlayer(this.players[turn.playerid].name, this.turnCount);
+    console.log(players);
+    this.ui.setPlayer(this.players[turn.playerid].name, this.turnCount);
     // There should be a better/different way to do this
-    this.game.constants.PLAYER_ID = this.turn;
+    this.game.constants.PLAYER_ID = me;
 
     return { start: function() { this.onComplete(); } }
 }
@@ -232,39 +262,39 @@ GameGroup.prototype.showUnitActions = function(unitActions) {
 
 GameGroup.prototype.highlightSquares = function(type, squares) {
     var action = {
-		squares: squares,
-		gameBoard: this.gameBoard,
-		type: type
-	};
-	action.start = function() {
-		for (var i = 0, square; square = this.squares[i]; i++) {
-			var tile = this.gameBoard.getTile(square.x, square.y, this.gameBoard.terrainLayer);
-			this.gameBoard.highlight(tile.x, tile.y, type);
-		}
-		this.onComplete();
-	};
-	return action;
+	squares: squares,
+	gameBoard: this.gameBoard,
+	type: type
+    };
+    action.start = function() {
+	for (var i = 0, square; square = this.squares[i]; i++) {
+	    var tile = this.gameBoard.getTile(square.x, square.y, this.gameBoard.terrainLayer);
+	    this.gameBoard.highlight(tile.x, tile.y, type);
+	}
+	this.onComplete();
+    };
+    return action;
 }
 
 GameGroup.prototype.revealFog = function(squares) {
-	var action = {
-		squares: squares,
-		gameBoard: this.gameBoard
-	};
-	action.start = function() {
-		for (var i = 0, square; square = this.squares[i]; i++) {
-			var tile = this.gameBoard.getTile(square.x, square.y, this.gameBoard.terrainLayer);
-			this.gameBoard.revealFog(tile.x, tile.y);
-		}
-		this.onComplete();
-	};
-	return action;
+    var action = {
+	squares: squares,
+	gameBoard: this.gameBoard
+    };
+    action.start = function() {
+	for (var i = 0, square; square = this.squares[i]; i++) {
+	    var tile = this.gameBoard.getTile(square.x, square.y, this.gameBoard.terrainLayer);
+	    this.gameBoard.revealFog(tile.x, tile.y);
+	}
+	this.onComplete();
+    };
+    return action;
 }
 
 GameGroup.prototype.resetEnergy = function(playerId) {
     var units = this.unitGroup.getAllByPlayer(playerId);
     for (var i = 0, unit; unit = units[i]; i++) {
-        unit.stats.ENERGY = unit.stats.MAX_ENERGY;
+        unit.stats.energy.current = unit.stats.energy.max;
     }
 }
 
@@ -296,7 +326,7 @@ GameGroup.prototype.updateUnitEnergy = function(unitId, energyValue) {
 GameGroup.prototype.attack = function(unitId, square, type, unitType) {
     // check if need to add an animation to the receiving square
     var action = {
-	unit: this.unitGroup.find(unitId),
+    	unit: this.unitGroup.find(unitId),
 	unitGroup: this.unitGroup
     };
 
@@ -373,5 +403,5 @@ GameGroup.prototype.setTurn = function(playerId, turnCount) {
 	    this.ui.setPlayer(this.gameGroup.players[playerId].name, turnCount);
 	    this.onComplete();
 	}
-    };
+    }
 }

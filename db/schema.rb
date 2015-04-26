@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150422030953) do
+ActiveRecord::Schema.define(version: 20150425193229) do
 
   create_table "gamas", force: :cascade do |t|
     t.boolean  "pending"
@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 20150422030953) do
     t.datetime "updated_at", null: false
     t.string   "name"
     t.integer  "limit"
+    t.text     "manager"
   end
 
   create_table "users", force: :cascade do |t|

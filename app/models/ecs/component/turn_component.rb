@@ -3,10 +3,8 @@ require_relative "./component.rb"
 =begin
 	The TurnComponent is responsible for keeping track of turn information
 	for the game. It contains a list of players and keeps track of which
-	player's turn it currently is. It also keeps track of entities the
-	player has moved, has made attacked, or has made perform a special
-	action (such as digging trenches). This ensures that a player can
-	not have pieces	act more times than they should be able to.
+	player's turn it currently is. It also keeps track of the current turn
+	count.
 =end
 class TurnComponent < Component
 
@@ -36,7 +34,6 @@ class TurnComponent < Component
 	#
 	# Postcondtion
 	#   The old player's turn is ended and the new player now has a turn.
-	#   The moved, attacked, and special hashes are reset for the new player
 	def next_turn()
 		@turn = (@turn + 1) % @players.size
 		@turn_count += 1

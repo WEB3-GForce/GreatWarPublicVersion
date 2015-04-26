@@ -67,6 +67,7 @@ group :development, :test do
   gem 'guard-spork'
   gem 'guard-bundler'
   gem 'guard-rails'
+  gem 'guard-redis'
 end
 
 group :production do
@@ -76,3 +77,4 @@ end
 
 gem 'websocket-rails'
 gem 'phaser-rails'
+gem 'redis'

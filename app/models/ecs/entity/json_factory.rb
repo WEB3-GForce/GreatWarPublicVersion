@@ -240,25 +240,25 @@ class JsonFactory
 	#
 	# Returns
 	#   A hash that is ready to be jsoned
-	def self.game_start(entity_manager)
-		player_hash = {}
-		entity_manager.each_entity(UserIdComponent) { |player|
-			player_hash.merge! self.player(entity_manager, player)
-		}
+	def self.game_start(entity_manager, player_id)
+          player_hash = {}
+          entity_manager.each_entity(UserIdComponent) { |player|
+            player_hash.merge! self.player(entity_manager, player)
+          }
 
-		turn = entity_manager.get_entities_with_components(TurnComponent).first
-		turn_hash = self.turn(entity_manager, turn)
-		board     = self.board(entity_manager)
+          turn = entity_manager.get_entities_with_components(TurnComponent).first
+          turn_hash = self.turn(entity_manager, turn)
+          board     = self.board(entity_manager)
 
-		piece_array = []
-		entity_manager.each_entity(OwnedComponent) { |piece|
-			piece_array.push self.piece(entity_manager, piece)
-        }
+          piece_array = []
+          entity_manager.each_entity(OwnedComponent) { |piece|
+            piece_array.push self.piece(entity_manager, piece)
+          }
 
-		return [{
-		"action" => "initGame",
-		"arguments" => [board, piece_array, turn_hash, player_hash]
-		}]
+          return [{
+                    "action" => "initGame",
+                    "arguments" => [board, piece_array, turn_hash, player_hash, player_id]
+                  }]
 	end
 
 	# This returns the results of a move command to the frontend. It specifies
@@ -456,8 +456,9 @@ class JsonFactory
 	# Returns
 	#   A hash that is ready to be jsoned
 	def self.end_turn(entity_manager, entity)
+          turnHash = self.turn(entity_manager, entity)
 		return [{"action"    => "setTurn",
-		        "arguments" => [self.turn(entity_manager, entity)]}]
+		        "arguments" => [turnHash["playerid"], turnHash["turnCount"]]}]
 	end
 
 
@@ -504,8 +505,8 @@ class JsonFactory
 						   "arguments" => [winner] })
 		end
 		if !turn_change_result.nil?
-		        turn = em.get_entities_with_components(TurnComponent).first
-		        actions.push(self.end_turn(entity_manager, turn))
+		        turn = entity_manager.get_entities_with_components(TurnComponent).first
+		        actions.concat(self.end_turn(entity_manager, turn))
 		end
 
 		return actions

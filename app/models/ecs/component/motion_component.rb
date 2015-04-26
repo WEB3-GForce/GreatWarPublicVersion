@@ -2,8 +2,7 @@ require_relative "./component.rb"
 require_relative "./energy_module.rb"
 
 =begin
-	The MotionComponent handles stats necessary for movement. In particular,
-	
+	The MotionComponent handles stats necessary for movement.
 =end
 class MotionComponent < Component
 	
@@ -43,7 +42,7 @@ class MotionComponent < Component
 
   	# Returns a string representation of the component  
 	def to_s
-		"Movement: #{@max_movement}"
+		"Movement: [amount = #{@max_movement}, cost = #{self.energy_cost}]"
 	end
 
   
