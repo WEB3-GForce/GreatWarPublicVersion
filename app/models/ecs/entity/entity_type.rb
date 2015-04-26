@@ -43,7 +43,7 @@ class EntityType
 	#   whether the entity is a human player
 	def self.human_player_entity?(entity_manager, entity)
 		entity_manager.has_components(entity, [UserIdComponent,
-											   NameComponent,
+						       NameComponent,
 		                                       HumanComponent])
 	end
 
@@ -57,7 +57,7 @@ class EntityType
 	#   whether the entity is an ai player
 	def self.ai_player_entity?(entity_manager, entity)
 		entity_manager.has_components(entity, [UserIdComponent,
-											   NameComponent,
+						       NameComponent,
 		                                       AIComponent])
 	end
 
@@ -114,7 +114,7 @@ class EntityType
 
 	# Determines whether the entity can move. Namely, it needs to
 	# have both a position on the board and a MotionComponent specifying
-	# how it can move.
+	# how it can move. It must have energy as well.
 	#
 	# Arguments
 	#   entity_manager = the manager that holds the entities

@@ -22,8 +22,15 @@ class JsonFactory
 	#   A hash that is ready to be jsoned
 	def self.square(entity_manager, entity)
 		terrain_comp = entity_manager.get_components(entity, TerrainComponent).first
+		stats_array = []
+		stats   = entity_manager.get_components(entity, BoostComponent)
+		stats.each {|stat|
+			stats_array.push( {"type" => stat.type.to_s,
+			                   "amount" => stat.amount})
+		}
 		return {"id"      => entity,
-		        "terrain" => terrain_comp.type.to_s}
+		        "terrain" => terrain_comp.type.to_s,
+		        "stats"   => stats_array}
 	end
 
 

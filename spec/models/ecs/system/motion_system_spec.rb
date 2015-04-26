@@ -31,6 +31,9 @@ describe MotionSystem do
 	let(:flatland20)        {EntityFactory.flatland_square(manager)}
 	let(:flatland21)        {EntityFactory.flatland_square(manager)}
 	let(:flatland22)        {EntityFactory.flatland_square(manager)}
+	let(:hill10)            {EntityFactory.hill_square(manager)}
+	let(:hill01)            {EntityFactory.hill_square(manager)}
+	let(:hill11)            {EntityFactory.hill_square(manager)}
         let(:flat_array)        {[flatland00, flatland01, flatland02,
 		                  flatland10, flatland11, flatland12,
 		                  flatland20, flatland21, flatland22]}
@@ -60,6 +63,35 @@ describe MotionSystem do
 	it "should be a subclass of System" do
 		expect(MotionSystem < System).to be true
 	end
+
+	context "when calling on_board?" do	
+
+		it "should return false if 0 > row" do
+			result = MotionSystem.on_board?(manager, -1, 1)
+			expect(result).to be false
+		end	
+
+		it "should return false if row >= manager.row" do
+			result = MotionSystem.on_board?(manager, manager.row, 1)
+			expect(result).to be false
+		end	
+
+		it "should return false if 0 > col" do
+			result = MotionSystem.on_board?(manager, 1, -1)
+			expect(result).to be false
+		end	
+
+		it "should return false if col >= manager.col" do
+			result =MotionSystem.on_board?(manager, 1, manager.col)
+			expect(result).to be false
+		end
+
+		it "should return true for good coordinates" do
+			result =MotionSystem.on_board?(manager, 1, 1)
+			expect(result).to be true
+		end
+	end
+
 
 	context "when calling valid_move?" do
 	
@@ -137,6 +169,29 @@ describe MotionSystem do
 			result = MotionSystem.pass_over_square?(manager, flatland01,
 							 [friend1, foe1], human1)
 			expect(result).to eq false
+		end
+	end
+
+
+	context "when calling calculate_movement" do
+
+		it "should calculate successfully for terrain with no boosts" do
+			set_simple()
+			movement = 10
+			row = 1
+			col = 1
+			result = MotionSystem.calculate_movement(manager, movement, row, col)
+			expect(result).to eq(movement -1)
+		end
+		
+		it "should calculate successfully for terrain with move_cost boosts" do
+			set_simple()
+			movement = 10
+			row = 1
+			col = 1
+			manager.board[row][col][0] = hill11
+			result = MotionSystem.calculate_movement(manager, movement, row, col)
+			expect(result).to eq(movement -2)
 		end
 	end
 
@@ -292,6 +347,33 @@ describe MotionSystem do
 			answer = [flatland00, flatland10, flatland20, flatland11]
 			expect(result1.sort).to eq answer.sort
 		end
+
+		it "should properly return the correct squares with move_boost terrain" do
+			set_simple()
+			
+			# Make sure the infantry can move on flatland
+			MotionSystem.determine_locations(manager, human1,
+							 0, 0, 1, result1, [])
+			answer = [flatland00, flatland10, flatland01]
+			expect(result1.sort).to eq answer.sort
+			
+			result1 = []
+			# However, make sure it can't over terrain
+			manager.board[1][0][0] = hill10
+			manager.board[0][1][0] = hill01
+			MotionSystem.determine_locations(manager, human1,
+							 0, 0, 1, result1, [])
+			expect(result1.sort).to eq [flatland00]	
+			
+			result1 = []
+			# However, make sure it can with enough movement
+			MotionSystem.determine_locations(manager, human1,
+							 0, 0, 2, result1, [])	
+			answer = [flatland00, hill10, hill01]
+			expect(result1.sort).to eq answer.sort	
+		end
+
+
 	end
 
 	context "when calling determine_path with a simple board" do
@@ -342,6 +424,28 @@ describe MotionSystem do
 			                                     1, 1, 1, 2, 10, [])
 			expect(result).to eq []
 		end
+
+		it "should properly return the correct squares with move_boost terrain" do
+			set_simple()
+			
+			# Make sure the infantry can move on flatland
+			result = MotionSystem.determine_path(manager, human1,
+			                                     0, 0, 0, 1, 1, [])
+			answer = [flatland00, flatland01]
+			expect(result.sort).to eq answer.sort
+			
+			# However, make sure it can't over terrain
+			manager.board[0][1][0] = hill10
+			result = MotionSystem.determine_path(manager, human1,
+			                                     0, 0, 0, 1, 1, [])
+			expect(result.sort).to eq []	
+			
+			# However, make sure it can with enough movement
+			result = MotionSystem.determine_path(manager, human1,
+			                                     0, 0, 0, 1, 2, [])
+			answer = [flatland00, hill10]
+			expect(result.sort).to eq answer.sort	
+		end
 	end
 
 	context "when calling move_entity" do
@@ -390,6 +494,24 @@ describe MotionSystem do
 
 			result = MotionSystem.moveable_locations(manager, infantry)
 			answer = [flatland00, flatland10, flatland02, flatland20]
+			expect(result.sort).to eq answer.sort
+		end
+
+		it "should properly return the correct squares with move_boost terrain" do
+			set_simple()
+			
+			# Make sure the infantry can't move onto the hill
+			manager.board[1][1][0] = hill11
+			manager.add_component(infantry, PositionComponent.new(1, 0))
+			manager[infantry][EnergyComponent].first.cur_energy = 1
+			result = MotionSystem.moveable_locations(manager, infantry)
+			answer = [flatland00, flatland20]
+			expect(result.sort).to eq answer.sort
+			
+			# However, make sure it can move over flatland.
+			manager.board[1][1][0] = flatland11
+			result = MotionSystem.moveable_locations(manager, infantry)
+			answer = [flatland00, flatland11, flatland20]
 			expect(result.sort).to eq answer.sort
 		end
 
