@@ -221,6 +221,7 @@ public
 					   MotionComponent.new(-1, 2),
 					   MeleeAttackComponent.new(6, 4),
 					   RangeAttackComponent.new(6, 1, 2, [1.0], 4),
+					   TrenchBuilderComponent.new(4),
 					   OwnedComponent.new(owner)])
 	end
 

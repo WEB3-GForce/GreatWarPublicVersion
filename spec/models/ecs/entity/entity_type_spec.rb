@@ -197,4 +197,17 @@ describe EntityType do
 			expect(EntityType.damageable_entity?(manager, ai_entity)).to be false
 		end
 	end
+
+	context "when calling trench_builder_entity?" do
+
+		it "should properly identify trench builder entities" do
+			expect(EntityType.trench_builder_entity?(manager, infantry_entity)).to be true
+		end
+
+		it "should properly not produce false positives" do
+			expect(EntityType.trench_builder_entity?(manager, machine_gun_entity)).to be false
+			expect(EntityType.trench_builder_entity?(manager, artillery_entity)).to be false
+			expect(EntityType.dtrench_builder_entity?(manager, command_bunker_entity)).to be false
+		end
+	end
 end
