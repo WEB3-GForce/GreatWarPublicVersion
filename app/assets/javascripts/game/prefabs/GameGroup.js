@@ -205,37 +205,53 @@ GameGroup.prototype.buttonClicked = function(button) {
 }
 
 GameGroup.prototype.initGame = function(board, units, turn, players, me) {
-    this.game.world.setBounds(0, 0, board.width * 32, board.height * 32);
+    var action = {
+	gameGroup: this
+    };
 
-    // for (var i = 0; i < board.width; i++) {
-    // 	for (var j = 0; j < board.height; j++) {
-    // 	    this.gameBoard.setTile(i, j, board.squares[i*board.width+j].terrain);
-    // 	    if (board.squares[i*board.width+j].fow)
-    // 		this.gameBoard.addFog(i, j);
-    // 	}
-    // }
-    // effects is not passed right now
-    // this.gameBoard.effects = effects;
+    action.start = function() {
+	this.gameGroup.game.world.setBounds(0, 0, board.width * 32, board.height * 32);
 
-    for (var i = 0; i < units.length; i++) {
-	this.unitGroup.addUnit(units[i].id,
-			       units[i].type,
-			       units[i].x,
-			       units[i].y,
-			       units[i].player,
-			       units[i].stats,
-			       players[units[i].player].faction);
+	// for (var i = 0; i < board.width; i++) {
+	// 	for (var j = 0; j < board.height; j++) {
+	// 	    this.gameGroup.gameBoard.setTile(i, j, board.squares[i*board.width+j].terrain);
+	// 	    if (board.squares[i*board.width+j].fow)
+	// 		this.gameGroup.gameBoard.addFog(i, j);
+	// 	}
+	// }
+
+	// effects is not passed right now
+	// this.gameGroup.gameBoard.effects = effects;
+
+	for (var i = 0; i < units.length; i++) {
+	    this.gameGroup.unitGroup.addUnit(units[i].id,
+					     units[i].type,
+					     units[i].x,
+					     units[i].y,
+					     units[i].player,
+					     units[i].stats,
+					     players[units[i].player].faction);
+	}
+
+	this.gameGroup.turn = turn.playerid;
+	this.gameGroup.turnCount = turn.turnCount;
+	this.gameGroup.players = players; // id corresponds to obj with name + type (red/blue)
+	this.gameGroup.game.constants.PLAYER_ID = me;
+
+
+	var playerIds = Object.keys(players);
+	for (var i = 0; i < playerIds.length; i++) {
+	    this.gameGroup.game.load.image(playerIds[i], players[playerIds[i]].gravatar);
+	}
+
+	this.gameGroup.game.load.onLoadComplete.add(function() {
+	    this.gameGroup.ui.setPlayer(turn.playerid, this.gameGroup.players[turn.playerid], this.gameGroup.turnCount);
+	    this.onComplete();
+	}, this)
+	this.gameGroup.game.load.start();
     }
 
-    this.turn = turn.playerid;
-    this.turnCount = turn.turnCount;
-    this.players = players; // id corresponds to obj with name + type (red/blue)
-    console.log(players);
-    this.ui.setPlayer(this.players[turn.playerid].name, this.turnCount);
-    // There should be a better/different way to do this
-    this.game.constants.PLAYER_ID = me;
-
-    return { start: function() { this.onComplete(); } }
+    return action;
 }
 
 GameGroup.prototype.showUnitActions = function(unitActions) {
@@ -400,7 +416,7 @@ GameGroup.prototype.setTurn = function(playerId, turnCount) {
 	start: function() {
 	    this.gameGroup.turn = playerId;
 	    this.gameGroup.turnCount = turnCount;
-	    this.ui.setPlayer(this.gameGroup.players[playerId].name, turnCount);
+	    this.ui.setPlayer(playerId, this.gameGroup.players[playerId], turnCount);
 	    this.onComplete();
 	}
     }

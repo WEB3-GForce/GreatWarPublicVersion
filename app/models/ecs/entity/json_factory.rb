@@ -54,19 +54,22 @@ class JsonFactory
 	# Returns
 	#   A hash that is ready to be jsoned
 	def self.player(entity_manager, entity)
-		name_comp = entity_manager.get_components(entity, NameComponent).first
-		user_id_comp = entity_manager.get_components(entity, UserIdComponent).first
+          name_comp = entity_manager.get_components(entity, NameComponent).first
+          user_id_comp = entity_manager.get_components(entity, UserIdComponent).first
 
-		ai_comp = entity_manager.get_components(entity, AIComponent).first
-		player_type = "CPU" if ai_comp
+          ai_comp = entity_manager.get_components(entity, AIComponent).first
+          player_type = "CPU" if ai_comp
 
-		human_comp = entity_manager.get_components(entity, HumanComponent).first
-		player_type = "Human" if human_comp
+          human_comp = entity_manager.get_components(entity, HumanComponent).first
+          player_type = "Human" if human_comp
 
-		return {entity  => {"name"    => name_comp.name,
-		                    "type"    => player_type,
-		                    "userId"  => user_id_comp.id,
-		                    "faction" => user_id_comp.faction }}
+          return {entity  => {
+              "name"    => name_comp.name,
+              "type"     => player_type,
+              "userId"   => user_id_comp.id,
+              "gravatar" => user_id_comp.gravatar,
+              "faction"  => user_id_comp.faction }
+          }
 	end
 
 	# Converts a turn entity into a hash object.
