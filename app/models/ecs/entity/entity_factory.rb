@@ -457,6 +457,12 @@ public
 	def self.create_game(entity_manager, users, terrainIds, pieceIds)
 		rows = entity_manager.row
 		cols = entity_manager.col
+		
+		entity_manager.effects.push self.flatland_square(entity_manager)
+		entity_manager.effects.push self.mountain_square(entity_manager)
+		entity_manager.effects.push self.hill_square(entity_manager)
+		entity_manager.effects.push self.trench_square(entity_manager)
+		entity_manager.effects.push self.river_square(entity_manager)
 
 		# Board
 		flatland = lambda { |id| self.flatland_square(entity_manager, id) }
