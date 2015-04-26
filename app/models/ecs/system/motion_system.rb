@@ -20,6 +20,22 @@ require_relative "./system.rb"
 class MotionSystem < System
 
 private
+
+	# Used to determine whether a position is on the board
+	#
+	# Arguments
+	#   entity_manager = the manager of entities
+	#   row            = the row to check
+	#   col            = the col to check
+	#
+	# Returns
+	#   whether the position is on the board.
+	def self.on_board?(entity_manager, row, col)
+		return (0 <= row && row < entity_manager.row) &&
+		   (0 <= col && col < entity_manager.col) 
+	end
+
+
 	# Used within methods that determine whether an entity can move to
 	# certain locations, this ensures that the entity has enough movement
 	# to reach the square and that the row and column of the destination are
@@ -34,11 +50,9 @@ private
 	# Returns
 	#   whether the position is valid to move to.
 	def self.valid_move?(entity_manager, row, col, movement)
-		return movement >= 0  &&
-		   (0 <= row && row < entity_manager.row) &&
-		   (0 <= col && col < entity_manager.col) 
+		return movement >= 0  && self.on_board?(entity_manager, row, col)
 	end
-
+	
 	# This function checks whether it is possible for an entity to pass over
 	# a square.
 	#
@@ -104,6 +118,37 @@ private
 			PositionComponent.new(end_pos.row, end_pos.col))
 	end
 
+	# Calculates the new movement of an entity after moving to a new tile
+	#
+	# Arguments
+	#  entity_manager = the manager of entities
+	#  movement       = the current movement of the entity
+	#  row            = the row of the new square to move to
+	#  col            = the col of the new square to move to
+	#
+	# Returns
+	#   the new movement cost
+	#
+	# Note
+	#   It is expected that row and column are valid.
+	def self.calculate_movement(entity_manager, movement, row, col) 
+		new_movement = movement-1
+		new_square = entity_manager.board[row][col][0]
+		boosts   = entity_manager.get_components(new_square, BoostComponent)
+		boosts.each {|boost|
+			if boost == BoostComponent.move_cost
+				# In this case, the movement simply needs to be
+				# subtracted from the movement since movement
+				# already takes energy into account. Since all
+				# squares take 1 energy to move by default, the
+				# movement is changed to boost.amount.round - 1
+				# instead.
+				new_movement -= (boost.amount.round - 1)
+			end
+		}
+		return new_movement
+	end
+
 	# This private method determines the locations an entity can move to
 	# taking into account the type of squares, the movement range of the
 	# entity, other occupants o squares, etc.
@@ -160,10 +205,11 @@ private
 		end
 
 		# Recursively check the square in the cardinal directions.
-		new_movement = movement-1
 		new_pos = [[row-1, col], [row+1, col], [row, col-1],[row, col+1]]
 		
 		new_pos.each { |row, col|
+			next if !self.on_board?(entity_manager, row, col)
+			new_movement = self.calculate_movement(entity_manager, movement, row, col)
 			self.determine_locations(entity_manager, mover_owner,
 						 row, col, new_movement,
 						 results, path.dup)
@@ -224,12 +270,12 @@ private
 		end
 
 		# Recursively check the square in the cardinal directions.
-		new_movement = movement-1
 		new_pos = [[row-1, col], [row+1, col], [row, col-1],[row, col+1]]
 		
 		answer = []
 		new_pos.each { |row, col|
-		
+			next if !self.on_board?(entity_manager, row, col)
+			new_movement = self.calculate_movement(entity_manager, movement, row, col)
 			new_path = self.determine_path(entity_manager, mover_owner,
 						       row, col, end_row, end_col,
 						       new_movement, path.dup)	 
