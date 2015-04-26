@@ -74,9 +74,6 @@ public
 	# This function creates a new hill square for boards. Hills are the
 	# passable and occupiable version of mountians.
 	#
-	# TODO In future versions of the game, hills will provide some defense
-	#      boosts.
-	#
 	# Arguments
 	#   entity_manager = the entity manager to add the new entity to
 	#
@@ -86,14 +83,14 @@ public
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.hill,
 					   OccupiableComponent.new,
+					   BoostComponent.defense,
+					   BoostComponent.move_cost,
 					   SpriteComponent.new(id)])
 	end
 
 	# This function creates a new trench square for boards. Trenches are
 	# dug from the terrain by units and are both passable and occupiable.
 	#
-	# TODO In future versions of the game, hills will provide some defense
-	#      boosts.
 	# TODO Consider adding an immalleable component to determine if a square
 	#      can be turned into a trench
 	#
@@ -106,6 +103,7 @@ public
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.trench,
 					   OccupiableComponent.new,
+					   BoostComponent.defense,
 					   SpriteComponent.new(id)])
 	end
 
@@ -121,6 +119,7 @@ public
 	def self.river_square(entity_manager, id=0)
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.river,
+					   BoostComponent.move_cost,
 					   SpriteComponent.new(id)])
 	end
 

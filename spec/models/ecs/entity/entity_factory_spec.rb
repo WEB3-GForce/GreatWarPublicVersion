@@ -1,4 +1,5 @@
 require_relative '../../../spec_helper'
+require 'ostruct'
 
 def place_top_left_helper(manager, army, owner)
 	(0..4).each { |row|
@@ -80,6 +81,9 @@ describe EntityFactory do
 		expect(manager[entity][TerrainComponent][0]).to eq(TerrainComponent.hill)
 		expect(manager[entity][OccupiableComponent].size).to eq(1)
 		expect(manager[entity][ImpassableComponent].size).to eq(0)
+		expect(manager[entity][BoostComponent].size).to eq(2)
+		expect(manager[entity][BoostComponent].include? BoostComponent.defense).to be true
+		expect(manager[entity][BoostComponent].include? BoostComponent.move_cost).to be true
 	end
 
 	it "should create a new trench square" do
@@ -87,6 +91,8 @@ describe EntityFactory do
 		expect(manager[entity][TerrainComponent][0]).to eq(TerrainComponent.trench)
 		expect(manager[entity][OccupiableComponent].size).to eq(1)
 		expect(manager[entity][ImpassableComponent].size).to eq(0)
+		expect(manager[entity][BoostComponent].size).to eq(1)
+		expect(manager[entity][BoostComponent].include? BoostComponent.defense).to be true
 	end
 
 	it "should create a new river square" do
@@ -94,6 +100,8 @@ describe EntityFactory do
 		expect(manager[entity][TerrainComponent][0]).to eq(TerrainComponent.river)
 		expect(manager[entity][ImpassableComponent].size).to eq(0)
 		expect(manager[entity][OccupiableComponent].size).to eq(0)
+		expect(manager[entity][BoostComponent].size).to eq(1)
+		expect(manager[entity][BoostComponent].include? BoostComponent.move_cost).to be true
 	end
 
 	it "should create a new board with flatland squares" do
@@ -306,7 +314,8 @@ describe EntityFactory do
 	end
 
 	it "should create a new basic game with 1 player" do
-		game_bundle = EntityFactory.create_game_basic(manager, {1 => "David"})
+		users = [OpenStruct.new({name: "David", id: -1, channel: "NA"})]
+		game_bundle = EntityFactory.create_game_basic(manager, users)
 		turn_comp   = manager[game_bundle[1]][TurnComponent][0]
 		player1     = game_bundle[0][0]
 		army1       = game_bundle[2][0...25]
@@ -321,8 +330,9 @@ describe EntityFactory do
 	end
 
 	it "should create a new basic game with 2 player" do
-		game_bundle = EntityFactory.create_game_basic(manager, {1 => "David", 
-			2 => "Charlie"})
+	        users = [OpenStruct.new({name: "David", id: -1, channel: "NA"}),
+                         OpenStruct.new({name: "Charlie", id: -1, channel: "NA"}), ]
+		game_bundle = EntityFactory.create_game_basic(manager, users)
 		turn_comp   = manager[game_bundle[1]][TurnComponent][0]
 		player1     = game_bundle[0][0]
 		army1       = game_bundle[2][0...25]
@@ -345,8 +355,10 @@ describe EntityFactory do
 	end
 
 	it "should create a new basic game with 3 player" do
-		game_bundle = EntityFactory.create_game_basic(manager, {1 => "David", 
-			2 => "Charlie", 3 => "Jack"})
+	        users = [OpenStruct.new({name: "David", id: -1, channel: "NA"}),
+                         OpenStruct.new({name: "Charlie", id: -1, channel: "NA"}),
+                         OpenStruct.new({name: "Jack", id: -1, channel: "NA"}) ]
+		game_bundle = EntityFactory.create_game_basic(manager, users)
 		turn_comp   = manager[game_bundle[1]][TurnComponent][0]
 		player1     = game_bundle[0][0]
 		army1       = game_bundle[2][0...25]
@@ -377,8 +389,11 @@ describe EntityFactory do
 	end
 
 	it "should create a new basic game with 4 player" do
-		game_bundle = EntityFactory.create_game_basic(manager, {1 => "David", 
-			2 => "Charlie", 3 => "Jack", 4 => "Steve"})
+	       users = [OpenStruct.new({name: "David", id: -1, channel: "NA"}),
+                         OpenStruct.new({name: "Charlie", id: -1, channel: "NA"}),
+                         OpenStruct.new({name: "Jack", id: -1, channel: "NA"}),
+                         OpenStruct.new({name: "Steve", id: -1, channel: "NA"}) ]
+		game_bundle = EntityFactory.create_game_basic(manager, users)
 		turn_comp   = manager[game_bundle[1]][TurnComponent][0]
 		player1     = game_bundle[0][0]
 		army1       = game_bundle[2][0...25]
