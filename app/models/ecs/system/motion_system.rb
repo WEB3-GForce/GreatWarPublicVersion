@@ -109,6 +109,7 @@ private
 	# entity, other occupants o squares, etc.
 	#
 	# Arguments
+	#   entity_manager = the manager of entities
 	#   mover_owner = the owner of the entity to find the moveable locations of
 	#   row         = the row that is currently being checked.
 	#   col         = the column that is currently being checked
@@ -173,6 +174,7 @@ private
 	# from one square to another.
 	#
 	# Arguments
+	#   entity_manager = the manager of entities
 	#   mover_owner = the owner of the entity that is moving
 	#   row         = the row that is currently being checked.
 	#   col         = the column that is currently being checked
@@ -336,9 +338,6 @@ public
 	# Note
 	#   The piece is removed from the occupant array of the board and all
 	#   of its PositionComponent's are destroyed.
-	#
-	# TODO If entities can ever have multiple positions, this must be expanded.
-	#
 	def self.remove_piece(entity_manager, entity)
 		if !EntityType.placed_entity?(entity_manager, entity) ||
 		   !EntityType.piece_entity?(entity_manager, entity)  

@@ -36,6 +36,10 @@ var Unit = function(game, id, type, x, y, player, stats, faction) {
     this.animations.add('walk-up', [11, 12, 13, 12]);
     this.animations.add('get-hit', [0, 7]);
 
+    this.explosion = this.game.add.sprite(0, 0, 'explosion', 0);
+    this.explosion.visible = false;
+    this.explosion.animations.add('explode', [0,1,2,3,4,5,6,7,8,9]);
+
     this.id = id;
     if (faction === "blue") {
 	this.orientation = "left";
@@ -125,23 +129,30 @@ Unit.prototype.moveTo = function(x, y, stop, callback, callbackContext) {
 Unit.prototype.attack = function(square, type) {
     var update = {};
     if (this.x/this.game.constants.TILE_SIZE < square.x)
-	update.x = [this.x + this.game.constants.TILE_SIZE/2, this.x];
+	    update.x = [this.x + this.game.constants.TILE_SIZE/2, this.x];
     else if (this.x/this.game.constants.TILE_SIZE > square.x)
-	update.x = [this.x - this.game.constants.TILE_SIZE/2, this.x];
+	    update.x = [this.x - this.game.constants.TILE_SIZE/2, this.x];
     if (this.y/this.game.constants.TILE_SIZE < square.y)
-	update.y = [this.y + this.game.constants.TILE_SIZE/2, this.y];
+	    update.y = [this.y + this.game.constants.TILE_SIZE/2, this.y];
     else if (this.y/this.game.constants.TILE_SIZE > square.y)
-	update.y = [this.y - this.game.constants.TILE_SIZE/2, this.y];
+	    update.y = [this.y - this.game.constants.TILE_SIZE/2, this.y];
 
     var tween = this.game.add.tween(this).to(update, 300);
     tween.interpolation(function(v, k){
             return Phaser.Math.linearInterpolation(v, k);
     });
     tween.onStart.add(function() {
-	this.animations.play(type + "-attack", 16, true);
+	    this.animations.play(type + "-attack", 16, true);
+        if (type == 'ranged') {
+            this.explosion.visible = true;
+            this.explosion.x = square.x * this.game.constants.TILE_SIZE;
+            this.explosion.y = square.y * this.game.constants.TILE_SIZE;
+            this.explosion.animations.play('explode', 6, false);
+        }
     }, this);
     tween.onComplete.add(function() {
-	this.stop();
+        this.explosion.visible = false;
+	    this.stop();
     }, this);
     return tween;
 }

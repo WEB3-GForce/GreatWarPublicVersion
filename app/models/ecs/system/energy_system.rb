@@ -52,7 +52,7 @@ class EnergySystem < System
 		return true
 	end
 
-	# Updates an entity to have used a certain amount of energy
+	# Resets the energy of all entities owned by the current player.
 	#
 	# Arguments
 	#   entity_manager = the manager of entities

@@ -8,7 +8,7 @@ require_relative "../entity/entity_type.rb"
 	that the entities can properly do battle, that they are within the
 	valid range for melee attacks, and then adminsters the damage.
 	
-	For melee attacks, the entity attacked will return damage if it is
+	For melee attacks, the entity attacked will retaliate if it is
 	still alive and can do so.
 =end
 class MeleeSystem < System
@@ -54,7 +54,7 @@ private
 	#
 	#    If damage is applied, the damage return array will be of the form:
 	#
-	#	[["melee", attacking_entity, damage_info], ...]
+	#	[["melee", attacking_entity, attack_type, damage_info], ...]
 	def self.perform_attack(entity_manager, attacking_entity, attacked_entity)
 		mattack = entity_manager.get_components(attacking_entity, MeleeAttackComponent).first
 		result  = DamageSystem.update(entity_manager, attacked_entity, mattack.attack)
@@ -68,12 +68,12 @@ public
 	# Gets the locations that an entity can melee attack
 	def self.attackable_locations(entity_manager, entity)
 		if !EntityType.melee_entity?(entity_manager, entity) or 
-				!EntityType.placed_entity?(entity_manager, entity) or
-				!self.enough_energy?(entity_manager, entity)
+		   !EntityType.placed_entity?(entity_manager, entity) or
+		   !self.enough_energy?(entity_manager, entity)
 			return []
 		end
         
-        own_comp = entity_manager.get_components(entity, OwnedComponent).first
+      		own_comp = entity_manager.get_components(entity, OwnedComponent).first
 
 		results = []
 
@@ -100,8 +100,8 @@ public
 	# Gets the locations that an entity could melee attack in theory
 	def self.attackable_range(entity_manager, entity)
 		if !EntityType.melee_entity?(entity_manager, entity) or 
-				!EntityType.placed_entity?(entity_manager, entity) or
-				!self.enough_energy?(entity_manager, entity)
+		   !EntityType.placed_entity?(entity_manager, entity) or
+		   !self.enough_energy?(entity_manager, entity)
 			return []
 		end
 
@@ -140,10 +140,10 @@ public
 	#	3. if entity1 and entity2 both attack and live
 	#	4. if entity1 and entity2 both attack and entity1 dies
 	#
-	#	1. [["melee", entity1, entity2_damage_info]]
-	#	2. [["melee", entity1, entity2_damage_info], [entity2_kill_info]]
-	#	3. [["melee", entity1, entity2_damage_info], ["melee", entity2, entity1_damage_info]]
-	#	4. [["melee", entity1, entity2_damage_info], ["melee", entity2, entity1_damage_info], [entity1_kill_info]]
+	#	1. [["melee", entity1, entity1_type, entity2_damage_info]]
+	#	2. [["melee", entity1, entity1_type, entity2_damage_info], [entity2_kill_info]]
+	#	3. [["melee", entity1, entity1_type, entity2_damage_info], ["melee", entity2, entity2_type, entity1_damage_info]]
+	#	4. [["melee", entity1, entity1_type, entity2_damage_info], ["melee", entity2, entity2_type, entity1_damage_info], [entity1_kill_info]]
 	def self.update(entity_manager, entity1, entity2)
 		if !self.valid_melee?(entity_manager, entity1, entity2)
 			return []

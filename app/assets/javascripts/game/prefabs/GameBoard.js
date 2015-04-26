@@ -7,13 +7,13 @@ var HIGHLIGHT_TYPES = {
 };
 
 var TILE_MAP  = {
-    flatland: 30
+    flatland: {index: 30, name: "Flat Land"},
 };
 
 var GameBoard = function(game) {
     Phaser.Tilemap.call(this, game, 'tileset');
 
-    this.addTilesetImage('tmw_desert_spacing', // tileset name, findable in the json 
+    this.addTilesetImage('tmw_desert_spacing', // tileset name, findable in the json
 			 'tmw_desert_spacing'
 			);
     this.addTilesetImage('fog', 'fog');
@@ -82,7 +82,7 @@ GameBoard.prototype.drawGrid = function() {
 }
 
 GameBoard.prototype.setTile = function(x, y, type) {
-    this.putTile(TILE_MAP[type], x, y, this.terrainLayer);
+    this.putTile(TILE_MAP[type].index, x, y, this.terrainLayer);
 }
 
 GameBoard.prototype.terrainType = function(x, y) {

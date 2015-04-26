@@ -17,16 +17,7 @@
 
 Dir[File.dirname(__FILE__) + '/../app/models/ecs/component/*.rb'].each {|file| require_relative file }
 Dir[File.dirname(__FILE__) + '/../app/models/ecs/entity/*.rb'].each {|file| require_relative file }
-
-require_relative '../app/models/ecs/system/system.rb'
-require_relative '../app/models/ecs/system/melee_system.rb'
-require_relative '../app/models/ecs/system/motion_system.rb'
-require_relative '../app/models/ecs/system/kill_system.rb'
-require_relative '../app/models/ecs/system/damage_system.rb'
-require_relative '../app/models/ecs/system/range_system.rb'
-require_relative '../app/models/ecs/system/turn_system.rb'
-require_relative '../app/models/ecs/system/energy_system.rb'
-require_relative '../app/models/ecs/system/game_over_system.rb'
+Dir[File.dirname(__FILE__) + '/../app/models/ecs/system/*.rb'].each {|file| require_relative file }
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
