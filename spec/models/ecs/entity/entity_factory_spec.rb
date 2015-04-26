@@ -80,6 +80,9 @@ describe EntityFactory do
 		expect(manager[entity][TerrainComponent][0]).to eq(TerrainComponent.hill)
 		expect(manager[entity][OccupiableComponent].size).to eq(1)
 		expect(manager[entity][ImpassableComponent].size).to eq(0)
+		expect(manager[entity][BoostComponent].size).to eq(2)
+		expect(manager[entity][BoostComponent].include? BoostComponent.defense).to be true
+		expect(manager[entity][BoostComponent].include? BoostComponent.move_cost).to be true
 	end
 
 	it "should create a new trench square" do
@@ -87,6 +90,8 @@ describe EntityFactory do
 		expect(manager[entity][TerrainComponent][0]).to eq(TerrainComponent.trench)
 		expect(manager[entity][OccupiableComponent].size).to eq(1)
 		expect(manager[entity][ImpassableComponent].size).to eq(0)
+		expect(manager[entity][BoostComponent].size).to eq(1)
+		expect(manager[entity][BoostComponent].include? BoostComponent.defense).to be true
 	end
 
 	it "should create a new river square" do
@@ -94,6 +99,8 @@ describe EntityFactory do
 		expect(manager[entity][TerrainComponent][0]).to eq(TerrainComponent.river)
 		expect(manager[entity][ImpassableComponent].size).to eq(0)
 		expect(manager[entity][OccupiableComponent].size).to eq(0)
+		expect(manager[entity][BoostComponent].size).to eq(1)
+		expect(manager[entity][BoostComponent].include? BoostComponent.move_cost).to be true
 	end
 
 	it "should create a new board with flatland squares" do
