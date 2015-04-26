@@ -28,9 +28,12 @@ class JsonFactory
 			stats_array.push( {"type" => stat.type.to_s,
 			                   "amount" => stat.amount})
 		}
+		terrain_comp = entity_manager[entity][TerrainComponent].first
+		sprite_comp = entity_manager[entity][SpriteComponent].first
 		return {"id"      => entity,
 		        "terrain" => terrain_comp.type.to_s,
-		        "stats"   => stats_array}
+		        "stats"   => stats_array,
+		        "index"   => sprite_comp.id}
 	end
 
 
