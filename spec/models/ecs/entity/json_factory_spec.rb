@@ -52,11 +52,11 @@ describe JsonFactory do
     context "when calling square" do
         it "should return a hash with the attributes of the square" do
             expect(JsonFactory.square(manager, flatland00)).to eq(
-                {"id" => flatland00, "terrain" => "flatland"})
+                {"id" => flatland00, "terrain" => "flatland", "index" => 0})
             expect(JsonFactory.square(manager, river01)).to eq(
-                {"id" => river01, "terrain" => "river"})
+                {"id" => river01, "terrain" => "river", "index" => 0})
             expect(JsonFactory.square(manager, mountain02)).to eq(
-                {"id" => mountain02, "terrain" => "mountain"})
+                {"id" => mountain02, "terrain" => "mountain", "index" => 0})
         end
     end
 
