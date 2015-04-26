@@ -15,7 +15,7 @@ class SocketController < WebsocketRails::BaseController
   end
 
   def self.init_game(users, game_id)
-    manager = Game.init_game(users)
+    manager = Game.init_game(users, Rails.root.join('app', 'assets', 'json', 'demo.json'))
     Game.save(game_id, manager)
     Game.store(game_id, manager)
 
@@ -55,6 +55,7 @@ class SocketController < WebsocketRails::BaseController
     Game.save(game_id, manager)
     if method_name == 'end_turn'
       Game.store(game_id, manager) # probably only want to store after a turn ends
+    end
 
     p response
 
