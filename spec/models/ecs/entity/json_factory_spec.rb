@@ -12,6 +12,7 @@ describe JsonFactory do
     let(:artillery)         {EntityFactory.artillery(manager, human1)}  
     let(:command_bunker)    {EntityFactory.command_bunker(manager, human1)}
     let(:flatland00)        {EntityFactory.flatland_square(manager)}
+    let(:hill)              {EntityFactory.hill_square(manager)}
     let(:river01)           {EntityFactory.river_square(manager)}
     let(:mountain02)        {EntityFactory.mountain_square(manager)}
     let(:flatland10)        {EntityFactory.flatland_square(manager)}
@@ -52,11 +53,20 @@ describe JsonFactory do
     context "when calling square" do
         it "should return a hash with the attributes of the square" do
             expect(JsonFactory.square(manager, flatland00)).to eq(
-                {"id" => flatland00, "terrain" => "flatland"})
+                {"id" => flatland00, "stats" => [], "terrain" => "flatland"})
             expect(JsonFactory.square(manager, river01)).to eq(
-                {"id" => river01, "terrain" => "river"})
+                {"id" => river01, 
+                 "stats" => [{"type" => "move_cost", "amount" => 2.0}],
+                 "terrain" => "river"})
             expect(JsonFactory.square(manager, mountain02)).to eq(
-                {"id" => mountain02, "terrain" => "mountain"})
+                {"id" => mountain02,
+                 "stats" => [],
+                 "terrain" => "mountain"})
+            expect(JsonFactory.square(manager, hill)).to eq(
+                {"id" => hill,
+                 "stats" => [{"type" => "defense", "amount" => 2.0},
+                             {"type" => "move_cost", "amount" => 2.0}],
+                 "terrain" => "hill"})
         end
     end
 
