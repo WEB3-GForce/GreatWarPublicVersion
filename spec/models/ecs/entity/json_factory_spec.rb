@@ -292,6 +292,7 @@ describe JsonFactory do
     context "when calling game_start" do
         it "should return a hash of the game_start" do
             set_intermediate
+            player_id = 10
             players = [human1, ai]
             player_hash = {}
             players.each { |player|
@@ -303,12 +304,13 @@ describe JsonFactory do
                 pieces_array.push JsonFactory.piece(manager, piece)
             }
             turn = EntityFactory.turn_entity(manager, [human1, ai])
-            expect(JsonFactory.game_start(manager)).to eq(
+            expect(JsonFactory.game_start(manager, player_id)).to eq(
                 [{"action" => "initGame", 
                  "arguments" => [JsonFactory.board(manager),
                                  pieces_array,
                                  JsonFactory.turn(manager, turn),
-                                 player_hash]}])
+                                 player_hash,
+                                 player_id]}])
         end
     end
 
