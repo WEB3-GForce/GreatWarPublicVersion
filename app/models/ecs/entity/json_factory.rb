@@ -393,6 +393,30 @@ class JsonFactory
        		return attack_animate.concat actions
 	end
 
+	# This returns the results of a make_trench command to the frontend. It specifies
+	# the entity that made the trench along with the new trench made
+	#
+	# Arguments
+	#   entity_manager = the manager that contains the entities
+	#   entity         = the entity making the trench
+	#   results        = an array of new trench squares
+	#
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.make_trench(entity_manager, entity, results)
+        	actions = []
+        	results.each { |trench_array|
+        		squares = []
+        		trench_array[1].each { |square|
+        			squares.push self.square_path(entity_manager, square)
+        		}
+	        	actions.push({"action" => "makeTrench",
+        			      "arguments" => [entity, squares] })
+        	}
+        	actions.concat self.update_energy(entity_manager, entity)
+       		return actions
+	end
+
 	# This is the helper function that performs the main work for requests
 	# to determine where a unit can move or attack.
 	#
@@ -466,6 +490,22 @@ class JsonFactory
 	end
 
 
+	# This function is used to return a response to a get_unit_trench_location
+	# request. In particular, it contains the list of locations that the
+	# specified entity can build trenches.
+	#
+	# Argumetns
+	#   entity_manager = the manager that contains the entities
+	#   entity         = the entity that wishes to build the trench.
+	#   locations      = an array of square entities denoting the possible
+	#                  squares that can be trenched
+	#
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.trench_locations(entity_manager, entity, locations)
+		self.locations(entity_manager, entity, locations, "trench")
+	end
+
 	# Converts a turn entity into a hash object.
 	#
 	# Argumetns
@@ -481,7 +521,7 @@ class JsonFactory
 	end
 
 
-	def self.actions(entity_manager, entity, can_move, can_melee, can_range)
+	def self.actions(entity_manager, entity, can_move, can_melee, can_range, can_trench)
 
 		actions = []
 
@@ -498,6 +538,11 @@ class JsonFactory
 		if can_range
 		 actions.push({"name" => "ranged",
 		               "cost" => entity_manager[entity][RangeAttackComponent].first.energy_cost})
+		end
+
+		if can_trench
+		 actions.push({"name" => "trench",
+		               "cost" => entity_manager[entity][TrenchBuilderComponent].first.energy_cost})
 		end
 
 		return [{"action"    => "showUnitActions",

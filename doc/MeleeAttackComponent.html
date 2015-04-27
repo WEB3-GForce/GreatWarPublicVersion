@@ -167,6 +167,7 @@ href="MeleeAttackComponent.html">MeleeAttackComponent</a> object</p>
 <p>Arguments</p>
 
 <pre class="ruby"><span class="ruby-identifier">attack</span> = <span class="ruby-identifier">damage</span> <span class="ruby-identifier">dealt</span> <span class="ruby-identifier">during</span> <span class="ruby-identifier">a</span> <span class="ruby-identifier">melee</span> <span class="ruby-identifier">attack</span>
+<span class="ruby-identifier">energy_cost</span> = <span class="ruby-identifier">the</span> <span class="ruby-identifier">amount</span> <span class="ruby-identifier">of</span> <span class="ruby-identifier">energy</span> <span class="ruby-identifier">used</span> <span class="ruby-identifier">to</span> <span class="ruby-identifier">perform</span> <span class="ruby-identifier">an</span> <span class="ruby-identifier">attack</span>
 </pre>
 
 <p>Postcondtion</p>
@@ -178,7 +179,7 @@ href="MeleeAttackComponent.html">MeleeAttackComponent</a> object</p>
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/component/melee_attack_component.rb, line 23</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/component/melee_attack_component.rb, line 24</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">attack</span>, <span class="ruby-identifier">energy_cost</span>=<span class="ruby-value">1</span>)
         <span class="ruby-keyword">self</span>.<span class="ruby-identifier">attack</span>      = <span class="ruby-identifier">attack</span>
         <span class="ruby-keyword">self</span>.<span class="ruby-identifier">energy_cost</span> = <span class="ruby-identifier">energy_cost</span>
@@ -229,7 +230,7 @@ href="MeleeAttackComponent.html">MeleeAttackComponent</a> object</p>
 
           
           <div class="method-source-code" id="attack-3D-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/component/melee_attack_component.rb, line 35</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/component/melee_attack_component.rb, line 36</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">attack=</span>(<span class="ruby-identifier">attack</span>)
         <span class="ruby-ivar">@attack</span> = [<span class="ruby-value">0</span>, <span class="ruby-identifier">attack</span>].<span class="ruby-identifier">max</span>
 <span class="ruby-keyword">end</span></pre>
@@ -262,9 +263,9 @@ href="MeleeAttackComponent.html">MeleeAttackComponent</a> object</p>
 
           
           <div class="method-source-code" id="to_s-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/component/melee_attack_component.rb, line 40</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/component/melee_attack_component.rb, line 41</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">to_s</span>
-        <span class="ruby-node">&quot;Melee Attack: #{@attack}&quot;</span>
+        <span class="ruby-node">&quot;Melee Attack: [damage = #{@attack}, cost #{self.energy_cost}]&quot;</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           

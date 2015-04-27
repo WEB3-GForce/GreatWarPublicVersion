@@ -94,8 +94,8 @@ coordinating melee attacks. It ensures that the entities can properly do
 battle, that they are within the valid range for melee attacks, and then
 adminsters the damage.</p>
 
-<p>For melee attacks, the entity attacked will return damage if it is still
-alive and can do so.</p>
+<p>For melee attacks, the entity attacked will retaliate if it is still alive
+and can do so.</p>
 
   </section>
 
@@ -140,12 +140,12 @@ alive and can do so.</p>
             <pre><span class="ruby-comment"># File app/models/ecs/system/melee_system.rb, line 69</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">attackable_locations</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
         <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-constant">EntityType</span>.<span class="ruby-identifier">melee_entity?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>) <span class="ruby-keyword">or</span> 
-                        <span class="ruby-operator">!</span><span class="ruby-constant">EntityType</span>.<span class="ruby-identifier">placed_entity?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>) <span class="ruby-keyword">or</span>
-                        <span class="ruby-operator">!</span><span class="ruby-keyword">self</span>.<span class="ruby-identifier">enough_energy?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
+           <span class="ruby-operator">!</span><span class="ruby-constant">EntityType</span>.<span class="ruby-identifier">placed_entity?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>) <span class="ruby-keyword">or</span>
+           <span class="ruby-operator">!</span><span class="ruby-keyword">self</span>.<span class="ruby-identifier">enough_energy?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
                 <span class="ruby-keyword">return</span> []
         <span class="ruby-keyword">end</span>
 
-<span class="ruby-identifier">own_comp</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-constant">OwnedComponent</span>).<span class="ruby-identifier">first</span>
+        <span class="ruby-identifier">own_comp</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-constant">OwnedComponent</span>).<span class="ruby-identifier">first</span>
 
         <span class="ruby-identifier">results</span> = []
 
@@ -200,8 +200,8 @@ alive and can do so.</p>
             <pre><span class="ruby-comment"># File app/models/ecs/system/melee_system.rb, line 101</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">attackable_range</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
         <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-constant">EntityType</span>.<span class="ruby-identifier">melee_entity?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>) <span class="ruby-keyword">or</span> 
-                        <span class="ruby-operator">!</span><span class="ruby-constant">EntityType</span>.<span class="ruby-identifier">placed_entity?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>) <span class="ruby-keyword">or</span>
-                        <span class="ruby-operator">!</span><span class="ruby-keyword">self</span>.<span class="ruby-identifier">enough_energy?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
+           <span class="ruby-operator">!</span><span class="ruby-constant">EntityType</span>.<span class="ruby-identifier">placed_entity?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>) <span class="ruby-keyword">or</span>
+           <span class="ruby-operator">!</span><span class="ruby-keyword">self</span>.<span class="ruby-identifier">enough_energy?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
                 <span class="ruby-keyword">return</span> []
         <span class="ruby-keyword">end</span>
 
@@ -265,10 +265,10 @@ an array of the form
    3. if entity1 and entity2 both attack and live
    4. if entity1 and entity2 both attack and entity1 dies
 
-   1. [[&quot;melee&quot;, entity1, entity2_damage_info]]
-   2. [[&quot;melee&quot;, entity1, entity2_damage_info], [entity2_kill_info]]
-   3. [[&quot;melee&quot;, entity1, entity2_damage_info], [&quot;melee&quot;, entity2, entity1_damage_info]]
-   4. [[&quot;melee&quot;, entity1, entity2_damage_info], [&quot;melee&quot;, entity2, entity1_damage_info], [entity1_kill_info]]</pre>
+   1. [[&quot;melee&quot;, entity1, entity1_type, entity2_damage_info]]
+   2. [[&quot;melee&quot;, entity1, entity1_type, entity2_damage_info], [entity2_kill_info]]
+   3. [[&quot;melee&quot;, entity1, entity1_type, entity2_damage_info], [&quot;melee&quot;, entity2, entity2_type, entity1_damage_info]]
+   4. [[&quot;melee&quot;, entity1, entity1_type, entity2_damage_info], [&quot;melee&quot;, entity2, entity2_type, entity1_damage_info], [entity1_kill_info]]</pre>
           
           
 

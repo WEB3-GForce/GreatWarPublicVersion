@@ -58,7 +58,7 @@
   <h3>Parent</h3>
 
   
-  <p class="link">Object
+  <p class="link"><a href="Object.html">Object</a>
   
 </div>
 
@@ -72,8 +72,6 @@
     
     <li ><a href="#method-c-actions">::actions</a>
     
-    <li ><a href="#method-c-attack">::attack</a>
-    
     <li ><a href="#method-c-attack_animate">::attack_animate</a>
     
     <li ><a href="#method-c-board">::board</a>
@@ -85,6 +83,8 @@
     <li ><a href="#method-c-kill_units">::kill_units</a>
     
     <li ><a href="#method-c-locations">::locations</a>
+    
+    <li ><a href="#method-c-melee_attack">::melee_attack</a>
     
     <li ><a href="#method-c-melee_attackable_locations">::melee_attackable_locations</a>
     
@@ -99,6 +99,10 @@
     <li ><a href="#method-c-player">::player</a>
     
     <li ><a href="#method-c-range_attackable_locations">::range_attackable_locations</a>
+    
+    <li ><a href="#method-c-ranged_attack">::ranged_attack</a>
+    
+    <li ><a href="#method-c-remove_player">::remove_player</a>
     
     <li ><a href="#method-c-square">::square</a>
     
@@ -177,7 +181,7 @@ are well-formed.</pre>
 
           
           <div class="method-source-code" id="actions-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 440</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 484</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">actions</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>, <span class="ruby-identifier">can_move</span>, <span class="ruby-identifier">can_melee</span>, <span class="ruby-identifier">can_range</span>)
 
         <span class="ruby-identifier">actions</span> = []
@@ -199,66 +203,6 @@ are well-formed.</pre>
 
         <span class="ruby-keyword">return</span> [{<span class="ruby-string">&quot;action&quot;</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;showUnitActions&quot;</span>,
                 <span class="ruby-string">&quot;arguments&quot;</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-identifier">actions</span>]}]
-<span class="ruby-keyword">end</span></pre>
-          </div>
-          
-        </div>
-
-        
-
-        
-      </div>
-
-    
-      <div id="method-c-attack" class="method-detail ">
-        
-        <div class="method-heading">
-          <span class="method-name">attack</span><span
-            class="method-args">(entity_manager, result)</span>
-          
-          <span class="method-click-advice">click to toggle source</span>
-          
-        </div>
-        
-
-        <div class="method-description">
-          
-          <p>This returns the results of a move command to the frontend. It specifies
-the entity that moved along with the path it moved upon.</p>
-
-<p>Argumetns</p>
-
-<pre>entity_manager = the manager that contains the entities
-moving_entity  = the entity that moved.
-path           = an array of square entities denoting the path of motion.</pre>
-
-<p>Returns</p>
-
-<pre class="ruby"><span class="ruby-constant">A</span> <span class="ruby-identifier">hash</span> <span class="ruby-identifier">that</span> <span class="ruby-identifier">is</span> <span class="ruby-identifier">ready</span> <span class="ruby-identifier">to</span> <span class="ruby-identifier">be</span> <span class="ruby-identifier">jsoned</span>
-</pre>
-          
-          
-
-          
-          <div class="method-source-code" id="attack-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 333</span>
-<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">attack</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">result</span>)
-        <span class="ruby-identifier">actions</span> = []
-        <span class="ruby-identifier">killed_units</span> = []
-        <span class="ruby-identifier">result</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">item</span><span class="ruby-operator">|</span>
-                <span class="ruby-keyword">if</span> <span class="ruby-identifier">item</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&quot;melee&quot;</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">item</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&quot;ranged&quot;</span>
-                        <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">concat</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">attack_animate</span>(<span class="ruby-identifier">entity_manager</span>,
-                                <span class="ruby-identifier">item</span>[<span class="ruby-value">0</span>], <span class="ruby-identifier">item</span>[<span class="ruby-value">1</span>], <span class="ruby-identifier">item</span>[<span class="ruby-value">2</span>], <span class="ruby-identifier">item</span>[<span class="ruby-value">4</span>], <span class="ruby-identifier">item</span>[<span class="ruby-value">5</span>])
-                        <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">concat</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">update_health</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">item</span>[<span class="ruby-value">3</span>])
-                        <span class="ruby-keyword">if</span> <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">has_key?</span> <span class="ruby-identifier">item</span>[<span class="ruby-value">1</span>] <span class="ruby-keyword">and</span> <span class="ruby-operator">!</span><span class="ruby-identifier">entity_manager</span>[<span class="ruby-identifier">item</span>[<span class="ruby-value">1</span>]].<span class="ruby-identifier">empty?</span>
-                                <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">concat</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">update_energy</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">item</span>[<span class="ruby-value">1</span>])
-                        <span class="ruby-keyword">end</span>
-                <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">item</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&quot;kill&quot;</span>
-                        <span class="ruby-identifier">killed_units</span>.<span class="ruby-identifier">push</span> <span class="ruby-identifier">item</span>[<span class="ruby-value">1</span>]
-                <span class="ruby-keyword">end</span>
-        }
-        <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">concat</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">kill_units</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">killed_units</span>) <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">killed_units</span>.<span class="ruby-identifier">empty?</span>
-        <span class="ruby-keyword">return</span> <span class="ruby-identifier">actions</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -306,7 +250,7 @@ target_col       = the col of the targeted enitty</pre>
 
           
           <div class="method-source-code" id="attack_animate-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 312</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 330</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">attack_animate</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">type</span>, <span class="ruby-identifier">attacking_entity</span>, <span class="ruby-identifier">attacker_type</span>, <span class="ruby-identifier">target_row</span>, <span class="ruby-identifier">target_col</span>)
           <span class="ruby-keyword">return</span> [{<span class="ruby-string">&quot;action&quot;</span>   =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;attack&quot;</span>,
                    <span class="ruby-string">&quot;arguments&quot;</span> =<span class="ruby-operator">&gt;</span>
@@ -358,7 +302,7 @@ for the board.</p>
 
           
           <div class="method-source-code" id="board-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 175</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 190</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">board</span>(<span class="ruby-identifier">entity_manager</span>)
         <span class="ruby-identifier">board_array</span> = []
         (<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">row</span>).<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">row</span><span class="ruby-operator">|</span>
@@ -410,10 +354,11 @@ entity         = the turn entity to be jsoned</pre>
 
           
           <div class="method-source-code" id="end_turn-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 434</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 477</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">end_turn</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
+  <span class="ruby-identifier">turnHash</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">turn</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
         <span class="ruby-keyword">return</span> [{<span class="ruby-string">&quot;action&quot;</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;setTurn&quot;</span>,
-                <span class="ruby-string">&quot;arguments&quot;</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-keyword">self</span>.<span class="ruby-identifier">turn</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)]}]
+                <span class="ruby-string">&quot;arguments&quot;</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-identifier">turnHash</span>[<span class="ruby-string">&quot;playerid&quot;</span>], <span class="ruby-identifier">turnHash</span>[<span class="ruby-string">&quot;turnCount&quot;</span>]]}]
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -429,7 +374,7 @@ entity         = the turn entity to be jsoned</pre>
         
         <div class="method-heading">
           <span class="method-name">game_start</span><span
-            class="method-args">(entity_manager, players, turn, pieces)</span>
+            class="method-args">(entity_manager, player_id)</span>
           
           <span class="method-click-advice">click to toggle source</span>
           
@@ -444,10 +389,8 @@ initialize the browser for a new game.</p>
 
 <p>Arguments</p>
 
-<pre>entity_manager = the manager of the entities
-players        = an array of player entities
-turn           = the turn entity denoting whose turn it is.
-pieces         = an array of all the pieces in the game</pre>
+<pre class="ruby"><span class="ruby-identifier">entity_manager</span> = <span class="ruby-identifier">the</span> <span class="ruby-identifier">manager</span> <span class="ruby-identifier">of</span> <span class="ruby-identifier">the</span> <span class="ruby-identifier">entities</span>
+</pre>
 
 <p>Returns</p>
 
@@ -458,25 +401,31 @@ pieces         = an array of all the pieces in the game</pre>
 
           
           <div class="method-source-code" id="game_start-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 245</span>
-<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">game_start</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">players</span>, <span class="ruby-identifier">turn</span>, <span class="ruby-identifier">pieces</span>)
-        <span class="ruby-identifier">player_array</span> = []
-        <span class="ruby-identifier">players</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">player</span><span class="ruby-operator">|</span>
-                <span class="ruby-identifier">player_array</span>.<span class="ruby-identifier">push</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">player</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">player</span>)
-        }
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 257</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">game_start</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">player_id</span>)
+  <span class="ruby-identifier">player_hash</span> = {}
+  <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">each_entity</span>(<span class="ruby-constant">UserIdComponent</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">player</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">player_hash</span>.<span class="ruby-identifier">merge!</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">player</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">player</span>)
+  }
 
-        <span class="ruby-identifier">turn_hash</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">turn</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">turn</span>)
-        <span class="ruby-identifier">board</span>     = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">board</span>(<span class="ruby-identifier">entity_manager</span>)
+  <span class="ruby-identifier">turn</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_entities_with_components</span>(<span class="ruby-constant">TurnComponent</span>).<span class="ruby-identifier">first</span>
+  <span class="ruby-identifier">turn_hash</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">turn</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">turn</span>)
+  <span class="ruby-identifier">board</span>     = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">board</span>(<span class="ruby-identifier">entity_manager</span>)
 
-        <span class="ruby-identifier">piece_array</span> = []
-        <span class="ruby-identifier">pieces</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">piece</span><span class="ruby-operator">|</span>
-                <span class="ruby-identifier">piece_array</span>.<span class="ruby-identifier">push</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">piece</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">piece</span>)
-        }
+  <span class="ruby-identifier">piece_array</span> = []
+  <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">each_entity</span>(<span class="ruby-constant">OwnedComponent</span>) { <span class="ruby-operator">|</span><span class="ruby-identifier">piece</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">piece_array</span>.<span class="ruby-identifier">push</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">piece</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">piece</span>)
+  }
+  <span class="ruby-identifier">effects</span> = {}
+  <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">effects</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">square</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">result</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">square</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">square</span>)
+        <span class="ruby-identifier">effects</span>[<span class="ruby-identifier">result</span>[<span class="ruby-string">&quot;terrain&quot;</span>]] = <span class="ruby-identifier">result</span>[<span class="ruby-string">&quot;stats&quot;</span>]  
+  }
 
   <span class="ruby-keyword">return</span> [{
-    <span class="ruby-string">&quot;action&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;initGame&quot;</span>,
-    <span class="ruby-string">&quot;arguments&quot;</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-identifier">board</span>, <span class="ruby-identifier">piece_array</span>, <span class="ruby-identifier">turn_hash</span>, <span class="ruby-identifier">player_array</span>]
-  }]
+            <span class="ruby-string">&quot;action&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;initGame&quot;</span>,
+            <span class="ruby-string">&quot;arguments&quot;</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-identifier">board</span>, <span class="ruby-identifier">piece_array</span>, <span class="ruby-identifier">turn_hash</span>, <span class="ruby-identifier">player_hash</span>, <span class="ruby-identifier">player_id</span>, <span class="ruby-identifier">effects</span>]
+          }]
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -518,7 +467,7 @@ pieces         = an array of all the pieces in the game</pre>
 
           
           <div class="method-source-code" id="kill_units-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 228</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 243</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">kill_units</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">units_array</span>)
         <span class="ruby-keyword">return</span> [{<span class="ruby-string">&quot;action&quot;</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;killUnits&quot;</span>,
                  <span class="ruby-string">&quot;arguments&quot;</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-identifier">units_array</span>]}]
@@ -565,7 +514,7 @@ locations      = an array of square entities denoting the possible
 
           
           <div class="method-source-code" id="locations-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 364</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 407</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">locations</span>(<span class="ruby-identifier">entity_manager</span>,  <span class="ruby-identifier">entity</span>, <span class="ruby-identifier">locations</span>, <span class="ruby-identifier">type</span>)
         <span class="ruby-identifier">locations_array</span> = []
         <span class="ruby-identifier">locations</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">square</span><span class="ruby-operator">|</span>
@@ -574,6 +523,68 @@ locations      = an array of square entities denoting the possible
         <span class="ruby-keyword">return</span> [{<span class="ruby-string">&quot;action&quot;</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;highlightSquares&quot;</span>,
                 <span class="ruby-string">&quot;arguments&quot;</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-identifier">type</span>, <span class="ruby-identifier">locations_array</span>]
                 }]
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-melee_attack" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">melee_attack</span><span
+            class="method-args">(entity_manager, result)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>This returns the results of a move command to the frontend. It specifies
+the entity that moved along with the path it moved upon.</p>
+
+<p>Argumetns</p>
+
+<pre>entity_manager = the manager that contains the entities
+moving_entity  = the entity that moved.
+path           = an array of square entities denoting the path of motion.</pre>
+
+<p>Returns</p>
+
+<pre class="ruby"><span class="ruby-constant">A</span> <span class="ruby-identifier">hash</span> <span class="ruby-identifier">that</span> <span class="ruby-identifier">is</span> <span class="ruby-identifier">ready</span> <span class="ruby-identifier">to</span> <span class="ruby-identifier">be</span> <span class="ruby-identifier">jsoned</span>
+</pre>
+          
+          
+
+          
+          <div class="method-source-code" id="melee_attack-source">
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 351</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">melee_attack</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">result</span>)
+        <span class="ruby-identifier">actions</span> = []
+        <span class="ruby-identifier">killed_units</span> = []
+        <span class="ruby-identifier">update_energy</span> = []
+        <span class="ruby-identifier">result</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">item</span><span class="ruby-operator">|</span>
+                <span class="ruby-keyword">if</span> <span class="ruby-identifier">item</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&quot;melee&quot;</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">item</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&quot;ranged&quot;</span>
+                        <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">concat</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">attack_animate</span>(<span class="ruby-identifier">entity_manager</span>,
+                                <span class="ruby-identifier">item</span>[<span class="ruby-value">0</span>], <span class="ruby-identifier">item</span>[<span class="ruby-value">1</span>], <span class="ruby-identifier">item</span>[<span class="ruby-value">2</span>], <span class="ruby-identifier">item</span>[<span class="ruby-value">4</span>], <span class="ruby-identifier">item</span>[<span class="ruby-value">5</span>])
+                        <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">concat</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">update_health</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">item</span>[<span class="ruby-value">3</span>])
+                        <span class="ruby-keyword">if</span> (<span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">has_key?</span> <span class="ruby-identifier">item</span>[<span class="ruby-value">1</span>] <span class="ruby-keyword">and</span> <span class="ruby-operator">!</span><span class="ruby-identifier">entity_manager</span>[<span class="ruby-identifier">item</span>[<span class="ruby-value">1</span>]].<span class="ruby-identifier">empty?</span> <span class="ruby-keyword">and</span>
+                            <span class="ruby-identifier">update_energy</span>.<span class="ruby-identifier">empty?</span>)
+                                <span class="ruby-identifier">update_energy</span>.<span class="ruby-identifier">concat</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">update_energy</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">item</span>[<span class="ruby-value">1</span>])
+                        <span class="ruby-keyword">end</span>
+                <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">item</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&quot;kill&quot;</span>
+                        <span class="ruby-identifier">killed_units</span>.<span class="ruby-identifier">push</span> <span class="ruby-identifier">item</span>[<span class="ruby-value">1</span>]
+                <span class="ruby-keyword">end</span>
+        }
+        <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">concat</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">kill_units</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">killed_units</span>) <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">killed_units</span>.<span class="ruby-identifier">empty?</span>
+        <span class="ruby-keyword">return</span> <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">concat</span> <span class="ruby-identifier">update_energy</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -619,7 +630,7 @@ locations      = an array of square entities denoting the possible
 
           
           <div class="method-source-code" id="melee_attackable_locations-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 404</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 447</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">melee_attackable_locations</span>(<span class="ruby-identifier">entity_manager</span>,  <span class="ruby-identifier">melee_entity</span>, <span class="ruby-identifier">locations</span>)
         <span class="ruby-keyword">self</span>.<span class="ruby-identifier">locations</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">melee_entity</span>, <span class="ruby-identifier">locations</span>, <span class="ruby-string">&quot;attack&quot;</span>)
 <span class="ruby-keyword">end</span></pre>
@@ -664,7 +675,7 @@ path           = an array of square entities denoting the path of motion.</pre>
 
           
           <div class="method-source-code" id="move-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 276</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 293</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">move</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">moving_entity</span>, <span class="ruby-identifier">path</span>)
         <span class="ruby-comment"># path_array = []</span>
         <span class="ruby-comment"># path.each { |square|</span>
@@ -675,11 +686,12 @@ path           = an array of square entities denoting the path of motion.</pre>
         <span class="ruby-comment">#        }</span>
 
         <span class="ruby-identifier">actions</span> = []
+        <span class="ruby-identifier">squares_path</span> = []
         <span class="ruby-identifier">path</span>[<span class="ruby-value">1</span>, <span class="ruby-identifier">path</span>.<span class="ruby-identifier">size</span>].<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">square</span><span class="ruby-operator">|</span>
-                <span class="ruby-identifier">coordinates</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">square_path</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">square</span>)
-                <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">push</span>({<span class="ruby-string">&quot;action&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;moveUnit&quot;</span>,
-                              <span class="ruby-string">&quot;arguments&quot;</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-identifier">moving_entity</span>, <span class="ruby-identifier">coordinates</span>] })
+                <span class="ruby-identifier">squares_path</span>.<span class="ruby-identifier">push</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">square_path</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">square</span>)
         }
+        <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">push</span>({<span class="ruby-string">&quot;action&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;moveUnit&quot;</span>,
+                      <span class="ruby-string">&quot;arguments&quot;</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-identifier">moving_entity</span>, <span class="ruby-identifier">squares_path</span>] })
         <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">concat</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">update_energy</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">moving_entity</span>)
         <span class="ruby-keyword">return</span> <span class="ruby-identifier">actions</span>
 <span class="ruby-keyword">end</span></pre>
@@ -727,7 +739,7 @@ locations      = an array of square entities denoting the possible
 
           
           <div class="method-source-code" id="moveable_locations-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 387</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 430</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">moveable_locations</span>(<span class="ruby-identifier">entity_manager</span>,  <span class="ruby-identifier">moving_entity</span>, <span class="ruby-identifier">locations</span>)
         <span class="ruby-keyword">self</span>.<span class="ruby-identifier">locations</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">moving_entity</span>, <span class="ruby-identifier">locations</span>, <span class="ruby-string">&quot;move&quot;</span>)
 <span class="ruby-keyword">end</span></pre>
@@ -775,7 +787,7 @@ entity         = the piece entity to be jsoned</pre>
 
           
           <div class="method-source-code" id="piece-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 98</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 113</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">piece</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
         <span class="ruby-identifier">piece_hash</span>          = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>
         <span class="ruby-identifier">piece_hash</span>[<span class="ruby-string">&quot;id&quot;</span>]    = <span class="ruby-identifier">entity</span>
@@ -869,7 +881,7 @@ entity         = the piece entity to be jsoned</pre>
 
           
           <div class="method-source-code" id="piece_xy-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 160</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 175</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">piece_xy</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
         <span class="ruby-identifier">pos_comp</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-constant">PositionComponent</span>).<span class="ruby-identifier">first</span>
         <span class="ruby-keyword">return</span> {<span class="ruby-string">&quot;y&quot;</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">pos_comp</span>.<span class="ruby-identifier">row</span>,
@@ -914,21 +926,24 @@ entity         = the player entity to be jsoned</pre>
 
           
           <div class="method-source-code" id="player-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 56</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 67</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">player</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
-        <span class="ruby-identifier">name_comp</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-constant">NameComponent</span>).<span class="ruby-identifier">first</span>
-        <span class="ruby-identifier">user_id_comp</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-constant">UserIdComponent</span>).<span class="ruby-identifier">first</span>
+  <span class="ruby-identifier">name_comp</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-constant">NameComponent</span>).<span class="ruby-identifier">first</span>
+  <span class="ruby-identifier">user_id_comp</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-constant">UserIdComponent</span>).<span class="ruby-identifier">first</span>
 
-        <span class="ruby-identifier">ai_comp</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-constant">AIComponent</span>).<span class="ruby-identifier">first</span>
-        <span class="ruby-identifier">player_type</span> = <span class="ruby-string">&quot;CPU&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">ai_comp</span>
+  <span class="ruby-identifier">ai_comp</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-constant">AIComponent</span>).<span class="ruby-identifier">first</span>
+  <span class="ruby-identifier">player_type</span> = <span class="ruby-string">&quot;CPU&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">ai_comp</span>
 
-        <span class="ruby-identifier">human_comp</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-constant">HumanComponent</span>).<span class="ruby-identifier">first</span>
-        <span class="ruby-identifier">player_type</span> = <span class="ruby-string">&quot;Human&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">human_comp</span>
+  <span class="ruby-identifier">human_comp</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-constant">HumanComponent</span>).<span class="ruby-identifier">first</span>
+  <span class="ruby-identifier">player_type</span> = <span class="ruby-string">&quot;Human&quot;</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">human_comp</span>
 
-        <span class="ruby-keyword">return</span> {<span class="ruby-string">&quot;id&quot;</span>      =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entity</span>,
-                <span class="ruby-string">&quot;name&quot;</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">name_comp</span>.<span class="ruby-identifier">name</span>,
-                <span class="ruby-string">&quot;type&quot;</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">player_type</span>,
-                <span class="ruby-string">&quot;userId&quot;</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">user_id_comp</span>.<span class="ruby-identifier">id</span> }
+  <span class="ruby-keyword">return</span> {<span class="ruby-identifier">entity</span>  =<span class="ruby-operator">&gt;</span> {
+      <span class="ruby-string">&quot;name&quot;</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">name_comp</span>.<span class="ruby-identifier">name</span>,
+      <span class="ruby-string">&quot;type&quot;</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">player_type</span>,
+      <span class="ruby-string">&quot;userId&quot;</span>   =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">user_id_comp</span>.<span class="ruby-identifier">id</span>,
+      <span class="ruby-string">&quot;gravatar&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">user_id_comp</span>.<span class="ruby-identifier">gravatar</span>,
+      <span class="ruby-string">&quot;faction&quot;</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">user_id_comp</span>.<span class="ruby-identifier">faction</span> }
+  }
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -973,9 +988,117 @@ locations      = an array of square entities denoting the possible
 
           
           <div class="method-source-code" id="range_attackable_locations-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 421</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 464</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">range_attackable_locations</span>(<span class="ruby-identifier">entity_manager</span>,  <span class="ruby-identifier">range_entity</span>, <span class="ruby-identifier">locations</span>)
         <span class="ruby-keyword">self</span>.<span class="ruby-identifier">locations</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">range_entity</span>, <span class="ruby-identifier">locations</span>, <span class="ruby-string">&quot;attack&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-ranged_attack" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">ranged_attack</span><span
+            class="method-args">(entity_manager, result)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="ranged_attack-source">
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 372</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">ranged_attack</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">result</span>)
+        <span class="ruby-identifier">actions</span> = []
+        <span class="ruby-identifier">killed_units</span> = []
+        <span class="ruby-identifier">update_energy</span> = <span class="ruby-keyword">nil</span>
+        <span class="ruby-identifier">attack_animate</span> = <span class="ruby-keyword">nil</span>
+        <span class="ruby-identifier">result</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">item</span><span class="ruby-operator">|</span>
+                <span class="ruby-keyword">if</span> <span class="ruby-identifier">item</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&quot;ranged&quot;</span>
+                        <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">attack_animate</span>
+                                <span class="ruby-identifier">attack_animate</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">attack_animate</span>(<span class="ruby-identifier">entity_manager</span>,
+                                <span class="ruby-identifier">item</span>[<span class="ruby-value">0</span>], <span class="ruby-identifier">item</span>[<span class="ruby-value">1</span>], <span class="ruby-identifier">item</span>[<span class="ruby-value">2</span>], <span class="ruby-identifier">item</span>[<span class="ruby-value">4</span>], <span class="ruby-identifier">item</span>[<span class="ruby-value">5</span>])
+                        <span class="ruby-keyword">end</span>
+                        <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">concat</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">update_health</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">item</span>[<span class="ruby-value">3</span>])
+                        <span class="ruby-keyword">if</span> <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">has_key?</span> <span class="ruby-identifier">item</span>[<span class="ruby-value">1</span>] <span class="ruby-keyword">and</span> <span class="ruby-operator">!</span><span class="ruby-identifier">entity_manager</span>[<span class="ruby-identifier">item</span>[<span class="ruby-value">1</span>]].<span class="ruby-identifier">empty?</span> <span class="ruby-keyword">and</span>
+                           <span class="ruby-operator">!</span><span class="ruby-identifier">update_energy</span>
+                                <span class="ruby-identifier">update_energy</span> = <span class="ruby-keyword">self</span>.<span class="ruby-identifier">update_energy</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">item</span>[<span class="ruby-value">1</span>])
+                        <span class="ruby-keyword">end</span>
+                <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">item</span>[<span class="ruby-value">0</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&quot;kill&quot;</span>
+                        <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">concat</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">kill_units</span>(<span class="ruby-identifier">entity_manager</span>, [<span class="ruby-identifier">item</span>[<span class="ruby-value">1</span>]])
+                <span class="ruby-keyword">end</span>
+        }
+        <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">concat</span> <span class="ruby-identifier">update_energy</span>
+        <span class="ruby-keyword">return</span> <span class="ruby-identifier">attack_animate</span>.<span class="ruby-identifier">concat</span> <span class="ruby-identifier">actions</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-c-remove_player" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">remove_player</span><span
+            class="method-args">(entity_manager, result)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+          <div class="method-source-code" id="remove_player-source">
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 508</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">remove_player</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">result</span>)
+        <span class="ruby-identifier">remove_player_result</span> = <span class="ruby-identifier">result</span>[<span class="ruby-value">0</span>]
+        <span class="ruby-identifier">turn_change_result</span>   = <span class="ruby-identifier">result</span>[<span class="ruby-value">1</span>]
+        <span class="ruby-identifier">game_over_result</span>     = <span class="ruby-identifier">result</span>[<span class="ruby-value">2</span>]
+
+        <span class="ruby-identifier">actions</span> = []
+        <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">remove_player_result</span>.<span class="ruby-identifier">nil?</span>
+                <span class="ruby-identifier">players_removed</span> = <span class="ruby-identifier">remove_player_result</span>[<span class="ruby-value">1</span>]
+                <span class="ruby-identifier">players_removed</span>.<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">player</span><span class="ruby-operator">|</span> 
+                        <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">push</span>({ <span class="ruby-string">&quot;actions&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;eliminatePlayer&quot;</span>,
+                                                     <span class="ruby-string">&quot;arguments&quot;</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-identifier">player</span>] })
+                }
+        <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">game_over_result</span>.<span class="ruby-identifier">nil?</span>
+                <span class="ruby-identifier">winner</span> = <span class="ruby-identifier">game_over_result</span>[<span class="ruby-value">1</span>]
+                <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">push</span>({ <span class="ruby-string">&quot;actions&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;gameOver&quot;</span>, 
+                                           <span class="ruby-string">&quot;arguments&quot;</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-identifier">winner</span>] })
+        <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">turn_change_result</span>.<span class="ruby-identifier">nil?</span>
+                <span class="ruby-identifier">turn</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_entities_with_components</span>(<span class="ruby-constant">TurnComponent</span>).<span class="ruby-identifier">first</span>
+                <span class="ruby-identifier">actions</span>.<span class="ruby-identifier">concat</span>(<span class="ruby-keyword">self</span>.<span class="ruby-identifier">end_turn</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">turn</span>))
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-keyword">return</span> <span class="ruby-identifier">actions</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -1019,8 +1142,19 @@ entity         = the square entity to be jsoned</pre>
             <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 23</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">square</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
         <span class="ruby-identifier">terrain_comp</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-constant">TerrainComponent</span>).<span class="ruby-identifier">first</span>
+        <span class="ruby-identifier">stats_hash</span> = {}
+        <span class="ruby-identifier">stats</span>   = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-constant">BoostComponent</span>)
+        <span class="ruby-identifier">stats_hash</span>[<span class="ruby-string">&quot;defense&quot;</span>] = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">stats_hash</span>[<span class="ruby-string">&quot;move_cost&quot;</span>] = <span class="ruby-value">0</span>
+        <span class="ruby-identifier">stats</span>.<span class="ruby-identifier">each</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">stat</span><span class="ruby-operator">|</span>
+                <span class="ruby-identifier">stats_hash</span>[<span class="ruby-identifier">stat</span>.<span class="ruby-identifier">type</span>.<span class="ruby-identifier">to_s</span>] = <span class="ruby-identifier">stat</span>.<span class="ruby-identifier">amount</span>
+        }
+        <span class="ruby-identifier">terrain_comp</span> = <span class="ruby-identifier">entity_manager</span>[<span class="ruby-identifier">entity</span>][<span class="ruby-constant">TerrainComponent</span>].<span class="ruby-identifier">first</span>
+        <span class="ruby-identifier">sprite_comp</span> = <span class="ruby-identifier">entity_manager</span>[<span class="ruby-identifier">entity</span>][<span class="ruby-constant">SpriteComponent</span>].<span class="ruby-identifier">first</span>
         <span class="ruby-keyword">return</span> {<span class="ruby-string">&quot;id&quot;</span>      =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">entity</span>,
-                <span class="ruby-string">&quot;terrain&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">terrain_comp</span>.<span class="ruby-identifier">type</span>.<span class="ruby-identifier">to_s</span>}
+                <span class="ruby-string">&quot;terrain&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">terrain_comp</span>.<span class="ruby-identifier">type</span>.<span class="ruby-identifier">to_s</span>,
+                <span class="ruby-string">&quot;stats&quot;</span>   =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">stats_hash</span>,
+                <span class="ruby-string">&quot;index&quot;</span>   =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">sprite_comp</span>.<span class="ruby-identifier">id</span>}
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -1064,7 +1198,7 @@ entity         = the square entity to be jsoned</pre>
 
           
           <div class="method-source-code" id="square_path-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 42</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 53</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">square_path</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
         <span class="ruby-identifier">pos_comp</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-constant">PositionComponent</span>).<span class="ruby-identifier">first</span>
         <span class="ruby-keyword">return</span> {<span class="ruby-string">&quot;y&quot;</span>  =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">pos_comp</span>.<span class="ruby-identifier">row</span>,
@@ -1109,10 +1243,11 @@ entity         = the turn entity to be jsoned</pre>
 
           
           <div class="method-source-code" id="turn-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 80</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 94</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">turn</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
         <span class="ruby-identifier">turn_comp</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-constant">TurnComponent</span>).<span class="ruby-identifier">first</span>
-        <span class="ruby-keyword">return</span> {<span class="ruby-string">&quot;playerid&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">turn_comp</span>.<span class="ruby-identifier">current_turn</span>}
+        <span class="ruby-keyword">return</span> {<span class="ruby-string">&quot;playerid&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">turn_comp</span>.<span class="ruby-identifier">current_turn</span>,
+                <span class="ruby-string">&quot;turnCount&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">turn_comp</span>.<span class="ruby-identifier">turn_count</span>}
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -1154,7 +1289,7 @@ entity         = the turn entity to be jsoned</pre>
 
           
           <div class="method-source-code" id="update_energy-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 196</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 211</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">update_energy</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
         <span class="ruby-identifier">energy_comp</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-constant">EnergyComponent</span>).<span class="ruby-identifier">first</span>
         <span class="ruby-keyword">return</span> [{<span class="ruby-string">&quot;action&quot;</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;updateUnitEnergy&quot;</span>,
@@ -1200,7 +1335,7 @@ entity         = the turn entity to be jsoned</pre>
 
           
           <div class="method-source-code" id="update_health-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 211</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/json_factory.rb, line 226</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">update_health</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
         <span class="ruby-identifier">cur_health</span> = <span class="ruby-value">0</span>
         <span class="ruby-keyword">if</span> <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">has_key?</span> (<span class="ruby-identifier">entity</span>) <span class="ruby-keyword">and</span> <span class="ruby-operator">!</span><span class="ruby-identifier">entity_manager</span>[<span class="ruby-identifier">entity</span>].<span class="ruby-identifier">empty?</span>

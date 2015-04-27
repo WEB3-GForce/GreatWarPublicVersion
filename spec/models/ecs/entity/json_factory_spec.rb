@@ -384,4 +384,16 @@ describe JsonFactory do
         end
     end
 
+    context "when calling trench locations" do
+        it "should return a hash of a json for a trench locations request" do
+            set_intermediate
+            locations = []
+            square_array = [flatland00]
+            square_array.each { |square|
+                locations.push JsonFactory.square_path(manager, square)
+            }
+            expect(JsonFactory.trench_locations(manager, machine_gun, [flatland00])).to eq(
+                [{"action" => "highlightSquares", "arguments" => ["trench", locations]}])
+        end
+    end
 end

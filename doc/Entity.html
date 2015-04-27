@@ -147,7 +147,7 @@ debugging purposes only.</pre>
 
           
           <div class="method-source-code" id="debug_entity-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/entity.rb, line 39</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/entity.rb, line 42</span>
 <span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">debug_entity</span>
         <span class="ruby-identifier">entity</span> = <span class="ruby-constant">Entity</span>.<span class="ruby-identifier">new</span>
         <span class="ruby-ivar">@debug_id</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
@@ -178,10 +178,14 @@ debugging purposes only.</pre>
           
           <p>Initializes a new <a href="Entity.html">Entity</a></p>
 
+<p>Arguments</p>
+
+<pre>string = the value to intialize to the entity, nil for a uuid</pre>
+
 <p>Postcondition</p>
 
-<pre>A new entity is created. It is represented as a uuid string to ensure
-that each entity is uniquely identifiable.</pre>
+<pre>A new entity is created. It is represented as the string specified or
+the uuid string to ensure that each entity is uniquely identifiable.</pre>
           
           
             <div class="method-calls-super">
@@ -192,7 +196,7 @@ that each entity is uniquely identifiable.</pre>
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/entity/entity.rb, line 29</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/entity/entity.rb, line 32</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">string</span>=<span class="ruby-keyword">nil</span>)
         <span class="ruby-identifier">string</span> = <span class="ruby-constant">SecureRandom</span>.<span class="ruby-identifier">uuid</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">string</span> <span class="ruby-operator">==</span> <span class="ruby-keyword">nil</span>
         <span class="ruby-keyword">super</span> <span class="ruby-identifier">string</span>

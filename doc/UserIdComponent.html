@@ -88,7 +88,8 @@
   <section class="description">
     
 <p>The <a href="UserIdComponent.html">UserIdComponent</a> is used to uniquely
-identify player entities.</p>
+identify player entities. It also contains other important info like which
+faction the entity belongs to.</p>
 
   </section>
 
@@ -108,6 +109,45 @@ identify player entities.</p>
         <h3>Attributes</h3>
       </header>
 
+      
+      <div id="attribute-i-channel" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">channel</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        
+        
+        </div>
+      </div>
+      
+      <div id="attribute-i-faction" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">faction</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        
+        
+        </div>
+      </div>
+      
+      <div id="attribute-i-gravatar" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">gravatar</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        
+        
+        </div>
+      </div>
       
       <div id="attribute-i-id" class="method-detail">
         <div class="method-heading attribute-method-heading">
@@ -136,7 +176,7 @@ identify player entities.</p>
         
         <div class="method-heading">
           <span class="method-name">new</span><span
-            class="method-args">(id)</span>
+            class="method-args">(id, channel, gravatar, faction)</span>
           
           <span class="method-click-advice">click to toggle source</span>
           
@@ -145,25 +185,19 @@ identify player entities.</p>
 
         <div class="method-description">
           
-          <p>Initializes a new <a href="NameComponent.html">NameComponent</a> object</p>
-
-<p>Arguments</p>
-
-<pre class="ruby"><span class="ruby-identifier">name</span> = <span class="ruby-identifier">the</span> <span class="ruby-identifier">name</span> <span class="ruby-identifier">of</span> <span class="ruby-identifier">the</span> <span class="ruby-identifier">entity</span>
-</pre>
-
-<p>Postcondtion</p>
-
-<pre class="ruby"><span class="ruby-constant">The</span> <span class="ruby-constant">NameComponent</span> <span class="ruby-identifier">object</span> <span class="ruby-identifier">is</span> <span class="ruby-identifier">properly</span> <span class="ruby-identifier">initialized</span>
-</pre>
+          <p>The <a href="NameComponent.html">NameComponent</a> object is properly
+initialized</p>
           
           
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/component/user_id_component.rb, line 17</span>
-<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">id</span>)
-    <span class="ruby-ivar">@id</span> = <span class="ruby-identifier">id</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/component/user_id_component.rb, line 21</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">id</span>, <span class="ruby-identifier">channel</span>, <span class="ruby-identifier">gravatar</span>, <span class="ruby-identifier">faction</span>)
+  <span class="ruby-ivar">@id</span>       = <span class="ruby-identifier">id</span>
+  <span class="ruby-ivar">@channel</span>  = <span class="ruby-identifier">channel</span>
+  <span class="ruby-ivar">@gravatar</span> = <span class="ruby-identifier">gravatar</span>
+  <span class="ruby-ivar">@faction</span>  = <span class="ruby-identifier">faction</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
@@ -202,9 +236,9 @@ identify player entities.</p>
 
           
           <div class="method-source-code" id="to_s-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/component/user_id_component.rb, line 22</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/component/user_id_component.rb, line 29</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">to_s</span>
-    <span class="ruby-node">&quot;User ID: #{@id}&quot;</span>
+  <span class="ruby-node">&quot;[User ID: #{@id}, Faction: #{@faction}]&quot;</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           

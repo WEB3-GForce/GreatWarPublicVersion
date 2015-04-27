@@ -103,7 +103,7 @@
   <section class="description">
     
 <p>The <a href="MotionComponent.html">MotionComponent</a> handles stats
-necessary for movement. In particular,</p>
+necessary for movement.</p>
 
   </section>
 
@@ -177,7 +177,7 @@ necessary for movement. In particular,</p>
 
           
           <div class="method-source-code" id="new-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/component/motion_component.rb, line 22</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/component/motion_component.rb, line 21</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">max_movement</span>, <span class="ruby-identifier">energy_cost</span>=<span class="ruby-value">1</span>)
         <span class="ruby-keyword">self</span>.<span class="ruby-identifier">max_movement</span>  = <span class="ruby-identifier">max_movement</span>
         <span class="ruby-keyword">self</span>.<span class="ruby-identifier">energy_cost</span>   = <span class="ruby-identifier">energy_cost</span>
@@ -219,7 +219,7 @@ necessary for movement. In particular,</p>
 
           
           <div class="method-source-code" id="can_move-3F-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/component/motion_component.rb, line 40</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/component/motion_component.rb, line 39</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">can_move?</span>
         <span class="ruby-ivar">@max_movement</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
 <span class="ruby-keyword">end</span></pre>
@@ -263,7 +263,7 @@ necessary for movement. In particular,</p>
 
           
           <div class="method-source-code" id="max_movement-3D-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/component/motion_component.rb, line 35</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/component/motion_component.rb, line 34</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">max_movement=</span>(<span class="ruby-identifier">movement</span>)
         <span class="ruby-ivar">@max_movement</span> = [<span class="ruby-value">0</span>, <span class="ruby-identifier">movement</span>].<span class="ruby-identifier">max</span>
 <span class="ruby-keyword">end</span></pre>
@@ -296,9 +296,9 @@ necessary for movement. In particular,</p>
 
           
           <div class="method-source-code" id="to_s-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/component/motion_component.rb, line 45</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/component/motion_component.rb, line 44</span>
 <span class="ruby-keyword">def</span> <span class="ruby-identifier">to_s</span>
-        <span class="ruby-node">&quot;Movement: #{@max_movement}&quot;</span>
+        <span class="ruby-node">&quot;Movement: [amount = #{@max_movement}, cost = #{self.energy_cost}]&quot;</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           

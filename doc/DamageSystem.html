@@ -85,18 +85,6 @@
 
   <section class="description">
     
-<p>The Damage <a href="System.html">System</a> checks entities with health and
-damage components, subtracting the damage represented by the damage
-components from an entity&#39;s health as represented by its health
-component.</p>
-
-<p>The system can process multiple damage components per entity, but it
-assumes an entity has only one health component.</p>
-
-<p>The Kill <a href="System.html">System</a> checks entities with health
-components, and removes ones that are no longer alive from the entity
-manager.</p>
-
 <p>The <a href="DamageSystem.html">DamageSystem</a> is responsible for dealing
 damage to an entity. It applies damage to damageable entities and then
 calls <a href="KillSystem.html">KillSystem</a> to remove the entity if it
@@ -127,7 +115,7 @@ is dead.</p>
         
         <div class="method-heading">
           <span class="method-name">update</span><span
-            class="method-args">(entity_manager)</span>
+            class="method-args">(entity_manager, entity, damage)</span>
           
           <span class="method-click-advice">click to toggle source</span>
           
@@ -136,23 +124,59 @@ is dead.</p>
 
         <div class="method-description">
           
-          
+          <p>Applies damage to a given entity if it is a damageable entity</p>
+
+<p>Arguments</p>
+
+<pre class="ruby"><span class="ruby-identifier">entity_manager</span> = <span class="ruby-identifier">the</span> <span class="ruby-identifier">manager</span> <span class="ruby-identifier">of</span> <span class="ruby-identifier">entities</span>
+<span class="ruby-identifier">entity</span>         = <span class="ruby-identifier">the</span> <span class="ruby-identifier">entity</span> <span class="ruby-identifier">to</span> <span class="ruby-identifier">apply</span> <span class="ruby-identifier">damage</span> <span class="ruby-identifier">to</span>
+<span class="ruby-identifier">damage</span>         = <span class="ruby-identifier">the</span> <span class="ruby-identifier">amount</span> <span class="ruby-identifier">of</span> <span class="ruby-identifier">damage</span> <span class="ruby-identifier">to</span> <span class="ruby-identifier">apply</span>
+</pre>
+
+<p>Returns</p>
+
+<pre>[] if the entity is not damageable.
+otherwise, returns one of two tuples:
+
+    [[entity_damaged, entity_row, entity_col, damage_amount]] if entity is alive
+    [[entity_damaged, entity_row, entity_col, damage_amount], [kill_info]] if entity is dead</pre>
+
+<p>Note</p>
+
+<pre>The damage return array should ultimately be of the form:
+
+    [[type_of_attack, attacking_entity, attacker_type,...]]
+
+Other systems that call the DamageSystem (like the MeleeSystem)
+should add the type of attack by calling:
+
+     result[0].unshift(attacker_type).unshift(attacking_entity).unshift(type_of_attack) if !result.empty?</pre>
           
           
 
           
           <div class="method-source-code" id="update-source">
-            <pre><span class="ruby-comment"># File app/models/ecs/system/DamageSystem.rb, line 13</span>
-<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">entity_manager</span>)
-    <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">each_entity</span>(
-            <span class="ruby-constant">HealthComponent</span>, <span class="ruby-constant">DamageComponent</span>).<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">id</span>, <span class="ruby-identifier">components</span><span class="ruby-operator">|</span>
-
-        <span class="ruby-identifier">health</span> = <span class="ruby-identifier">components</span>[<span class="ruby-constant">HealthComponent</span>].<span class="ruby-identifier">first</span>
-
-        <span class="ruby-identifier">components</span>[<span class="ruby-constant">DamageComponent</span>].<span class="ruby-identifier">each</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">damage</span><span class="ruby-operator">|</span>
-            <span class="ruby-identifier">health</span>.<span class="ruby-identifier">cur_health</span> <span class="ruby-operator">-=</span> <span class="ruby-identifier">damage</span>.<span class="ruby-identifier">amount</span>
+            <pre><span class="ruby-comment"># File app/models/ecs/system/damage_system.rb, line 36</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>, <span class="ruby-identifier">damage</span>)
+        <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-constant">EntityType</span>.<span class="ruby-identifier">damageable_entity?</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
+                <span class="ruby-keyword">return</span> []
+        <span class="ruby-keyword">end</span>
+        
+        <span class="ruby-identifier">pos_comp</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-constant">PositionComponent</span>).<span class="ruby-identifier">first</span>
+        <span class="ruby-identifier">terrain</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">board</span>[<span class="ruby-identifier">pos_comp</span>.<span class="ruby-identifier">row</span>][<span class="ruby-identifier">pos_comp</span>.<span class="ruby-identifier">col</span>][<span class="ruby-value">0</span>]
+        <span class="ruby-identifier">boosts</span>  = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">terrain</span>, <span class="ruby-constant">BoostComponent</span>)
+        
+        <span class="ruby-identifier">boosts</span>.<span class="ruby-identifier">each</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">boost</span><span class="ruby-operator">|</span>
+                <span class="ruby-keyword">if</span> <span class="ruby-identifier">boost</span> <span class="ruby-operator">==</span> <span class="ruby-constant">BoostComponent</span>.<span class="ruby-identifier">defense</span>
+                        <span class="ruby-identifier">damage</span> = (<span class="ruby-identifier">damage</span> <span class="ruby-operator">/</span> <span class="ruby-identifier">boost</span>.<span class="ruby-identifier">amount</span>).<span class="ruby-identifier">round</span>
+                <span class="ruby-keyword">end</span>
         }
-    }
+                        
+        <span class="ruby-identifier">health</span> = <span class="ruby-identifier">entity_manager</span>.<span class="ruby-identifier">get_components</span>(<span class="ruby-identifier">entity</span>, <span class="ruby-constant">HealthComponent</span>).<span class="ruby-identifier">first</span>
+        <span class="ruby-identifier">health</span>.<span class="ruby-identifier">cur_health</span> <span class="ruby-operator">-=</span> <span class="ruby-identifier">damage</span>
+        
+        <span class="ruby-identifier">result</span> = <span class="ruby-constant">KillSystem</span>.<span class="ruby-identifier">update</span>(<span class="ruby-identifier">entity_manager</span>, <span class="ruby-identifier">entity</span>)
+        <span class="ruby-keyword">return</span> [[<span class="ruby-identifier">entity</span>, <span class="ruby-identifier">pos_comp</span>.<span class="ruby-identifier">row</span>, <span class="ruby-identifier">pos_comp</span>.<span class="ruby-identifier">col</span>, <span class="ruby-identifier">damage</span>]].<span class="ruby-identifier">concat</span> <span class="ruby-identifier">result</span>
 <span class="ruby-keyword">end</span></pre>
           </div>
           
