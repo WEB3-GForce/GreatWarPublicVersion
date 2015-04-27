@@ -1,4 +1,3 @@
-
 'use strict';
 
 var GameGroup = function(game, parent) {
@@ -24,6 +23,25 @@ var GameGroup = function(game, parent) {
 
     this.ui = new UIGroup(this.game);
     this.ui.gameGroup = this;
+
+    // check if end turn or end game
+    this.game.input.keyboard.onDownCallback = (function(key) {
+        var z = 90;
+        var q = 81;
+
+        if (key.keyCode === z) {
+            if (this.turn == this.game.constants.PLAYER_ID) {
+	        this.game.dispatcher.rpc("end_turn", []); // backend will know whose turn to end
+		this.selected = null;
+		this.action = null;
+		this.gameBoard.unhighlightAll();
+		this.ui.hideMenu().start();
+	        this.resetEnergy(this.turn);
+            }
+        } else if (key.keyCode === q) {
+            this.game.dispatcher.rpc("leave_game", []);
+        }
+    }).bind(this);
 };
 
 GameGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -58,32 +76,18 @@ GameGroup.prototype.update = function(mouse) {
     // this.tile.movementCost = this.gameBoard.effects;
 
     if (this.selected) {
-	    this.ui.setSecondaryTile(this.tile);
-	    this.ui.setSecondaryUnit(this.unit);
+	this.ui.setSecondaryTile(this.tile);
+	this.ui.setSecondaryUnit(this.unit);
     } else {
-	    this.ui.setSecondaryTile(null);
-	    this.ui.setSecondaryUnit(null);
-	    this.ui.setPrimaryTile(this.tile);
-	    this.ui.setPrimaryUnit(this.unit);
+	this.ui.setSecondaryTile(null);
+	this.ui.setSecondaryUnit(null);
+	this.ui.setPrimaryTile(this.tile);
+	this.ui.setPrimaryUnit(this.unit);
     }
 
     this.ui.checkPlayerInfoUIPosition({x: this.game.input.mousePointer.x,
 				       y: this.game.input.mousePointer.y});
 
-    // check if end turn or end game
-    this.game.input.keyboard.onDownCallback = (function(key) {
-        var z = 90;
-        var q = 81;
-
-        if (key.keyCode === z) {
-            if (this.turn == this.game.constants.PLAYER_ID) {
-	            this.game.dispatcher.rpc("end_turn", []); // backend will know whose turn to end
-	            this.resetEnergy(this.turn);
-            }
-        } else if (key.keyCode === q) {
-            this.game.dispatcher.rpc("leave_game", []);
-        }
-    }).bind(this);
 }
 
 GameGroup.prototype.eliminatePlayer = function(playerId) {
@@ -221,15 +225,15 @@ GameGroup.prototype.initGame = function(board, units, turn, players, me, effects
 	this.gameGroup.game.world.setBounds(0, 0, board.width * 32, board.height * 32);
 
 	for (var i = 0; i < board.width; i++) {
-		for (var j = 0; j < board.height; j++) {
-		    this.gameGroup.gameBoard.setTile(i, j, board.squares[j*board.width+i].index);
-		    // if (board.squares[i*board.width+j].fow)
-		    // 	this.gameGroup.gameBoard.addFog(i, j);
-		}
+	    for (var j = 0; j < board.height; j++) {
+		this.gameGroup.gameBoard.setTile(i, j, board.squares[j*board.width+i].index);
+		// if (board.squares[i*board.width+j].fow)
+		// 	this.gameGroup.gameBoard.addFog(i, j);
+	    }
 	}
 
 	this.gameGroup.gameBoard.effects = effects;
-    console.log(effects);
+	console.log(effects);
 
 	for (var i = 0; i < units.length; i++) {
 	    this.gameGroup.unitGroup.addUnit(units[i].id,
@@ -429,4 +433,43 @@ GameGroup.prototype.setTurn = function(playerId, turnCount) {
 	    tween.start();
 	}
     }
+}
+
+GameGroup.prototype.eliminatePlayer = function() {
+    return {
+	start: function() {
+	    this.onComplete();
+	}
+    }
+}
+
+GameGroup.prototype.gameOver = function(id, forfeit) {
+    return {
+	gameGroup: this,
+	start: function() {
+	    console.log(this.gameGroup.players, id);
+	    var winner = this.gameGroup.players[id].name;
+	    var loser;
+	    var playerIds = Object.keys(this.gameGroup.players);
+	    for (var i = 0; i < playerIds.length; i++) {
+		if (playerIds[i] !== id)
+		    loser = this.gameGroup.players[playerIds[i]].name;
+	    }
+	    var text;
+	    if (id === this.gameGroup.game.constants.PLAYER_ID) {
+		if (forfeit)
+		    text = loser + " surrendered.\nYou won the battle!";
+		else
+		    text = "You won the battle against\n" + loser + "!";
+	    } else {
+		if (forfeit)
+		    text = "You forfeited to\n" + winner + ".";
+		else
+		    text = "You lost the battle against\n" + winner + ".";
+	    }
+
+	    this.gameGroup.game.state.start('gameover', true, false, text);
+	}
+    };
+
 }

@@ -550,30 +550,32 @@ class JsonFactory
 	end
 
 
-	def self.remove_player(entity_manager, result)
-		remove_player_result = result[0]
-		turn_change_result   = result[1]
-		game_over_result     = result[2]
+	def self.remove_player(entity_manager, result, forfeit=false)
+          remove_player_result = result[0]
+          turn_change_result   = result[1]
+          game_over_result     = result[2]
 
-		actions = []
-		if !remove_player_result.nil?
-			players_removed = remove_player_result[1]
-			players_removed.each { |player| 
-				actions.push({ "actions" => "eliminatePlayer",
-						  	   "arguments" => [player] })
-			}
-		end
-		if !game_over_result.nil?
-			winner = game_over_result[1]
-			actions.push({ "actions" => "gameOver", 
-						   "arguments" => [winner] })
-		end
-		if !turn_change_result.nil?
-		        turn = entity_manager.get_entities_with_components(TurnComponent).first
-		        actions.concat(self.end_turn(entity_manager, turn))
-		end
+          
+          actions = []
+          if !game_over_result.nil?
+            winner = game_over_result[1]
+            actions.push({ "action" => "gameOver", 
+                           "arguments" => [winner, forfeit] })
+            return actions
+          end
+          if !remove_player_result.nil?
+            players_removed = remove_player_result[1]
+            players_removed.each { |player| 
+              actions.push({ "action" => "eliminatePlayer",
+                             "arguments" => [player] })
+            }
+          end
+          if !turn_change_result.nil?
+            turn = entity_manager.get_entities_with_components(TurnComponent).first
+            actions.concat(self.end_turn(entity_manager, turn))
+          end
 
-		return actions
+          return actions
 	end
 
 
