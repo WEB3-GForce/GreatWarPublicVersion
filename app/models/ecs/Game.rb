@@ -6,6 +6,7 @@ require_relative "./system/melee_system.rb"
 require_relative "./system/range_system.rb"
 require_relative "./system/turn_system.rb"
 require_relative "./system/remove_player_system.rb"
+require_relative "./system/trench_system.rb"
 
 class Game
   # Creates a new entity manager with users.
@@ -105,11 +106,12 @@ class Game
 
   # Gets all of the actions an entity can execute.
   def self.get_unit_actions(req_id, em, entity)
-    can_move = !MotionSystem.moveable_locations(em, entity).empty?
-    can_melee = !MeleeSystem.attackable_locations(em, entity).empty?
-    can_range = !RangeSystem.attackable_locations(em, entity).empty?
+    can_move  = !MotionSystem.moveable_locations(em, entity).empty?
+    can_melee  = !MeleeSystem.attackable_locations(em, entity).empty?
+    can_range  = !RangeSystem.attackable_locations(em, entity).empty?
+    can_trench = !TrenchSystem.trenchable_locations(em, entity).empty?
 
-    return JsonFactory.actions(em, entity, can_move, can_melee, can_range)
+    return JsonFactory.actions(em, entity, can_move, can_melee, can_range, can_trench)
   end
 
   # Gets all of the locations an entity can move to.
@@ -146,6 +148,7 @@ class Game
 
   # Executes and (melee or ranged) attack on a square with an entity.
   def self.attack(req_id, em, entity, square, type)
+
     if type == "melee"
       return self.melee_attack(req_id, em, entity, square['y'], square['x'])
     end
@@ -171,8 +174,9 @@ class Game
     return JsonFactory.ranged_attack(em, result)
   end
 
-  def self.make_trench(req_id, em, entity)
-    result = TrenchSystem.make_trench(em, entity)
+  def self.make_trench(req_id, em, entity, row, col)
+    target = em.board[row][col][1].first
+    result = TrenchSystem.make_trench(em, entity, target)
     return JsonFactory.make_trench(em, result)
   end
 
@@ -192,7 +196,7 @@ class Game
     em.each_entity(UserIdComponent) { |e|
       if em[e][UserIdComponent][0].id == req_id
         result = RemovePlayerSystem.remove_player(em, e)
-        return JsonFactory.remove_player(em, result, true)
+        return JsonFactory.remove_player(em, result)
       end
     }
   end

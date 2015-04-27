@@ -447,7 +447,7 @@ GameGroup.prototype.gameOver = function(id, forfeit) {
     return {
 	gameGroup: this,
 	start: function() {
-	    console.log(this.gameGroup.players);
+	    console.log(this.gameGroup.players, id);
 	    var winner = this.gameGroup.players[id].name;
 	    var loser;
 	    var playerIds = Object.keys(this.gameGroup.players);

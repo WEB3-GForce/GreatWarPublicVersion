@@ -24,7 +24,8 @@ class RemovePlayerSystem < System
     entity_manager.each_entity(PieceComponent) { |entity|
       piece_comp = entity_manager.get_components(entity, PieceComponent).first
       owner_comp = entity_manager.get_components(entity, OwnedComponent).first
-      if piece_comp == PieceComponent.command_bunker and player == owner_comp.owner
+
+      if piece_comp.type == PieceComponent.command_bunker.type and player == owner_comp.owner
         alive = true
       end
     }
@@ -68,11 +69,11 @@ class RemovePlayerSystem < System
     change_turn = false
 
     self.remove_army(entity_manager, player)
-    turn_comp.players.delete player 
     if current_player == player
       current_player = turn_comp.next_turn()
       change_turn = true
     end
+    turn_comp.players.delete player 
 
     result = ["remove_player", [player]]
     turn = change_turn ? ["turn", current_player] : nil
@@ -98,16 +99,16 @@ class RemovePlayerSystem < System
     original_player = turn_comp.current_turn()
     current_player  = turn_comp.current_turn()
     players_removed = []
-    players.each { |player| 
+    players.each { |player|
       unless self.is_alive?(entity_manager, player)
         players_removed.push player
 
         self.remove_army(entity_manager, player)
-        entity_manager.delete player 
-        turn_comp.players.delete player 
+        # entity_manager.delete player 
         if current_player == player
-          current_player = turn_comp.next_turn()
+          current_player = turn_comp.next_turn
         end
+        turn_comp.players.delete player 
       end
     }
     
