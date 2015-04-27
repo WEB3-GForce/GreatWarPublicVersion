@@ -4,6 +4,9 @@ function GameOver() {
 }
 
 GameOver.prototype = {
+    init: function(text) {
+	this.text = text;
+    },
     preload: function () {
 
     },
@@ -19,11 +22,20 @@ GameOver.prototype = {
 					      "THE GREAT WAR",
 					      32);
 	this.title.anchor.set(0.5, 0.5);
-	this.subtitle = this.game.add.bitmapText(this.game.constants.CAMERA_WIDTH / 2, 200,
+
+	this.subtitle = this.game.add.bitmapText(this.game.constants.CAMERA_WIDTH / 2, 240,
 						 'minecraftia',
-						 "Gameover",
-						 16);
+						 this.text,
+						 20);
 	this.subtitle.anchor.set(0.5, 0.5);
+	this.subtitle.align = 'center';
+
+	this.instructions = this.game.add.bitmapText(this.game.constants.CAMERA_WIDTH / 2, 320,
+						     'minecraftia',
+						     "Go back to the lobby if\nyou want to join or\ncreate a new game.",
+						     16);
+	this.instructions.anchor.set(0.5, 0.5);
+	this.instructions.align = 'center';
     },
     update: function () {
 

@@ -17,10 +17,6 @@ Menu.prototype = {
 		this.game.state.start('play');
     	    }).bind(this));
 
-	    this.game.channel.bind('gameover', (function(data) {
-		this.game.state.start('gameover');
-    	    }).bind(this));
-
 	    this.game.channel.bind('userJoined', (function(data) {
 		this.addPlayer(data.name);
 	    }).bind(this));

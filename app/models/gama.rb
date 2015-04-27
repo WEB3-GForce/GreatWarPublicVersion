@@ -29,13 +29,13 @@ class Gama < ActiveRecord::Base
     SocketController.init_game(self.users, self.id)
   end
 
-  def surrender(loser)
-    gama_id = loser.gama_id
+  def gameover
     self.users.each do |user|
       user.leave_game
     end
     self.done = true
     self.save
-    SocketController.gameover(gama_id)
+
+    Game.del(self.id)
   end
 end

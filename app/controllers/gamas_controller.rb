@@ -6,11 +6,6 @@ class GamasController < ApplicationController
   def index
     @gamas = Gama.all
     user = current_user
-
-    if user.gama && params[:leave] == "1"
-      user.leave_game
-      flash.now[:success] = "You have left your current Game"
-    end
   end
 
   # GET /Gamas/1
@@ -81,7 +76,8 @@ class GamasController < ApplicationController
 
   def leave
     user = current_user
-    user.gama.surrender(user)
+    SocketController.leave_game(user) unless user.gama.pending?
+    user.gama.gameover
     # notify other players
     flash[:success] = "You've left the game."
     redirect_to gamas_path
