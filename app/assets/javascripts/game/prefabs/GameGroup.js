@@ -212,13 +212,13 @@ GameGroup.prototype.initGame = function(board, units, turn, players, me) {
     action.start = function() {
 	this.gameGroup.game.world.setBounds(0, 0, board.width * 32, board.height * 32);
 
-	// for (var i = 0; i < board.width; i++) {
-	// 	for (var j = 0; j < board.height; j++) {
-	// 	    this.gameGroup.gameBoard.setTile(i, j, board.squares[i*board.width+j].terrain);
-	// 	    if (board.squares[i*board.width+j].fow)
-	// 		this.gameGroup.gameBoard.addFog(i, j);
-	// 	}
-	// }
+	for (var i = 0; i < board.width; i++) {
+		for (var j = 0; j < board.height; j++) {
+		    this.gameGroup.gameBoard.setTile(i, j, board.squares[j*board.width+i].index);
+		    // if (board.squares[i*board.width+j].fow)
+		    // 	this.gameGroup.gameBoard.addFog(i, j);
+		}
+	}
 
 	// effects is not passed right now
 	// this.gameGroup.gameBoard.effects = effects;
