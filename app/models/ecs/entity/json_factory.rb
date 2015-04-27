@@ -393,6 +393,26 @@ class JsonFactory
        		return attack_animate.concat actions
 	end
 
+	# This returns the results of a make_trench command to the frontend. It specifies
+	# the entity that made the trench along with the new trench made
+	#
+	# Arguments
+	#   entity_manager = the manager that contains the entities
+	#   entity         = the entity making the trench
+	#   trench         = an array of new trench squares
+	#
+	# Returns
+	#   A hash that is ready to be jsoned
+	def self.make_trench(entity_manager, entity, trench)
+        	actions = []
+        	squares = []
+        	squares.push self.square_path(entity_manager, trench)
+        	actions.push({"action" => "makeTrench",
+        		      "arguments" => [entity, squares] })
+        	actions.concat self.update_energy(entity_manager, moving_entity)
+       		return actions
+	end
+
 	# This is the helper function that performs the main work for requests
 	# to determine where a unit can move or attack.
 	#
