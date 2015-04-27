@@ -307,13 +307,15 @@ describe JsonFactory do
                 pieces_array.push JsonFactory.piece(manager, piece)
             }
             turn = EntityFactory.turn_entity(manager, [human1, ai])
+            manager.effects.push flatland00
             expect(JsonFactory.game_start(manager, player_id)).to eq(
                 [{"action" => "initGame", 
                  "arguments" => [JsonFactory.board(manager),
                                  pieces_array,
                                  JsonFactory.turn(manager, turn),
                                  player_hash,
-                                 player_id]}])
+                                 player_id,
+                                 {"flatland" => []}]}])
         end
     end
 

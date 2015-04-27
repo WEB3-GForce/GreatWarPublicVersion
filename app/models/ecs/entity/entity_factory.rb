@@ -154,9 +154,9 @@ public
 	#
 	# Returns
 	#   the newly created Human Player Entity
-	def self.human_player(entity_manager, name, id=-1, channel="", faction="blue")
+	def self.human_player(entity_manager, name, id=-1, channel="", gravatar="", faction="blue")
 		return self.create_entity(entity_manager,
-					  [UserIdComponent.new(id, channel, faction),
+					  [UserIdComponent.new(id, channel, gravatar, faction),
 					   NameComponent.new(name),
 					   HumanComponent.new])
 	end
@@ -457,6 +457,12 @@ public
 	def self.create_game(entity_manager, users, terrainIds, pieceIds)
 		rows = entity_manager.row
 		cols = entity_manager.col
+		
+		entity_manager.effects.push self.flatland_square(entity_manager)
+		entity_manager.effects.push self.mountain_square(entity_manager)
+		entity_manager.effects.push self.hill_square(entity_manager)
+		entity_manager.effects.push self.trench_square(entity_manager)
+		entity_manager.effects.push self.river_square(entity_manager)
 
 		# Board
 		flatland = lambda { |id| self.flatland_square(entity_manager, id) }
@@ -499,7 +505,7 @@ public
 
 		users.each_with_index { |user, index|
 			player = self.human_player(entity_manager, user.name, user.id, 
-			                           user.channel, factions[index])
+			                           user.channel, user.gravatar, factions[index])
 			players.push player
 		}
 

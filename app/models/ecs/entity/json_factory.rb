@@ -64,19 +64,22 @@ class JsonFactory
 	# Returns
 	#   A hash that is ready to be jsoned
 	def self.player(entity_manager, entity)
-		name_comp = entity_manager.get_components(entity, NameComponent).first
-		user_id_comp = entity_manager.get_components(entity, UserIdComponent).first
+          name_comp = entity_manager.get_components(entity, NameComponent).first
+          user_id_comp = entity_manager.get_components(entity, UserIdComponent).first
 
-		ai_comp = entity_manager.get_components(entity, AIComponent).first
-		player_type = "CPU" if ai_comp
+          ai_comp = entity_manager.get_components(entity, AIComponent).first
+          player_type = "CPU" if ai_comp
 
-		human_comp = entity_manager.get_components(entity, HumanComponent).first
-		player_type = "Human" if human_comp
+          human_comp = entity_manager.get_components(entity, HumanComponent).first
+          player_type = "Human" if human_comp
 
-		return {entity  => {"name"    => name_comp.name,
-		                    "type"    => player_type,
-		                    "userId"  => user_id_comp.id,
-		                    "faction" => user_id_comp.faction }}
+          return {entity  => {
+              "name"    => name_comp.name,
+              "type"     => player_type,
+              "userId"   => user_id_comp.id,
+              "gravatar" => user_id_comp.gravatar,
+              "faction"  => user_id_comp.faction }
+          }
 	end
 
 	# Converts a turn entity into a hash object.
@@ -264,10 +267,15 @@ class JsonFactory
           entity_manager.each_entity(OwnedComponent) { |piece|
             piece_array.push self.piece(entity_manager, piece)
           }
+          effects = {}
+          entity_manager.effects.each { |square|
+          	result = self.square(entity_manager, square)
+	        effects[result["terrain"]] = result["stats"]  
+          }
 
           return [{
                     "action" => "initGame",
-                    "arguments" => [board, piece_array, turn_hash, player_hash, player_id]
+                    "arguments" => [board, piece_array, turn_hash, player_hash, player_id, effects]
                   }]
 	end
 

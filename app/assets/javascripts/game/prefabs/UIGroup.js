@@ -4,7 +4,8 @@ var COLORS = {
     HEALTH: 0x7eb041,
     ENERGY: 0xfbb829,
     BUTTON: 0x556270,
-    DEPLETED: 0xdadfe6
+    DEPLETED: 0xdadfe6,
+    HOVER: 0x1693a5
 }
 
 var UIGroup = function(game, parent) {
@@ -36,66 +37,51 @@ UIGroup.prototype.initPlayerInfoUI = function() {
     this.playerInfoGraphics.beginFill(COLORS.BUTTON, 0.5);
     this.playerInfoGraphics.drawRect(0, 0, width, height);
 
-    this.playerInfoGraphics.leftPos = 0;
-    this.playerInfoGraphics.rightPos = this.game.width - width - 16;
-
     this.playerInfoGraphics.beginFill(COLORS.HEALTH, 1);
     this.playerInfoGraphics.drawRect(64, 0, width - 64, 32);
+    this.playerInfoGraphics.beginFill(COLORS.HOVER, 1);
+    this.playerInfoGraphics.drawRect(64, 32, width - 64, 32);
 
     this.playerName = this.game.add.bitmapText(72, 4, 'minecraftia',
 					       "",
 					       20,
 					       this.playerInfo);
-    this.playerName.leftPos = 72;
-    this.playerName.rightPos = this.game.width - 232;
 
     this.turnCount = this.game.add.bitmapText(72, 36, 'minecraftia',
 					      "",
 					      20,
 					      this.playerInfo);
-    this.turnCount.leftPos = 72;
-    this.turnCount.rightPos = this.game.width - 232;
 
     this.playerPortrait = this.game.add.sprite(0, 0, 'generalPortrait', 0, this.playerInfo);
     this.playerPortrait.width = 64;
     this.playerPortrait.height = 64;
 
-    this.playerPortrait.leftPos = 0;
-    this.playerPortrait.rightPos = this.game.width - width - 16;
-
     this.endTurn = this.game.add.bitmapText(0, 66, 'minecraftia',
 					    '         Press "z" to\n            End Turn',
 					    12,
 					    this.playerInfo);
-    this.endTurn.leftPos = 0;
-    this.endTurn.rightPos = this.game.width - width - 16;
 
     this.endGame = this.game.add.bitmapText(width/2, 66, 'minecraftia',
 					    '        Press "q" to\n         Surrender',
 					    12,
 					    this.playerInfo);
-    this.endGame.leftPos = width/2;
-    this.endGame.rightPos = this.game.width - 16 - width/2;
 }
-UIGroup.prototype.setPlayer = function(name, turn) {
-    this.playerName.text = name;
+UIGroup.prototype.setPlayer = function(playerId, player, turn) {
+    this.playerPortrait.loadTexture(playerId);
+    this.playerPortrait.width = 64;
+    this.playerPortrait.height = 64;
+    this.playerName.text = player.name;
     this.turnCount.text = "Day: " + turn;
 }
 
 UIGroup.prototype.checkPlayerInfoUIPosition = function(mouse) {
     if (mouse.x < 320) {
-        if (this.portraitLeft) {
-            this.playerInfo.forEach(function(comp) {
-                comp.x = comp.rightPos;
-            }, this);
-        }
+        if (this.portraitLeft)
+	    this.playerInfo.cameraOffset.x = this.game.constants.CAMERA_WIDTH - 288 - 8;
         this.portraitLeft = false;
     } else {
-        if (!this.portraitLeft) {
-            this.playerInfo.forEach(function(comp) {
-                comp.x = comp.leftPos;
-            }, this);
-        }
+        if (!this.portraitLeft)
+	    this.playerInfo.cameraOffset.x = 8;
         this.portraitLeft = true;
     }
 }
