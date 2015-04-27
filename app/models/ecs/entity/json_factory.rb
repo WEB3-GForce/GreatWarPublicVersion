@@ -399,17 +399,21 @@ class JsonFactory
 	# Arguments
 	#   entity_manager = the manager that contains the entities
 	#   entity         = the entity making the trench
-	#   trench         = an array of new trench squares
+	#   results        = an array of new trench squares
 	#
 	# Returns
 	#   A hash that is ready to be jsoned
-	def self.make_trench(entity_manager, entity, trench)
+	def self.make_trench(entity_manager, entity, results)
         	actions = []
-        	squares = []
-        	squares.push self.square_path(entity_manager, trench)
-        	actions.push({"action" => "makeTrench",
-        		      "arguments" => [entity, squares] })
-        	actions.concat self.update_energy(entity_manager, moving_entity)
+        	results.each { |trench_array|
+        		squares = []
+        		trench_array[1].each { |square|
+        			squares.push self.square_path(entity_manager, square)
+        		}
+	        	actions.push({"action" => "makeTrench",
+        			      "arguments" => [entity, squares] })
+        	}
+        	actions.concat self.update_energy(entity_manager, entity)
        		return actions
 	end
 

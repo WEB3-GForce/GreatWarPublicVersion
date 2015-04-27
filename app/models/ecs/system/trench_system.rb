@@ -17,13 +17,13 @@ class TrenchSystem < System
 	def self.trenchable_locations(entity_manager, entity)
 		if !EntityType.trench_builder_entity?(entity_manager, entity) ||
 		   !EntityType.placed_entity?(entity_manager, entity)
-		   return nil
+		   return []
 		end
 		pos_comp = entity_manager.get_components(entity, PositionComponent).first
 		square = entity_manager.board[pos_comp.row][pos_comp.col][0]
 		
 		return [square] if entity_manager.has_components(square, [MalleableComponent])
-		return nil
+		return []
 	end
 
 	# Converts the square the entity is standing on into a trench
@@ -38,12 +38,17 @@ class TrenchSystem < System
 	def self.make_trench(entity_manager, entity)
 		if !EntityType.trench_builder_entity?(entity_manager, entity) ||
 		   !EntityType.placed_entity?(entity_manager, entity)
-		   return nil
+		   return []
+		end
+		
+		trench_comp = entity_manager.get_components(entity, TrenchBuilderComponent).first
+		if !EnergySystem.enough_energy?(entity_manager, entity, trench_comp.energy_cost)
+			return []
 		end
 		
 		pos_comp = entity_manager.get_components(entity, PositionComponent).first
 		square = entity_manager.board[pos_comp.row][pos_comp.col][0]
-		return nil if !entity_manager.has_components(square, [MalleableComponent])
+		return [] if !entity_manager.has_components(square, [MalleableComponent])
 
 		entity_manager.delete square
 		
@@ -51,7 +56,8 @@ class TrenchSystem < System
 		entity_manager.add_component(trench,
 			PositionComponent.new(pos_comp.row, pos_comp.col))
 		entity_manager.board[pos_comp.row][pos_comp.col][0] = trench
-		return ["trench", trench]
+		EnergySystem.consume_energy(entity_manager, entity, trench_comp.energy_cost)
+		return [["trench", trench]]
 	end
 end
 

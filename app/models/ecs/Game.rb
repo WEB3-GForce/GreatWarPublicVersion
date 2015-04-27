@@ -220,7 +220,7 @@ class Game
 
     def self.make_trench(req_id, em, entity)
         result = TrenchSystem.make_trench(em, entity)
-        return JsonFactory.make_trench(em, result[1])
+        return JsonFactory.make_trench(em, result)
     end
 
     # End the turn for the current player.
