@@ -70,4 +70,9 @@ class User < ActiveRecord::Base
   def is_host?(gama)
     return self.host && (self.gama_id == gama.id)
   end
+
+  def gravatar
+    gravatar_id = Digest::MD5::hexdigest(self.email.downcase)
+    "https://secure.gravatar.com/avatar/#{gravatar_id}"
+  end
 end

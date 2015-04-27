@@ -53,19 +53,21 @@ describe JsonFactory do
     context "when calling square" do
         it "should return a hash with the attributes of the square" do
             expect(JsonFactory.square(manager, flatland00)).to eq(
-                {"id" => flatland00, "stats" => [], "terrain" => "flatland"})
+                {"id" => flatland00, "index" => 0, "stats" => {"move_cost" => 0, "defense" => 0}, "terrain" => "flatland"})
             expect(JsonFactory.square(manager, river01)).to eq(
                 {"id" => river01, 
-                 "stats" => [{"type" => "move_cost", "amount" => 2.0}],
+                 "index" => 0,
+                 "stats" => {"move_cost" => 2.0, "defense" => 0},
                  "terrain" => "river"})
             expect(JsonFactory.square(manager, mountain02)).to eq(
                 {"id" => mountain02,
-                 "stats" => [],
+                 "index" => 0,
+                 "stats" => {"move_cost" => 0.0, "defense" => 0},
                  "terrain" => "mountain"})
             expect(JsonFactory.square(manager, hill)).to eq(
                 {"id" => hill,
-                 "stats" => [{"type" => "defense", "amount" => 2.0},
-                             {"type" => "move_cost", "amount" => 2.0}],
+                 "index" => 0,
+                 "stats" => {"move_cost" => 2.0, "defense" => 2.0},
                  "terrain" => "hill"})
         end
     end
@@ -292,6 +294,7 @@ describe JsonFactory do
     context "when calling game_start" do
         it "should return a hash of the game_start" do
             set_intermediate
+            player_id = 10
             players = [human1, ai]
             player_hash = {}
             players.each { |player|
@@ -303,12 +306,15 @@ describe JsonFactory do
                 pieces_array.push JsonFactory.piece(manager, piece)
             }
             turn = EntityFactory.turn_entity(manager, [human1, ai])
-            expect(JsonFactory.game_start(manager)).to eq(
+            manager.effects.push flatland00
+            expect(JsonFactory.game_start(manager, player_id)).to eq(
                 [{"action" => "initGame", 
                  "arguments" => [JsonFactory.board(manager),
                                  pieces_array,
                                  JsonFactory.turn(manager, turn),
-                                 player_hash]}])
+                                 player_hash,
+                                 player_id,
+                                 {"flatland" => {"defense"=>0, "move_cost"=>0}}]}])
         end
     end
 

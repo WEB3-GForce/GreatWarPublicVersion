@@ -22,15 +22,19 @@ class JsonFactory
 	#   A hash that is ready to be jsoned
 	def self.square(entity_manager, entity)
 		terrain_comp = entity_manager.get_components(entity, TerrainComponent).first
-		stats_array = []
+		stats_hash = {}
 		stats   = entity_manager.get_components(entity, BoostComponent)
+		stats_hash["defense"] = 0
+		stats_hash["move_cost"] = 0
 		stats.each {|stat|
-			stats_array.push( {"type" => stat.type.to_s,
-			                   "amount" => stat.amount})
+			stats_hash[stat.type.to_s] = stat.amount
 		}
+		terrain_comp = entity_manager[entity][TerrainComponent].first
+		sprite_comp = entity_manager[entity][SpriteComponent].first
 		return {"id"      => entity,
 		        "terrain" => terrain_comp.type.to_s,
-		        "stats"   => stats_array}
+		        "stats"   => stats_hash,
+		        "index"   => sprite_comp.id}
 	end
 
 
@@ -61,19 +65,22 @@ class JsonFactory
 	# Returns
 	#   A hash that is ready to be jsoned
 	def self.player(entity_manager, entity)
-		name_comp = entity_manager.get_components(entity, NameComponent).first
-		user_id_comp = entity_manager.get_components(entity, UserIdComponent).first
+          name_comp = entity_manager.get_components(entity, NameComponent).first
+          user_id_comp = entity_manager.get_components(entity, UserIdComponent).first
 
-		ai_comp = entity_manager.get_components(entity, AIComponent).first
-		player_type = "CPU" if ai_comp
+          ai_comp = entity_manager.get_components(entity, AIComponent).first
+          player_type = "CPU" if ai_comp
 
-		human_comp = entity_manager.get_components(entity, HumanComponent).first
-		player_type = "Human" if human_comp
+          human_comp = entity_manager.get_components(entity, HumanComponent).first
+          player_type = "Human" if human_comp
 
-		return {entity  => {"name"    => name_comp.name,
-		                    "type"    => player_type,
-		                    "userId"  => user_id_comp.id,
-		                    "faction" => user_id_comp.faction }}
+          return {entity  => {
+              "name"    => name_comp.name,
+              "type"     => player_type,
+              "userId"   => user_id_comp.id,
+              "gravatar" => user_id_comp.gravatar,
+              "faction"  => user_id_comp.faction }
+          }
 	end
 
 	# Converts a turn entity into a hash object.
@@ -261,10 +268,15 @@ class JsonFactory
           entity_manager.each_entity(OwnedComponent) { |piece|
             piece_array.push self.piece(entity_manager, piece)
           }
+          effects = {}
+          entity_manager.effects.each { |square|
+          	result = self.square(entity_manager, square)
+	        effects[result["terrain"]] = result["stats"]  
+          }
 
           return [{
                     "action" => "initGame",
-                    "arguments" => [board, piece_array, turn_hash, player_hash, player_id]
+                    "arguments" => [board, piece_array, turn_hash, player_hash, player_id, effects]
                   }]
 	end
 

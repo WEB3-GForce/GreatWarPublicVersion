@@ -48,10 +48,11 @@ public
 	#
 	# Returns
 	#   the newly created Square Entity
-	def self.flatland_square(entity_manager)
+	def self.flatland_square(entity_manager, id=0)
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.flatland,
-					   OccupiableComponent.new])
+					   OccupiableComponent.new,
+					   SpriteComponent.new(id)])
 	end
 
 	# This function creates a new mountain square for boards. Mountains are
@@ -63,10 +64,11 @@ public
 	#
 	# Returns
 	#   the newly created Square Entity
-	def self.mountain_square(entity_manager)
+	def self.mountain_square(entity_manager, id=0)
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.mountain,
-					   ImpassableComponent.new])
+					   ImpassableComponent.new,
+					   SpriteComponent.new(id)])
 	end
 
 	# This function creates a new hill square for boards. Hills are the
@@ -77,12 +79,13 @@ public
 	#
 	# Returns
 	#   the newly created Square Entity
-	def self.hill_square(entity_manager)
+	def self.hill_square(entity_manager, id=0)
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.hill,
 					   OccupiableComponent.new,
 					   BoostComponent.defense,
-					   BoostComponent.move_cost])
+					   BoostComponent.move_cost,
+					   SpriteComponent.new(id)])
 	end
 
 	# This function creates a new trench square for boards. Trenches are
@@ -96,11 +99,12 @@ public
 	#
 	# Returns
 	#   the newly created Square Entity
-	def self.trench_square(entity_manager)
+	def self.trench_square(entity_manager, id=0)
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.trench,
 					   OccupiableComponent.new,
-					   BoostComponent.defense])
+					   BoostComponent.defense,
+					   SpriteComponent.new(id)])
 	end
 
 	# This function creates a new river square for boards. Rivers are
@@ -112,10 +116,11 @@ public
 	#
 	# Returns
 	#   the newly created Square Entity
-	def self.river_square(entity_manager)
+	def self.river_square(entity_manager, id=0)
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.river,
-					   BoostComponent.move_cost])
+					   BoostComponent.move_cost,
+					   SpriteComponent.new(id)])
 	end
 
 	# This function populates the board in the most basic way possible. It
@@ -149,9 +154,9 @@ public
 	#
 	# Returns
 	#   the newly created Human Player Entity
-	def self.human_player(entity_manager, name, id=-1, channel="", faction="blue")
+	def self.human_player(entity_manager, name, id=-1, channel="", gravatar="", faction="blue")
 		return self.create_entity(entity_manager,
-					  [UserIdComponent.new(id, channel, faction),
+					  [UserIdComponent.new(id, channel, gravatar, faction),
 					   NameComponent.new(name),
 					   HumanComponent.new])
 	end
@@ -165,9 +170,9 @@ public
 	#
 	# Returns
 	#   the newly created AI Player Entity
-	def self.ai_player(entity_manager, name, id=-1, faction="blue")
+	def self.ai_player(entity_manager, name, id=-1, channel="", faction="blue")
 		return self.create_entity(entity_manager,
-					  [UserIdComponent.new(id, faction),
+					  [UserIdComponent.new(id, channel, faction),
 					   NameComponent.new(name),
 					   AIComponent.new])
 	end
@@ -453,33 +458,40 @@ public
 		rows = entity_manager.row
 		cols = entity_manager.col
 
+		entity_manager.effects.push self.flatland_square(entity_manager)
+		entity_manager.effects.push self.mountain_square(entity_manager)
+		entity_manager.effects.push self.hill_square(entity_manager)
+		entity_manager.effects.push self.trench_square(entity_manager)
+		entity_manager.effects.push self.river_square(entity_manager)
+
 		# Board
-		flatland = lambda { self.flatland_square(entity_manager) }
-		mountain = lambda { self.mountain_square(entity_manager) }
-		hill = lambda { self.hill_square(entity_manager) }
-		trench = lambda { self.trench_square(entity_manager) }
-		river = lambda { self.river_square(entity_manager) }
+		flatland = lambda { |id| self.flatland_square(entity_manager, id) }
+		mountain = lambda { |id| self.mountain_square(entity_manager, id) }
+		hill = lambda { |id| self.hill_square(entity_manager, id) }
+		trench = lambda { |id| self.trench_square(entity_manager, id) }
+		river = lambda { |id| self.river_square(entity_manager, id) }
 
 		terrainCreator = {}
 		terrainCreator.default = flatland
 		[-1, 68, 67, 99].each { |id| terrainCreator[id] = flatland }
-		[-2, 567, 750, 751, 683, 546, 385, 353, 387, 619, 481, 583, 461, 578, 
-		 453, 385, 560, 491, 551, 618, 554, 681, 745, 712, 627, 680, 464, 588, 
-		 595, 782, 522, 427, 582, 614, 780, 747, 522, 427, 466, 433, 593, 213, 
-		 53, 57, 221, 55, 125, 21, 123, 91, 21, 53, 25, 40, 509, 380, 381, 382, 
-		 507, 383, 508, 470, 380, 509, 472, 508, 474, 509].each { |id| 
+		[-2, 567, 750, 751, 683, 546, 385, 353, 387, 619, 481, 583, 461, 578,
+		 453, 385, 560, 491, 551, 618, 554, 681, 745, 712, 627, 680, 464, 588,
+		 595, 782, 522, 427, 582, 614, 780, 747, 522, 427, 466, 433, 593, 213,
+		 53, 57, 221, 55, 125, 21, 123, 91, 21, 53, 25, 40, 509, 380, 381, 382,
+		 507, 383, 508, 470, 380, 509, 472, 508, 474, 509].each { |id|
 		 	terrainCreator[id] = mountain
 		}
 		[-3, 685, 686, 653, 685, 654, 655].each { |id| terrainCreator[id] = hill }
 		[-4].each { |id| terrainCreator[id] = trench }
-		[-5, 631, 636, 632, 635, 636, 603, 604, 599, 539, 631, 629, 635, 573, 
-		 597, 630, 571, 600].each { |id| 
-			terrainCreator[id] = river 
+		[-5, 631, 636, 632, 635, 636, 603, 604, 599, 539, 631, 629, 635, 573,
+		 597, 630, 571, 600].each { |id|
+			terrainCreator[id] = river
 		}
 
 		(0...rows).each { |row|
 			(0...cols).each { |col|
-				square = terrainCreator[terrainIds[row*cols + col]].call
+				id = terrainIds[row*cols + col]
+				square = terrainCreator[id].call(id)
 				entity_manager.add_component(square,
 						PositionComponent.new(row, col))
 				entity_manager.board[row][col] = [square, []]
@@ -493,7 +505,7 @@ public
 
 		users.each_with_index { |user, index|
 			player = self.human_player(entity_manager, user.name, user.id,
-			                           user.channel, factions[index])
+			                           user.channel, user.gravatar, factions[index])
 			players.push player
 		}
 
@@ -595,5 +607,5 @@ end
 # users = [OpenStruct.new({name: "1", id: -1, channel: "NA"}),
 #          OpenStruct.new({name: "2", id: -1, channel: "NA"}), ]
 # entity_manager = EntityManager.new(rows, cols)
-# EntityFactory.create_game(entity_manager, nil, nil, nil)
+# EntityFactory.create_game(entity_manager, users, terrainIds, pieceIds)
 # puts entity_manager

@@ -22,6 +22,7 @@ describe EntityManager do
 		expect(new_manager.col).to eq(20)
 		expect(new_manager.board.size).to eq(10)
 		expect(new_manager.board[0].size).to eq(20)
+		expect(new_manager.effects.size).to eq(0)
 		new_manager.board.each { |row|
 			row.each { |col| expect(col).to eq(nil) }
 		}

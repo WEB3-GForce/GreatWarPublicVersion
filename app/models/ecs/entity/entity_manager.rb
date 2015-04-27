@@ -14,7 +14,7 @@ require_relative "./component_bag.rb"
 =end
 class EntityManager < Hash
 
-	attr_reader(:board, :row, :col)
+	attr_reader(:board, :row, :col, :effects)
 
 	# Initializes a new EntityManager
 	#
@@ -28,6 +28,7 @@ class EntityManager < Hash
 		@row   = row
 		@col   = col
 		@board = Array.new(row) {Array.new(col)}
+		@effects = []
 		super()
 	end
 
