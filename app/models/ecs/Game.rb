@@ -1,3 +1,5 @@
+require 'json'
+
 require_relative "./entity/entity_factory.rb"
 require_relative "./entity/entity_manager.rb"
 require_relative "./entity/json_factory.rb"
@@ -7,8 +9,20 @@ require_relative "./system/range_system.rb"
 require_relative "./system/turn_system.rb"
 require_relative "./system/remove_player_system.rb"
 
+=begin
+    The Game class provides methods that can be remote procedure called by
+    the front end to manipulate the game state. Each method responds with
+    a hash formatted as a remote procedure call to the front end.
+=end
 class Game
 
+    # Creates a new entity manager with users.
+    # Users correspond to the model in the database.
+    # An (optional) path can be provided to a JSON containing setup information.
+    # This JSON is expected to have 'height' and 'width' attriubtes, as well
+    # as a 'layers' attribute mapping to an array of the terrain and piece
+    # layers (in 'data' fields). If no JSON file path is provdied, a default
+    # 11x11 game is created.
     def self.init_game(users, path=nil)
         if path.nil?
             rows = 11
@@ -50,11 +64,13 @@ class Game
         return em
     end
 
+    # Gets the current game state, formatted as a hash.
     def self.get_game_state(req_id, em)
       player_id = self.get_player_id(req_id, em)
       return JsonFactory.game_start(em, player_id)
     end
 
+    # Gets the socket channels of all users.
     def self.get_user_channels(em)
       channels = []
       em.each_entity(UserIdComponent) do |e|
@@ -63,18 +79,12 @@ class Game
       return channels
     end
 
-    def self.each_coord(req_id, em)
-        (0..em.row).each { |row|
-            (0..em.col).each { |col|
-                yield row, col
-            }
-        }
-    end
-
+    # Gets the (row, col) from a (x,y) location hash from the frontend.
     def self.extract_coord(location)
         return location['y'], location['x']
     end
 
+    # Checkes whether an entity's owner matches the player with req_id.
     def self.verify_owner(req_id, em, entity)
         entity_requester = nil
         em.each_entity(UserIdComponent) { |e|
@@ -87,10 +97,12 @@ class Game
         return entity_requester == entity_owner
     end
     
+    # Checks whether it is the turn of the player with req_id.
     def self.verify_turn(req_id, em)
         return em[TurnSystem.current_turn(em)][UserIdComponent][0].id == req_id
     end
 
+    # Gets the entity id of the player with req_id.
     def self.get_player_id(req_id, em)
       em.each_entity(UserIdComponent) { |e|
         if em[e][UserIdComponent][0].id == req_id
@@ -99,63 +111,7 @@ class Game
       }
     end
 
-    def self.get_full_info(req_id, em, row, col)
-    	return { "tile" => self.get_tile_info(req_id, em, row, col),
-                 "unit" => self.get_unit_info(req_id, em, row, col) }
-    end
-
-    def self.get_tile_info(req_id, em, row, col)
-        return JsonFactory.square(em, em.board[row][col][0])
-    end
-
-    def self.get_unit_info(req_id, em, row, col)
-        entity = em.board[row][col][1].first
-        return JsonFactory.piece(em, entity)
-    end
-
-    def self.get_player_info(req_id, em, name=nil)
-        em.each_entity(NameComponent) { |entity|
-            nameComp = em[entity][NameComponent].first
-            return JsonFactory.player(em, entity) if name == nameComp.name
-        }
-        return {}
-    end
-
-
-    def self.get_all_full_info(req_id, em)
-        all_info = []
-        self.each_coord(req_id, em).each { |row, col|
-            all_info << self.get_full_info(req_id, em, row, col)
-        }
-        return all_info
-    end
-
-    def self.get_all_tile_info(req_id, em)
-        all_info = []
-        self.each_coord(req_id, em).each { |row, col|
-            all_info << self.get_tile_info(req_id, em, row, col)
-        }
-        return all_info
-    end
-
-    def self.get_all_unit_info(req_id, em)
-        all_info = []
-        self.each_coord(req_id, em).each { |row, col|
-            all_info << self.get_unit_info(req_id, em, row, col)
-        }
-        return all_info
-    end
-
-    def self.get_all_player_info(req_id, em)
-        all_info = []
-        em.each_entity(NameComponent) { |entity|
-            nameComp = em[entity][NameComponent].first
-            all_info << JsonFactory.player(em, entity)
-        }
-        return all_info
-    end
-
-
+    # Gets all of the actions an entity can execute.
     def self.get_unit_actions(req_id, em, entity)
         can_move  = !MotionSystem.moveable_locations(em, entity).empty?
         can_melee  = !MeleeSystem.attackable_locations(em, entity).empty?
@@ -165,27 +121,31 @@ class Game
         return JsonFactory.actions(em, entity, can_move, can_melee, can_range, can_trench)
     end
 
+    # Gets all of the locations an entity can move to.
     def self.get_unit_moves(req_id, em, entity)
     	locations = MotionSystem.moveable_locations(em, entity)
     	return JsonFactory.moveable_locations(em, entity, locations)
     end
 
+    # Gets all of the locations an entity can melee attack.
     def self.get_unit_melee_attacks(req_id, em, entity)
         attacks = MeleeSystem.attackable_range(em, entity)
         return JsonFactory.melee_attackable_locations(em, entity, attacks)
     end
 
+    # Gets all of the locations an entity can range attack.
     def self.get_unit_ranged_attacks(req_id, em, entity)
         attacks = RangeSystem.attackable_range(em, entity)
         return JsonFactory.range_attackable_locations(em, entity, attacks)
     end
 
+    # Get all the locations and entity can build a trench on.
     def self.get_unit_trench_locations(req_id, em, entity)
         locations = TrenchSystem.trenchable_locations(em, entity)
         return JsonFactory.trench_locations(em, entity, locations)
     end
 
-
+    # Moves an entity to a new location (if legal).
     def self.move_unit(req_id, em, entity, location)
         row, col = self.extract_coord(location)
         square = em.board[row][col][0]
@@ -193,6 +153,7 @@ class Game
         return JsonFactory.move(em, entity, path)
     end
 
+    # Executes and (melee or ranged) attack on a square with an entity.
     def self.attack(req_id, em, entity, square, type)
 
     	if type == "melee"
@@ -203,6 +164,7 @@ class Game
     	end
     end
 
+    # Executes a melee attack on a square with an entity.
     def self.melee_attack(req_id, em, entity, row, col)
         target = em.board[row][col][1].first
         attack_result = MeleeSystem.update(em, entity, target)
@@ -212,6 +174,7 @@ class Game
         return result
     end
 
+    # Executes a ranged attack on a square with an entity.
     def self.ranged_attack(req_id, em, entity, row, col)
         target = em.board[row][col][1].first
         result = RangeSystem.update(em, entity, target)
@@ -235,6 +198,7 @@ class Game
         return JsonFactory.end_turn(em, turn)
     end
 
+    # Leaves the game for the player with req_id.
     def self.leave_game(req_id, em)
         em.each_entity(UserIdComponent) { |e|
             if em[e][UserIdComponent][0].id == req_id
@@ -244,16 +208,20 @@ class Game
         }
     end
 
+    # Stores the game (serialized entity manager) into database.
     def self.store(id, manager)
       gama = Gama.find(id)
       gama.manager = Marshal::dump(manager)
       gama.save
     end
 
+    # Stores the game (serialized entity manager) into redis memory.
     def self.save(id, manager)
       $redis.set(id, Marshal::dump(manager))
     end
     
+    # Gets the game (serialized entity manager) from redis memory,
+    # or failing that, from database if available.
     def self.get(id)
       manager = $redis.get(id)
       if manager
@@ -272,4 +240,4 @@ end
 # users = [OpenStruct.new({name: "1", id: -1, channel: "NA"}),
 #          OpenStruct.new({name: "2", id: -1, channel: "NA"}), ]
 # em = Game.init_game(users)
-# puts em
+# puts em.to_s
