@@ -218,8 +218,9 @@ class Game
         return JsonFactory.ranged_attack(em, result)
     end
 
-    def self.make_trench(req_id, em, entity)
-        result = TrenchSystem.make_trench(em, entity)
+    def self.make_trench(req_id, em, entity, row, col)
+        target = em.board[row][col][1].first
+        result = TrenchSystem.make_trench(em, entity, target)
         return JsonFactory.make_trench(em, result)
     end
 
