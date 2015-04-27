@@ -109,6 +109,13 @@ UIGroup.prototype.initTileInfoHelper = function(group, x) {
 					   group);
     group.tile = this.game.add.sprite(8, 40, 'terrain', 0, group);
     group.tile.alpha = 0.7;
+
+    group.defense = this.game.add.bitmapText(7, 80, 'minecraftia',
+            'DEF:  0',
+            12, group);
+    group.movementCost = this.game.add.bitmapText(7, 104, 'minecraftia',
+            'MOV:  1',
+            12, group);
 }
 
 UIGroup.prototype.initTileInfoUI = function() {
@@ -121,11 +128,13 @@ UIGroup.prototype.initTileInfoUI = function() {
 
 UIGroup.prototype.setTile = function(group, tile) {
     if (tile) {
-	group.tile.frame = tile.index - 1;
-	group.title.text = tile.index; // tile.name;
-	group.visible = true;
+	    group.tile.frame = tile.index - 1;
+	    group.title.text = tile.name;
+        group.defense.text = 'DEF:  ' + tile.defense;
+        group.movementCost.text = 'MOV:  ' + tile.movementCost;
+	    group.visible = true;
     } else {
-	group.visible = false;
+	    group.visible = false;
     }
 }
 UIGroup.prototype.setPrimaryTile = function(tile) {
@@ -139,9 +148,9 @@ UIGroup.prototype.setSecondaryTile = function(tile) {
 UIGroup.prototype.setUnit = function(group, tileGroup, unit, x1, x2) {
     if (unit) {
         group.unitType.text = unit.type[0].toUpperCase() + unit.type.replace('_', ' ').slice(1);
-    	group.health.text = "HP: " + unit.stats.health.current + "/" + unit.stats.health.max;
-    	group.energy.text = "ENERGY: " + unit.stats.energy.current + "/" + unit.stats.energy.max;
-        group.attack.text = "ATTACK: " + unit.stats.range.attack;
+    	group.health.text = "HP:  " + unit.stats.health.current + "/" + unit.stats.health.max;
+    	group.energy.text = "ENERGY:  " + unit.stats.energy.current + "/" + unit.stats.energy.max;
+        group.attack.text = "ATTACK:  " + unit.stats.range.attack;
 
 	group.unit.loadTexture(UNIT_MAP[unit.type].IMAGE + '-' + unit.faction);
 

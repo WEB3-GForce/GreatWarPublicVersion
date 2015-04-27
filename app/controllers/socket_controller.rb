@@ -23,11 +23,11 @@ class SocketController < WebsocketRails::BaseController
       WebsocketRails[channel].trigger :initGame, {}
     end
   end
-  
+
   def get_channel
     send_message :setChannel, {channel: current_user.channel, name: current_user.name}
   end
-  
+
   def get_game
     unless Game.get(current_user.gama_id).nil?
       WebsocketRails[current_user.channel].trigger :initGame, {}

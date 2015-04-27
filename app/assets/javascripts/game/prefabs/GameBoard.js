@@ -7,7 +7,7 @@ var HIGHLIGHT_TYPES = {
 };
 
 var TILE_MAP  = {
-    flatland: {index: 30, name: "Flat Land"},
+    flatland: {index: 30, name: "Flat Land", defense: 0, movementCost: 1},
 };
 
 var GameBoard = function(game) {

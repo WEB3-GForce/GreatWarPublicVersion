@@ -46,7 +46,7 @@ Play.prototype = {
         }
         for (var i = 0; i < 1; i++) {
             this.music[i].onStop.add(function(next) {
-                return function() {                    
+                return function() {
                     this.music[next % 1].play();
                 };
             }(i+1), this);
@@ -124,9 +124,9 @@ Play.prototype = {
             var shakeAmplitude = 10;
             var rand1 = this.game.rnd.integerInRange(-1 * shakeAmplitude, shakeAmplitude);
             var rand2 = this.game.rnd.integerInRange(-1 * shakeAmplitude, shakeAmplitude);
-            // this.game.world.setBounds(rand1, rand2, this.game.width + rand1, this.game.height + rand2);
-            this.game.camera.x = this.cameraPos.x + rand1;
-            this.game.camera.y = this.cameraPos.y + rand2;
+            this.game.world.setBounds(rand1, rand2, this.game.width + rand1, this.game.height + rand2);
+            //this.game.camera.x = this.cameraPos.x + rand1;
+            //this.game.camera.y = this.cameraPos.y + rand2;
             if (this.shakeTimer == 0) {
                 this.game.camera.x = this.cameraPos.x;
                 this.game.camera.y = this.cameraPos.y;
