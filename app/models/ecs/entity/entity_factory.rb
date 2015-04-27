@@ -170,9 +170,9 @@ public
 	#
 	# Returns
 	#   the newly created AI Player Entity
-	def self.ai_player(entity_manager, name, id=-1, channel="", faction="blue")
+	def self.ai_player(entity_manager, name, id=-1, channel="", gravatar="", faction="blue")
 		return self.create_entity(entity_manager,
-					  [UserIdComponent.new(id, channel, faction),
+					  [UserIdComponent.new(id, channel, gravatar, faction),
 					   NameComponent.new(name),
 					   AIComponent.new])
 	end
@@ -221,6 +221,7 @@ public
 					   MotionComponent.new(-1, 2),
 					   MeleeAttackComponent.new(6, 4),
 					   RangeAttackComponent.new(6, 1, 2, [1.0], 4),
+					   TrenchBuilderComponent.new(4),
 					   OwnedComponent.new(owner)])
 	end
 
