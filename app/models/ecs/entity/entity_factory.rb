@@ -218,7 +218,7 @@ public
 		return self.create_entity(entity_manager,
 					  [PieceComponent.infantry,
 					   HealthComponent.new(12),
-					   EnergyComponent.new(18),
+					   EnergyComponent.new(6),
 					   MotionComponent.new(-1, 2),
 					   MeleeAttackComponent.new(6, 4),
 					   RangeAttackComponent.new(6, 1, 2, [1.0], 4),
