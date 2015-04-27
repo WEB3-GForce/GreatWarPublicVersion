@@ -2,6 +2,10 @@ require_relative '../../../spec_helper'
 
 describe Entity do
 
+	it "should be a subclass of string" do
+		expect(Entity < String).to be true
+	end
+
 	it "should produce uuid's when initialized" do
 		entity1 = Entity.new
 		entity2 = Entity.new
@@ -14,10 +18,6 @@ describe Entity do
 		expect(entity0.include?("entity#")).to be true
 		expect(entity1.include?("entity#")).to be true
 		expect(entity0).to_not eq(entity1)
-	end
-
-	it "should be a subclass of string" do
-		expect(Entity < String).to be true
 	end
 
 	it "should initialize with string arg" do
