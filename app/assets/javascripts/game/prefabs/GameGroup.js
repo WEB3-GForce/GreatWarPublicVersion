@@ -417,7 +417,9 @@ GameGroup.prototype.setTurn = function(playerId, turnCount) {
 	    this.gameGroup.turn = playerId;
 	    this.gameGroup.turnCount = turnCount;
 	    this.ui.setPlayer(playerId, this.gameGroup.players[playerId], turnCount);
-	    this.onComplete();
+	    var tween = this.ui.setTurnInfo(this.gameGroup.players[playerId]);
+	    tween.onComplete.add(this.onComplete, this);
+	    tween.start();
 	}
     }
 }
