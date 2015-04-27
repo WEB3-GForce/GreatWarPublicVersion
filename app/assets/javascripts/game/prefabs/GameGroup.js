@@ -50,9 +50,12 @@ GameGroup.prototype.update = function(mouse) {
     }
 
     // deal with tile info stuff:
-    this.tile.name = this.gameBoard.TILE_MAP[index].name;
-    this.tile.defense = this.gameBoard.effects;
-    this.tile.movementCost = this.gameBoard.effects;
+    this.tile.name = "Flatland";
+    this.tile.defense = 0;
+    this.tile.movementCost = 1;
+    // this.tile.name = this.gameBoard.TILE_MAP[index].name;
+    // this.tile.defense = this.gameBoard.effects;
+    // this.tile.movementCost = this.gameBoard.effects;
 
     if (this.selected) {
 	    this.ui.setSecondaryTile(this.tile);
@@ -73,8 +76,10 @@ GameGroup.prototype.update = function(mouse) {
         var q = 81;
 
         if (key.keyCode === z) {
-	    this.game.dispatcher.rpc("end_turn", []); // backend will know whose turn to end
-	    this.resetEnergy(this.turn);
+            if (this.turn == this.game.constants.PLAYER_ID) {
+	            this.game.dispatcher.rpc("end_turn", []); // backend will know whose turn to end
+	            this.resetEnergy(this.turn);
+            }
         } else if (key.keyCode === q) {
             this.game.dispatcher.rpc("leave_game", []);
         }
@@ -208,36 +213,38 @@ GameGroup.prototype.buttonClicked = function(button) {
 }
 
 GameGroup.prototype.initGame = function(board, units, turn, players, me, effects) {
-    this.game.world.setBounds(0, 0, board.width * 32, board.height * 32);
+    var action = {
+	gameGroup: this
+    };
 
-    // for (var i = 0; i < board.width; i++) {
-    // 	for (var j = 0; j < board.height; j++) {
-    // 	    this.gameBoard.setTile(i, j, board.squares[i*board.width+j].terrain);
-    // 	    if (board.squares[i*board.width+j].fow)
-    // 		this.gameBoard.addFog(i, j);
-    // 	}
-    // }
+    action.start = function() {
+	this.gameGroup.game.world.setBounds(0, 0, board.width * 32, board.height * 32);
 
-    this.gameBoard.effects = effects;
+	for (var i = 0; i < board.width; i++) {
+		for (var j = 0; j < board.height; j++) {
+		    this.gameGroup.gameBoard.setTile(i, j, board.squares[j*board.width+i].index);
+		    // if (board.squares[i*board.width+j].fow)
+		    // 	this.gameGroup.gameBoard.addFog(i, j);
+		}
+	}
+
+	this.gameGroup.gameBoard.effects = effects;
     console.log(effects);
 
-    for (var i = 0; i < units.length; i++) {
-	this.unitGroup.addUnit(units[i].id,
-			       units[i].type,
-			       units[i].x,
-			       units[i].y,
-			       units[i].player,
-			       units[i].stats,
-			       players[units[i].player].faction);
-    }
+	for (var i = 0; i < units.length; i++) {
+	    this.gameGroup.unitGroup.addUnit(units[i].id,
+					     units[i].type,
+					     units[i].x,
+					     units[i].y,
+					     units[i].player,
+					     units[i].stats,
+					     players[units[i].player].faction);
+	}
 
-    this.turn = turn.playerid;
-    this.turnCount = turn.turnCount;
-    this.players = players; // id corresponds to obj with name + type (red/blue)
-    console.log(players);
-    this.ui.setPlayer(this.players[turn.playerid].name, this.turnCount);
-    this.game.constants.PLAYER_ID = me;
-
+	this.gameGroup.turn = turn.playerid;
+	this.gameGroup.turnCount = turn.turnCount;
+	this.gameGroup.players = players; // id corresponds to obj with name + type (red/blue)
+	this.gameGroup.game.constants.PLAYER_ID = me;
 
 	var playerIds = Object.keys(players);
 	for (var i = 0; i < playerIds.length; i++) {
