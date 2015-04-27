@@ -52,7 +52,8 @@ public
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.flatland,
 					   OccupiableComponent.new,
-					   SpriteComponent.new(id)])
+					   SpriteComponent.new(id),
+					   MalleableComponent.new])
 	end
 
 	# This function creates a new mountain square for boards. Mountains are

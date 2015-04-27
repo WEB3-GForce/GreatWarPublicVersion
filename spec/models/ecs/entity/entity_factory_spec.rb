@@ -67,6 +67,7 @@ describe EntityFactory do
 		expect(manager[entity][TerrainComponent][0]).to eq(TerrainComponent.flatland)
 		expect(manager[entity][OccupiableComponent].size).to eq(1)
 		expect(manager[entity][ImpassableComponent].size).to eq(0)
+		expect(manager[entity][MalleableComponent].size).to eq(1)
 	end
 
 	it "should create a new mountain square" do
@@ -74,6 +75,7 @@ describe EntityFactory do
 		expect(manager[entity][TerrainComponent][0]).to eq(TerrainComponent.mountain)
 		expect(manager[entity][ImpassableComponent].size).to eq(1)
 		expect(manager[entity][OccupiableComponent].size).to eq(0)
+		expect(manager[entity][MalleableComponent].size).to eq(0)
 	end
 
 	it "should create a new hill square" do
@@ -81,6 +83,7 @@ describe EntityFactory do
 		expect(manager[entity][TerrainComponent][0]).to eq(TerrainComponent.hill)
 		expect(manager[entity][OccupiableComponent].size).to eq(1)
 		expect(manager[entity][ImpassableComponent].size).to eq(0)
+		expect(manager[entity][MalleableComponent].size).to eq(0)
 		expect(manager[entity][BoostComponent].size).to eq(2)
 		expect(manager[entity][BoostComponent].include? BoostComponent.defense).to be true
 		expect(manager[entity][BoostComponent].include? BoostComponent.move_cost).to be true
@@ -91,6 +94,7 @@ describe EntityFactory do
 		expect(manager[entity][TerrainComponent][0]).to eq(TerrainComponent.trench)
 		expect(manager[entity][OccupiableComponent].size).to eq(1)
 		expect(manager[entity][ImpassableComponent].size).to eq(0)
+		expect(manager[entity][MalleableComponent].size).to eq(0)
 		expect(manager[entity][BoostComponent].size).to eq(1)
 		expect(manager[entity][BoostComponent].include? BoostComponent.defense).to be true
 	end
@@ -100,6 +104,7 @@ describe EntityFactory do
 		expect(manager[entity][TerrainComponent][0]).to eq(TerrainComponent.river)
 		expect(manager[entity][ImpassableComponent].size).to eq(0)
 		expect(manager[entity][OccupiableComponent].size).to eq(0)
+		expect(manager[entity][MalleableComponent].size).to eq(0)
 		expect(manager[entity][BoostComponent].size).to eq(1)
 		expect(manager[entity][BoostComponent].include? BoostComponent.move_cost).to be true
 	end
