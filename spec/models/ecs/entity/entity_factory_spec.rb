@@ -162,6 +162,7 @@ describe EntityFactory do
 		range_comp  = manager[entity][RangeAttackComponent][0]
 		owned_comp  = manager[entity][OwnedComponent][0]
 		energy_comp  = manager[entity][EnergyComponent][0]
+		trench_comp  = manager[entity][TrenchBuilderComponent][0]
 		
 		expect(unit_comp.type).to eq(:infantry)
 		expect(health_comp.cur_health).not_to be_nil
@@ -174,6 +175,7 @@ describe EntityFactory do
 		expect(range_comp.min_range).not_to be_nil
 		expect(range_comp.max_range).not_to be_nil
 		expect(owned_comp.owner).to eq(owner)
+		expect(trench_comp.energy_cost).to eq(4)
 	end
 
 	it "should create a new machine gun piece" do
