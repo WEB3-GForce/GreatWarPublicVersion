@@ -102,11 +102,11 @@ GameGroup.prototype.gameOver = function(playerId) {
 
 GameGroup.prototype.onClick = function(targetObject) {
     if (targetObject === null) {
-	this.tileClicked();
+	    this.tileClicked();
     } else if (targetObject.sprite instanceof Unit) {
-	this.unitClicked(targetObject.sprite);
+	    this.unitClicked(targetObject.sprite);
     } else if (targetObject.sprite instanceof Phaser.Button) {
-	this.buttonClicked(targetObject.sprite);
+	    this.buttonClicked(targetObject.sprite);
     }
 }
 
@@ -125,6 +125,7 @@ GameGroup.prototype.tileClicked = function() {
 			    y: this.tile.y
 		        }
 		    ]);
+        break;
         case 'trench':
             this.game.dispatcher.rpc("make_trench", [
 		        this.selected.id,
@@ -133,7 +134,6 @@ GameGroup.prototype.tileClicked = function() {
 			    y: this.tile.y
 		        }
 		    ]);
-        break;
 		break;
 	    case 'ranged':
 		break;
@@ -148,11 +148,16 @@ GameGroup.prototype.tileClicked = function() {
     }
 }
 
-GameGroup.prototype.makeTrench = function(squares) {
-    for (var i = 0, square; square = squares[i]; i++){
-       //  this.gameBoard.setTile(square.x, square.y, square.index);
+GameGroup.prototype.makeTrench = function(square) {
+    var action = {
+        gameBoard: this.gameBoard,
+    };
+    action.start = function() {
+        console.log(square);
         this.gameBoard.setTile(square.x, square.y, 750);
+        this.onComplete();
     }
+    return action;
 }
 
 GameGroup.prototype.unitClicked = function(unit) {
@@ -160,40 +165,42 @@ GameGroup.prototype.unitClicked = function(unit) {
 	return;
 
     if (this.action) {
-	this.interact(unit);
+        console.log("thinks we have an action");
+        console.log(this.action);
+	    this.interact(unit);
     } else {
-	this.select(unit);
+	    this.select(unit);
     }
 }
 
 GameGroup.prototype.interact = function(unit) {
     if (this.gameBoard.isHighlighted(this.tile.x, this.tile.y)) {
-	if (unit.isMine()) {
-	    // maybe later we have within-team interaction
-	    this.select(unit); // just select the clicked unit for now though
-	} else {
-	    // clicked enemy unit
-	    if ((this.action === 'ranged' || this.action === 'melee')) {
-		this.game.dispatcher.rpc("attack", [
-		    this.selected.id,
-		    {x: this.tile.x, y: this.tile.y},
-		    this.action
-		]);
-		this.selected = null;
+	    if (unit.isMine()) {
+	        // maybe later we have within-team interaction
+	        this.select(unit); // just select the clicked unit for now though
+	    } else {
+	        // clicked enemy unit
+	        if ((this.action === 'ranged' || this.action === 'melee')) {
+		    this.game.dispatcher.rpc("attack", [
+		        this.selected.id,
+		        {x: this.tile.x, y: this.tile.y},
+		        this.action
+		    ]);
+		    this.selected = null;
+	        }
 	    }
-	}
-	this.gameBoard.unhighlightAll();
-	this.action = null;
+	    this.gameBoard.unhighlightAll();
+	    this.action = null;
     }
 }
 
 GameGroup.prototype.select = function(unit) {
     if (unit.isMine() && !this.game.animatingAction) {
         this.selected = unit;
-	this.ui.setPrimaryUnit(this.selected);
-	this.gameBoard.unhighlightAll();
-	this.action = null;
-	this.game.dispatcher.rpc("get_unit_actions", [this.selected.id]);
+	    this.ui.setPrimaryUnit(this.selected);
+	    this.gameBoard.unhighlightAll();
+	    this.action = null;
+	    this.game.dispatcher.rpc("get_unit_actions", [this.selected.id]);
     }
 }
 
@@ -301,16 +308,16 @@ GameGroup.prototype.showUnitActions = function(unitActions) {
 
 GameGroup.prototype.highlightSquares = function(type, squares) {
     var action = {
-	squares: squares,
-	gameBoard: this.gameBoard,
-	type: type
+	    squares: squares,
+	    gameBoard: this.gameBoard,
+	    type: type
     };
     action.start = function() {
-	for (var i = 0, square; square = this.squares[i]; i++) {
-	    var tile = this.gameBoard.getTile(square.x, square.y, this.gameBoard.terrainLayer);
-	    this.gameBoard.highlight(tile.x, tile.y, type);
-	}
-	this.onComplete();
+	    for (var i = 0, square; square = this.squares[i]; i++) {
+	        var tile = this.gameBoard.getTile(square.x, square.y, this.gameBoard.terrainLayer);
+	        this.gameBoard.highlight(tile.x, tile.y, type);
+	    }
+	    this.onComplete();
     };
     return action;
 }
@@ -366,13 +373,13 @@ GameGroup.prototype.attack = function(unitId, square, type, unitType) {
     // check if need to add an animation to the receiving square
     var action = {
     	unit: this.unitGroup.find(unitId),
-	unitGroup: this.unitGroup
+	    unitGroup: this.unitGroup
     };
 
     action.start = function() {
-	this.tween = this.unit.attack(square, type);
-	this.tween.onComplete.add(this.onComplete, this);
-	this.tween.start();
+	    this.tween = this.unit.attack(square, type);
+	    this.tween.onComplete.add(this.onComplete, this);
+	    this.tween.start();
     }
     return action;
 }

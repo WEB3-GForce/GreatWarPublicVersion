@@ -21,6 +21,7 @@ class JsonFactory
 	# Returns
 	#   A hash that is ready to be jsoned
 	def self.square(entity_manager, entity)
+        p entity_manager[entity]
 		terrain_comp = entity_manager.get_components(entity, TerrainComponent).first
 		stats_hash = {}
 		stats   = entity_manager.get_components(entity, BoostComponent)
@@ -271,7 +272,7 @@ class JsonFactory
           effects = {}
           entity_manager.effects.each { |square|
           	result = self.square(entity_manager, square)
-	        effects[result["terrain"]] = result["stats"]  
+	        effects[result["terrain"]] = result["stats"]
           }
 
           return [{
@@ -407,8 +408,8 @@ class JsonFactory
         	actions = []
         	results.each { |trench_array|
         		trench = trench_array[1]
-        		square = self.square_path(entity_manager, square).merge(
-        					self.square_path(entity_manager, square))
+        		square = self.square(entity_manager, trench).merge(
+        					self.square_path(entity_manager, trench))
 	        	actions.push({"action" => "makeTrench",
         			      "arguments" => [square] })
         	}
@@ -554,17 +555,17 @@ class JsonFactory
           turn_change_result   = result[1]
           game_over_result     = result[2]
 
-          
+
           actions = []
           if !game_over_result.nil?
             winner = game_over_result[1]
-            actions.push({ "action" => "gameOver", 
+            actions.push({ "action" => "gameOver",
                            "arguments" => [winner, forfeit] })
             return actions
           end
           if !remove_player_result.nil?
             players_removed = remove_player_result[1]
-            players_removed.each { |player| 
+            players_removed.each { |player|
               actions.push({ "action" => "eliminatePlayer",
                              "arguments" => [player] })
             }

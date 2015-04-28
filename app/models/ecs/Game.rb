@@ -20,26 +20,26 @@ class Game
     if path.nil?
       rows = 11
       cols = 11
-      terrainIds = [-3, -3, -4, -4, -1, -1, -1, -1, -3, -3, -3, 
-                    -3, -3, -4, -4, -1, -1, -1, -1, -3, -2, -3, 
-                    -4, -4, -4, -4, -1, -1, -1, -1, -3, -3, -3, 
-                    -4, -4, -4, -4, -1, -1, -1, -1, -1, -1, -1, 
-                    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-                    -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, 
-                    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 
-                    -1, -1, -1, -1, -1, -1, -1, -4, -4, -4, -4, 
-                    -3, -3, -3, -1, -1, -1, -1, -4, -4, -4, -4, 
+      terrainIds = [-3, -3, -4, -4, -1, -1, -1, -1, -3, -3, -3,
+                    -3, -3, -4, -4, -1, -1, -1, -1, -3, -2, -3,
+                    -4, -4, -4, -4, -1, -1, -1, -1, -3, -3, -3,
+                    -4, -4, -4, -4, -1, -1, -1, -1, -1, -1, -1,
+                    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                    -5, -5, -5, -5, -5, -5, -5, -5, -5, -5, -5,
+                    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                    -1, -1, -1, -1, -1, -1, -1, -4, -4, -4, -4,
+                    -3, -3, -3, -1, -1, -1, -1, -4, -4, -4, -4,
                     -3, -2, -3, -1, -1, -1, -1, -4, -4, -3, -3,
                     -3, -3, -3, -1, -1, -1, -1, -4, -4, -3, -3 ]
-      pieceIds = [ -12, nil, nil, -10, -10, nil, nil, nil, nil, nil, nil, 
-                   nil, -13, -11, -10, -10, nil, nil, nil, nil, nil, nil, 
-                   nil, -11, -11, -10, -10, nil, nil, nil, nil, nil, nil, 
-                   -10, -10, -10, -10, nil, nil, nil, nil, nil, nil, nil, 
-                   -10, -10, -10, nil, nil, nil, nil, nil, nil, nil, nil, 
-                   nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 
-                   nil, nil, nil, nil, nil, nil, nil, nil, -20, -20, -20,  
-                   nil, nil, nil, nil, nil, nil, nil, -20, -20, -20, -20,  
-                   nil, nil, nil, nil, nil, nil, -20, -20, -21, -21, nil, 
+      pieceIds = [ -12, nil, nil, -10, -10, nil, nil, nil, nil, nil, nil,
+                   nil, -13, -11, -10, -10, nil, nil, nil, nil, nil, nil,
+                   nil, -11, -11, -10, -10, nil, nil, nil, nil, nil, nil,
+                   -10, -10, -10, -10, nil, nil, nil, nil, nil, nil, nil,
+                   -10, -10, -10, nil, nil, nil, nil, nil, nil, nil, nil,
+                   nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
+                   nil, nil, nil, nil, nil, nil, nil, nil, -20, -20, -20,
+                   nil, nil, nil, nil, nil, nil, nil, -20, -20, -20, -20,
+                   nil, nil, nil, nil, nil, nil, -20, -20, -21, -21, nil,
                    nil, nil, nil, nil, nil, nil, -20, -20, -21, -23, nil,
                    nil, nil, nil, nil, nil, nil, -20, -20, nil, nil, -22 ]
     else
@@ -71,7 +71,7 @@ class Game
     end
     return channels
   end
-  
+
   # Gets the (row, col) from a (x,y) location hash from the frontend.
   def self.extract_coord(location)
     return location['y'], location['x']
@@ -89,7 +89,7 @@ class Game
     entity_owner = em[entity][OwnedComponent][0].owner;
     return entity_requester == entity_owner
   end
-  
+
   # Checks whether it is the turn of the player with req_id.
   def self.verify_turn(req_id, em)
     return em[TurnSystem.current_turn(em)][UserIdComponent][0].id == req_id
@@ -179,7 +179,7 @@ class Game
     row, col = self.extract_coord(location)
     square = em.board[row][col][0]
     result = TrenchSystem.make_trench(em, entity, square)
-    return JsonFactory.make_trench(em, result)
+    return JsonFactory.make_trench(em, entity, result)
   end
 
   # End the turn for the current player.
@@ -218,13 +218,13 @@ class Game
     p "Saving: ", dumped_gama.encoding
     $redis.set(id, Marshal::dump(manager))
   end
-  
+
   # Gets the game (serialized entity manager) from redis memory,
   # or failing that, from database if available.
   def self.get(id)
     manager = $redis.get(id)
-    p "Loading: ", manager.encoding
     if manager
+      p "Loading: ", manager.encoding
       Marshal::load(manager)
     else
       gama = Gama.find(id)

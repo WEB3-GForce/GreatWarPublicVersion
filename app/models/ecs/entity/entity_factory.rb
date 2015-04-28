@@ -484,7 +484,7 @@ public
 		 	terrainCreator[id] = mountain
 		}
 		[-3, 685, 686, 653, 685, 654, 655].each { |id| terrainCreator[id] = hill }
-		[-4].each { |id| terrainCreator[id] = trench }
+		[-4, 750].each { |id| terrainCreator[id] = trench }
 		[-5, 631, 636, 632, 635, 636, 603, 604, 599, 539, 631, 629, 635, 573,
 		 597, 630, 571, 600].each { |id|
 			terrainCreator[id] = river

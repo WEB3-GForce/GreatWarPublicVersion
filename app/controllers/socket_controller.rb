@@ -73,7 +73,7 @@ class SocketController < WebsocketRails::BaseController
     response = [response] unless response.kind_of?(Array)
 
     if response
-      public_calls = ['move_unit', 'attack', 'end_turn', 'leave_game']
+      public_calls = ['move_unit', 'attack', 'end_turn', 'leave_game', 'make_trench']
       if public_calls.include? method_name
         Game.get_user_channels(manager).each do |channel|
           WebsocketRails[channel].trigger :rpc, {

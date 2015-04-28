@@ -3,7 +3,7 @@
 var HIGHLIGHT_TYPES = {
     move: 1138,
     attack: 1139,
-    special: 1140
+    trench: 1140
 };
 
 var INDEX_TO_NAME = {};
