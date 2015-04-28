@@ -75,6 +75,6 @@ group :production do
   gem 'rails_12factor', '0.0.2'
 end
 
-gem 'websocket-rails'
-gem 'phaser-rails'
-gem 'redis'
+#gem 'websocket-rails'
+#gem 'phaser-rails'
+#gem 'redis'
