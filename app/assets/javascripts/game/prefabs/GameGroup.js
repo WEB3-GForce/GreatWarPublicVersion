@@ -128,13 +128,13 @@ GameGroup.prototype.tileClicked = function() {
 		    ]);
         break;
         case 'trench':
-            this.game.dispatcher.rpc("make_trench", [
-		        this.selected.id,
-		        {
-			    x: this.tile.x,
-			    y: this.tile.y
-		        }
-		    ]);
+		this.game.dispatcher.rpc("make_trench", [
+		    this.selected.id,
+		    {
+			x: this.tile.x,
+			y: this.tile.y
+		    }
+		]);
 		break;
 	    case 'ranged':
 		break;
@@ -149,13 +149,16 @@ GameGroup.prototype.tileClicked = function() {
     }
 }
 
-GameGroup.prototype.makeTrench = function(square) {
+GameGroup.prototype.makeTrench = function(unitId, square) {
     var action = {
+	unit: this.unitGroup.find(unitId),
         gameBoard: this.gameBoard,
     };
     action.start = function() {
-        this.gameBoard.setTile(square.x, square.y, TRENCH_INDEX);
-        this.onComplete();
+	this.unit.digTrench(function() {
+            this.gameBoard.setTile(square.x, square.y, TRENCH_INDEX);
+            this.onComplete();
+	}, this);
     }
     return action;
 }
@@ -227,8 +230,8 @@ GameGroup.prototype.buttonClicked = function(button) {
 	    this.game.dispatcher.rpc("get_unit_melee_attacks", [this.selected.id]);
 	    break;
 	case 'trench':
-        this.game.dispatcher.rpc("get_unit_trench_locations", [this.selected.id]);
-        break;
+            this.game.dispatcher.rpc("get_unit_trench_locations", [this.selected.id]);
+            break;
 	}
     }
 }
