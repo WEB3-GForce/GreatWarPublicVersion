@@ -19,7 +19,7 @@ describe BoostComponent do
 
 	it "should have a defense boost" do
 		expect(BoostComponent.defense.type).to eq(:defense)
-		expect(BoostComponent.defense.amount).to eq(2)
+		expect(BoostComponent.defense.amount).to eq(1)
 	end
 
 	it "should have a move_cost boost" do

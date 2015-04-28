@@ -74,7 +74,7 @@ describe JsonFactory do
             expect(JsonFactory.square(manager, hill)).to eq(
                 {"id" => hill,
                  "index" => 0,
-                 "stats" => {"move_cost" => 2.0, "defense" => 2.0},
+                 "stats" => {"move_cost" => 2.0, "defense" => 1.0},
                  "terrain" => "hill"})
         end
     end
