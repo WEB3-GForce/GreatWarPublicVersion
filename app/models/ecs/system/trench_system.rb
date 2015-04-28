@@ -86,7 +86,7 @@ public
 	
 		entity_manager.delete square
 		
-		trench = EntityFactory.trench_square(entity_manager)
+		trench = EntityFactory.trench_square(entity_manager, 750)
 		entity_manager.add_component(trench,
 			PositionComponent.new(pos_comp.row, pos_comp.col))
 		entity_manager.board[pos_comp.row][pos_comp.col][0] = trench
