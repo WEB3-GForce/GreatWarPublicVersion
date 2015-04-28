@@ -384,7 +384,7 @@ describe MotionSystem do
 			result = MotionSystem.determine_path(manager, human1,
 			                                     1, 1, 0, 2, 10, [])
 			answer = [flatland11, flatland01, flatland02]
-			expect(result).to eq answer
+			expect(result.map!{|squares| squares[0]}).to eq answer
 		end
 
 		it "should be able to reach another reachable square" do
@@ -392,7 +392,7 @@ describe MotionSystem do
 			result = MotionSystem.determine_path(manager, human1,
 			                                     1, 1, 2, 0, 10, [])
 			answer = [flatland11, flatland10, flatland20]
-			expect(result).to eq answer
+			expect(result.map!{|squares| squares[0]}).to eq answer
 		end
 
 		it "should be able to reach a square occupied by an ally" do
@@ -400,7 +400,7 @@ describe MotionSystem do
 			result = MotionSystem.determine_path(manager, human1,
 			                                     1, 1, 0, 1, 10, [])
 			answer = [flatland11, flatland01]
-			expect(result).to eq answer
+			expect(result.map!{|squares| squares[0]}).to eq answer
 		end
 
 		it "should not be able to reach squares beyond its range" do
@@ -432,19 +432,19 @@ describe MotionSystem do
 			result = MotionSystem.determine_path(manager, human1,
 			                                     0, 0, 0, 1, 1, [])
 			answer = [flatland00, flatland01]
-			expect(result.sort).to eq answer.sort
+			expect(result.map!{|squares| squares[0]}.sort).to eq answer.sort
 			
 			# However, make sure it can't over terrain
 			manager.board[0][1][0] = hill10
 			result = MotionSystem.determine_path(manager, human1,
 			                                     0, 0, 0, 1, 1, [])
-			expect(result.sort).to eq []	
+			expect(result.map!{|squares| squares[0]}.sort).to eq []	
 			
 			# However, make sure it can with enough movement
 			result = MotionSystem.determine_path(manager, human1,
 			                                     0, 0, 0, 1, 2, [])
 			answer = [flatland00, hill10]
-			expect(result.sort).to eq answer.sort	
+			expect(result.map!{|squares| squares[0]}.sort).to eq answer.sort	
 		end
 	end
 

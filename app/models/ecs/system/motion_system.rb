@@ -189,10 +189,10 @@ private
 		
 		# If this square has already been traversed in the path, continue.
 		# Otherwise, augment it to the path
-		if path.include? square 
+		if path.any? {|result| result[0] == square && result[1] >= movement}
 			return results
 		else 
-			path.push square
+			path.push [square, movement]
 		end
 
 		if !self.pass_over_square?(entity_manager, square, occupants, mover_owner)
@@ -253,10 +253,10 @@ private
 		
 		# If this square has already been traversed in the path, abort.
 		# Otherwise, augment it to the path
-		if path.include? square 
+		if path.any? {|result| result[0] == square && result[1] >= movement}
 			return []
 		else 
-			path.push square
+			path.push [square, movement]
 		end
 
 		if !self.pass_over_square?(entity_manager, square, occupants, mover_owner)
@@ -280,8 +280,8 @@ private
 						       row, col, end_row, end_col,
 						       new_movement, path.dup)	 
 
-			if (answer.empty? || answer.size > new_path.size) &&
-			   !new_path.empty?		     
+			if (answer.empty? && !new_path.empty?) ||
+			   (!answer.empty? && !new_path.empty? && answer[-1][1] < new_path[-1][1])     
 				answer = new_path
 			end
 		}
@@ -359,7 +359,7 @@ public
 		
 		path = self.determine_path(entity_manager, own_comp.owner, pos_comp.row,
 			pos_comp.col, end_pos.row, end_pos.col, motion_comp.max_movement, [])
-			
+		path.map!{|squares| squares[0]}
 		# The path includes the starting square. This won't count in the cost.
 		cost = (path.size-1) * motion_comp.energy_cost
 			
