@@ -174,9 +174,11 @@ class Game
     return JsonFactory.ranged_attack(em, result)
   end
 
-  def self.make_trench(req_id, em, entity, row, col)
-    target = em.board[row][col][1].first
-    result = TrenchSystem.make_trench(em, entity, target)
+  # Moves an entity to a new location (if legal).
+  def self.make_trench(req_id, em, entity, location)
+    row, col = self.extract_coord(location)
+    square = em.board[row][col][0]
+    result = TrenchSystem.make_trench(em, entity, square)
     return JsonFactory.make_trench(em, result)
   end
 
