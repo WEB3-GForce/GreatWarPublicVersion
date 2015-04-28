@@ -8,6 +8,8 @@ describe JsonFactory do
     let(:human1)            {EntityFactory.human_player(manager, "David")}
     let(:ai)                {EntityFactory.ai_player(manager, "R.O.B")}
     let(:infantry)          {EntityFactory.infantry(manager, human1)}
+    let(:foe)               {EntityFactory.infantry(manager, ai)}
+    let(:foe2)               {EntityFactory.infantry(manager, ai)}
     let(:machine_gun)       {EntityFactory.machine_gun(manager, human1)}
     let(:artillery)         {EntityFactory.artillery(manager, human1)}  
     let(:command_bunker)    {EntityFactory.command_bunker(manager, human1)}
@@ -352,6 +354,96 @@ describe JsonFactory do
         end
     end
 
+    context "when calling melee_attack" do
+        it "should return a hash for a melee attack" do
+            set_intermediate
+            attack_result = []
+            attack_result.push ["melee", infantry, "infantry", foe, 1, 1]
+            attack_result.push ["melee", foe, "infantry", infantry, 1, 2]
+            
+            actions = []
+            actions.concat JsonFactory.attack_animate(manager, "melee", infantry, "infantry", 1, 1)
+            actions.concat JsonFactory.update_health(manager, foe)
+            actions.concat JsonFactory.attack_animate(manager, "melee", foe, "infantry", 1, 2)
+            actions.concat JsonFactory.update_health(manager, infantry)
+            actions.concat JsonFactory.update_energy(manager, infantry)
+
+            expect(JsonFactory.melee_attack(manager, attack_result)).to eq(
+            	actions)
+        end
+
+        it "should kill the attacked unit" do
+            set_intermediate
+            attack_result = []
+            attack_result.push ["melee", infantry, "infantry", foe, 1, 1]
+            attack_result.push ["kill", foe]
+            
+            actions = []
+            actions.concat JsonFactory.attack_animate(manager, "melee", infantry, "infantry", 1, 1)
+            actions.concat JsonFactory.update_health(manager, foe)
+            actions.concat JsonFactory.kill_units(manager, [foe])
+            actions.concat JsonFactory.update_energy(manager, infantry)
+
+            expect(JsonFactory.melee_attack(manager, attack_result)).to eq(
+            	actions)
+        end
+
+        it "should kill the attacker unit" do
+            set_intermediate
+            attack_result = []
+            attack_result.push ["melee", infantry, "infantry", foe, 1, 1]
+            attack_result.push ["melee", foe, "infantry", infantry, 1, 2]
+            attack_result.push ["kill", infantry]
+            
+            manager.delete infantry
+            actions = []
+            actions.concat JsonFactory.attack_animate(manager, "melee", infantry, "infantry", 1, 1)
+            actions.concat JsonFactory.update_health(manager, foe)
+            actions.concat JsonFactory.attack_animate(manager, "melee", foe, "infantry", 1, 2)
+            actions.concat JsonFactory.update_health(manager, infantry)
+            actions.concat JsonFactory.kill_units(manager, [infantry])
+
+            expect(JsonFactory.melee_attack(manager, attack_result)).to eq(
+            	actions)
+        end
+    end
+
+    context "when calling ranged_attack" do
+        it "should return a hash for a ranged attack" do
+            set_intermediate
+            attack_result = []
+            attack_result.push ["ranged", infantry, "infantry", foe, 1, 1]
+            attack_result.push ["ranged", infantry, "infantry", foe2, 1, 1]            
+            actions = []
+            actions.concat JsonFactory.attack_animate(manager, "ranged", infantry, "infantry", 1, 1)
+            actions.concat JsonFactory.update_health(manager, foe)
+            actions.concat JsonFactory.update_health(manager, foe2)
+            actions.concat JsonFactory.update_energy(manager, infantry)
+
+            expect(JsonFactory.ranged_attack(manager, attack_result)).to eq(
+            	actions)
+        end
+
+        it "should kill the attacked units" do
+            set_intermediate
+            attack_result = []
+            attack_result.push ["ranged", infantry, "infantry", foe, 1, 1]
+            attack_result.push ["ranged", infantry, "infantry", foe2, 1, 1] 
+            attack_result.push ["kill", foe] 
+            attack_result.push ["kill", foe2]      
+                
+            actions = []
+            actions.concat JsonFactory.attack_animate(manager, "ranged", infantry, "infantry", 1, 1)
+            actions.concat JsonFactory.update_health(manager, foe)
+            actions.concat JsonFactory.update_health(manager, foe2)
+            actions.concat JsonFactory.kill_units(manager, [foe])
+            actions.concat JsonFactory.kill_units(manager, [foe2])
+            actions.concat JsonFactory.update_energy(manager, infantry)
+
+            expect(JsonFactory.ranged_attack(manager, attack_result)).to eq(
+            	actions)
+        end            
+    end
 
     context "when calling moveable locations" do
         it "should return a hash of a json for a moveable locations request" do

@@ -339,37 +339,50 @@ class JsonFactory
        		             attacker_type]}]
 	end
 
-	# This returns the results of a move command to the frontend. It specifies
-	# the entity that moved along with the path it moved upon.
+	# This returns the results of a melee attack command to the frontend. It
+	# gives actions for performing attack animations, updating health, 
+	# updating energy, and killing off dead units.
 	#
 	# Argumetns
 	#   entity_manager = the manager that contains the entities
-	#   moving_entity  = the entity that moved.
-	#   path           = an array of square entities denoting the path of motion.
+	#   results        = the results of the MeleeAttackSystem
 	#
 	# Returns
 	#   A hash that is ready to be jsoned
 	def self.melee_attack(entity_manager, result)
         	actions = []
-        	killed_units = []
         	update_energy = []
+        	first_pass = true
         	result.each { |item|
-        		if item[0] == "melee" || item[0] == "ranged"
+        		if item[0] == "melee"
         			actions.concat self.attack_animate(entity_manager,
         				item[0], item[1], item[2], item[4], item[5])
         			actions.concat self.update_health(entity_manager, item[3])
+        			# Only update energy for the person initiating the attack
+        			# if that person is alive.
         			if (entity_manager.has_key? item[1] and !entity_manager[item[1]].empty? and
-                                    update_energy.empty?)
+                                    update_energy.empty? and first_pass)
         				update_energy.concat self.update_energy(entity_manager, item[1])
         			end
+        			first_pass = false
         		elsif item[0] == "kill"
-        			killed_units.push item[1]
+        			actions.concat self.kill_units(entity_manager, [item[1]])
         		end
         	}
-        	actions.concat self.kill_units(entity_manager, killed_units) if !killed_units.empty?
        		return actions.concat update_energy
 	end
 
+
+	# This returns the results of a ranged attack command to the frontend. It
+	# gives actions for performing attack animations, updating health, 
+	# updating energy, and killing off dead units.
+	#
+	# Argumetns
+	#   entity_manager = the manager that contains the entities
+	#   results        = the results of the RangeAttackSystem
+	#
+	# Returns
+	#   A hash that is ready to be jsoned
 	def self.ranged_attack(entity_manager, result)
         	actions = []
         	killed_units = []
