@@ -82,6 +82,11 @@ describe Game do
         end
     end
 
+    context "calling get_unit_trench_locations" do
+        it "should return an RPC for highlighting squares the entity can trench" do 
+        end
+    end
+
     context "calling move_unit" do
         it "should move the entity" do 
         end

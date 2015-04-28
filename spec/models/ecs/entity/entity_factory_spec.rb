@@ -180,7 +180,7 @@ describe EntityFactory do
 		expect(range_comp.min_range).not_to be_nil
 		expect(range_comp.max_range).not_to be_nil
 		expect(owned_comp.owner).to eq(owner)
-		expect(trench_comp.energy_cost).to eq(4)
+		expect(trench_comp.energy_cost).not_to be_nil
 	end
 
 	it "should create a new machine gun piece" do

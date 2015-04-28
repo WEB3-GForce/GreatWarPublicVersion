@@ -406,13 +406,11 @@ class JsonFactory
 	def self.make_trench(entity_manager, entity, results)
         	actions = []
         	results.each { |trench_array|
-        		squares = []
-        		trench_array[1].each { |square|
-        			squares.push self.square_path(entity_manager, square).merge(
+        		trench = trench_array[1]
+        		square = self.square_path(entity_manager, square).merge(
         					self.square_path(entity_manager, square))
-        		}
 	        	actions.push({"action" => "makeTrench",
-        			      "arguments" => [squares] })
+        			      "arguments" => [square] })
         	}
         	actions.concat self.update_energy(entity_manager, entity)
        		return actions
