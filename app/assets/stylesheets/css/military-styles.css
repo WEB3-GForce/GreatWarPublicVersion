@@ -261,7 +261,13 @@ a.pl:hover {
 
 .center {
 	margin: auto !important;
+	padding: 10px;
 }
+
+a.btn-default:visited {
+	color: #333;
+}
+
 
 
 /* ==================== CNT BOX ==================== */
@@ -706,6 +712,7 @@ a.YTbutton:active {
      float: none;
      margin-left: auto;
      margin-right: auto;
+
 }
 
 
@@ -720,4 +727,8 @@ a.YTbutton:active {
 
 .list-group {
 	background-color: transparent !important;
+}
+
+.main-table {
+	padding: 10px;
 }
