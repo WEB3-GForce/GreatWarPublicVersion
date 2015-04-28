@@ -3,11 +3,13 @@
 var HIGHLIGHT_TYPES = {
     move: 1138,
     attack: 1139,
-    special: 1140
+    trench: 1140
 };
 
+// none of these hashes should be accessed directly from outside of
+// GameBoard. Use getTerrainName(index) and getTerrainStats(index) instead
+var NAME_TO_INDEX = {};
 var INDEX_TO_NAME = {};
-
 var NAME_TO_FUNCTIONAL_TYPE = {
     Flatland: "flatland",
     Mountain: "mountain",
@@ -18,6 +20,9 @@ var NAME_TO_FUNCTIONAL_TYPE = {
     Waterfall: "mountain",
     Bridge: "flatland",
     Shore: "mountain",
+    Forest: "hill",
+    Ruins: "trenches",
+    Road: "flatland"
 };
 
 var FUNCTIONAL_TYPE_TO_STATS = {
@@ -58,58 +63,31 @@ GameBoard.prototype = Object.create(Phaser.Tilemap.prototype);
 GameBoard.prototype.constructor = GameBoard;
 
 GameBoard.prototype.populateTerrainHash = function() {
-    var flatlandIndices = [67, 68, 99];
-    var mountainIndices =
-		[-2, 567, 750, 751, 683, 546, 385, 353, 387, 619, 481, 583, 461, 578,
-		 453, 385, 560, 491, 551, 618, 554, 681, 745, 712, 627, 680, 464, 588,
-		 595, 782, 522, 427, 582, 614, 780, 747, 522, 427, 466, 433, 593, 213,
-		 53, 57, 221, 55, 125, 21, 123, 91, 21, 53, 25, 40, 509, 380, 381, 382,
-		 507, 383, 508, 470, 380, 509, 472, 508, 474, 509];
-    var hillIndices = [653, 654, 655, 685, 686];
-    var trenchIndices = [];
-    var riverIndices = [631, 636, 632, 635, 603, 604, 599, 539, 629, 573, 597, 630,
-        571, 600];
-    var oceanIndices = [213, 125]
-    var waterfallIndices = [567];
-    var shoreIndices = [123, 91, 21, 25, 480, 380, 381, 382, 383, 507, 508, 509, 470,
-        472, 474, 53, 55, 57, 221];
-    var bridgeIndices = [35];
 
-    for (var i in flatlandIndices) {
-        var index = flatlandIndices[i];
-        INDEX_TO_NAME[index] = "Flatland";
-    }
-    for (var i in mountainIndices) {
-        var index = mountainIndices[i];
-        INDEX_TO_NAME[index] = "Mountain";
-    }
-    for (var i in hillIndices) {
-        var index = hillIndices[i];
-        INDEX_TO_NAME[index] = "Hill";
-    }
-    for (var i in trenchIndices) {
-        var index = trenchIndices[i];
-        INDEX_TO_NAME[index] = "Trench";
-    }
-    for (var i in riverIndices) {
-        var index = riverIndices[i];
-        INDEX_TO_NAME[index] = "River";
-    }
-    for (var i in oceanIndices) {
-        var index = oceanIndices[i];
-        INDEX_TO_NAME[index] = "Ocean";
-    }
-    for (var i in waterfallIndices) {
-        var index = waterfallIndices[i];
-        INDEX_TO_NAME[index] = "Waterfall";
-    }
-    for (var i in shoreIndices) {
-        var index = shoreIndices[i];
-        INDEX_TO_NAME[index] = "Shore";
-    }
-    for (var i in bridgeIndices) {
-        var index = bridgeIndices[i];
-        INDEX_TO_NAME[index] = "Bridge";
+
+    NAME_TO_INDEX["Flatland"] = [67, 68, 99];
+    NAME_TO_INDEX["Mountain"]  =
+		[567, 750, 751, 683, 546, 385, 353, 387, 619, 481, 583, 461, 578,
+		 453, 385, 560, 491, 551, 618, 554, 681, 745, 712, 627, 680, 464, 588,
+		 595, 782, 522, 427, 582, 614, 780, 747, 522, 427, 466, 433, 593,
+         57, 25, 40, 509, 507, 508, 509];
+    NAME_TO_INDEX["Hill"] = [653, 654, 655, 685, 686];
+    NAME_TO_INDEX["Trench"] = [750];
+    NAME_TO_INDEX["River"] = [631, 636, 632, 635, 603, 604, 599, 539, 629, 573, 597, 630,
+        571, 600];
+    NAME_TO_INDEX["Ocean"] = [213, 125]
+    NAME_TO_INDEX["Waterfall"] = [567];
+    NAME_TO_INDEX["Shore"] = [123, 91, 21, 25, 480, 380, 381, 382, 383, 507, 508, 509, 470,
+        472, 474, 53, 55, 57, 221];
+    NAME_TO_INDEX["Bridge"] = [35];
+    NAME_TO_INDEX["Forest"] = [];
+    NAME_TO_INDEX["Ruins"] = [];
+    NAME_TO_INDEX["Road"] = [];
+
+    for (var j = 0; j < Object.keys(NAME_TO_INDEX).length; j++) {
+        for (var i = 1, index; index = NAME_TO_INDEX[Object.keys(NAME_TO_INDEX)[j]][i]; i++) {
+            INDEX_TO_NAME[index] = Object.keys(NAME_TO_INDEX)[i];
+        }
     }
 }
 GameBoard.prototype.getTerrainName = function(index) {
