@@ -66,7 +66,7 @@ GameBoard.prototype.populateTerrainHash = function() {
 		 53, 57, 221, 55, 125, 21, 123, 91, 21, 53, 25, 40, 509, 380, 381, 382,
 		 507, 383, 508, 470, 380, 509, 472, 508, 474, 509];
     var hillIndices = [653, 654, 655, 685, 686];
-    var trenchIndices = [];
+    var trenchIndices = [750];
     var riverIndices = [631, 636, 632, 635, 603, 604, 599, 539, 629, 573, 597, 630,
         571, 600];
     var oceanIndices = [213, 125]
