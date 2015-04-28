@@ -43,8 +43,8 @@ class DamageSystem < System
 		boosts  = entity_manager.get_components(terrain, BoostComponent)
 		
 		boosts.each {|boost|
-			if boost == BoostComponent.defense
-				damage = (damage / boost.amount).round
+			if boost.type == BoostComponent.defense
+				damage = (damage - boost.amount).round
 			end
 		}
 				

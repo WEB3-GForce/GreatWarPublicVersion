@@ -59,8 +59,8 @@ describe DamageSystem do
 			result = DamageSystem.update(manager, infantry, 5)
 			new_health = manager.get_components(infantry, HealthComponent).first.cur_health
 
-			expect(result).to eq [[infantry, 1, 1, 3]]
-			expect(new_health).to eq (health - 3)
+			expect(result).to eq [[infantry, 1, 1, 4]]
+			expect(new_health).to eq (health - 4)
 		end
 
 		it "should return the proper array for dead entities" do

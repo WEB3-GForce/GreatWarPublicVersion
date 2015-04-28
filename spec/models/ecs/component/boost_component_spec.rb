@@ -17,14 +17,12 @@ describe BoostComponent do
 		end
 	end
 
-	it "should have a defense boost" do
-		expect(BoostComponent.defense.type).to eq(:defense)
-		expect(BoostComponent.defense.amount).to eq(2)
+	it "should have a defense type" do
+		expect(BoostComponent.defense).to eq(:defense)
 	end
 
-	it "should have a move_cost boost" do
-		expect(BoostComponent.move_cost.type).to eq(:move_cost)
-		expect(BoostComponent.move_cost.amount).to eq(2)
+	it "should have a move_cost type" do
+		expect(BoostComponent.move_cost).to eq(:move_cost)
 	end
 
 	it "should have implemented to_s" do

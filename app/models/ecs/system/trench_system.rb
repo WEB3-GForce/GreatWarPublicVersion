@@ -80,9 +80,6 @@ public
 		   !self.trenchable_locations(entity_manager, entity).include?(square)
 		   return []
 		end
-		puts "SQUARE"
-		puts square
-		puts entity_manager[square]
 		trench_comp = entity_manager.get_components(entity, TrenchBuilderComponent).first
 		pos_comp = entity_manager.get_components(square, PositionComponent).first
 	
@@ -92,11 +89,8 @@ public
 		entity_manager.add_component(trench,
 			PositionComponent.new(pos_comp.row, pos_comp.col))
 		entity_manager.board[pos_comp.row][pos_comp.col][0] = trench
-		puts "TRNECH"
-		puts trench
-		puts entity_manager[trench]
 		EnergySystem.consume_energy(entity_manager, entity, trench_comp.energy_cost)
-		return [["trench", trench]]
+		return [["trench", entity, trench]]
 	end
 end
 
