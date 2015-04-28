@@ -200,7 +200,7 @@ public
 					  [PieceComponent.infantry,
 					   HealthComponent.new(36),
 					   MotionComponent.new(-1, 1),
-					   MeleeAttackComponent.new(9),
+					   MeleeAttackComponent.new(9, 1),
 					   EnergyComponent.new(1),
 					   OwnedComponent.new(owner)])
 	end
@@ -218,11 +218,11 @@ public
 		return self.create_entity(entity_manager,
 					  [PieceComponent.infantry,
 					   HealthComponent.new(12),
-					   EnergyComponent.new(6),
+					   EnergyComponent.new(12),
 					   MotionComponent.new(-1, 2),
-					   MeleeAttackComponent.new(6, 4),
-					   RangeAttackComponent.new(6, 1, 2, [1.0], 4),
-					   TrenchBuilderComponent.new(4),
+					   MeleeAttackComponent.new(6, 6),
+					   RangeAttackComponent.new(3, 1, 3, [1.0], 6),
+					   TrenchBuilderComponent.new(8),
 					   OwnedComponent.new(owner)])
 	end
 
@@ -239,10 +239,10 @@ public
 		return self.create_entity(entity_manager,
 					  [PieceComponent.machine_gun,
 					   HealthComponent.new(12),
-					   EnergyComponent.new(6),
-					   MotionComponent.new(-1, 3),
-					   MeleeAttackComponent.new(6, 6),
-					   RangeAttackComponent.new(4, 1, 3, [1.0], 2),
+					   EnergyComponent.new(12),
+					   MotionComponent.new(-1, 4),
+					   MeleeAttackComponent.new(3, 6),
+					   RangeAttackComponent.new(3, 2, 5, [1.0], 3),
 					   OwnedComponent.new(owner)])
 	end
 
@@ -259,9 +259,9 @@ public
 		return self.create_entity(entity_manager,
 					  [PieceComponent.artillery,
 					   HealthComponent.new(12),
-					   EnergyComponent.new(6),
+					   EnergyComponent.new(12),
 					   MotionComponent.new(-1, 6),
-					   RangeAttackComponent.new(12, 3, 10, [1.0, 0.5, 0.25], 6),
+					   RangeAttackComponent.new(8, 3, 8, [1.0, 0.5, 0.25], 12),
 					   OwnedComponent.new(owner)])
 	end
 
