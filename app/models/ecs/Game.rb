@@ -206,17 +206,17 @@ class Game
   # Stores the game (serialized entity manager) into database.
   def self.store(id, manager)
     gama = Gama.find(id)
-    dumped_gama = Marshal::dump(manager)
+    dumped_gama = Marshal::dump(manager).force_encode("utf-8")
     p "Storing: ", dumped_gama.encoding
-    gama.manager = Marshal::dump(manager)
+    gama.manager = Marshal::dump(manager).force_encode("utf-8")
     gama.save
   end
 
   # Stores the game (serialized entity manager) into redis memory.
   def self.save(id, manager)
-    dumped_gama = Marshal::dump(manager)
+    dumped_gama = Marshal::dump(manager).force_encode("utf-8")
     p "Saving: ", dumped_gama.encoding
-    $redis.set(id, Marshal::dump(manager))
+    $redis.set(id, Marshal::dump(manager).force_encode("utf-8"))
   end
   
   # Gets the game (serialized entity manager) from redis memory,
