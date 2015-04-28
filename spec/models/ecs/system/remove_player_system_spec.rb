@@ -113,7 +113,7 @@ describe RemovePlayerSystem do
 		turn_comp = manager[turn][TurnComponent].first
 		expect(turn_comp.players).to eq([player2])
 		
-		expect(manager.has_key? human1).to be false
+		expect(manager.has_key? human1).to be true
 		expect(manager.has_key? player2).to be true
 
    		expect(manager.has_key? infantry2).to be true
@@ -136,6 +136,8 @@ describe RemovePlayerSystem do
    	it "should remove the specified player when no game over" do
 	   	expect(manager.has_key? turn).to be true
    		player3 = EntityFactory.human_player(manager, "Tester")
+	   	turn_comp = manager[turn][TurnComponent].first
+	   	turn_comp.players.push player3
 		result = RemovePlayerSystem.remove_player(manager, human1)		
 		expect(result[2]).to eq(nil)
    	end
@@ -178,7 +180,7 @@ describe RemovePlayerSystem do
 		expect(turn_comp.players).to eq([human1])
 		
 		expect(manager.has_key? human1).to be true
-		expect(manager.has_key? player2).to be false
+		expect(manager.has_key? player2).to be true
 
    		expect(manager.has_key? infantry2).to be false
    		expect(manager.has_key? infantry3).to be false
