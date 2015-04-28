@@ -31,13 +31,10 @@ class JsonFactory
 		}
 		terrain_comp = entity_manager[entity][TerrainComponent].first
 		sprite_comp = entity_manager[entity][SpriteComponent].first
-		pos_comp = entity_manager.get_components(entity, PositionComponent).first
 		return {"id"      => entity,
 		        "terrain" => terrain_comp.type.to_s,
 		        "stats"   => stats_hash,
-		        "index"   => sprite_comp.id,
-		        "y"       => pos_comp.row,
-		        "x"       => pos_comp.col}
+		        "index"   => sprite_comp.id}
 	end
 
 
@@ -411,7 +408,8 @@ class JsonFactory
         	results.each { |trench_array|
         		squares = []
         		trench_array[1].each { |square|
-        			squares.push self.square_path(entity_manager, square)
+        			squares.push self.square_path(entity_manager, square).merge(
+        					self.square_path(entity_manager, square))
         		}
 	        	actions.push({"action" => "makeTrench",
         			      "arguments" => [squares] })
