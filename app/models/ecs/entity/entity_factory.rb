@@ -470,7 +470,7 @@ public
 		 970].each { |id| 
 			terrainCreator[id] = hill 
 		}
-		[-4, 750].each { |id| terrainCreator[id] = trench }
+		[-4, 1024].each { |id| terrainCreator[id] = trench }
 		[-5, 539, 571, 573, 597, 599, 600, 603, 604, 629, 630, 631, 632, 635, 
 		 636].each { |id|
 			terrainCreator[id] = river
@@ -507,12 +507,12 @@ public
 		b = lambda { |player| self.command_bunker(entity_manager, player) }
 
 		pieceCreator = {}
-		[-10, 1095].each { |id| pieceCreator[id] = lambda { i[players[0]] } }
-		[-11, 1123].each { |id| pieceCreator[id] = lambda { m[players[0]] } }
+		[-10, 1102].each { |id| pieceCreator[id] = lambda { i[players[0]] } }
+		[-11, 1137].each { |id| pieceCreator[id] = lambda { m[players[0]] } }
 		[-12, 1039].each { |id| pieceCreator[id] = lambda { a[players[0]] } }
 		[-13, 1067].each { |id| pieceCreator[id] = lambda { b[players[0]] } }
 		[-20, 1081].each { |id| pieceCreator[id] = lambda { i[players[1]] } }
-		[-21, 1109].each { |id| pieceCreator[id] = lambda { m[players[1]] } }
+		[-21, 1123].each { |id| pieceCreator[id] = lambda { m[players[1]] } }
 		[-22, 1025].each { |id| pieceCreator[id] = lambda { a[players[1]] } }
 		[-23, 1053].each { |id| pieceCreator[id] = lambda { b[players[1]] } }
 
