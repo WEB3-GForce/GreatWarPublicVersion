@@ -128,6 +128,7 @@ UIGroup.prototype.initTileInfoUI = function() {
 
 UIGroup.prototype.setTile = function(group, tile) {
     if (tile) {
+        //console.log(tile);
 	    group.tile.frame = tile.index - 1;
 	    group.title.text = tile.name;
         group.defense.text = 'DEF:  ' + tile.defense;
