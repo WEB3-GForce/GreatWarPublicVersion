@@ -36,12 +36,14 @@ var GameGroup = function(game, parent) {
 		this.action = null;
 		this.gameBoard.unhighlightAll();
 		this.ui.hideMenu().start();
-	        this.resetEnergy(this.turn);
             }
         } else if (key.keyCode === q) {
             this.game.dispatcher.rpc("leave_game", []);
         }
     }).bind(this);
+
+    this.shakeAmplitude = 10;
+    this.shakeTimerMax = 80;
 };
 
 GameGroup.prototype = Object.create(Phaser.Group.prototype);
@@ -67,8 +69,6 @@ GameGroup.prototype.update = function(mouse) {
 	this.unit = null;
     }
 
-    // deal with tile info stuff:
-    // console.log(this.tile.index);
     this.tile.name = this.gameBoard.getTerrainName(this.tile.index);
     this.tile.defense = this.gameBoard.getTerrainStats(this.tile.index).defense;
     this.tile.movementCost = this.gameBoard.getTerrainStats(this.tile.index).movementCost;
@@ -86,6 +86,10 @@ GameGroup.prototype.update = function(mouse) {
     this.ui.checkPlayerInfoUIPosition({x: this.game.input.mousePointer.x,
 				       y: this.game.input.mousePointer.y});
 
+    if (this.shakeTimer >= 0) {
+	this.shake();
+	this.shakeTimer--;
+    }
 }
 
 GameGroup.prototype.eliminatePlayer = function(playerId) {
@@ -339,7 +343,7 @@ GameGroup.prototype.revealFog = function(squares) {
 }
 
 GameGroup.prototype.resetEnergy = function(playerId) {
-    var units = this.unitGroup.getAllByPlayer(playerId);
+    var units = this.unitGroup.all();
     for (var i = 0, unit; unit = units[i]; i++) {
         unit.stats.energy.current = unit.stats.energy.max;
     }
@@ -374,13 +378,16 @@ GameGroup.prototype.attack = function(unitId, square, type, unitType) {
     // check if need to add an animation to the receiving square
     var action = {
     	unit: this.unitGroup.find(unitId),
-	    unitGroup: this.unitGroup
+	unitGroup: this.unitGroup,
+	gameGroup: this
     };
 
     action.start = function() {
-	    this.tween = this.unit.attack(square, type);
-	    this.tween.onComplete.add(this.onComplete, this);
-	    this.tween.start();
+	if (unitType === "artillery")
+	    this.gameGroup.startShake();
+	this.tween = this.unit.attack(square, type);
+	this.tween.onComplete.add(this.onComplete, this);
+	this.tween.start();
     }
     return action;
 }
@@ -448,6 +455,7 @@ GameGroup.prototype.setTurn = function(playerId, turnCount) {
 	    this.gameGroup.turn = playerId;
 	    this.gameGroup.turnCount = turnCount;
 	    this.ui.setPlayer(playerId, this.gameGroup.players[playerId], turnCount);
+	    this.gameGroup.resetEnergy();
 	    var tween = this.ui.setTurnInfo(this.gameGroup.players[playerId]);
 	    tween.onComplete.add(this.onComplete, this);
 	    tween.start();
@@ -467,7 +475,6 @@ GameGroup.prototype.gameOver = function(id, forfeit) {
     return {
 	gameGroup: this,
 	start: function() {
-	    console.log(this.gameGroup.players, id);
 	    var winner = this.gameGroup.players[id].name;
 	    var loser;
 	    var playerIds = Object.keys(this.gameGroup.players);
@@ -491,5 +498,25 @@ GameGroup.prototype.gameOver = function(id, forfeit) {
 	    this.gameGroup.game.state.start('gameover', true, false, text);
 	}
     };
+
+}
+
+GameGroup.prototype.startShake = function() {
+    this.cameraPos = {x: this.game.camera.x, y: this.game.camera.y};
+    this.shakeTimer = this.shakeTimerMax;
+}
+
+GameGroup.prototype.shake = function() {
+    if (this.shakeTimer === 0) {
+        this.game.world.setBounds(0, 0, this.game.width, this.game.height);
+        //this.game.camera.x = this.cameraPos.x;
+        //this.game.camera.y = this.cameraPos.y;
+    } else {
+	var rand1 = this.game.rnd.integerInRange(-1 * this.shakeAmplitude, this.shakeAmplitude);
+	var rand2 = this.game.rnd.integerInRange(-1 * this.shakeAmplitude, this.shakeAmplitude);
+	this.game.world.setBounds(rand1, rand2, this.game.width + rand1, this.game.height + rand2);
+	//this.game.camera.x = this.cameraPos.x + rand1;
+	//this.game.camera.y = this.cameraPos.y + rand2;
+    }
 
 }

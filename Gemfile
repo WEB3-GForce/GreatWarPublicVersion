@@ -13,6 +13,7 @@ gem 'protected_attributes'
 
 gem 'bootstrap-sass',		'3.2.0.0'
 
+gem 'simplecov'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -72,7 +73,7 @@ group :development, :test do
 end
 
 group :production do
-#  gem 'pg',             '0.17.1'
+  gem 'pg',             '0.17.1'
   gem 'rails_12factor', '0.0.2'
 end
 

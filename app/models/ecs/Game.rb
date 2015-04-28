@@ -115,6 +115,21 @@ class Game
     return JsonFactory.actions(em, entity, can_move, can_melee, can_range, can_trench)
   end
 
+  # Checks if unit can do any more actions.
+  # TODO add test
+  def self.check_unit_actions(req_id, em, entity)
+    if (em[entity][PieceComponent][0].type == PieceComponent.command_bunker.type)
+        return []
+    end
+
+    can_move  = !MotionSystem.moveable_locations(em, entity).empty?
+    can_melee  = !MeleeSystem.attackable_locations(em, entity).empty?
+    can_range  = !RangeSystem.attackable_locations(em, entity).empty?
+    can_trench = !TrenchSystem.trenchable_locations(em, entity).empty?
+
+    return JsonFactory.disable(em, entity, an_move, can_melee, can_range, can_trench)
+  end
+
   # Gets all of the locations an entity can move to.
   def self.get_unit_moves(req_id, em, entity)
     locations = MotionSystem.moveable_locations(em, entity)
@@ -144,12 +159,13 @@ class Game
     row, col = self.extract_coord(location)
     square = em.board[row][col][0]
     path = MotionSystem.make_move(em, entity, square)
-    return JsonFactory.move(em, entity, path)
+    result = JsonFactory.move(em, entity, path)
+    result += Game.check_unit_actions(req_id, em, entity) 
+    return result
   end
 
   # Executes and (melee or ranged) attack on a square with an entity.
   def self.attack(req_id, em, entity, square, type)
-
     if type == "melee"
       return self.melee_attack(req_id, em, entity, square['y'], square['x'])
     end
@@ -164,6 +180,7 @@ class Game
     attack_result = MeleeSystem.update(em, entity, target)
     player_result = RemovePlayerSystem.update(em)
     result = JsonFactory.melee_attack(em, attack_result)
+    result += Game.check_unit_actions(req_id, em, entity)
     result += JsonFactory.remove_player(em, player_result)
     return result
   end
@@ -171,16 +188,20 @@ class Game
   # Executes a ranged attack on a square with an entity.
   def self.ranged_attack(req_id, em, entity, row, col)
     target = em.board[row][col][1].first
-    result = RangeSystem.update(em, entity, target)
-    return JsonFactory.ranged_attack(em, result)
+    ranged_result = RangeSystem.update(em, entity, target)
+    result = JsonFactory.ranged_attack(em, ranged_result)
+    result += Game.check_unit_actions(req_id, em, entity) 
+    return result
   end
 
   # Moves an entity to a new location (if legal).
   def self.make_trench(req_id, em, entity, location)
     row, col = self.extract_coord(location)
     square = em.board[row][col][0]
-    result = TrenchSystem.make_trench(em, entity, square)
-    return JsonFactory.make_trench(em, entity, result)
+    trench_result = TrenchSystem.make_trench(em, entity, square)
+    result = JsonFactory.make_trench(em, entity, trench_result)
+    result += Game.check_unit_actions(req_id, em, entity) 
+    return result
   end
 
   # End the turn for the current player.

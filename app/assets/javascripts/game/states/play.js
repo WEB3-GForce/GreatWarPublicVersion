@@ -51,9 +51,6 @@ Play.prototype = {
                 };
             }(i+1), this);
         }
-
-        this.shakeTimerMax = 80;
-
     },
 
     update: function() {
@@ -69,9 +66,6 @@ Play.prototype = {
 
         // Updating the gameBoard
         this.gameGroup.update();
-
-        // shake the camera if there's an explosion:
-        this.shakeCamera();
     },
 
     moveCameraByPointer: function(pointer) {
@@ -93,11 +87,6 @@ Play.prototype = {
 	}
 	this.currentAction = this.currentSequence.shift();
 
-        if (this.currentAction && this.currentAction.arguments[3] == 'artillery') {
-            this.cameraPos = {x: this.game.camera.x, y: this.game.camera.y};
-            this.shakeTimer = this.shakeTimerMax;
-        }
-
 	// for debugging
 	console.log(this.currentAction);
 
@@ -111,28 +100,5 @@ Play.prototype = {
 	}).bind(this);
         this.game.animatingAction = true;
 	action.start();
-    },
-
-    shakeCamera: function() {
-        var delay = 30;
-
-        if (this.shakeTimer > 0) {
-            this.shakeTimer -= 1;
-            if (this.shakeTimerMax - delay < this.shakeTimer) {
-                return;
-            }
-            var shakeAmplitude = 10;
-            var rand1 = this.game.rnd.integerInRange(-1 * shakeAmplitude, shakeAmplitude);
-            var rand2 = this.game.rnd.integerInRange(-1 * shakeAmplitude, shakeAmplitude);
-            this.game.world.setBounds(rand1, rand2, this.game.width + rand1, this.game.height + rand2);
-            //this.game.camera.x = this.cameraPos.x + rand1;
-            //this.game.camera.y = this.cameraPos.y + rand2;
-            if (this.shakeTimer == 0) {
-                this.game.world.setBounds(0, 0, this.game.width, this.game.height);
-                //this.game.camera.x = this.cameraPos.x;
-                //this.game.camera.y = this.cameraPos.y;
-            }
-        }
-
     }
 };
