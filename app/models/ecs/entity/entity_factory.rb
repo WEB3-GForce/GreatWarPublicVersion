@@ -334,15 +334,6 @@ public
 		}
 	end
 
-	def self.place_army_top_left_demo(entity_manager, army_array)
-		army = army_array.dup
-		(5...10).each {|row|
-			(5...10).each { |col|
-				self.place_piece(entity_manager, army.shift, row, col)
-			}
-		}
-	end
-
 	# This function places an army in the 5x5 bottom left corner
 	#
 	# Arguments
@@ -394,17 +385,6 @@ public
 		max_col = entity_manager.col - 1
 		max_row.step(max_row-4, -1).each {|row|
 			max_col.step(max_col-4, -1).each { |col|
-				self.place_piece(entity_manager, army.shift, row, col)
-			}
-		}
-	end
-
-	def self.place_army_bottom_right_demo(entity_manager, army_array)
-		army    = army_array.dup
-		max_row  = entity_manager.row - 1
-		max_col = entity_manager.col - 1
-		(max_row-5).step(max_row-9, -1).each {|row|
-			(max_col-5).step(max_col-9, -1).each { |col|
 				self.place_piece(entity_manager, army.shift, row, col)
 			}
 		}

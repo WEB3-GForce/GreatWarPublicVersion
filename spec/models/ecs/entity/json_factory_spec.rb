@@ -25,6 +25,9 @@ describe JsonFactory do
                           flatland10, flatland11, flatland12,
                           flatland20, flatland21, flatland22]}
     let(:turn)              {EntityFactory.turn_entity(manager, [human1, ai])}
+    let(:trench)            {EntityFactory.trench_square(manager)}
+    let(:trow)		    {1}
+    let(:tcol)               {0}
 
     def set_simple
         array = square_array.dup   
@@ -35,7 +38,9 @@ describe JsonFactory do
                     PositionComponent.new(row, col))
                 manager.board[row][col] = [square, []]
             }
-        }             
+        }    
+      manager.add_component(trench,
+                   PositionComponent.new(trow, tcol))         
     end
 
     def set_intermediate
@@ -394,6 +399,22 @@ describe JsonFactory do
             }
             expect(JsonFactory.trench_locations(manager, machine_gun, [flatland00])).to eq(
                 [{"action" => "highlightSquares", "arguments" => ["trench", locations]}])
+        end
+    end
+    
+    context "when calling make_trench" do
+        it "should return a hash of a json for making a trench" do
+            set_intermediate
+            trench_json = JsonFactory.square(manager, trench)
+	    pos_comp    = manager.get_components(trench, PositionComponent).first
+	    trench_json["y"] = pos_comp.row
+	    trench_json["x"] = pos_comp.col
+            
+            trench_result = JsonFactory.make_trench(manager, infantry, [["trench", trench]])
+            expect(trench_result).to eq(
+                [{"action" => "makeTrench", 
+                  "arguments" => [trench_json]
+                 }].concat(JsonFactory.update_energy(manager, infantry)))
         end
     end
 
