@@ -37,6 +37,7 @@ Play.prototype = {
 
         this.backgroundSound = this.game.add.audio('ambience');
         this.backgroundSound.loop = true;
+        this.backgroundSound.volume = 0.5;
         this.backgroundSound.play();
 
         this.music = new Array(1);
@@ -51,6 +52,9 @@ Play.prototype = {
                 };
             }(i+1), this);
         }
+        this.music[0].play();
+
+        this.shakeTimerMax = 80;
     },
 
     update: function() {

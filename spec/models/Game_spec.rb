@@ -102,6 +102,14 @@ describe Game do
         end
     end
 
+    context "calling check_unit_actions" do
+        it "should work" do
+            result = Game.check_unit_actions(1, manager, @pieces[0])
+            expect(result).to_not be nil
+        end
+        
+    end
+
     context "calling get_unit_melee_attacks" do
         it "should work" do
             result = Game.get_unit_melee_attacks(1, manager, @pieces[0])
