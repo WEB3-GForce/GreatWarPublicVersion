@@ -1,3 +1,4 @@
+require 'json'
 require_relative "./entity/entity_factory.rb"
 require_relative "./entity/entity_manager.rb"
 require_relative "./entity/json_factory.rb"
