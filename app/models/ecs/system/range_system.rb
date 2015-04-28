@@ -81,6 +81,7 @@ private
 				next unless occupants.respond_to? :each
 				occupants.each { |occ|
 					occ_own_comp = entity_manager.get_components(occ, OwnedComponent).first
+					next if EntityType.range_immuned_entity?(entity_manager, attacked_entity)
 					# next if occ_own_comp.owner == own_comp.owner
 					result = DamageSystem.update(entity_manager, occ, damage)
 					next if result.empty?
