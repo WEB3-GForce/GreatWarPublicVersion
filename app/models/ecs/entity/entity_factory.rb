@@ -53,6 +53,10 @@ public
 					  [TerrainComponent.flatland,
 					   OccupiableComponent.new,
 					   SpriteComponent.new(id),
+					   BoostComponent.new(BoostComponent.defense,
+					                      0.0),
+					   BoostComponent.new(BoostComponent.move_cost,
+					                      1.0),
 					   MalleableComponent.new])
 	end
 
@@ -69,6 +73,10 @@ public
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.mountain,
 					   ImpassableComponent.new,
+					   BoostComponent.new(BoostComponent.defense,
+					                      -1.0),
+					   BoostComponent.new(BoostComponent.move_cost,
+					                      -1.0),
 					   SpriteComponent.new(id)])
 	end
 
@@ -84,8 +92,10 @@ public
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.hill,
 					   OccupiableComponent.new,
-					   BoostComponent.defense,
-					   BoostComponent.move_cost,
+					   BoostComponent.new(BoostComponent.defense,
+					                      1.0),
+					   BoostComponent.new(BoostComponent.move_cost,
+					                      2.0),
 					   SpriteComponent.new(id)])
 	end
 
@@ -104,7 +114,10 @@ public
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.trench,
 					   OccupiableComponent.new,
-					   BoostComponent.defense,
+					   BoostComponent.new(BoostComponent.defense,
+					                      1.0),
+					   BoostComponent.new(BoostComponent.move_cost,
+					                      1.0),
 					   SpriteComponent.new(id)])
 	end
 
@@ -121,6 +134,10 @@ public
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.river,
 					   BoostComponent.move_cost,
+					   BoostComponent.new(BoostComponent.defense,
+					                      -1.0),
+					   BoostComponent.new(BoostComponent.move_cost,
+					                      2.0),
 					   SpriteComponent.new(id)])
 	end
 

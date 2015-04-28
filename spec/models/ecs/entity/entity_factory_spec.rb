@@ -95,7 +95,7 @@ describe EntityFactory do
 		expect(manager[entity][OccupiableComponent].size).to eq(1)
 		expect(manager[entity][ImpassableComponent].size).to eq(0)
 		expect(manager[entity][MalleableComponent].size).to eq(0)
-		expect(manager[entity][BoostComponent].size).to eq(1)
+		expect(manager[entity][BoostComponent].size).to eq(2)
 		expect(manager[entity][BoostComponent].include? BoostComponent.defense).to be true
 	end
 
@@ -105,7 +105,7 @@ describe EntityFactory do
 		expect(manager[entity][ImpassableComponent].size).to eq(0)
 		expect(manager[entity][OccupiableComponent].size).to eq(0)
 		expect(manager[entity][MalleableComponent].size).to eq(0)
-		expect(manager[entity][BoostComponent].size).to eq(1)
+		expect(manager[entity][BoostComponent].size).to eq(2)
 		expect(manager[entity][BoostComponent].include? BoostComponent.move_cost).to be true
 	end
 

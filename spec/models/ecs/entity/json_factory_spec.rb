@@ -60,16 +60,16 @@ describe JsonFactory do
     context "when calling square" do
         it "should return a hash with the attributes of the square" do
             expect(JsonFactory.square(manager, flatland00)).to eq(
-                {"id" => flatland00, "index" => 0, "stats" => {"move_cost" => 0, "defense" => 0}, "terrain" => "flatland"})
+                {"id" => flatland00, "index" => 0, "stats" => {"move_cost" => 1.0, "defense" => 0.0}, "terrain" => "flatland"})
             expect(JsonFactory.square(manager, river01)).to eq(
                 {"id" => river01, 
                  "index" => 0,
-                 "stats" => {"move_cost" => 2.0, "defense" => 0},
+                 "stats" => {"move_cost" => 2.0, "defense" => -1.0},
                  "terrain" => "river"})
             expect(JsonFactory.square(manager, mountain02)).to eq(
                 {"id" => mountain02,
                  "index" => 0,
-                 "stats" => {"move_cost" => 0.0, "defense" => 0},
+                 "stats" => {"move_cost" => -1.0, "defense" => -1.0},
                  "terrain" => "mountain"})
             expect(JsonFactory.square(manager, hill)).to eq(
                 {"id" => hill,
@@ -323,7 +323,7 @@ describe JsonFactory do
                                  JsonFactory.turn(manager, turn),
                                  player_hash,
                                  player_id,
-                                 {"flatland" => {"defense"=>0, "move_cost"=>0}}]}])
+                                 {"flatland" => {"defense"=>0.0, "move_cost"=>1.0}}]}])
         end
     end
 
@@ -505,7 +505,7 @@ describe JsonFactory do
             trench_result = JsonFactory.make_trench(manager, infantry, [["trench", trench]])
             expect(trench_result).to eq(
                 [{"action" => "makeTrench", 
-                  "arguments" => [trench_json]
+                  "arguments" => [infantry, trench_json]
                  }].concat(JsonFactory.update_energy(manager, infantry)))
         end
     end

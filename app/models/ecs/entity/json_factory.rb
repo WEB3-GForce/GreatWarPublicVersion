@@ -423,7 +423,7 @@ class JsonFactory
         		square = self.square(entity_manager, trench).merge(
         					self.square_path(entity_manager, trench))
 	        	actions.push({"action" => "makeTrench",
-        			      "arguments" => [square] })
+        			      "arguments" => [entity, square] })
         	}
         	actions.concat self.update_energy(entity_manager, entity)
        		return actions
