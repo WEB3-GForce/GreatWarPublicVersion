@@ -179,6 +179,7 @@ class Game
     row, col = self.extract_coord(location)
     square = em.board[row][col][0]
     result = TrenchSystem.make_trench(em, entity, square)
+    puts result
     return JsonFactory.make_trench(em, result)
   end
 
