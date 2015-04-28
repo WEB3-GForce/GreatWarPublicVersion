@@ -21,7 +21,6 @@ class JsonFactory
 	# Returns
 	#   A hash that is ready to be jsoned
 	def self.square(entity_manager, entity)
-        p entity_manager[entity]
 		terrain_comp = entity_manager.get_components(entity, TerrainComponent).first
 		stats_hash = {}
 		stats   = entity_manager.get_components(entity, BoostComponent)
