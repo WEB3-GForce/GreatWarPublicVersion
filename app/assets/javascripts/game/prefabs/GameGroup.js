@@ -68,6 +68,7 @@ GameGroup.prototype.update = function(mouse) {
     }
 
     // deal with tile info stuff:
+    console.log(this.tile.index);
     this.tile.name = this.gameBoard.getTerrainName(this.tile.index);
     this.tile.defense = this.gameBoard.getTerrainStats(this.tile.index).defense;
     this.tile.movementCost = this.gameBoard.getTerrainStats(this.tile.index).movementCost;
@@ -245,9 +246,9 @@ GameGroup.prototype.initGame = function(board, units, turn, players, me, effects
 
 	for (var i = 0; i < board.width; i++) {
 	    for (var j = 0; j < board.height; j++) {
-		this.gameGroup.gameBoard.setTile(i, j, board.squares[j*board.width+i].index);
-		// if (board.squares[i*board.width+j].fow)
-		// 	this.gameGroup.gameBoard.addFog(i, j);
+		   //  this.gameGroup.gameBoard.setTile(i, j, board.squares[j*board.width+i].index);
+		    // if (board.squares[i*board.width+j].fow)
+		    // 	this.gameGroup.gameBoard.addFog(i, j);
 	    }
 	}
 

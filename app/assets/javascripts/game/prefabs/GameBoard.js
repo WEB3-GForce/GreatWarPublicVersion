@@ -6,9 +6,10 @@ var HIGHLIGHT_TYPES = {
     trench: 1140
 };
 
+// none of these hashes should be accessed directly from outside of
+// GameBoard. Use getTerrainName(index) and getTerrainStats(index) instead
 var NAME_TO_INDEX = {};
 var INDEX_TO_NAME = {};
-
 var NAME_TO_FUNCTIONAL_TYPE = {
     Flatland: "flatland",
     Mountain: "mountain",
@@ -68,9 +69,8 @@ GameBoard.prototype.populateTerrainHash = function() {
     NAME_TO_INDEX["Mountain"]  =
 		[567, 750, 751, 683, 546, 385, 353, 387, 619, 481, 583, 461, 578,
 		 453, 385, 560, 491, 551, 618, 554, 681, 745, 712, 627, 680, 464, 588,
-		 595, 782, 522, 427, 582, 614, 780, 747, 522, 427, 466, 433, 593, 213,
-		 53, 57, 221, 55, 125, 21, 123, 91, 21, 53, 25, 40, 509, 380, 381, 382,
-		 507, 383, 508, 470, 380, 509, 472, 508, 474, 509];
+		 595, 782, 522, 427, 582, 614, 780, 747, 522, 427, 466, 433, 593,
+         57, 25, 40, 509, 507, 508, 509];
     NAME_TO_INDEX["Hill"] = [653, 654, 655, 685, 686];
     NAME_TO_INDEX["Trench"] = [750];
     NAME_TO_INDEX["River"] = [631, 636, 632, 635, 603, 604, 599, 539, 629, 573, 597, 630,
@@ -85,7 +85,7 @@ GameBoard.prototype.populateTerrainHash = function() {
     NAME_TO_INDEX["Road"] = [];
 
     for (var j = 0; j < Object.keys(NAME_TO_INDEX).length; j++) {
-        for (var i = 1, index; index = NAME_TO_INDEX[Object.key(NAME_TO_INDEX)[j]][i]; i++) {
+        for (var i = 1, index; index = NAME_TO_INDEX[Object.keys(NAME_TO_INDEX)[j]][i]; i++) {
             INDEX_TO_NAME[index] = Object.keys(NAME_TO_INDEX)[i];
         }
     }
