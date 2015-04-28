@@ -6,9 +6,27 @@ var HIGHLIGHT_TYPES = {
     special: 1140
 };
 
-var TILE_MAP  = {
-    flatland: {index: 30, name: "Flat Land", defense: 0, movementCost: 1},
+var INDEX_TO_NAME = {};
+
+var NAME_TO_FUNCTIONAL_TYPE = {
+    Flatland: "flatland",
+    Mountain: "mountain",
+    Ocean: "mountain",
+    Hill: "hill",
+    Trench: "trench",
+    River: "river",
+    Waterfall: "mountain",
+    Bridge: "flatland",
+    Shore: "mountain",
 };
+
+var FUNCTIONAL_TYPE_TO_STATS = {
+    flatland: {defense: 0, movementCost: 1},
+    mountain: {defense: "N/A", movementCost: "N/A"},
+    hill: {defense: 1, movementCost: 2},
+    trench: {defense: 1, movementCost: 1},
+    river: {defense: "N/A", movementCost: 1}
+}
 
 var GameBoard = function(game) {
     Phaser.Tilemap.call(this, game, 'tileset');
@@ -26,6 +44,8 @@ var GameBoard = function(game) {
 	}
     }
 
+    this.populateTerrainHash();
+
     this.terrainLayer = this.createLayer('terrainLayer'); // saved name of the layer
     this.fogLayer = this.createLayer('fogLayer');
     this.highlightLayer = this.createLayer('highlightLayer');
@@ -36,6 +56,73 @@ var GameBoard = function(game) {
 
 GameBoard.prototype = Object.create(Phaser.Tilemap.prototype);
 GameBoard.prototype.constructor = GameBoard;
+
+GameBoard.prototype.populateTerrainHash = function() {
+    var flatlandIndices = [67, 68, 99];
+    var mountainIndices =
+		[-2, 567, 750, 751, 683, 546, 385, 353, 387, 619, 481, 583, 461, 578,
+		 453, 385, 560, 491, 551, 618, 554, 681, 745, 712, 627, 680, 464, 588,
+		 595, 782, 522, 427, 582, 614, 780, 747, 522, 427, 466, 433, 593, 213,
+		 53, 57, 221, 55, 125, 21, 123, 91, 21, 53, 25, 40, 509, 380, 381, 382,
+		 507, 383, 508, 470, 380, 509, 472, 508, 474, 509];
+    var hillIndices = [653, 654, 655, 685, 686];
+    var trenchIndices = [];
+    var riverIndices = [631, 636, 632, 635, 603, 604, 599, 539, 629, 573, 597, 630,
+        571, 600];
+    var oceanIndices = [213, 125]
+    var waterfallIndices = [567];
+    var shoreIndices = [123, 91, 21, 25, 480, 380, 381, 382, 383, 507, 508, 509, 470,
+        472, 474, 53, 55, 57, 221];
+    var bridgeIndices = [35];
+
+    for (var i in flatlandIndices) {
+        var index = flatlandIndices[i];
+        INDEX_TO_NAME[index] = "Flatland";
+    }
+    for (var i in mountainIndices) {
+        var index = mountainIndices[i];
+        INDEX_TO_NAME[index] = "Mountain";
+    }
+    for (var i in hillIndices) {
+        var index = hillIndices[i];
+        INDEX_TO_NAME[index] = "Hill";
+    }
+    for (var i in trenchIndices) {
+        var index = trenchIndices[i];
+        INDEX_TO_NAME[index] = "Trench";
+    }
+    for (var i in riverIndices) {
+        var index = riverIndices[i];
+        INDEX_TO_NAME[index] = "River";
+    }
+    for (var i in oceanIndices) {
+        var index = oceanIndices[i];
+        INDEX_TO_NAME[index] = "Ocean";
+    }
+    for (var i in waterfallIndices) {
+        var index = waterfallIndices[i];
+        INDEX_TO_NAME[index] = "Waterfall";
+    }
+    for (var i in shoreIndices) {
+        var index = shoreIndices[i];
+        INDEX_TO_NAME[index] = "Shore";
+    }
+    for (var i in bridgeIndices) {
+        var index = bridgeIndices[i];
+        INDEX_TO_NAME[index] = "Bridge";
+    }
+}
+GameBoard.prototype.getTerrainName = function(index) {
+    return  INDEX_TO_NAME[index];
+}
+GameBoard.prototype.getTerrainStats = function(index) {
+    // can avoid some errors this way:
+    if (!FUNCTIONAL_TYPE_TO_STATS[NAME_TO_FUNCTIONAL_TYPE[INDEX_TO_NAME[index]]]) {
+        return FUNCTIONAL_TYPE_TO_STATS["flatland"];
+    }
+    return FUNCTIONAL_TYPE_TO_STATS[NAME_TO_FUNCTIONAL_TYPE[INDEX_TO_NAME[index]]];
+}
+
 
 GameBoard.prototype.addFog = function(x, y) {
     var fogIndex = 50; // this is the index into the tilesheet and is a

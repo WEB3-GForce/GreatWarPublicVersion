@@ -68,12 +68,9 @@ GameGroup.prototype.update = function(mouse) {
     }
 
     // deal with tile info stuff:
-    this.tile.name = "Flatland";
-    this.tile.defense = 0;
-    this.tile.movementCost = 1;
-    // this.tile.name = this.gameBoard.TILE_MAP[index].name;
-    // this.tile.defense = this.gameBoard.effects;
-    // this.tile.movementCost = this.gameBoard.effects;
+    this.tile.name = this.gameBoard.getTerrainName(this.tile.index);
+    this.tile.defense = this.gameBoard.getTerrainStats(this.tile.index).defense;
+    this.tile.movementCost = this.gameBoard.getTerrainStats(this.tile.index).movementCost;
 
     if (this.selected) {
 	this.ui.setSecondaryTile(this.tile);
