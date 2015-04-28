@@ -152,9 +152,8 @@ describe TrenchSystem do
 			manager.add_component(infantry, PositionComponent.new(0,0))
 			result = TrenchSystem.make_trench(manager, infantry, flatland01)
 			expect(result[0][0]).to eq("trench")
-			expect(result[0][1]).to eq(infantry)
 			
-			trench = result[0][2]
+			trench = result[0][1]
 			pos_comp = manager.get_components(trench, PositionComponent).first
 			expect(pos_comp.row).to eq(0)
 			expect(pos_comp.col).to eq(1)

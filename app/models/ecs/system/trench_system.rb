@@ -90,7 +90,7 @@ public
 			PositionComponent.new(pos_comp.row, pos_comp.col))
 		entity_manager.board[pos_comp.row][pos_comp.col][0] = trench
 		EnergySystem.consume_energy(entity_manager, entity, trench_comp.energy_cost)
-		return [["trench", entity, trench]]
+		return [["trench", trench]]
 	end
 end
 
