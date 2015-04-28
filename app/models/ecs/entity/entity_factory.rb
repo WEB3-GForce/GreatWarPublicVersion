@@ -475,18 +475,24 @@ public
 
 		terrainCreator = {}
 		terrainCreator.default = flatland
-		[-1, 68, 67, 99].each { |id| terrainCreator[id] = flatland }
-		[-2, 567, 750, 751, 683, 546, 385, 353, 387, 619, 481, 583, 461, 578,
-		 453, 385, 560, 491, 551, 618, 554, 681, 745, 712, 627, 680, 464, 588,
-		 595, 782, 522, 427, 582, 614, 780, 747, 522, 427, 466, 433, 593, 213,
-		 53, 57, 221, 55, 125, 21, 123, 91, 21, 53, 25, 40, 509, 380, 381, 382,
-		 507, 383, 508, 470, 380, 509, 472, 508, 474, 509].each { |id|
+		[-1, 35, 67, 68, 99, 239, 333, 334, 969].each { |id| 
+			terrainCreator[id] = flatland 
+		}
+		[-2, 21, 25, 40, 53, 55, 57, 91, 123, 125, 213, 221, 309, 310, 341, 
+		 343, 353, 380, 381, 382, 383, 385, 387, 427, 433, 453, 461, 464, 466, 
+		 470, 472, 474, 481, 491, 507, 508, 509, 522, 546, 551, 554, 560, 567,
+		 578, 582, 583, 588, 593, 595, 614, 618, 619, 627, 680, 681, 683, 712, 
+		 745, 747, 750, 751, 780, 782].each { |id|
 		 	terrainCreator[id] = mountain
 		}
-		[-3, 685, 686, 653, 685, 654, 655].each { |id| terrainCreator[id] = hill }
-		[-4, 750].each { |id| terrainCreator[id] = trench }
-		[-5, 631, 636, 632, 635, 636, 603, 604, 599, 539, 631, 629, 635, 573,
-		 597, 630, 571, 600].each { |id|
+		[-3, 653, 654, 655, 685, 686, 721, 783, 784, 816, 817, 818, 850, 
+		 851, 882, 904, 905, 906, 913, 914, 936, 937, 938, 945, 946, 968, 
+		 970].each { |id| 
+			terrainCreator[id] = hill 
+		}
+		[-4, 1024].each { |id| terrainCreator[id] = trench }
+		[-5, 539, 571, 573, 597, 599, 600, 603, 604, 629, 630, 631, 632, 635, 
+		 636].each { |id|
 			terrainCreator[id] = river
 		}
 
@@ -521,12 +527,12 @@ public
 		b = lambda { |player| self.command_bunker(entity_manager, player) }
 
 		pieceCreator = {}
-		[-10, 1095].each { |id| pieceCreator[id] = lambda { i[players[0]] } }
-		[-11, 1123].each { |id| pieceCreator[id] = lambda { m[players[0]] } }
+		[-10, 1102].each { |id| pieceCreator[id] = lambda { i[players[0]] } }
+		[-11, 1137].each { |id| pieceCreator[id] = lambda { m[players[0]] } }
 		[-12, 1039].each { |id| pieceCreator[id] = lambda { a[players[0]] } }
 		[-13, 1067].each { |id| pieceCreator[id] = lambda { b[players[0]] } }
 		[-20, 1081].each { |id| pieceCreator[id] = lambda { i[players[1]] } }
-		[-21, 1109].each { |id| pieceCreator[id] = lambda { m[players[1]] } }
+		[-21, 1123].each { |id| pieceCreator[id] = lambda { m[players[1]] } }
 		[-22, 1025].each { |id| pieceCreator[id] = lambda { a[players[1]] } }
 		[-23, 1053].each { |id| pieceCreator[id] = lambda { b[players[1]] } }
 

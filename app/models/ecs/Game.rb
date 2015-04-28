@@ -1,3 +1,4 @@
+require 'json'
 require_relative "./entity/entity_factory.rb"
 require_relative "./entity/entity_manager.rb"
 require_relative "./entity/json_factory.rb"
@@ -220,7 +221,6 @@ class Game
   def self.get(id)
     manager = $redis.get(id)
     if manager
-      p "Loading: ", manager.encoding
       Marshal::load(manager)
     else
       gama = Gama.find(id)
