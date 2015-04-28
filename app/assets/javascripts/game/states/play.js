@@ -128,8 +128,9 @@ Play.prototype = {
             //this.game.camera.x = this.cameraPos.x + rand1;
             //this.game.camera.y = this.cameraPos.y + rand2;
             if (this.shakeTimer == 0) {
-                this.game.camera.x = this.cameraPos.x;
-                this.game.camera.y = this.cameraPos.y;
+                this.game.world.setBounds(0, 0, this.game.width, this.game.height);
+                //this.game.camera.x = this.cameraPos.x;
+                //this.game.camera.y = this.cameraPos.y;
             }
         }
 
