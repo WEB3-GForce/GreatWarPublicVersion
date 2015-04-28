@@ -70,19 +70,19 @@ GameBoard.prototype.populateTerrainHash = function() {
 		[567, 750, 751, 683, 546, 385, 353, 387, 619, 481, 583, 461, 578,
 		 453, 385, 560, 491, 551, 618, 554, 681, 745, 712, 627, 680, 464, 588,
 		 595, 782, 522, 427, 582, 614, 780, 747, 522, 427, 466, 433, 593,
-         57, 25, 40, 509, 507, 508, 509];
+         57, 25, 40, 509, 507, 508];
     NAME_TO_INDEX["Hill"] = [653, 654, 655, 685, 686];
     NAME_TO_INDEX["Trench"] = [750];
     NAME_TO_INDEX["River"] = [631, 636, 632, 635, 603, 604, 599, 539, 629, 573, 597, 630,
         571, 600];
-    NAME_TO_INDEX["Ocean"] = [213, 125]
+    NAME_TO_INDEX["Ocean"] = [213, 125, 309, 310, 341, 343]
     NAME_TO_INDEX["Waterfall"] = [567];
-    NAME_TO_INDEX["Shore"] = [123, 91, 21, 25, 480, 380, 381, 382, 383, 507, 508, 509, 470,
-        472, 474, 53, 55, 57, 221];
+    NAME_TO_INDEX["Shore"] = [123, 91, 21, 22, 25, 480, 380, 381, 382, 383, 507, 508, 509, 470,
+        472, 474, 53, 54, 55, 57, 221];
     NAME_TO_INDEX["Bridge"] = [35];
-    NAME_TO_INDEX["Forest"] = [];
-    NAME_TO_INDEX["Ruins"] = [];
-    NAME_TO_INDEX["Road"] = [];
+    NAME_TO_INDEX["Forest"] = [721, 783, 784, 816, 817, 818, 850, 851, 882, 913, 914, 945, 946];
+    NAME_TO_INDEX["Ruins"] = [904, 905, 906, 936, 937, 938, 968, 970];
+    NAME_TO_INDEX["Road"] = [239, 333, 334, 969];
 
     for (var j = 0; j < Object.keys(NAME_TO_INDEX).length; j++) {
         for (var i = 1, index; index = NAME_TO_INDEX[Object.keys(NAME_TO_INDEX)[j]][i]; i++) {
