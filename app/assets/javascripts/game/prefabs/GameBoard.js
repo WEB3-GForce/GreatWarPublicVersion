@@ -71,7 +71,7 @@ GameBoard.prototype.populateTerrainHash = function() {
         571, 600];
     var oceanIndices = [213, 125]
     var waterfallIndices = [567];
-    var shoreIndices = [123, 91, 21, 25, 480, 380, 381, 382, 382, 507, 508, 509, 470,
+    var shoreIndices = [123, 91, 21, 25, 480, 380, 381, 382, 383, 507, 508, 509, 470,
         472, 474, 53, 55, 57, 221];
     var bridgeIndices = [35];
 
