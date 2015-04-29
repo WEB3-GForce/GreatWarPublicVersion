@@ -396,11 +396,17 @@ GameGroup.prototype.attack = function(unitId, square, type, unitType) {
     };
 
     action.start = function() {
-	if (unitType === "artillery")
-	    this.gameGroup.startShake();
-	this.tween = this.unit.attack(square, type);
-	this.tween.onComplete.add(this.onComplete, this);
-	this.tween.start();
+        action.unit.sound.play(type == "melee" ? "melee-start" : "ranged-start");
+        var timer = this.gameGroup.game.time.create(true);
+        timer.add(1000, function() {
+            if (unitType === "artillery")
+                this.gameGroup.startShake();
+            this.tween = this.unit.attack(square, type);
+            this.tween.onComplete.add(this.onComplete, this);
+            this.tween.start();
+            action.unit.sound.play("attack-end");
+        }, this);
+        timer.start();
     }
     return action;
 }
@@ -445,7 +451,7 @@ GameGroup.prototype.killUnits = function(unitIds) {
     action.tweens = unitIds.map(function(unitId, i) {
 	return this.game.add.tween(action.units[i]).to({alpha: 0}, 300);
     }, this);
-    action.start = function() {
+    action.start = function() {   
 	this.tweens[0].onComplete.add(function() {
 	    this.onComplete();
 	}, this);

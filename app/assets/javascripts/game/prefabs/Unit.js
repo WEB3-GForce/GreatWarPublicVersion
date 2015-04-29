@@ -36,7 +36,7 @@ var UNIT_MAP = {
             RANGED_START: ['sniper', 'rifle'],
             ATTACK_END: [],
             ATTACKED: ['hurt'],
-            DIE: ['hurt']
+            DIE: ['die-1', 'die-2']
         }
     },
     'machine_gun':
@@ -49,7 +49,7 @@ var UNIT_MAP = {
             RANGED_START: ['machine-gun-1, machine-gun-2'],
             ATTACK_END: [],
             ATTACKED: ['hurt'],
-            DIE: ['hurt']
+            DIE: ['die-1', 'die-2']
         }
     },
 }
@@ -155,7 +155,7 @@ Unit.prototype.moveAdjacent = function(orientation) {
 
 Unit.prototype.stop = function() {
     this.animations.stop();
-    this.sound.stop("move");
+    // this.sound.stop("move");
     this.frame = 0;
 }
 

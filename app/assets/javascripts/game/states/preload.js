@@ -65,6 +65,8 @@ Preload.prototype = {
     this.load.audio('artillery-death', 'assets/artillery-death.mp3');
     this.load.audio('blast-1', 'assets/blast-1.mp3');
     this.load.audio('blast-2', 'assets/blast-2.mp3');
+    this.load.audio('die-1', 'assets/die-1.mp3');
+    this.load.audio('die-1', 'assets/die-2.mp3');
     this.load.audio('grenade', 'assets/grenade.mp3');
     this.load.audio('hurt', 'assets/hurt.mp3');
     this.load.audio('machine-gun-2', 'assets/machine-gun-2.mp3');

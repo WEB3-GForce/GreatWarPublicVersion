@@ -21,6 +21,7 @@ UnitGroup.prototype.addUnit = function(id, type, x, y, player, stats, faction) {
 
 UnitGroup.prototype.removeUnit = function(id) {
     var unit = this.idLookup[id];
+    unit.sound.play("die");
     delete this.idLookup[id];
     this.remove(unit, true);
 }
