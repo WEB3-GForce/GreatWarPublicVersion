@@ -571,6 +571,51 @@ describe JsonFactory do
         end
     end
 
+    context "when calling disable" do
+        it "should not disable if it can movement" do
+            can_move = true
+            can_melee = false
+            can_range = false
+            can_trench = false
+            expect(JsonFactory.disable(manager, infantry, can_move, can_melee, can_range, can_trench)).to eq(
+                [])
+        end
+        it "should not disable if can melee" do
+            can_move = false
+            can_melee = true
+            can_range = false
+            can_trench = false
+            expect(JsonFactory.disable(manager, infantry, can_move, can_melee, can_range, can_trench)).to eq(
+                [])
+        end
+        it "should not disable if it can range attack" do
+            can_move = false
+            can_melee = false
+            can_range = true
+            can_trench = false
+            expect(JsonFactory.disable(manager, infantry, can_move, can_melee, can_range, can_trench)).to eq(
+                [])
+        end
+        it "should not disable if it can build a trench" do
+            can_move = false
+            can_melee = false
+            can_range = false
+            can_trench = true
+            expect(JsonFactory.disable(manager, infantry, can_move, can_melee, can_range, can_trench)).to eq(
+                [])
+        end
+       it "should disable if it can do nothing" do
+            can_move = false
+            can_melee = false
+            can_range = false
+            can_trench = false
+            expect(JsonFactory.disable(manager, infantry, can_move, can_melee, can_range, can_trench)).to eq(
+                [{"action" => "disableUnit",
+                 "arguments" => [infantry]}])
+        end
+    end
+
+
     context "when calling remove_player" do
         it "should remove players" do
             players = [human1, ai]

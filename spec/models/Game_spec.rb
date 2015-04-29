@@ -186,6 +186,21 @@ describe Game do
         end
     end
 
+   context "calling make_trench" do
+        it "should work" do
+            location = { 'x' => 5, 'y' => 5 }
+            result = Game.make_trench(1, manager, @pieces[23], location)
+            expect(result).to_not be nil
+        end
+
+        it "should make the trench" do
+        end
+
+        it "should return an RPC for the make trench" do 
+        end
+    end
+
+
     context "calling ranged_attack" do
         it "should work" do
             result = Game.ranged_attack(1, manager, @pieces[23], 5,5)
