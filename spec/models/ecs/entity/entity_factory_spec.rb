@@ -68,6 +68,8 @@ describe EntityFactory do
 		expect(manager[entity][OccupiableComponent].size).to eq(1)
 		expect(manager[entity][ImpassableComponent].size).to eq(0)
 		expect(manager[entity][MalleableComponent].size).to eq(1)
+		expect(manager[entity][BoostComponent].any? {|boost| boost.type == BoostComponent.defense}).to be true
+		expect(manager[entity][BoostComponent].any? {|boost| boost.type == BoostComponent.move_cost}).to be true
 	end
 
 	it "should create a new mountain square" do
@@ -76,6 +78,8 @@ describe EntityFactory do
 		expect(manager[entity][ImpassableComponent].size).to eq(1)
 		expect(manager[entity][OccupiableComponent].size).to eq(0)
 		expect(manager[entity][MalleableComponent].size).to eq(0)
+		expect(manager[entity][BoostComponent].any? {|boost| boost.type == BoostComponent.defense}).to be true
+		expect(manager[entity][BoostComponent].any? {|boost| boost.type == BoostComponent.move_cost}).to be true
 	end
 
 	it "should create a new hill square" do
@@ -85,8 +89,8 @@ describe EntityFactory do
 		expect(manager[entity][ImpassableComponent].size).to eq(0)
 		expect(manager[entity][MalleableComponent].size).to eq(0)
 		expect(manager[entity][BoostComponent].size).to eq(2)
-		expect(manager[entity][BoostComponent].include? BoostComponent.defense).to be true
-		expect(manager[entity][BoostComponent].include? BoostComponent.move_cost).to be true
+		expect(manager[entity][BoostComponent].any? {|boost| boost.type == BoostComponent.defense}).to be true
+		expect(manager[entity][BoostComponent].any? {|boost| boost.type == BoostComponent.move_cost}).to be true
 	end
 
 	it "should create a new trench square" do
@@ -95,8 +99,9 @@ describe EntityFactory do
 		expect(manager[entity][OccupiableComponent].size).to eq(1)
 		expect(manager[entity][ImpassableComponent].size).to eq(0)
 		expect(manager[entity][MalleableComponent].size).to eq(0)
-		expect(manager[entity][BoostComponent].size).to eq(1)
-		expect(manager[entity][BoostComponent].include? BoostComponent.defense).to be true
+		expect(manager[entity][BoostComponent].size).to eq(2)
+		expect(manager[entity][BoostComponent].any? {|boost| boost.type == BoostComponent.defense}).to be true
+		expect(manager[entity][BoostComponent].any? {|boost| boost.type == BoostComponent.move_cost}).to be true
 	end
 
 	it "should create a new river square" do
@@ -105,8 +110,9 @@ describe EntityFactory do
 		expect(manager[entity][ImpassableComponent].size).to eq(0)
 		expect(manager[entity][OccupiableComponent].size).to eq(0)
 		expect(manager[entity][MalleableComponent].size).to eq(0)
-		expect(manager[entity][BoostComponent].size).to eq(1)
-		expect(manager[entity][BoostComponent].include? BoostComponent.move_cost).to be true
+		expect(manager[entity][BoostComponent].size).to eq(2)
+		expect(manager[entity][BoostComponent].any? {|boost| boost.type == BoostComponent.defense}).to be true
+		expect(manager[entity][BoostComponent].any? {|boost| boost.type == BoostComponent.move_cost}).to be true
 	end
 
 	it "should create a new board with flatland squares" do

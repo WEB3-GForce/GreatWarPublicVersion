@@ -8,6 +8,8 @@ describe JsonFactory do
     let(:human1)            {EntityFactory.human_player(manager, "David")}
     let(:ai)                {EntityFactory.ai_player(manager, "R.O.B")}
     let(:infantry)          {EntityFactory.infantry(manager, human1)}
+    let(:foe)               {EntityFactory.infantry(manager, ai)}
+    let(:foe2)               {EntityFactory.infantry(manager, ai)}
     let(:machine_gun)       {EntityFactory.machine_gun(manager, human1)}
     let(:artillery)         {EntityFactory.artillery(manager, human1)}  
     let(:command_bunker)    {EntityFactory.command_bunker(manager, human1)}
@@ -25,6 +27,9 @@ describe JsonFactory do
                           flatland10, flatland11, flatland12,
                           flatland20, flatland21, flatland22]}
     let(:turn)              {EntityFactory.turn_entity(manager, [human1, ai])}
+    let(:trench)            {EntityFactory.trench_square(manager)}
+    let(:trow)		    {1}
+    let(:tcol)               {0}
 
     def set_simple
         array = square_array.dup   
@@ -35,7 +40,9 @@ describe JsonFactory do
                     PositionComponent.new(row, col))
                 manager.board[row][col] = [square, []]
             }
-        }             
+        }    
+      manager.add_component(trench,
+                   PositionComponent.new(trow, tcol))         
     end
 
     def set_intermediate
@@ -53,21 +60,21 @@ describe JsonFactory do
     context "when calling square" do
         it "should return a hash with the attributes of the square" do
             expect(JsonFactory.square(manager, flatland00)).to eq(
-                {"id" => flatland00, "index" => 0, "stats" => {"move_cost" => 0, "defense" => 0}, "terrain" => "flatland"})
+                {"id" => flatland00, "index" => 0, "stats" => {"move_cost" => 1.0, "defense" => 0.0}, "terrain" => "flatland"})
             expect(JsonFactory.square(manager, river01)).to eq(
                 {"id" => river01, 
                  "index" => 0,
-                 "stats" => {"move_cost" => 2.0, "defense" => 0},
+                 "stats" => {"move_cost" => 2.0, "defense" => -1.0},
                  "terrain" => "river"})
             expect(JsonFactory.square(manager, mountain02)).to eq(
                 {"id" => mountain02,
                  "index" => 0,
-                 "stats" => {"move_cost" => 0.0, "defense" => 0},
+                 "stats" => {"move_cost" => -1.0, "defense" => -1.0},
                  "terrain" => "mountain"})
             expect(JsonFactory.square(manager, hill)).to eq(
                 {"id" => hill,
                  "index" => 0,
-                 "stats" => {"move_cost" => 2.0, "defense" => 2.0},
+                 "stats" => {"move_cost" => 2.0, "defense" => 1.0},
                  "terrain" => "hill"})
         end
     end
@@ -316,7 +323,7 @@ describe JsonFactory do
                                  JsonFactory.turn(manager, turn),
                                  player_hash,
                                  player_id,
-                                 {"flatland" => {"defense"=>0, "move_cost"=>0}}]}])
+                                 {"flatland" => {"defense"=>0.0, "move_cost"=>1.0}}]}])
         end
     end
 
@@ -347,6 +354,96 @@ describe JsonFactory do
         end
     end
 
+    context "when calling melee_attack" do
+        it "should return a hash for a melee attack" do
+            set_intermediate
+            attack_result = []
+            attack_result.push ["melee", infantry, "infantry", foe, 1, 1]
+            attack_result.push ["melee", foe, "infantry", infantry, 1, 2]
+            
+            actions = []
+            actions.concat JsonFactory.attack_animate(manager, "melee", infantry, "infantry", 1, 1)
+            actions.concat JsonFactory.update_health(manager, foe)
+            actions.concat JsonFactory.attack_animate(manager, "melee", foe, "infantry", 1, 2)
+            actions.concat JsonFactory.update_health(manager, infantry)
+            actions.concat JsonFactory.update_energy(manager, infantry)
+
+            expect(JsonFactory.melee_attack(manager, attack_result)).to eq(
+            	actions)
+        end
+
+        it "should kill the attacked unit" do
+            set_intermediate
+            attack_result = []
+            attack_result.push ["melee", infantry, "infantry", foe, 1, 1]
+            attack_result.push ["kill", foe]
+            
+            actions = []
+            actions.concat JsonFactory.attack_animate(manager, "melee", infantry, "infantry", 1, 1)
+            actions.concat JsonFactory.update_health(manager, foe)
+            actions.concat JsonFactory.kill_units(manager, [foe])
+            actions.concat JsonFactory.update_energy(manager, infantry)
+
+            expect(JsonFactory.melee_attack(manager, attack_result)).to eq(
+            	actions)
+        end
+
+        it "should kill the attacker unit" do
+            set_intermediate
+            attack_result = []
+            attack_result.push ["melee", infantry, "infantry", foe, 1, 1]
+            attack_result.push ["melee", foe, "infantry", infantry, 1, 2]
+            attack_result.push ["kill", infantry]
+            
+            manager.delete infantry
+            actions = []
+            actions.concat JsonFactory.attack_animate(manager, "melee", infantry, "infantry", 1, 1)
+            actions.concat JsonFactory.update_health(manager, foe)
+            actions.concat JsonFactory.attack_animate(manager, "melee", foe, "infantry", 1, 2)
+            actions.concat JsonFactory.update_health(manager, infantry)
+            actions.concat JsonFactory.kill_units(manager, [infantry])
+
+            expect(JsonFactory.melee_attack(manager, attack_result)).to eq(
+            	actions)
+        end
+    end
+
+    context "when calling ranged_attack" do
+        it "should return a hash for a ranged attack" do
+            set_intermediate
+            attack_result = []
+            attack_result.push ["ranged", infantry, "infantry", foe, 1, 1]
+            attack_result.push ["ranged", infantry, "infantry", foe2, 1, 1]            
+            actions = []
+            actions.concat JsonFactory.attack_animate(manager, "ranged", infantry, "infantry", 1, 1)
+            actions.concat JsonFactory.update_health(manager, foe)
+            actions.concat JsonFactory.update_health(manager, foe2)
+            actions.concat JsonFactory.update_energy(manager, infantry)
+
+            expect(JsonFactory.ranged_attack(manager, attack_result)).to eq(
+            	actions)
+        end
+
+        it "should kill the attacked units" do
+            set_intermediate
+            attack_result = []
+            attack_result.push ["ranged", infantry, "infantry", foe, 1, 1]
+            attack_result.push ["ranged", infantry, "infantry", foe2, 1, 1] 
+            attack_result.push ["kill", foe] 
+            attack_result.push ["kill", foe2]      
+                
+            actions = []
+            actions.concat JsonFactory.attack_animate(manager, "ranged", infantry, "infantry", 1, 1)
+            actions.concat JsonFactory.update_health(manager, foe)
+            actions.concat JsonFactory.update_health(manager, foe2)
+            actions.concat JsonFactory.kill_units(manager, [foe])
+            actions.concat JsonFactory.kill_units(manager, [foe2])
+            actions.concat JsonFactory.update_energy(manager, infantry)
+
+            expect(JsonFactory.ranged_attack(manager, attack_result)).to eq(
+            	actions)
+        end            
+    end
 
     context "when calling moveable locations" do
         it "should return a hash of a json for a moveable locations request" do
@@ -396,4 +493,133 @@ describe JsonFactory do
                 [{"action" => "highlightSquares", "arguments" => ["trench", locations]}])
         end
     end
+    
+    context "when calling make_trench" do
+        it "should return a hash of a json for making a trench" do
+            set_intermediate
+            trench_json = JsonFactory.square(manager, trench)
+	    pos_comp    = manager.get_components(trench, PositionComponent).first
+	    trench_json["y"] = pos_comp.row
+	    trench_json["x"] = pos_comp.col
+            
+            trench_result = JsonFactory.make_trench(manager, infantry, [["trench", trench]])
+            expect(trench_result).to eq(
+                [{"action" => "makeTrench", 
+                  "arguments" => [infantry, trench_json]
+                 }].concat(JsonFactory.update_energy(manager, infantry)))
+        end
+    end
+
+    context "when calling end_turn" do
+        it "should return a hash of a json for ending a turn" do
+            set_intermediate
+            turnResult = JsonFactory.turn(manager, turn)
+            expect(JsonFactory.end_turn(manager, turn)).to eq(
+                [{"action" => "setTurn", 
+                  "arguments" => [turnResult["playerid"], turnResult["turnCount"]]}])
+        end
+    end
+
+    context "when calling actions" do
+        it "should include movement" do
+            can_move = true
+            can_melee = false
+            can_range = false
+            can_trench = false
+            expect(JsonFactory.actions(manager, infantry, can_move, can_melee, can_range, can_trench)).to eq(
+                [{"action" => "showUnitActions", 
+                  "arguments" => [[{"name" => "move",
+                                   "cost" => manager[infantry][MotionComponent].first.energy_cost}
+                                 ]]
+                }])
+        end
+        it "should include melee" do
+            can_move = false
+            can_melee = true
+            can_range = false
+            can_trench = false
+            expect(JsonFactory.actions(manager, infantry, can_move, can_melee, can_range, can_trench)).to eq(
+                [{"action" => "showUnitActions", 
+                  "arguments" => [[{"name" => "melee",
+                                   "cost" => manager[infantry][MeleeAttackComponent].first.energy_cost}
+                                 ]]
+                }])
+        end
+        it "should include range" do
+            can_move = false
+            can_melee = false
+            can_range = true
+            can_trench = false
+            expect(JsonFactory.actions(manager, infantry, can_move, can_melee, can_range, can_trench)).to eq(
+                [{"action" => "showUnitActions", 
+                  "arguments" => [[{"name" => "ranged",
+                                   "cost" => manager[infantry][RangeAttackComponent].first.energy_cost}
+                                 ]]
+                }])
+        end
+        it "should include trench" do
+            can_move = false
+            can_melee = false
+            can_range = false
+            can_trench = true
+            expect(JsonFactory.actions(manager, infantry, can_move, can_melee, can_range, can_trench)).to eq(
+                [{"action" => "showUnitActions", 
+                  "arguments" => [[{"name" => "trench",
+                                   "cost" => manager[infantry][TrenchBuilderComponent].first.energy_cost}
+                                 ]]
+                }])
+        end
+    end
+
+    context "when calling remove_player" do
+        it "should remove players" do
+            players = [human1, ai]
+            result = [["remove_player", players], nil, nil]
+            expect(JsonFactory.remove_player(manager, result)).to eq(
+                [{"action" => "eliminatePlayer", 
+                  "arguments" => [human1]
+                 },
+                 {"action" => "eliminatePlayer", 
+                  "arguments" => [ai]
+                }])
+        end
+
+        it "should change the turn" do
+            result = [nil, ["turn_change", turn], nil]
+            expect(JsonFactory.remove_player(manager, result)).to eq(
+                JsonFactory.end_turn(manager, turn))
+        end
+        it "should remove players and end turn" do
+            players = [human1, ai]
+            result = [["remove_player", players], ["turn_change", turn], nil]
+            expect(JsonFactory.remove_player(manager, result)).to eq(
+                [{"action" => "eliminatePlayer", 
+                  "arguments" => [human1]
+                 },
+                 {"action" => "eliminatePlayer", 
+                  "arguments" => [ai]
+                }].concat JsonFactory.end_turn(manager, turn))
+        end
+
+        it "should end the game" do
+            result = [nil, nil, ["game_over", human1]]
+            expect(JsonFactory.remove_player(manager, result)).to eq(
+                [{ "action" => "gameOver", 
+                  "arguments" => [human1, false] }])
+        end
+        
+       it "should end the game with forfeit" do
+            result = [nil, nil, ["game_over", human1]]
+            expect(JsonFactory.remove_player(manager, result, true)).to eq(
+                [{ "action" => "gameOver", 
+                  "arguments" => [human1, true] }])
+        end
+       it "should return immediately with end game" do
+            result = [nil, ["turn_change", turn], ["game_over", human1]]
+            expect(JsonFactory.remove_player(manager, result, true)).to eq(
+                [{ "action" => "gameOver", 
+                  "arguments" => [human1, true] }])
+        end
+    end
+
 end

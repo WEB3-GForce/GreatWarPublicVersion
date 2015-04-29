@@ -31,8 +31,8 @@ Play.prototype = {
     	this.game.input.onUp.add(function() {
     	    if (this.game.input.mousePointer.positionDown.x == this.game.input.mousePointer.position.x &&
                 this.game.input.mousePointer.positionDown.y == this.game.input.mousePointer.position.y) {
-    	           this.gameGroup.onClick(this.game.input.mousePointer.targetObject);
-    	   }
+    	        this.gameGroup.onClick(this.game.input.mousePointer.targetObject);
+    	    }
     	}, this);
 
         this.backgroundSound = this.game.add.audio('ambience');
@@ -58,12 +58,12 @@ Play.prototype = {
     },
 
     update: function() {
-	    // executing actions
-	    if (this.currentSequence === null &&
-	        this.sequences.length > 0) {
-                this.currentSequence = this.sequences.shift();
-	            this.executeSequence();
-	    }
+	// executing actions
+	if (this.currentSequence === null &&
+	    this.sequences.length > 0) {
+            this.currentSequence = this.sequences.shift();
+	    this.executeSequence();
+	}
 
         // Panning:
         this.moveCameraByPointer(this.game.input.mousePointer);
@@ -88,30 +88,30 @@ Play.prototype = {
     },
 
     executeSequence: function() {
-	    if (this.currentSequence.length == 0) {
-	        this.currentSequence = null;
-	        return;
-	    }
-	    this.currentAction = this.currentSequence.shift();
+	if (this.currentSequence.length == 0) {
+	    this.currentSequence = null;
+	    return;
+	}
+	this.currentAction = this.currentSequence.shift();
 
         if (this.currentAction && this.currentAction.arguments[3] == 'artillery') {
             this.cameraPos = {x: this.game.camera.x, y: this.game.camera.y};
             this.shakeTimer = this.shakeTimerMax;
         }
 
-	    // for debugging
-	    console.log(this.currentAction);
+	// for debugging
+	console.log(this.currentAction);
 
-	    var action = this.gameGroup[this.currentAction.action].apply(
-	        this.gameGroup,
-	        this.currentAction.arguments
-	    );
+	var action = this.gameGroup[this.currentAction.action].apply(
+	    this.gameGroup,
+	    this.currentAction.arguments
+	);
     	action.onComplete = (function() {
             this.game.animatingAction = false;
-	        this.executeSequence();
-	    }).bind(this);
+	    this.executeSequence();
+	}).bind(this);
         this.game.animatingAction = true;
-	    action.start();
+	action.start();
     },
 
     shakeCamera: function() {
@@ -129,8 +129,9 @@ Play.prototype = {
             //this.game.camera.x = this.cameraPos.x + rand1;
             //this.game.camera.y = this.cameraPos.y + rand2;
             if (this.shakeTimer == 0) {
-                this.game.camera.x = this.cameraPos.x;
-                this.game.camera.y = this.cameraPos.y;
+                this.game.world.setBounds(0, 0, this.game.width, this.game.height);
+                //this.game.camera.x = this.cameraPos.x;
+                //this.game.camera.y = this.cameraPos.y;
             }
         }
 

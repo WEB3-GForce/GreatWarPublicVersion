@@ -128,13 +128,13 @@ GameGroup.prototype.tileClicked = function() {
 		    ]);
         break;
         case 'trench':
-            this.game.dispatcher.rpc("make_trench", [
-		        this.selected.id,
-		        {
-			    x: this.tile.x,
-			    y: this.tile.y
-		        }
-		    ]);
+		this.game.dispatcher.rpc("make_trench", [
+		    this.selected.id,
+		    {
+			x: this.tile.x,
+			y: this.tile.y
+		    }
+		]);
 		break;
 	    case 'ranged':
 		break;
@@ -149,14 +149,16 @@ GameGroup.prototype.tileClicked = function() {
     }
 }
 
-GameGroup.prototype.makeTrench = function(square) {
+GameGroup.prototype.makeTrench = function(unitId, square) {
     var action = {
+	unit: this.unitGroup.find(unitId),
         gameBoard: this.gameBoard,
     };
     action.start = function() {
-        console.log(square);
-        this.gameBoard.setTile(square.x, square.y, 750);
-        this.onComplete();
+	this.unit.digTrench(function() {
+            this.gameBoard.setTile(square.x, square.y, TRENCH_INDEX);
+            this.onComplete();
+	}, this);
     }
     return action;
 }
@@ -166,11 +168,9 @@ GameGroup.prototype.unitClicked = function(unit) {
 	return;
 
     if (this.action) {
-        console.log("thinks we have an action");
-        console.log(this.action);
-	    this.interact(unit);
+	this.interact(unit);
     } else {
-	    this.select(unit);
+	this.select(unit);
     }
 }
 
@@ -230,8 +230,8 @@ GameGroup.prototype.buttonClicked = function(button) {
 	    this.game.dispatcher.rpc("get_unit_melee_attacks", [this.selected.id]);
 	    break;
 	case 'trench':
-        this.game.dispatcher.rpc("get_unit_trench_locations", [this.selected.id]);
-        break;
+            this.game.dispatcher.rpc("get_unit_trench_locations", [this.selected.id]);
+            break;
 	}
     }
 }
@@ -246,14 +246,14 @@ GameGroup.prototype.initGame = function(board, units, turn, players, me, effects
 
 	for (var i = 0; i < board.width; i++) {
 	    for (var j = 0; j < board.height; j++) {
-		    // this.gameGroup.gameBoard.setTile(i, j, board.squares[j*board.width+i].index);
-		    // if (board.squares[i*board.width+j].fow)
-		    // 	this.gameGroup.gameBoard.addFog(i, j);
+		this.gameGroup.gameBoard.setTile(i, j, board.squares[j*board.width+i].index);
+		// if (board.squares[i*board.width+j].fow)
+		// 	this.gameGroup.gameBoard.addFog(i, j);
 	    }
 	}
 
 	this.gameGroup.gameBoard.effects = effects;
-	console.log(effects);
+    this.gameGroup.gameBoard.handleEffects(effects);
 
 	for (var i = 0; i < units.length; i++) {
 	    this.gameGroup.unitGroup.addUnit(units[i].id,

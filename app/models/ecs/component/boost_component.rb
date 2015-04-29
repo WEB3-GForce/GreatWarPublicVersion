@@ -35,8 +35,8 @@ public
 	# These are the static boost objects. If a boost is needed,
 	# these should be used. Since they are static, DO NOT MODIFY THESE
 	# OUTSIDE THIS FILE.
-	@defense        = BoostComponent.new(:defense,   2.0)
-	@move_cost      = BoostComponent.new(:move_cost, 2.0)
+	@defense        = :defense
+	@move_cost      = :move_cost
 
 	# Getter methods for the class instance variables
 	def self.defense      ; @defense    ; end

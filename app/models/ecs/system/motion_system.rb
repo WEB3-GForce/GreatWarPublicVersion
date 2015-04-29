@@ -136,7 +136,7 @@ private
 		new_square = entity_manager.board[row][col][0]
 		boosts   = entity_manager.get_components(new_square, BoostComponent)
 		boosts.each {|boost|
-			if boost == BoostComponent.move_cost
+			if boost.type == BoostComponent.move_cost
 				# In this case, the movement simply needs to be
 				# subtracted from the movement since movement
 				# already takes energy into account. Since all

@@ -26,4 +26,8 @@ describe PieceComponent do
 	it "should have a command_bunker piece" do
 		expect(PieceComponent.command_bunker.type).to eq(:command_bunker)
 	end
+
+	it "should have a working to_s" do
+		expect(PieceComponent.command_bunker.to_s.class).to eq(String)
+	end
 end

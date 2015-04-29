@@ -53,6 +53,10 @@ public
 					  [TerrainComponent.flatland,
 					   OccupiableComponent.new,
 					   SpriteComponent.new(id),
+					   BoostComponent.new(BoostComponent.defense,
+					                      0.0),
+					   BoostComponent.new(BoostComponent.move_cost,
+					                      1.0),
 					   MalleableComponent.new])
 	end
 
@@ -69,6 +73,10 @@ public
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.mountain,
 					   ImpassableComponent.new,
+					   BoostComponent.new(BoostComponent.defense,
+					                      -1.0),
+					   BoostComponent.new(BoostComponent.move_cost,
+					                      -1.0),
 					   SpriteComponent.new(id)])
 	end
 
@@ -84,8 +92,10 @@ public
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.hill,
 					   OccupiableComponent.new,
-					   BoostComponent.defense,
-					   BoostComponent.move_cost,
+					   BoostComponent.new(BoostComponent.defense,
+					                      1.0),
+					   BoostComponent.new(BoostComponent.move_cost,
+					                      2.0),
 					   SpriteComponent.new(id)])
 	end
 
@@ -104,7 +114,10 @@ public
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.trench,
 					   OccupiableComponent.new,
-					   BoostComponent.defense,
+					   BoostComponent.new(BoostComponent.defense,
+					                      1.0),
+					   BoostComponent.new(BoostComponent.move_cost,
+					                      1.0),
 					   SpriteComponent.new(id)])
 	end
 
@@ -121,6 +134,10 @@ public
 		return self.create_entity(entity_manager,
 					  [TerrainComponent.river,
 					   BoostComponent.move_cost,
+					   BoostComponent.new(BoostComponent.defense,
+					                      -1.0),
+					   BoostComponent.new(BoostComponent.move_cost,
+					                      2.0),
 					   SpriteComponent.new(id)])
 	end
 
@@ -334,15 +351,6 @@ public
 		}
 	end
 
-	def self.place_army_top_left_demo(entity_manager, army_array)
-		army = army_array.dup
-		(5...10).each {|row|
-			(5...10).each { |col|
-				self.place_piece(entity_manager, army.shift, row, col)
-			}
-		}
-	end
-
 	# This function places an army in the 5x5 bottom left corner
 	#
 	# Arguments
@@ -394,17 +402,6 @@ public
 		max_col = entity_manager.col - 1
 		max_row.step(max_row-4, -1).each {|row|
 			max_col.step(max_col-4, -1).each { |col|
-				self.place_piece(entity_manager, army.shift, row, col)
-			}
-		}
-	end
-
-	def self.place_army_bottom_right_demo(entity_manager, army_array)
-		army    = army_array.dup
-		max_row  = entity_manager.row - 1
-		max_col = entity_manager.col - 1
-		(max_row-5).step(max_row-9, -1).each {|row|
-			(max_col-5).step(max_col-9, -1).each { |col|
 				self.place_piece(entity_manager, army.shift, row, col)
 			}
 		}
@@ -490,7 +487,7 @@ public
 		 970].each { |id| 
 			terrainCreator[id] = hill 
 		}
-		[-4, 750].each { |id| terrainCreator[id] = trench }
+		[-4, 1024].each { |id| terrainCreator[id] = trench }
 		[-5, 539, 571, 573, 597, 599, 600, 603, 604, 629, 630, 631, 632, 635, 
 		 636].each { |id|
 			terrainCreator[id] = river
@@ -527,12 +524,12 @@ public
 		b = lambda { |player| self.command_bunker(entity_manager, player) }
 
 		pieceCreator = {}
-		[-10, 1095].each { |id| pieceCreator[id] = lambda { i[players[0]] } }
-		[-11, 1123].each { |id| pieceCreator[id] = lambda { m[players[0]] } }
+		[-10, 1102].each { |id| pieceCreator[id] = lambda { i[players[0]] } }
+		[-11, 1137].each { |id| pieceCreator[id] = lambda { m[players[0]] } }
 		[-12, 1039].each { |id| pieceCreator[id] = lambda { a[players[0]] } }
 		[-13, 1067].each { |id| pieceCreator[id] = lambda { b[players[0]] } }
 		[-20, 1081].each { |id| pieceCreator[id] = lambda { i[players[1]] } }
-		[-21, 1109].each { |id| pieceCreator[id] = lambda { m[players[1]] } }
+		[-21, 1123].each { |id| pieceCreator[id] = lambda { m[players[1]] } }
 		[-22, 1025].each { |id| pieceCreator[id] = lambda { a[players[1]] } }
 		[-23, 1053].each { |id| pieceCreator[id] = lambda { b[players[1]] } }
 

@@ -1,10 +1,12 @@
 'use strict';
 
 var HIGHLIGHT_TYPES = {
-    move: 1138,
-    attack: 1139,
-    trench: 1140
+    move: 1152,
+    attack: 1153,
+    trench: 1154
 };
+
+var TRENCH_INDEX = 1024;
 
 // none of these hashes should be accessed directly from outside of
 // GameBoard. Use getTerrainName(index) and getTerrainStats(index) instead
@@ -21,21 +23,20 @@ var NAME_TO_FUNCTIONAL_TYPE = {
     Bridge: "flatland",
     Shore: "mountain",
     Forest: "hill",
-    Ruins: "trenches",
+    Ruins: "trench",
     Road: "flatland"
 };
 
 var FUNCTIONAL_TYPE_TO_STATS = {
-    flatland: {defense: 0, movementCost: 1},
-    mountain: {defense: "N/A", movementCost: "N/A"},
-    hill: {defense: 1, movementCost: 2},
-    trench: {defense: 1, movementCost: 1},
-    river: {defense: "N/A", movementCost: 1}
+    flatland: {defense: 0, movementCost: 0},
+    mountain: {defense: 0, movementCost: 0},
+    hill: {defense: 0, movementCost: 0},
+    trench: {defense: 0, movementCost: 0},
+    river: {defense: 0, movementCost: 0}
 }
 
 var GameBoard = function(game) {
     Phaser.Tilemap.call(this, game, 'tileset');
-
     this.addTilesetImage('fe', 'fe');
     this.addTilesetImage('fog', 'fog');
     this.addTilesetImage('highlight', 'highlight');
@@ -55,38 +56,53 @@ var GameBoard = function(game) {
     this.fogLayer = this.createLayer('fogLayer');
     this.highlightLayer = this.createLayer('highlightLayer');
 
-    this.drawGrid();
+    // this.drawGrid();
     this.unhighlightAll();
 };
 
 GameBoard.prototype = Object.create(Phaser.Tilemap.prototype);
 GameBoard.prototype.constructor = GameBoard;
 
+GameBoard.prototype.handleEffects = function(effects) {
+    var keys = Object.keys(effects);
+    for (var i = 0, key; key = keys[i]; i++) {
+        var def = effects[key].defense;
+        var mov = effects[key].move_cost;
+        if (def === -1) {
+            def = "N/A";
+        }
+        if (mov === -1) {
+            mov = "N/A";
+        }
+        FUNCTIONAL_TYPE_TO_STATS[key].defense = def;
+        FUNCTIONAL_TYPE_TO_STATS[key].movementCost = mov;
+    }
+}
+
 GameBoard.prototype.populateTerrainHash = function() {
-
-
     NAME_TO_INDEX["Flatland"] = [67, 68, 99];
     NAME_TO_INDEX["Mountain"]  =
-		[567, 750, 751, 683, 546, 385, 353, 387, 619, 481, 583, 461, 578,
-		 453, 385, 560, 491, 551, 618, 554, 681, 745, 712, 627, 680, 464, 588,
-		 595, 782, 522, 427, 582, 614, 780, 747, 522, 427, 466, 433, 593,
+	[567, 750, 751, 683, 546, 385, 353, 387, 619, 481, 583, 461, 578,
+	 453, 385, 560, 491, 551, 618, 554, 681, 745, 712, 627, 680, 464, 588,
+	 595, 782, 522, 427, 582, 614, 780, 747, 522, 427, 466, 433, 593,
          57, 25, 40, 509, 507, 508];
     NAME_TO_INDEX["Hill"] = [653, 654, 655, 685, 686];
-    NAME_TO_INDEX["Trench"] = [750];
+    NAME_TO_INDEX["Trench"] = [TRENCH_INDEX];
     NAME_TO_INDEX["River"] = [631, 636, 632, 635, 603, 604, 599, 539, 629, 573, 597, 630,
-        571, 600];
-    NAME_TO_INDEX["Ocean"] = [213, 125, 309, 310, 341, 343]
+			      571, 600];
+    NAME_TO_INDEX["Ocean"] = [213, 125, 309, 310, 341, 343, 342]
     NAME_TO_INDEX["Waterfall"] = [567];
     NAME_TO_INDEX["Shore"] = [123, 91, 21, 22, 25, 480, 380, 381, 382, 383, 507, 508, 509, 470,
-        472, 474, 53, 54, 55, 57, 221];
+			      472, 474, 53, 54, 55, 57, 221];
     NAME_TO_INDEX["Bridge"] = [35];
-    NAME_TO_INDEX["Forest"] = [721, 783, 784, 816, 817, 818, 850, 851, 882, 913, 914, 945, 946];
+    NAME_TO_INDEX["Forest"] = [721, 783, 784, 816, 817, 818, 850, 851, 882, 881, 913, 914, 945, 946];
     NAME_TO_INDEX["Ruins"] = [904, 905, 906, 936, 937, 938, 968, 970];
     NAME_TO_INDEX["Road"] = [239, 333, 334, 969];
 
-    for (var j = 0; j < Object.keys(NAME_TO_INDEX).length; j++) {
-        for (var i = 1, index; index = NAME_TO_INDEX[Object.keys(NAME_TO_INDEX)[j]][i]; i++) {
-            INDEX_TO_NAME[index] = Object.keys(NAME_TO_INDEX)[i];
+    var keys = Object.keys(NAME_TO_INDEX);
+    for (var j = 0; j < keys.length; j++) {
+        for (var i = 0; i < NAME_TO_INDEX[keys[j]].length; i++) {
+            INDEX_TO_NAME[NAME_TO_INDEX[keys[j]][i]] = keys[j];
         }
     }
 }

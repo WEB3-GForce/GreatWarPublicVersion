@@ -23,11 +23,11 @@ Preload.prototype = {
     this.load.image('generalPortrait', '/assets/generalPortrait.png');
     this.load.image('lobby', '/assets/lobby.jpg');
 
-    this.load.spritesheet('action-move', '/assets/move.png', 48, 48);
-    this.load.spritesheet('action-melee', '/assets/melee.png', 48, 48);
-    this.load.spritesheet('action-ranged', '/assets/ranged.png', 48, 48);
-    this.load.spritesheet('action-trench', '/assets/digtrench.png', 48, 48);
-    this.load.spritesheet('ui-menu', '/assets/menu.png', 48, 24);
+	this.load.spritesheet('action-move', '/assets/move.png', 48, 48);
+	this.load.spritesheet('action-melee', '/assets/melee.png', 48, 48);
+	this.load.spritesheet('action-ranged', '/assets/ranged.png', 48, 48);
+	this.load.spritesheet('action-trench', '/assets/trench.png', 48, 48);
+	this.load.spritesheet('ui-menu', '/assets/menu.png', 48, 24);
 
     this.load.spritesheet('explosion', '/assets/explosion.png', 32, 32);
 
