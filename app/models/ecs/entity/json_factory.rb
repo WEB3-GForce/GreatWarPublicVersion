@@ -561,6 +561,14 @@ class JsonFactory
 		        "arguments" => [actions]}]
 	end
 
+    def self.disable(entity_manager, entity, can_move, can_melee, can_range, can_trench)
+        if can_move or can_melee or can_range or can_trench
+            return []
+        end
+        return [{"action" => "disableUnit",
+                 "arguments" => [entity]}]
+    end
+
 
 	def self.remove_player(entity_manager, result, forfeit=false)
           remove_player_result = result[0]
