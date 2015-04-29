@@ -398,7 +398,7 @@ GameGroup.prototype.moveUnit = function(unitId, squares) {
 	}, this);
     }
     action.start = function() {        
-    action.unit.soundMove.play();
+    action.unit.sound.play("move");
 	this.move(squares);
     }
     return action;

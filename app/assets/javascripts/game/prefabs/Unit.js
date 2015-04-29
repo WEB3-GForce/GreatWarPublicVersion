@@ -6,10 +6,10 @@ var UNIT_MAP = {
         IMAGE: 'artillery',
         SOUND: {
             MOVE: ['truck-driving'],
-            MELEE_START: false,
+            MELEE_START: [],
             RANGED_START: ['shot-1', 'shot-2'],
             ATTACK_END: ['blast-1', 'blast-2'],
-            ATTACKED: false,
+            ATTACKED: [],
             DIE: ['artillery-death']
         }
     },
@@ -18,11 +18,11 @@ var UNIT_MAP = {
         NAME: 'Bunker',
         IMAGE: 'command',
         SOUND: {
-            MOVE: false,
-            MELEE_START: false,
-            RANGED_START: false,
-            ATTACK_END: false,
-            ATTACKED: false,
+            MOVE: [],
+            MELEE_START: [],
+            RANGED_START: [],
+            ATTACK_END: [],
+            ATTACKED: [],
             DIE: ['artillery-death']
         }
     },
@@ -34,7 +34,7 @@ var UNIT_MAP = {
             MOVE: ['marching'],
             MELEE_START: ['shotgun', 'rifle'],
             RANGED_START: ['sniper', 'rifle'],
-            ATTACK_END: false,
+            ATTACK_END: [],
             ATTACKED: ['hurt'],
             DIE: ['hurt']
         }
@@ -47,7 +47,7 @@ var UNIT_MAP = {
             MOVE: ['marching'],
             MELEE_START: ['pistol'],
             RANGED_START: ['machine-gun-1, machine-gun-2'],
-            ATTACK_END: false,
+            ATTACK_END: [],
             ATTACKED: ['hurt'],
             DIE: ['hurt']
         }
@@ -92,18 +92,34 @@ var Unit = function(game, id, type, x, y, player, stats, faction) {
     this.stats = stats;
     this.player = player;
 
-    randChoice = function(array) {
-        if (!array)
+    var randChoice = function(array) {
+        if (!array.length)
             return '';
         return array[Math.floor(Math.random() * array.length)];
-    }
+    };
 
-    this.soundMove = this.game.add.audio(randChoice(UNIT_MAP[type].SOUND.MOVE));
-    this.soundMeleeStart = this.game.add.audio(randChoice(UNIT_MAP[type].SOUND.MELEE_START));
-    this.soundRangedStart = this.game.add.audio(randChoice(UNIT_MAP[type].SOUND.RANGED_START));
-    this.soundAttackEnd = this.game.add.audio(randChoice(UNIT_MAP[type].SOUND.ATTACK_END));
-    this.soundAttacked = this.game.add.audio(randChoice(UNIT_MAP[type].SOUND.ATTACKED);
-    this.soundDie = this.game.add.audio(randChoice(UNIT_MAP[type].SOUND.DIE));
+    this.sound = {
+	game: this.game,
+	play: function(name) {
+	    if (this.sounds[name].key !== "")
+		this.sounds[name].play();
+	},
+	stop: function(name) {
+	    if (this.sounds[name].key !== "")
+		this.sounds[name].stop();
+	},
+	sounds: {},
+	add: function(name, sound) {
+	    this.sounds[name] = this.game.add.audio(sound);
+	}
+    };
+
+    this.sound.add("move", randChoice(UNIT_MAP[type].SOUND.MOVE));
+    this.sound.add("melee-start", randChoice(UNIT_MAP[type].SOUND.MELEE_START));
+    this.sound.add("ranged-start", randChoice(UNIT_MAP[type].SOUND.RANGED_START));
+    this.sound.add("attack-end", randChoice(UNIT_MAP[type].SOUND.ATTACK_END));
+    this.sound.add("attacked", randChoice(UNIT_MAP[type].SOUND.ATTACKED));
+    this.sound.add("die", randChoice(UNIT_MAP[type].SOUND.DIE));
 };
 
 Unit.prototype = Object.create(Phaser.Sprite.prototype);
@@ -137,7 +153,7 @@ Unit.prototype.moveAdjacent = function(orientation) {
 
 Unit.prototype.stop = function() {
     this.animations.stop();
-    this.soundMove.stop();
+    this.sound.stop("move");
     this.frame = 0;
 }
 
@@ -208,7 +224,7 @@ Unit.prototype.attack = function(square, type) {
 
 Unit.prototype.getHit = function() {
     this.animations.play("get-hit", 8, true);
-    this.soundDie.play();
+    this.sound.play("attacked");
 }
 
 Unit.prototype.digTrench = function(callback, callbackContext) {
