@@ -116,7 +116,6 @@ class Game
   end
 
   # Checks if unit can do any more actions.
-  # TODO add test
   def self.check_unit_actions(req_id, em, entity)
     if (em[entity][PieceComponent][0].type == PieceComponent.command_bunker.type)
         return []
