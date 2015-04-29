@@ -118,6 +118,10 @@ class Game
   # Checks if unit can do any more actions.
   # TODO add test
   def self.check_unit_actions(req_id, em, entity)
+    if (em[entity][PieceComponent][0].type == PieceComponent.command_bunker.type)
+        return []
+    end
+
     can_move  = !MotionSystem.moveable_locations(em, entity).empty?
     can_melee  = !MeleeSystem.attackable_locations(em, entity).empty?
     can_range  = !RangeSystem.attackable_locations(em, entity).empty?
