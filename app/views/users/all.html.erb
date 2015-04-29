@@ -8,7 +8,7 @@
   <% @users.each do |user| %>
     <li>
       <%= gravatar_for user%>
-      <%= link_to user.name, user %>
+      <%= link_to user.name, user, class: "center" %>
       <% if logged?(user) %>
         <%= "Logged On" %>
       <% else %>

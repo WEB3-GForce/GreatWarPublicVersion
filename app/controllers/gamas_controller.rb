@@ -55,12 +55,13 @@ class GamasController < ApplicationController
     if !user.gama
         if @gama.full?
           flash[:warning] = "Sorry, game is full."
-          redirect_to games_path
+          redirect_to gamas_path
         else
           @gama.users << user
           @gama.save
-          @gama.notify(user)
+          #@gama.notify(user)
           if @gama.full?
+            p 'HELLO'
             @gama.pending = false
             @gama.save
             @gama.start
