@@ -117,7 +117,9 @@ class Game
 
   # Checks if unit can do any more actions.
   def self.check_unit_actions(req_id, em, entity)
-    if (em[entity][PieceComponent][0].type == PieceComponent.command_bunker.type)
+    if em[entity].nil?
+      return []
+    elsif (em[entity][PieceComponent][0].type == PieceComponent.command_bunker.type)
         return []
     end
 
