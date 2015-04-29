@@ -117,7 +117,7 @@ class Game
 
   # Checks if unit can do any more actions.
   def self.check_unit_actions(req_id, em, entity)
-    if em[entity].nil?
+    if not em.has_key? entity
       return []
     elsif (em[entity][PieceComponent][0].type == PieceComponent.command_bunker.type)
         return []
@@ -161,7 +161,7 @@ class Game
     square = em.board[row][col][0]
     path = MotionSystem.make_move(em, entity, square)
     result = JsonFactory.move(em, entity, path)
-    result += Game.check_unit_actions(req_id, em, entity) 
+    result += Game.check_unit_actions(req_id, em, entity)
     return result
   end
 
@@ -191,7 +191,7 @@ class Game
     target = em.board[row][col][1].first
     ranged_result = RangeSystem.update(em, entity, target)
     result = JsonFactory.ranged_attack(em, ranged_result)
-    result += Game.check_unit_actions(req_id, em, entity) 
+    result += Game.check_unit_actions(req_id, em, entity)
     return result
   end
 
@@ -201,7 +201,7 @@ class Game
     square = em.board[row][col][0]
     trench_result = TrenchSystem.make_trench(em, entity, square)
     result = JsonFactory.make_trench(em, entity, trench_result)
-    result += Game.check_unit_actions(req_id, em, entity) 
+    result += Game.check_unit_actions(req_id, em, entity)
     return result
   end
 
