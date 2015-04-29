@@ -123,7 +123,7 @@ class Game
     can_range  = !RangeSystem.attackable_locations(em, entity).empty?
     can_trench = !TrenchSystem.trenchable_locations(em, entity).empty?
 
-    return JsonFactory.disable(em, entity, an_move, can_melee, can_range, can_trench)
+    return JsonFactory.disable(em, entity, can_move, can_melee, can_range, can_trench)
   end
 
   # Gets all of the locations an entity can move to.

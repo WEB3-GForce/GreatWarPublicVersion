@@ -59,6 +59,8 @@ var Unit = function(game, id, type, x, y, player, stats, faction) {
 
     this.stats = stats;
     this.player = player;
+
+    this.disabled = false;
 };
 
 Unit.prototype = Object.create(Phaser.Sprite.prototype);
@@ -167,4 +169,14 @@ Unit.prototype.getHit = function() {
 Unit.prototype.digTrench = function(callback, callbackContext) {
     this.events.onAnimationComplete.addOnce(callback, callbackContext);
     this.animations.play("dig-trench", 8, false);
+}
+
+Unit.prototype.disable = function() {
+    this.disabled = true;
+    this.frame = 7;
+}
+
+Unit.prototype.enable = function() {
+    this.disabled = false;
+    this.frame = 0;
 }

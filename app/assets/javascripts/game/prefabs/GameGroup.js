@@ -107,11 +107,11 @@ GameGroup.prototype.gameOver = function(playerId) {
 
 GameGroup.prototype.onClick = function(targetObject) {
     if (targetObject === null) {
-	    this.tileClicked();
+	this.tileClicked();
     } else if (targetObject.sprite instanceof Unit) {
-	    this.unitClicked(targetObject.sprite);
+	this.unitClicked(targetObject.sprite);
     } else if (targetObject.sprite instanceof Phaser.Button) {
-	    this.buttonClicked(targetObject.sprite);
+	this.buttonClicked(targetObject.sprite);
     }
 }
 
@@ -123,15 +123,15 @@ GameGroup.prototype.tileClicked = function() {
 	if (this.gameBoard.isHighlighted(this.tile.x, this.tile.y)) {
 	    switch (this.action) {
 	    case 'move':
-		    this.game.dispatcher.rpc("move_unit", [
-		        this.selected.id,
-		        {
-			    x: this.tile.x,
-			    y: this.tile.y
-		        }
-		    ]);
-        break;
-        case 'trench':
+		this.game.dispatcher.rpc("move_unit", [
+		    this.selected.id,
+		    {
+			x: this.tile.x,
+			y: this.tile.y
+		    }
+		]);
+		break;
+            case 'trench':
 		this.game.dispatcher.rpc("make_trench", [
 		    this.selected.id,
 		    {
@@ -180,32 +180,33 @@ GameGroup.prototype.unitClicked = function(unit) {
 
 GameGroup.prototype.interact = function(unit) {
     if (this.gameBoard.isHighlighted(this.tile.x, this.tile.y)) {
-	    if (unit.isMine()) {
-	        // maybe later we have within-team interaction
-	        this.select(unit); // just select the clicked unit for now though
-	    } else {
-	        // clicked enemy unit
-	        if ((this.action === 'ranged' || this.action === 'melee')) {
-		    this.game.dispatcher.rpc("attack", [
-		        this.selected.id,
-		        {x: this.tile.x, y: this.tile.y},
-		        this.action
-		    ]);
-		    this.selected = null;
-	        }
+	if (unit.isMine()) {
+	    // maybe later we have within-team interaction
+	    this.select(unit); // just select the clicked unit for now though
+	} else {
+	    // clicked enemy unit
+	    if ((this.action === 'ranged' || this.action === 'melee')) {
+		this.game.dispatcher.rpc("attack", [
+		    this.selected.id,
+		    {x: this.tile.x, y: this.tile.y},
+		    this.action
+		]);
+		this.selected = null;
 	    }
-	    this.gameBoard.unhighlightAll();
-	    this.action = null;
+	}
+	this.gameBoard.unhighlightAll();
+	this.action = null;
     }
 }
 
 GameGroup.prototype.select = function(unit) {
-    if (unit.isMine() && !this.game.animatingAction) {
+    if (unit.isMine() && !this.game.animatingAction && !unit.disabled) {
+	console.log(unit.disabled);
         this.selected = unit;
-	    this.ui.setPrimaryUnit(this.selected);
-	    this.gameBoard.unhighlightAll();
-	    this.action = null;
-	    this.game.dispatcher.rpc("get_unit_actions", [this.selected.id]);
+	this.ui.setPrimaryUnit(this.selected);
+	this.gameBoard.unhighlightAll();
+	this.action = null;
+	this.game.dispatcher.rpc("get_unit_actions", [this.selected.id]);
     }
 }
 
@@ -257,7 +258,7 @@ GameGroup.prototype.initGame = function(board, units, turn, players, me, effects
 	}
 
 	this.gameGroup.gameBoard.effects = effects;
-    this.gameGroup.gameBoard.handleEffects(effects);
+	this.gameGroup.gameBoard.handleEffects(effects);
 
 	for (var i = 0; i < units.length; i++) {
 	    this.gameGroup.unitGroup.addUnit(units[i].id,
@@ -267,6 +268,7 @@ GameGroup.prototype.initGame = function(board, units, turn, players, me, effects
 					     units[i].player,
 					     units[i].stats,
 					     players[units[i].player].faction);
+	    this.gameGroup.game.dispatcher.rpc("check_unit_actions", [units[i].id]);
 	}
 
 	this.gameGroup.turn = turn.playerid;
@@ -311,18 +313,29 @@ GameGroup.prototype.showUnitActions = function(unitActions) {
     return action;
 }
 
+GameGroup.prototype.disableUnit = function(unitId) {
+    var action = {
+	unit: this.unitGroup.find(unitId)
+    }
+    action.start = function() {
+	this.unit.disable();
+	this.onComplete();
+    }
+    return action;
+}
+
 GameGroup.prototype.highlightSquares = function(type, squares) {
     var action = {
-	    squares: squares,
-	    gameBoard: this.gameBoard,
-	    type: type
+	squares: squares,
+	gameBoard: this.gameBoard,
+	type: type
     };
     action.start = function() {
-	    for (var i = 0, square; square = this.squares[i]; i++) {
-	        var tile = this.gameBoard.getTile(square.x, square.y, this.gameBoard.terrainLayer);
-	        this.gameBoard.highlight(tile.x, tile.y, type);
-	    }
-	    this.onComplete();
+	for (var i = 0, square; square = this.squares[i]; i++) {
+	    var tile = this.gameBoard.getTile(square.x, square.y, this.gameBoard.terrainLayer);
+	    this.gameBoard.highlight(tile.x, tile.y, type);
+	}
+	this.onComplete();
     };
     return action;
 }
@@ -342,10 +355,11 @@ GameGroup.prototype.revealFog = function(squares) {
     return action;
 }
 
-GameGroup.prototype.resetEnergy = function(playerId) {
+GameGroup.prototype.resetUnits = function() {
     var units = this.unitGroup.all();
     for (var i = 0, unit; unit = units[i]; i++) {
         unit.stats.energy.current = unit.stats.energy.max;
+        unit.enable();
     }
 }
 
@@ -455,7 +469,7 @@ GameGroup.prototype.setTurn = function(playerId, turnCount) {
 	    this.gameGroup.turn = playerId;
 	    this.gameGroup.turnCount = turnCount;
 	    this.ui.setPlayer(playerId, this.gameGroup.players[playerId], turnCount);
-	    this.gameGroup.resetEnergy();
+	    this.gameGroup.resetUnits();
 	    var tween = this.ui.setTurnInfo(this.gameGroup.players[playerId]);
 	    tween.onComplete.add(this.onComplete, this);
 	    tween.start();
