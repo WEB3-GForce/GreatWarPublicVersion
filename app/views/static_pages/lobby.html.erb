@@ -1,0 +1,29 @@
+<% provide(:title, "Lobby") %>
+
+<div id="col-M">
+    
+      <div class="main-box">
+        <div class="main-top"></div>
+        <div class="main-filler">
+        
+          <div class="main-info">
+            
+            <h1 class="center">Welcome to the Lobby!</h1>
+            <div class="clearB" style="height:20px"></div>
+      <div class="center" >
+  	    <% if !@user.gama %>
+  	    <%= link_to "Join Game", gamas_path, class: "btn btn-lg btn-default" %>
+        <div class="clearB" style="height:10px"></div>
+  	    <%= link_to "Create Game", new_gama_path, class: "btn btn-lg btn-default" %>
+  	    <% else %>
+  	    <%= link_to "Return to Game", "/play", class: "btn btn-lg btn-default" %>
+         <div class="clearB" style="height:10px"></div>
+  	    <%= link_to "Leave Game", "/leave/#{@user.gama_id}", class: "btn btn-lg btn-default", method: :put %>
+              <% end %>
+      </div>
+          </div>
+        <div class="main-footer"></div>
+      </div>
+      <div class="clearB" style="height:20px"></div>
+      </div>
+    </div>

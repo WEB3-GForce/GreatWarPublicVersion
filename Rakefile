@@ -3,4 +3,6 @@
 
 require File.expand_path('../config/application', __FILE__)
 
+#task :test => :spec
+
 Rails.application.load_tasks
