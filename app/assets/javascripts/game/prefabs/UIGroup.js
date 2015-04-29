@@ -128,13 +128,17 @@ UIGroup.prototype.initTileInfoUI = function() {
 
 UIGroup.prototype.setTile = function(group, tile) {
     if (tile) {
-	group.tile.frame = tile.index - 1;
-	group.title.text = tile.name;
-        group.defense.text = 'DEF:  ' + tile.defense;
+	    group.tile.frame = tile.index - 1;
+	    group.title.text = tile.name;
+        var deftext = 'DEF:  ';
+        if (tile.defense !== 'N/A') {
+            deftext += '+';
+        }
         var movtext = 'MOV:  ';
         if (tile.movementCost !== 'N/A') {
             movtext += 'x';
         }
+        group.defense.text = deftext + tile.defense;
         group.movementCost.text = movtext  + tile.movementCost;
 	group.visible = true;
     } else {
