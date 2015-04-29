@@ -54,7 +54,7 @@ UIGroup.prototype.initPlayerInfoUI = function() {
 					      20,
 					      this.playerInfo);
 
-    this.playerPortrait = this.game.add.sprite(0, 0, 'generalPortrait', 0, this.playerInfo);
+    this.playerPortrait = this.game.add.sprite(0, 0, "", 0, this.playerInfo);
     this.playerPortrait.width = 64;
     this.playerPortrait.height = 64;
 

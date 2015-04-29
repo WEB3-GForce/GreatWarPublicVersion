@@ -16,6 +16,7 @@ var GameGroup = function(game, parent) {
 
     this.turn = null;
     this.turnCount = null;
+    this.turnOver = false;
 
     this.players = null;
     this.game.constants.PLAYER_ID = null;
@@ -30,15 +31,16 @@ var GameGroup = function(game, parent) {
         var q = 81;
 
         if (key.keyCode === z) {
-            if (this.turn == this.game.constants.PLAYER_ID) {
+            if (this.myTurn()) {
 	        this.game.dispatcher.rpc("end_turn", []); // backend will know whose turn to end
+		this.turnOver = true;
 		this.selected = null;
 		this.action = null;
 		this.gameBoard.unhighlightAll();
 		this.ui.hideMenu().start();
             }
         } else if (key.keyCode === q) {
-            this.game.dispatcher.rpc("leave_game", []);
+		this.game.dispatcher.rpc("leave_game", []);
         }
     }).bind(this);
 
@@ -50,7 +52,7 @@ GameGroup.prototype = Object.create(Phaser.Group.prototype);
 GameGroup.prototype.constructor = GameGroup;
 
 GameGroup.prototype.myTurn = function() {
-    return this.turn === this.game.constants.PLAYER_ID;
+    return this.turn === this.game.constants.PLAYER_ID && !this.turnOver;
 }
 
 GameGroup.prototype.update = function(mouse) {
@@ -93,7 +95,11 @@ GameGroup.prototype.update = function(mouse) {
 }
 
 GameGroup.prototype.eliminatePlayer = function(playerId) {
-
+    return {
+	start: function() {
+	    this.onComplete();
+	}
+    }
 }
 
 GameGroup.prototype.gameOver = function(playerId) {
@@ -471,6 +477,7 @@ GameGroup.prototype.setTurn = function(playerId, turnCount) {
 	start: function() {
 	    this.gameGroup.turn = playerId;
 	    this.gameGroup.turnCount = turnCount;
+	    this.gameGroup.turnOver = false;
 	    this.ui.setPlayer(playerId, this.gameGroup.players[playerId], turnCount);
 	    this.gameGroup.resetUnits();
 	    var tween = this.ui.setTurnInfo(this.gameGroup.players[playerId]);
