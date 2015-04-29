@@ -8,7 +8,8 @@ var UNIT_MAP = {
             MOVE: ['truck-driving'],
             MELEE_START: [],
             RANGED_START: ['shot-1', 'shot-2'],
-            ATTACK_END: ['blast-1', 'blast-2'],
+            MELEE_END: [],
+            RANGED_END: ['blast-1', 'blast-2'],
             ATTACKED: [],
             DIE: ['artillery-death']
         }
@@ -21,7 +22,8 @@ var UNIT_MAP = {
             MOVE: [],
             MELEE_START: [],
             RANGED_START: [],
-            ATTACK_END: [],
+            MELEE_END: [],
+            RANGED_END: [],
             ATTACKED: [],
             DIE: ['artillery-death']
         }
@@ -32,9 +34,10 @@ var UNIT_MAP = {
         IMAGE: 'infantry',
         SOUND: {
             MOVE: ['marching'],
-            MELEE_START: ['shotgun', 'rifle'],
-            RANGED_START: ['sniper', 'rifle'],
-            ATTACK_END: [],
+            MELEE_START: [],
+            RANGED_START: [],
+            MELEE_END: ['shotgun', 'rifle'],
+            RANGED_END: ['sniper', 'rifle'],
             ATTACKED: ['hurt'],
             DIE: ['die-1', 'die-2']
         }
@@ -45,9 +48,10 @@ var UNIT_MAP = {
         IMAGE: 'machinegun',
         SOUND: {
             MOVE: ['marching'],
-            MELEE_START: ['pistol'],
-            RANGED_START: ['machine-gun-1, machine-gun-2'],
-            ATTACK_END: [],
+            MELEE_START: [],
+            RANGED_START: [],
+            MELEE_END: ['pistol'],
+            RANGED_END: ['machine-gun-1, machine-gun-2'],
             ATTACKED: ['hurt'],
             DIE: ['die-1', 'die-2']
         }
@@ -102,9 +106,17 @@ var Unit = function(game, id, type, x, y, player, stats, faction) {
 
     this.sound = {
 	game: this.game,
-	play: function(name) {
-	    if (this.sounds[name].key !== "")
-		this.sounds[name].play();
+	play: function(name, callback, callbackContext) {
+	    if (this.sounds[name].key !== "") {
+            this.sounds[name].play();
+            if (callback) {
+                this.sounds[name].onStop.addOnce(callback, callbackContext);
+            }
+        } else {
+            callback.bind(callbackContext);
+            callback();
+        }
+
 	},
 	stop: function(name) {
 	    if (this.sounds[name].key !== "")
@@ -119,7 +131,8 @@ var Unit = function(game, id, type, x, y, player, stats, faction) {
     this.sound.add("move", randChoice(UNIT_MAP[type].SOUND.MOVE));
     this.sound.add("melee-start", randChoice(UNIT_MAP[type].SOUND.MELEE_START));
     this.sound.add("ranged-start", randChoice(UNIT_MAP[type].SOUND.RANGED_START));
-    this.sound.add("attack-end", randChoice(UNIT_MAP[type].SOUND.ATTACK_END));
+    this.sound.add("melee-end", randChoice(UNIT_MAP[type].SOUND.MELEE_END));
+    this.sound.add("ranged-end", randChoice(UNIT_MAP[type].SOUND.RANGED_END));
     this.sound.add("attacked", randChoice(UNIT_MAP[type].SOUND.ATTACKED));
     this.sound.add("die", randChoice(UNIT_MAP[type].SOUND.DIE));
 };

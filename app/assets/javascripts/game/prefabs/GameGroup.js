@@ -396,17 +396,14 @@ GameGroup.prototype.attack = function(unitId, square, type, unitType) {
     };
 
     action.start = function() {
-        action.unit.sound.play(type == "melee" ? "melee-start" : "ranged-start");
-        var timer = this.gameGroup.game.time.create(true);
-        timer.add(1000, function() {
+        action.unit.sound.play(type+"-start", function() {
             if (unitType === "artillery")
                 this.gameGroup.startShake();
             this.tween = this.unit.attack(square, type);
             this.tween.onComplete.add(this.onComplete, this);
             this.tween.start();
-            action.unit.sound.play("attack-end");
+            action.unit.sound.play(type+"-end");
         }, this);
-        timer.start();
     }
     return action;
 }
