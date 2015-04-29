@@ -51,6 +51,7 @@ Play.prototype = {
                 };
             }(i+1), this);
         }
+        this.music[0].play();
 
         this.shakeTimerMax = 80;
 
