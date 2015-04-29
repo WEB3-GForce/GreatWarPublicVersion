@@ -1,6 +1,7 @@
 <% provide(:title, 'All Games') %>
-<h1 class="log">All Games</h1>
-
+<div class="center">
+<h1>All Games</h1>
+</div>
 <div id="col-M">
   <div class="main-box">
     <div class="main-top"></div>
@@ -8,6 +9,11 @@
             
       <div class="main-info">
         <div class="main-table">
+          <% if @gamas.empty? %>
+            <div>
+              <%= link_to 'Create Game', new_gama_path, class: "btn btn-default create" %>
+            </div>
+          <%else%>
       	<table class="table table-striped">
           <div>
               <%= link_to 'Create Game', new_gama_path, class: "btn btn-default" %>
@@ -17,7 +23,7 @@
           					<th>Game</th>
           					<th>Status</th>
           					<th>Players in Game</th>
-          					<th>join/leave</th>
+          					<th>Action</th>
           				</tr>
           			</thead>
           			<tbody>
@@ -38,8 +44,9 @@
           <% end %>
           			</tbody>
           		</table>
-					   
-					    
+				
+
+				<%end %>	    
 			</div>
       </div>
       </div>
