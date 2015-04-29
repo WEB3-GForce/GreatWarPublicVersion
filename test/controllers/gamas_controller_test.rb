@@ -3,6 +3,7 @@ require 'test_helper'
 class GamasControllerTest < ActionController::TestCase
   setup do
     @gama = gamas(:one)
+    log_in_as(users(:david))
   end
 
   test "should get index" do
@@ -16,12 +17,20 @@ class GamasControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should join game" do
+
+    assert_difference('@gama.users.count', 1) do
+      put :join, id: @gama
+      assert_redirected_to "/play"
+    end
+  end
+
   test "should create game" do
-    assert_difference('Game.count') do
-      post :create, gama: { done: @gama.done, pending: @gama.pending }
+    assert_difference('Gama.count') do
+      post :create, gama: { name: "example"}
     end
 
-    assert_redirected_to gama_path(assigns(:gama))
+    assert_redirected_to "/play"
   end
 
   test "should show game" do
@@ -29,18 +38,14 @@ class GamasControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "should get edit" do
-    get :edit, id: @gama
-    assert_response :success
-  end
 
   test "should update game" do
-    patch :update, id: @gama, gama: { done: @gama.done, pending: @gama.pending }
-    assert_redirected_to game_path(assigns(:gama))
+    patch :update, id: @gama, gama: { name: "example1" }
+    assert_redirected_to gama_path(assigns(:gama))
   end
 
   test "should destroy game" do
-    assert_difference('Game.count', -1) do
+    assert_difference('Gama.count', -1) do
       delete :destroy, id: @gama
     end
 
