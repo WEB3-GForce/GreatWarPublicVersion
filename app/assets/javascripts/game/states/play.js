@@ -92,7 +92,7 @@ Play.prototype = {
 	this.currentAction = this.currentSequence.shift();
 
 	// for debugging
-	console.log(this.currentAction);
+	// console.log(this.currentAction);
 
 	var action = this.gameGroup[this.currentAction.action].apply(
 	    this.gameGroup,
