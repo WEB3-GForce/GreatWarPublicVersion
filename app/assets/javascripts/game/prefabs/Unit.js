@@ -51,7 +51,7 @@ var UNIT_MAP = {
             MELEE_START: [],
             RANGED_START: [],
             MELEE_END: ['pistol'],
-            RANGED_END: ['machine-gun-1, machine-gun-2'],
+            RANGED_END: ['machine-gun-1', 'machine-gun-2'],
             ATTACKED: ['hurt'],
             DIE: ['die-1', 'die-2']
         }
