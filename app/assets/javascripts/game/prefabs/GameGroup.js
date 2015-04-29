@@ -201,7 +201,6 @@ GameGroup.prototype.interact = function(unit) {
 
 GameGroup.prototype.select = function(unit) {
     if (unit.isMine() && !this.game.animatingAction && !unit.disabled) {
-	console.log(unit.disabled);
         this.selected = unit;
 	this.ui.setPrimaryUnit(this.selected);
 	this.gameBoard.unhighlightAll();

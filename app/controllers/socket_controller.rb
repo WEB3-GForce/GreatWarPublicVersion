@@ -72,7 +72,7 @@ class SocketController < WebsocketRails::BaseController
     # # that's fine, it just needs to be sent as one regardless, hence this:
     response = [response] unless response.kind_of?(Array)
 
-    if response
+    if response.any?
       public_calls = ['move_unit', 'attack', 'end_turn', 'leave_game', 'make_trench']
       if public_calls.include? method_name
         Game.get_user_channels(manager).each do |channel|
