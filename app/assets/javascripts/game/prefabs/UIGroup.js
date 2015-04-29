@@ -131,7 +131,11 @@ UIGroup.prototype.setTile = function(group, tile) {
 	group.tile.frame = tile.index - 1;
 	group.title.text = tile.name;
         group.defense.text = 'DEF:  ' + tile.defense;
-        group.movementCost.text = 'MOV:  ' + tile.movementCost;
+        var movtext = 'MOV:  ';
+        if (tile.movementCost !== 'N/A') {
+            movtext += 'x';
+        }
+        group.movementCost.text = movtext  + tile.movementCost;
 	group.visible = true;
     } else {
 	group.visible = false;

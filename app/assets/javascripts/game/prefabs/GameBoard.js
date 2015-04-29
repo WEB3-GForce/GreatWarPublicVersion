@@ -23,16 +23,16 @@ var NAME_TO_FUNCTIONAL_TYPE = {
     Bridge: "flatland",
     Shore: "mountain",
     Forest: "hill",
-    Ruins: "trenches",
+    Ruins: "trench",
     Road: "flatland"
 };
 
 var FUNCTIONAL_TYPE_TO_STATS = {
-    flatland: {defense: 0, movementCost: 1},
-    mountain: {defense: "N/A", movementCost: "N/A"},
-    hill: {defense: 1, movementCost: 2},
-    trench: {defense: 1, movementCost: 1},
-    river: {defense: "N/A", movementCost: 1}
+    flatland: {defense: 0, movementCost: 0},
+    mountain: {defense: 0, movementCost: 0},
+    hill: {defense: 0, movementCost: 0},
+    trench: {defense: 0, movementCost: 0},
+    river: {defense: 0, movementCost: 0}
 }
 
 var GameBoard = function(game) {
@@ -62,6 +62,22 @@ var GameBoard = function(game) {
 
 GameBoard.prototype = Object.create(Phaser.Tilemap.prototype);
 GameBoard.prototype.constructor = GameBoard;
+
+GameBoard.prototype.handleEffects = function(effects) {
+    var keys = Object.keys(effects);
+    for (var i = 0, key; key = keys[i]; i++) {
+        var def = effects[key].defense;
+        var mov = effects[key].move_cost;
+        if (def === -1) {
+            def = "N/A";
+        }
+        if (mov === -1) {
+            mov = "N/A";
+        }
+        FUNCTIONAL_TYPE_TO_STATS[key].defense = def;
+        FUNCTIONAL_TYPE_TO_STATS[key].movementCost = mov;
+    }
+}
 
 GameBoard.prototype.populateTerrainHash = function() {
     NAME_TO_INDEX["Flatland"] = [67, 68, 99];

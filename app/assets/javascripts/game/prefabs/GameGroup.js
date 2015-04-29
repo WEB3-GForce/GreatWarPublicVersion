@@ -250,7 +250,7 @@ GameGroup.prototype.initGame = function(board, units, turn, players, me, effects
 	}
 
 	this.gameGroup.gameBoard.effects = effects;
-	console.log(effects);
+    this.gameGroup.gameBoard.handleEffects(effects);
 
 	for (var i = 0; i < units.length; i++) {
 	    this.gameGroup.unitGroup.addUnit(units[i].id,
