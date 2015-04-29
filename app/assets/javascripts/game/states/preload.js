@@ -57,8 +57,8 @@ Preload.prototype = {
             return o;
     };
 
-    var order = [1];// shuffle([1, 2, 3, 4, 5, 6, 7, 8]);
-    for (var i = 0; i < 1; i++) {
+    var order = [1 2 3];// shuffle([1, 2, 3, 4, 5, 6, 7, 8]);
+    for (var i = 0; i < 3; i++) {
         this.load.audio('music-'+i, 'assets/music-'+order[i]+'.mp3');
     }
     

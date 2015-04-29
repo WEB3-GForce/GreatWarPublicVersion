@@ -40,12 +40,12 @@ Play.prototype = {
         this.backgroundSound.volume = 0.5;
         this.backgroundSound.play();
 
-        this.music = new Array(1);
-        for (var i = 0; i < 1; i++) {
+        this.music = new Array(3);
+        for (var i = 0; i < 3; i++) {
             this.music[i] = this.game.add.audio('music-'+i);
-            this.music[i].volume = 0.5;
+            this.music[i].volume = 0.6;
         }
-        for (var i = 0; i < 1; i++) {
+        for (var i = 0; i < 3; i++) {
             this.music[i].onStop.add(function(next) {
                 return function() {
                     this.music[next % 1].play();
