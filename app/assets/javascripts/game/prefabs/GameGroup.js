@@ -417,7 +417,8 @@ GameGroup.prototype.moveUnit = function(unitId, squares) {
 	    this.move(squares.slice(1))
 	}, this);
     }
-    action.start = function() {
+    action.start = function() {        
+    action.unit.sound.play("move");
 	this.move(squares);
     }
     return action;
