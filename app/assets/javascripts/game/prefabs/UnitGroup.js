@@ -25,12 +25,11 @@ UnitGroup.prototype.removeUnit = function(id) {
     this.remove(unit, true);
 }
 
-UnitGroup.prototype.getAllByPlayer = function(playerId) {
+UnitGroup.prototype.all = function() {
     var units = [];
-    for (var unit in this.idLookup) {
-        if (this.idLookup[unit].player == playerId) {
-            units.push(this.idLookup[unit]);
-        }
+    var keys = Object.keys(this.idLookup);
+    for (var i = 0; i < keys.length; i++) {
+	units.push(this.idLookup[keys[i]]);
     }
     return units;
 }

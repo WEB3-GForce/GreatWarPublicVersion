@@ -36,7 +36,6 @@ var GameGroup = function(game, parent) {
 		this.action = null;
 		this.gameBoard.unhighlightAll();
 		this.ui.hideMenu().start();
-	        this.resetEnergy(this.turn);
             }
         } else if (key.keyCode === q) {
             this.game.dispatcher.rpc("leave_game", []);
@@ -70,8 +69,6 @@ GameGroup.prototype.update = function(mouse) {
 	this.unit = null;
     }
 
-    // deal with tile info stuff:
-    // console.log(this.tile.index);
     this.tile.name = this.gameBoard.getTerrainName(this.tile.index);
     this.tile.defense = this.gameBoard.getTerrainStats(this.tile.index).defense;
     this.tile.movementCost = this.gameBoard.getTerrainStats(this.tile.index).movementCost;
@@ -346,7 +343,7 @@ GameGroup.prototype.revealFog = function(squares) {
 }
 
 GameGroup.prototype.resetEnergy = function(playerId) {
-    var units = this.unitGroup.getAllByPlayer(playerId);
+    var units = this.unitGroup.all();
     for (var i = 0, unit; unit = units[i]; i++) {
         unit.stats.energy.current = unit.stats.energy.max;
     }
@@ -458,6 +455,7 @@ GameGroup.prototype.setTurn = function(playerId, turnCount) {
 	    this.gameGroup.turn = playerId;
 	    this.gameGroup.turnCount = turnCount;
 	    this.ui.setPlayer(playerId, this.gameGroup.players[playerId], turnCount);
+	    this.gameGroup.resetEnergy();
 	    var tween = this.ui.setTurnInfo(this.gameGroup.players[playerId]);
 	    tween.onComplete.add(this.onComplete, this);
 	    tween.start();
