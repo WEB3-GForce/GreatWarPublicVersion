@@ -57,11 +57,11 @@ Preload.prototype = {
             return o;
     };
 
-    var order = [1 2 3];// shuffle([1, 2, 3, 4, 5, 6, 7, 8]);
+    var order = [1, 2, 3];// shuffle([1, 2, 3, 4, 5, 6, 7, 8]);
     for (var i = 0; i < 3; i++) {
         this.load.audio('music-'+i, 'assets/music-'+order[i]+'.mp3');
     }
-    
+
     this.load.audio('artillery-death', 'assets/artillery-death.mp3');
     this.load.audio('blast-1', 'assets/blast-1.mp3');
     this.load.audio('blast-2', 'assets/blast-2.mp3');
