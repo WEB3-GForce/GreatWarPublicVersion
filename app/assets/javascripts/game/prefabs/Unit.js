@@ -113,7 +113,9 @@ var Unit = function(game, id, type, x, y, player, stats, faction) {
                 this.sounds[name].onStop.addOnce(callback, callbackContext);
             }
         } else {
-            callback.bind(callbackContext)();
+            if (callback) {
+		callback.bind(callbackContext)();
+            }
         }
 
 	},
