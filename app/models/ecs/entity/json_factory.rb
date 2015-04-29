@@ -24,8 +24,6 @@ class JsonFactory
 		terrain_comp = entity_manager.get_components(entity, TerrainComponent).first
 		stats_hash = {}
 		stats   = entity_manager.get_components(entity, BoostComponent)
-		stats_hash["defense"] = 0
-		stats_hash["move_cost"] = 0
 		stats.each {|stat|
 			stats_hash[stat.type.to_s] = stat.amount
 		}

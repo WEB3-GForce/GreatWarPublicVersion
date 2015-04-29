@@ -137,7 +137,7 @@ public
 					   BoostComponent.new(BoostComponent.defense,
 					                      -1.0),
 					   BoostComponent.new(BoostComponent.move_cost,
-					                      2.0),
+					                      4.0),
 					   SpriteComponent.new(id)])
 	end
 
