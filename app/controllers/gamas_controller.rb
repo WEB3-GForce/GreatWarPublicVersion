@@ -15,7 +15,7 @@ class GamasController < ApplicationController
     user = current_user
 
     if user.gama_id == @gama.id
-    	redirect_to "/play"
+      redirect_to "/play"
     end
   end
 
@@ -53,22 +53,20 @@ class GamasController < ApplicationController
   def join
     user = current_user
     if !user.gama
+      if @gama.full?
+        flash[:warning] = "Sorry, game is full."
+        redirect_to gamas_path
+      else
+        @gama.users << user
+        @gama.save
         if @gama.full?
-          flash[:warning] = "Sorry, game is full."
-          redirect_to gamas_path
-        else
-          @gama.users << user
+          @gama.pending = false
           @gama.save
-          #@gama.notify(user)
-          if @gama.full?
-            p 'HELLO'
-            @gama.pending = false
-            @gama.save
-            @gama.start
-          end
-          flash[:success] = "Game successfully joined!"
-          redirect_to "/play"
+          @gama.start
         end
+        flash[:success] = "Game successfully joined!"
+        redirect_to "/play"
+      end
     else
       flash[:warning] = "You are already in a game."
       redirect_to "/play"
@@ -109,13 +107,13 @@ class GamasController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_Gama
-      @gama = Gama.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_Gama
+    @gama = Gama.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def gama_params
-      params.require(:gama).permit(:name)
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def gama_params
+    params.require(:gama).permit(:name)
+  end
 end

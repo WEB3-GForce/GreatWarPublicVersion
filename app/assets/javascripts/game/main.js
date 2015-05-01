@@ -4,11 +4,11 @@ var game;
 
 $(document).on('page:change', function () {
     var constants = {
-	    WIDTH: 960,
-	    HEIGHT: 960,
-	    CAMERA_WIDTH: 640,
-	    CAMERA_HEIGHT: 640,
-	    TILE_SIZE: 32
+	WIDTH: 960,
+	HEIGHT: 960,
+	CAMERA_WIDTH: 640,
+	CAMERA_HEIGHT: 640,
+	TILE_SIZE: 32
     }
 
     if (document.getElementById('the-great-war') === null)

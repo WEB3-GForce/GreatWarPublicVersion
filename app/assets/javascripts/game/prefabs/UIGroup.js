@@ -111,11 +111,11 @@ UIGroup.prototype.initTileInfoHelper = function(group, x) {
     group.tile.alpha = 0.7;
 
     group.defense = this.game.add.bitmapText(7, 80, 'minecraftia',
-            'DEF:  0',
-            12, group);
+					     'DEF:  0',
+					     12, group);
     group.movementCost = this.game.add.bitmapText(7, 104, 'minecraftia',
-            'MOV:  1',
-            12, group);
+						  'MOV:  1',
+						  12, group);
 }
 
 UIGroup.prototype.initTileInfoUI = function() {
@@ -128,8 +128,8 @@ UIGroup.prototype.initTileInfoUI = function() {
 
 UIGroup.prototype.setTile = function(group, tile) {
     if (tile) {
-	    group.tile.frame = tile.index - 1;
-	    group.title.text = tile.name;
+	group.tile.frame = tile.index - 1;
+	group.title.text = tile.name;
         var deftext = 'DEF:  ';
         if (tile.defense !== 'N/A') {
             deftext += '+';

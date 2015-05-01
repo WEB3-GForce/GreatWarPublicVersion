@@ -14,10 +14,10 @@
 	All components will inherit from this class.
 =end
 class Component
-	
-	# A default to_s, simply return the name of the component. Children who
-	# define major state should override this.
-	def to_s
-		self.class.name
-	end
+  
+  # A default to_s, simply return the name of the component. Children who
+  # define major state should override this.
+  def to_s
+    self.class.name
+  end
 end

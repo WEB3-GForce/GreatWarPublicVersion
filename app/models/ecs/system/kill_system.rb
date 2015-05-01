@@ -11,40 +11,40 @@ require_relative "../entity/entity_type.rb"
 =end
 class KillSystem < System
 
-	# This function checks an entity to determine whether it has died. If so,
-	# it removes the entity completely from the entity_manager. It removes it
-	# from the board and then deletes its entry from the entity manager.
-	#
-	# Arguments
-	#   entity_manager = the manager of entities
-	#   entity         = the entity to check
-	#
-	# Returns
-	#   [] if the entity can't die or is still alive
-	#   A tuple of the form if successful
-	#      [["kill", entity_id, whether_removed_from_board, owner_if_it_has_one]]
-	def self.update(entity_manager, entity)
-	
-		# Entities that can't be damaged can't die.
-		if !EntityType.damageable_entity?(entity_manager, entity)
-			return []
-		end
-		
-		health_comp = entity_manager.get_components(entity, HealthComponent).first
-		
-		if health_comp.alive?
-			return []
-		end
-	
-		removed = MotionSystem.remove_piece(entity_manager, entity)
-		owner = nil
-		
-		if entity_manager.has_components(entity, [OwnedComponent])
-			owner = entity_manager.get_components(entity, OwnedComponent).first.owner
-		end
-		
-		entity_manager.delete(entity)
-		return [["kill", entity, removed, owner]]
-	end
+  # This function checks an entity to determine whether it has died. If so,
+  # it removes the entity completely from the entity_manager. It removes it
+  # from the board and then deletes its entry from the entity manager.
+  #
+  # Arguments
+  #   entity_manager = the manager of entities
+  #   entity         = the entity to check
+  #
+  # Returns
+  #   [] if the entity can't die or is still alive
+  #   A tuple of the form if successful
+  #      [["kill", entity_id, whether_removed_from_board, owner_if_it_has_one]]
+  def self.update(entity_manager, entity)
+    
+    # Entities that can't be damaged can't die.
+    if !EntityType.damageable_entity?(entity_manager, entity)
+      return []
+    end
+    
+    health_comp = entity_manager.get_components(entity, HealthComponent).first
+    
+    if health_comp.alive?
+      return []
+    end
+    
+    removed = MotionSystem.remove_piece(entity_manager, entity)
+    owner = nil
+    
+    if entity_manager.has_components(entity, [OwnedComponent])
+      owner = entity_manager.get_components(entity, OwnedComponent).first.owner
+    end
+    
+    entity_manager.delete(entity)
+    return [["kill", entity, removed, owner]]
+  end
 
 end

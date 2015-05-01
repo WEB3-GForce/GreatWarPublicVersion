@@ -17,31 +17,31 @@ require "securerandom"
 =end
 class Entity < String
 
-	# This class variable is used for debugging purposes only. It produces
-	# a simpler id that is easier to read.
-	@debug_id = -1
+  # This class variable is used for debugging purposes only. It produces
+  # a simpler id that is easier to read.
+  @debug_id = -1
 
-	# Initializes a new Entity
-	#
-	# Arguments
-	#   string = the value to intialize to the entity, nil for a uuid
-	#
-	# Postcondition
-	#  A new entity is created. It is represented as the string specified or
-	#  the uuid string to ensure that each entity is uniquely identifiable.
-	def initialize(string=nil)
-		string = SecureRandom.uuid if string == nil
-		super string
-	end
+  # Initializes a new Entity
+  #
+  # Arguments
+  #   string = the value to intialize to the entity, nil for a uuid
+  #
+  # Postcondition
+  #  A new entity is created. It is represented as the string specified or
+  #  the uuid string to ensure that each entity is uniquely identifiable.
+  def initialize(string=nil)
+    string = SecureRandom.uuid if string == nil
+    super string
+  end
 
-	# Creates a new Entity for debugging
-	#
-	# Postcondition
-	#  A new entity is created with a string much easier to read. Use for
-	#  debugging purposes only.
-	def self.debug_entity
-		entity = Entity.new
-		@debug_id += 1
-		entity.replace("entity#" + @debug_id.to_s)
-	end
+  # Creates a new Entity for debugging
+  #
+  # Postcondition
+  #  A new entity is created with a string much easier to read. Use for
+  #  debugging purposes only.
+  def self.debug_entity
+    entity = Entity.new
+    @debug_id += 1
+    entity.replace("entity#" + @debug_id.to_s)
+  end
 end

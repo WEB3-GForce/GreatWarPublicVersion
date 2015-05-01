@@ -8,28 +8,28 @@ require_relative "./component.rb"
 =end
 class PositionComponent < Component
 
-	attr_accessor(:row, :col)
+  attr_accessor(:row, :col)
 
-	# Initializes a new PositionComponent object
-	#
-	# Arguments
-	#   row = the row index of the entity on the board
-	#   col = the column index of the entity on the board
-	#
-	# Postcondtion
-	#   The PositionComponent object is properly initialized
-	def initialize(row, col)
-		@row = row
-		@col = col
-	end
+  # Initializes a new PositionComponent object
+  #
+  # Arguments
+  #   row = the row index of the entity on the board
+  #   col = the column index of the entity on the board
+  #
+  # Postcondtion
+  #   The PositionComponent object is properly initialized
+  def initialize(row, col)
+    @row = row
+    @col = col
+  end
 
-	def distance_to(other_position)
-		(@row - other_position.row).abs + (@col - other_position.col).abs
-	end
+  def distance_to(other_position)
+    (@row - other_position.row).abs + (@col - other_position.col).abs
+  end
 
-  	# Returns a string representation of the component 
-	def to_s
-		"Position <#{@row}, #{@col}>"
-	end
+  # Returns a string representation of the component 
+  def to_s
+    "Position <#{@row}, #{@col}>"
+  end
 end
 

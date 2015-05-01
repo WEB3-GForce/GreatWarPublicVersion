@@ -12,40 +12,40 @@ require_relative "./component.rb"
 =end
 class PieceComponent < Component
 
-	attr_reader :type
+  attr_reader :type
 
-private
-	# Initializes a new UnitComponent object
-	#
-	# Arguments
-	#   type = the type of unit the piece is
-	#
-	# Postcondtion
-	#   The UnitComponent object is properly initialized
-	def initialize(type)
-		@type = type
-	end
+  private
+  # Initializes a new UnitComponent object
+  #
+  # Arguments
+  #   type = the type of unit the piece is
+  #
+  # Postcondtion
+  #   The UnitComponent object is properly initialized
+  def initialize(type)
+    @type = type
+  end
 
-public
+  public
 
-	# These are the static unit objects. If a UnitComponent is needed,
-	# these should be used. Since they are static, DO NOT MODIFY THESE
-	# OUTSIDE THIS FILE.
-	@infantry       = PieceComponent.new(:infantry)
-	@machine_gun    = PieceComponent.new(:machine_gun)
-	@artillery      = PieceComponent.new(:artillery)
-	@command_bunker = PieceComponent.new(:command_bunker)
+  # These are the static unit objects. If a UnitComponent is needed,
+  # these should be used. Since they are static, DO NOT MODIFY THESE
+  # OUTSIDE THIS FILE.
+  @infantry       = PieceComponent.new(:infantry)
+  @machine_gun    = PieceComponent.new(:machine_gun)
+  @artillery      = PieceComponent.new(:artillery)
+  @command_bunker = PieceComponent.new(:command_bunker)
 
-	# Getter methods for the class instance variables
-	def self.infantry       ; @infantry    ; end
-	def self.machine_gun    ; @machine_gun ; end
-	def self.artillery      ; @artillery   ; end
-	def self.command_bunker ; @command_bunker   ; end
+  # Getter methods for the class instance variables
+  def self.infantry       ; @infantry    ; end
+  def self.machine_gun    ; @machine_gun ; end
+  def self.artillery      ; @artillery   ; end
+  def self.command_bunker ; @command_bunker   ; end
 
-  	# Returns a string representation of the component 
-	def to_s
-		"Unit Type: #{@type}"
-	end
+  # Returns a string representation of the component 
+  def to_s
+    "Unit Type: #{@type}"
+  end
   
 end
 

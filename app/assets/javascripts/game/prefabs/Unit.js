@@ -108,15 +108,15 @@ var Unit = function(game, id, type, x, y, player, stats, faction) {
 	game: this.game,
 	play: function(name, callback, callbackContext) {
 	    if (this.sounds[name].key !== "") {
-            this.sounds[name].play();
-            if (callback) {
-                this.sounds[name].onStop.addOnce(callback, callbackContext);
+		this.sounds[name].play();
+		if (callback) {
+                    this.sounds[name].onStop.addOnce(callback, callbackContext);
+		}
+            } else {
+		if (callback) {
+		    callback.bind(callbackContext)();
+		}
             }
-        } else {
-            if (callback) {
-		callback.bind(callbackContext)();
-            }
-        }
 
 	},
 	stop: function(name) {

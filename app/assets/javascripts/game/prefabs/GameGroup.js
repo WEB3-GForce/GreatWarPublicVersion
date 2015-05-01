@@ -40,7 +40,7 @@ var GameGroup = function(game, parent) {
 		this.ui.hideMenu().start();
             }
         } else if (key.keyCode === q) {
-		this.game.dispatcher.rpc("leave_game", []);
+	    this.game.dispatcher.rpc("leave_game", []);
         }
     }).bind(this);
 
@@ -427,7 +427,7 @@ GameGroup.prototype.moveUnit = function(unitId, squares) {
 	}, this);
     }
     action.start = function() {        
-    action.unit.sound.play("move");
+	action.unit.sound.play("move");
 	this.move(squares);
     }
     return action;

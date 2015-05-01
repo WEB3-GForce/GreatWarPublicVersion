@@ -15,10 +15,10 @@
 	entity_manager or received as a JSON object.
 =end
 class System
-	# Returns a string representation of the System for easy viewing.
-	def to_s
-		self.class.name
-	end
+  # Returns a string representation of the System for easy viewing.
+  def to_s
+    self.class.name
+  end
 end
 
 

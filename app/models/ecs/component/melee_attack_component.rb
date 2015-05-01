@@ -9,38 +9,38 @@ require_relative "./energy_module.rb"
 =end
 class MeleeAttackComponent < Component
 
-	include ENERGY_COST
+  include ENERGY_COST
 
-	attr_reader :attack
+  attr_reader :attack
 
-	# Initializes a new MeleeAttackComponent object
-	#
-	# Arguments
-	#   attack = damage dealt during a melee attack
-	#   energy_cost = the amount of energy used to perform an attack
-	#
-	# Postcondtion
-	#   The MeleeAttackComponent object is properly initialized
-	def initialize(attack, energy_cost=1)
-		self.attack      = attack
-		self.energy_cost = energy_cost
-	end
+  # Initializes a new MeleeAttackComponent object
+  #
+  # Arguments
+  #   attack = damage dealt during a melee attack
+  #   energy_cost = the amount of energy used to perform an attack
+  #
+  # Postcondtion
+  #   The MeleeAttackComponent object is properly initialized
+  def initialize(attack, energy_cost=1)
+    self.attack      = attack
+    self.energy_cost = energy_cost
+  end
   
-	# Sets the melee attack to a new attack
-	#
-	# Arguments
-	#   attack = the new melee attack
-	#
-	# Postcondition
-	#   @attack is set to the new attack or 0 if the new attack was negative
-	def attack=(attack)
-		@attack = [0, attack].max
-	end
+  # Sets the melee attack to a new attack
+  #
+  # Arguments
+  #   attack = the new melee attack
+  #
+  # Postcondition
+  #   @attack is set to the new attack or 0 if the new attack was negative
+  def attack=(attack)
+    @attack = [0, attack].max
+  end
   
-  	# Returns a string representation of the component
-	def to_s
-		"Melee Attack: [damage = #{@attack}, cost #{self.energy_cost}]"
-	end
+  # Returns a string representation of the component
+  def to_s
+    "Melee Attack: [damage = #{@attack}, cost #{self.energy_cost}]"
+  end
 
 end
 

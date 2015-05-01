@@ -13,38 +13,38 @@ require_relative "./component.rb"
 =end
 class BoostComponent < Component
 
-private
-	# Initializes a new BoostComponent object
-	#
-	# Arguments
-	#   type   = the type of boost given.
-	#   amount = a ratio of the boost. Boosts should be doubles like 2.0
-	#            For example, a 2.0 move_cost means the movement cost is doubled.
-	#
-	# Postcondtion
-	#   The BoostComponent object is properly initialized
-	def initialize(type, amount)
-		@type = type
-		@amount = amount
-	end
+  private
+  # Initializes a new BoostComponent object
+  #
+  # Arguments
+  #   type   = the type of boost given.
+  #   amount = a ratio of the boost. Boosts should be doubles like 2.0
+  #            For example, a 2.0 move_cost means the movement cost is doubled.
+  #
+  # Postcondtion
+  #   The BoostComponent object is properly initialized
+  def initialize(type, amount)
+    @type = type
+    @amount = amount
+  end
 
-public
+  public
 
-	attr_reader(:type, :amount)
+  attr_reader(:type, :amount)
 
-	# These are the static boost objects. If a boost is needed,
-	# these should be used. Since they are static, DO NOT MODIFY THESE
-	# OUTSIDE THIS FILE.
-	@defense        = :defense
-	@move_cost      = :move_cost
+  # These are the static boost objects. If a boost is needed,
+  # these should be used. Since they are static, DO NOT MODIFY THESE
+  # OUTSIDE THIS FILE.
+  @defense        = :defense
+  @move_cost      = :move_cost
 
-	# Getter methods for the class instance variables
-	def self.defense      ; @defense    ; end
-	def self.move_cost    ; @move_cost  ; end
+  # Getter methods for the class instance variables
+  def self.defense      ; @defense    ; end
+  def self.move_cost    ; @move_cost  ; end
 
-	# Returns a string representation of the component
-	def to_s
-		"Boost : [Type = #{@type}, Amoung = #{@amount}]"
-	end
+  # Returns a string representation of the component
+  def to_s
+    "Boost : [Type = #{@type}, Amoung = #{@amount}]"
+  end
 end
 

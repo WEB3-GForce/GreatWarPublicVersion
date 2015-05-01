@@ -21,173 +21,173 @@ require_relative "../component/turn_component.rb"
 =end
 class EntityType
 
-	# Determines whether the entity is a square of a board
-	#
-	# Arguments
-	#   entity_manager = the manager that holds the entities
-	#   entity         = the entity to check
-	#
-	# Returns
-	#   whether the entity is a square
-	def self.square_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [TerrainComponent])
-	end
+  # Determines whether the entity is a square of a board
+  #
+  # Arguments
+  #   entity_manager = the manager that holds the entities
+  #   entity         = the entity to check
+  #
+  # Returns
+  #   whether the entity is a square
+  def self.square_entity?(entity_manager, entity)
+    entity_manager.has_components(entity, [TerrainComponent])
+  end
 
-	# Determines whether the entity is a human player
-	#
-	# Arguments
-	#   entity_manager = the manager that holds the entities
-	#   entity         = the entity to check
-	#
-	# Returns
-	#   whether the entity is a human player
-	def self.human_player_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [UserIdComponent,
-						       NameComponent,
-		                                       HumanComponent])
-	end
+  # Determines whether the entity is a human player
+  #
+  # Arguments
+  #   entity_manager = the manager that holds the entities
+  #   entity         = the entity to check
+  #
+  # Returns
+  #   whether the entity is a human player
+  def self.human_player_entity?(entity_manager, entity)
+    entity_manager.has_components(entity, [UserIdComponent,
+                                           NameComponent,
+                                           HumanComponent])
+  end
 
-	# Determines whether the entity is an ai player
-	#
-	# Arguments
-	#   entity_manager = the manager that holds the entities
-	#   entity         = the entity to check
-	#
-	# Returns
-	#   whether the entity is an ai player
-	def self.ai_player_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [UserIdComponent,
-						       NameComponent,
-		                                       AIComponent])
-	end
+  # Determines whether the entity is an ai player
+  #
+  # Arguments
+  #   entity_manager = the manager that holds the entities
+  #   entity         = the entity to check
+  #
+  # Returns
+  #   whether the entity is an ai player
+  def self.ai_player_entity?(entity_manager, entity)
+    entity_manager.has_components(entity, [UserIdComponent,
+                                           NameComponent,
+                                           AIComponent])
+  end
 
-	# Determines whether the entity controls the turn information
-	#
-	# Arguments
-	#   entity_manager = the manager that holds the entities
-	#   entity         = the entity to check
-	#
-	# Returns
-	#   whether the entity is a turn entity
-	def self.turn_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [TurnComponent])
-	end
+  # Determines whether the entity controls the turn information
+  #
+  # Arguments
+  #   entity_manager = the manager that holds the entities
+  #   entity         = the entity to check
+  #
+  # Returns
+  #   whether the entity is a turn entity
+  def self.turn_entity?(entity_manager, entity)
+    entity_manager.has_components(entity, [TurnComponent])
+  end
 
-	# Determines whether the entity is a piece on the board such as
-	# infantry, machine_gun, artillery, or command_bunker.
-	#
-	# Arguments
-	#   entity_manager = the manager that holds the entities
-	#   entity         = the entity to check
-	#
-	# Returns
-	#   whether the entity is a piece
-	def self.piece_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [PieceComponent])
-	end
+  # Determines whether the entity is a piece on the board such as
+  # infantry, machine_gun, artillery, or command_bunker.
+  #
+  # Arguments
+  #   entity_manager = the manager that holds the entities
+  #   entity         = the entity to check
+  #
+  # Returns
+  #   whether the entity is a piece
+  def self.piece_entity?(entity_manager, entity)
+    entity_manager.has_components(entity, [PieceComponent])
+  end
 
-	# Determines whether the entity uses energy. Energy is used to control
-	# movement, attack, etc.
-	#
-	# Arguments
-	#   entity_manager = the manager that holds the entities
-	#   entity         = the entity to check
-	#
-	# Returns
-	#   whether the entity uses energy
-	def self.energy_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [EnergyComponent])
-	end
+  # Determines whether the entity uses energy. Energy is used to control
+  # movement, attack, etc.
+  #
+  # Arguments
+  #   entity_manager = the manager that holds the entities
+  #   entity         = the entity to check
+  #
+  # Returns
+  #   whether the entity uses energy
+  def self.energy_entity?(entity_manager, entity)
+    entity_manager.has_components(entity, [EnergyComponent])
+  end
 
-	# Determines whether the entity is placed on the board. Namely it needs
-	# to have a position.
-	#
-	# Arguments
-	#   entity_manager = the manager that holds the entities
-	#   entity         = the entity to check
-	#
-	# Returns
-	#   whether the entity is a placed entity
-	def self.placed_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [PositionComponent])
-	end
+  # Determines whether the entity is placed on the board. Namely it needs
+  # to have a position.
+  #
+  # Arguments
+  #   entity_manager = the manager that holds the entities
+  #   entity         = the entity to check
+  #
+  # Returns
+  #   whether the entity is a placed entity
+  def self.placed_entity?(entity_manager, entity)
+    entity_manager.has_components(entity, [PositionComponent])
+  end
 
-	# Determines whether the entity can move. Namely, it needs to
-	# have both a position on the board and a MotionComponent specifying
-	# how it can move. It must have energy as well.
-	#
-	# Arguments
-	#   entity_manager = the manager that holds the entities
-	#   entity         = the entity to check
-	#
-	# Returns
-	#   whether the entity is a moveable entity
-	def self.moveable_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [EnergyComponent,
-		                                       MotionComponent,
-		                                       PositionComponent])
-	end
+  # Determines whether the entity can move. Namely, it needs to
+  # have both a position on the board and a MotionComponent specifying
+  # how it can move. It must have energy as well.
+  #
+  # Arguments
+  #   entity_manager = the manager that holds the entities
+  #   entity         = the entity to check
+  #
+  # Returns
+  #   whether the entity is a moveable entity
+  def self.moveable_entity?(entity_manager, entity)
+    entity_manager.has_components(entity, [EnergyComponent,
+                                           MotionComponent,
+                                           PositionComponent])
+  end
 
 
-	# Determines whether the entity is capable of performing melee attacks
-	#
-	# Arguments
-	#   entity_manager = the manager that holds the entities
-	#   entity         = the entity to check
-	#
-	# Returns
-	#   whether the entity is a melee entity
-	def self.melee_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [EnergyComponent,
-		                                       MeleeAttackComponent])
-	end
+  # Determines whether the entity is capable of performing melee attacks
+  #
+  # Arguments
+  #   entity_manager = the manager that holds the entities
+  #   entity         = the entity to check
+  #
+  # Returns
+  #   whether the entity is a melee entity
+  def self.melee_entity?(entity_manager, entity)
+    entity_manager.has_components(entity, [EnergyComponent,
+                                           MeleeAttackComponent])
+  end
 
-	# Determines whether the entity can take damage (aka be attacked)
-	#
-	# Arguments
-	#   entity_manager = the manager that holds the entities
-	#   entity         = the entity to check
-	#
-	# Returns
-	#   whether the entity is a damageable entity
-	def self.damageable_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [HealthComponent])
-	end
+  # Determines whether the entity can take damage (aka be attacked)
+  #
+  # Arguments
+  #   entity_manager = the manager that holds the entities
+  #   entity         = the entity to check
+  #
+  # Returns
+  #   whether the entity is a damageable entity
+  def self.damageable_entity?(entity_manager, entity)
+    entity_manager.has_components(entity, [HealthComponent])
+  end
 
-	# Determines whether the entity is capable of performing range attacks
-	#
-	# Arguments
-	#   entity_manager = the manager that holds the entities
-	#   entity         = the entity to check
-	#
-	# Returns
-	#   whether the entity is a range attack entity
-	def self.range_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [EnergyComponent,
-		                                       RangeAttackComponent])
-	end
+  # Determines whether the entity is capable of performing range attacks
+  #
+  # Arguments
+  #   entity_manager = the manager that holds the entities
+  #   entity         = the entity to check
+  #
+  # Returns
+  #   whether the entity is a range attack entity
+  def self.range_entity?(entity_manager, entity)
+    entity_manager.has_components(entity, [EnergyComponent,
+                                           RangeAttackComponent])
+  end
 
-	# Determines whether the entity is impervious to range attacks
-	#
-	# Arguments
-	#   entity_manager = the manager that holds the entities
-	#   entity         = the entity to check
-	#
-	# Returns
-	#   whether the entity is a range immuned entity
-	def self.range_immuned_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [RangeAttackImmunityComponent])
-	end
+  # Determines whether the entity is impervious to range attacks
+  #
+  # Arguments
+  #   entity_manager = the manager that holds the entities
+  #   entity         = the entity to check
+  #
+  # Returns
+  #   whether the entity is a range immuned entity
+  def self.range_immuned_entity?(entity_manager, entity)
+    entity_manager.has_components(entity, [RangeAttackImmunityComponent])
+  end
 
-	# Determines whether the entity can build entities
-	#
-	# Arguments
-	#   entity_manager = the manager that holds the entities
-	#   entity         = the entity to check
-	#
-	# Returns
-	#   whether the entity can build trenches
-	def self.trench_builder_entity?(entity_manager, entity)
-		entity_manager.has_components(entity, [TrenchBuilderComponent])
-	end
+  # Determines whether the entity can build entities
+  #
+  # Arguments
+  #   entity_manager = the manager that holds the entities
+  #   entity         = the entity to check
+  #
+  # Returns
+  #   whether the entity can build trenches
+  def self.trench_builder_entity?(entity_manager, entity)
+    entity_manager.has_components(entity, [TrenchBuilderComponent])
+  end
 end

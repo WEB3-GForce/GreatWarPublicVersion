@@ -20,41 +20,41 @@ require_relative "./component.rb"
 =end
 class TerrainComponent < Component
 
-	attr_reader  :type
+  attr_reader  :type
 
-private
-	# Initializes a new TerrainComponent object
-	#
-	# Arguments
-	#   type = the type of terrain (river, mountain, etc.)
-	#
-	# Postcondtion
-	#   The TerrainComponent object is properly initialized
-	def initialize(type)
-		@type = type
-	end
+  private
+  # Initializes a new TerrainComponent object
+  #
+  # Arguments
+  #   type = the type of terrain (river, mountain, etc.)
+  #
+  # Postcondtion
+  #   The TerrainComponent object is properly initialized
+  def initialize(type)
+    @type = type
+  end
 
-public
-	# These are the static terrain objects. If a TerrainComponent is needed,
-	# these should be used. Since they are static, DO NOT MODIFY THESE
-	# OUTSIDE THIS FILE.
-	@flatland = TerrainComponent.new(:flatland)
-	@mountain = TerrainComponent.new(:mountain)
-	@hill     = TerrainComponent.new(:hill)
-	@trench   = TerrainComponent.new(:trench)
-	@river    = TerrainComponent.new(:river)
+  public
+  # These are the static terrain objects. If a TerrainComponent is needed,
+  # these should be used. Since they are static, DO NOT MODIFY THESE
+  # OUTSIDE THIS FILE.
+  @flatland = TerrainComponent.new(:flatland)
+  @mountain = TerrainComponent.new(:mountain)
+  @hill     = TerrainComponent.new(:hill)
+  @trench   = TerrainComponent.new(:trench)
+  @river    = TerrainComponent.new(:river)
 
-	# Getter methods for the class variables
-	def self.flatland ; @flatland ; end
-	def self.mountain ; @mountain ; end
-	def self.hill     ; @hill     ; end
-	def self.trench   ; @trench   ; end
-	def self.river    ; @river    ; end
+  # Getter methods for the class variables
+  def self.flatland ; @flatland ; end
+  def self.mountain ; @mountain ; end
+  def self.hill     ; @hill     ; end
+  def self.trench   ; @trench   ; end
+  def self.river    ; @river    ; end
 
-	# Default to_string method
-	def to_s
-		return "Terrain: " + @type.to_s
-	end
+  # Default to_string method
+  def to_s
+    return "Terrain: " + @type.to_s
+  end
 end
 
 

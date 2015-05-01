@@ -2,7 +2,7 @@
 <html>
   <head>
     <title><%= full_title(yield(:title)) %></title>
-        
+    
     <!-- SEO RELATED META TAGS -->
     <meta name="revisit" content="2 days">
     <meta name="robots" content="all, index, follow">
@@ -26,12 +26,12 @@
       </div>
       
       <div id="cnt-filler">
-      <%= yield %>
+	<%= yield %>
       </div>
       <div id="cnt-btm"></div>
     </div>
-      <%= render 'layouts/footer' %>
-      <%= debug(params) if Rails.env.development? %>
-    </div>
-  </body>
+    <%= render 'layouts/footer' %>
+    <%= debug(params) if Rails.env.development? %>
+</div>
+</body>
 </html>

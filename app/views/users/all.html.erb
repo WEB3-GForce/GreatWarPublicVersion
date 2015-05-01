@@ -1,21 +1,21 @@
 <% provide(:title, 'All users') %>
 <h1 class="log">All users</h1>
-  <div class-"log" >
-    <%= will_paginate %>
-  </div>
+<div class-"log" >
+  <%= will_paginate %>
+</div>
 
 <ul class="users">
   <% @users.each do |user| %>
-    <li>
-      <%= gravatar_for user%>
-      <%= link_to user.name, user, class: "center" %>
-      <% if logged?(user) %>
-        <%= "Logged On" %>
-      <% else %>
-        <%= "Logged Off" %>
+  <li>
+    <%= gravatar_for user%>
+    <%= link_to user.name, user, class: "center" %>
+    <% if logged?(user) %>
+    <%= "Logged On" %>
+    <% else %>
+    <%= "Logged Off" %>
 
-      <% end %>
-    </li>
+    <% end %>
+  </li>
   <% end %>
 </ul>
 

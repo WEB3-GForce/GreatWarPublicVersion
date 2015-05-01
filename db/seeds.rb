@@ -16,7 +16,3 @@ User.create!(name:  "User 1",
                password_confirmation: password,
                host: false)
 end
-
-#Game.create!(name: "Game 1",
- #           pending: true,
-  #          done: false)

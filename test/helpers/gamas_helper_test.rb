@@ -6,6 +6,3 @@ class GamasHelperTest < ActionView::TestCase
     @user = users(:david)
   end
 end
-
-
-

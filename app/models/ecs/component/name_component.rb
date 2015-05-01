@@ -7,22 +7,22 @@ require_relative "./component.rb"
 =end
 class NameComponent < Component
   
-	attr_reader :name
+  attr_reader :name
 
-	# Initializes a new NameComponent object
-	#
-	# Arguments
-	#   name = the name of the entity
-	#
-	# Postcondtion
-	#   The NameComponent object is properly initialized
-	def initialize(name)
-		@name = name
-	end
+  # Initializes a new NameComponent object
+  #
+  # Arguments
+  #   name = the name of the entity
+  #
+  # Postcondtion
+  #   The NameComponent object is properly initialized
+  def initialize(name)
+    @name = name
+  end
 
-	# Returns a string representation of the component  
-	def to_s
-		"Name: #{@name}"
-	end
+  # Returns a string representation of the component  
+  def to_s
+    "Name: #{@name}"
+  end
 end
 

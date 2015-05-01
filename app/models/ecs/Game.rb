@@ -120,7 +120,7 @@ class Game
     if not em.has_key? entity
       return []
     elsif (em[entity][PieceComponent][0].type == PieceComponent.command_bunker.type)
-        return []
+      return []
     end
 
     can_move  = !MotionSystem.moveable_locations(em, entity).empty?
@@ -261,8 +261,3 @@ class Game
     Gama.find(id).destroy
   end
 end
-
-# users = [OpenStruct.new({name: "1", id: -1, channel: "NA"}),
-#          OpenStruct.new({name: "2", id: -1, channel: "NA"}), ]
-# em = Game.init_game(users)
-# puts em

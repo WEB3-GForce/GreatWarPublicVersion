@@ -1,5 +1,5 @@
 class ChangeLimitTypeInGamas < ActiveRecord::Migration
   def change
-  	change_column :gamas, :limit, :string
+    change_column :gamas, :limit, :string
   end
 end
