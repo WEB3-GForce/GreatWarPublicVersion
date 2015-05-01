@@ -1,4 +1,11 @@
+=begin
+  The Sessions Helper has all the helper functions to make sure that a session
+  is being stored correctly. This also handles whether a User is remembered
+  after they close the browser or not.
+=end
+
 module SessionsHelper
+
 	def log_in(user)
           user.channel = User.new_token
           user.logged = true
@@ -19,7 +26,7 @@ module SessionsHelper
 		end
 	end
 
-	# This is to supplement the All page for Users???
+	# This is to supplement the All page for Users
 	def logged_in?
 		!current_user.nil?
 	end
@@ -36,12 +43,15 @@ module SessionsHelper
 		@current_user = nil
 	end
 
+	# This populates cookie hash with a safe string so that the user
+	# will be remembered across sessions
 	def remember(user)
 		user.remember
 		cookies.permanent.signed[:user_id] = user.id
 		cookies.permanent[:remember_token] = user.remember_token
 	end
 
+	# This assures that no cookies are stored
 	def forget(user)
 		user.forget
 		cookies.delete(:user_id)

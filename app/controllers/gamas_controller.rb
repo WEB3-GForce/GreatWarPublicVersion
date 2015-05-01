@@ -1,15 +1,18 @@
+=begin
+  The Gamas controller handles all the webpages related to games, including
+  their creation, instantiation, and deletion.
+=end
+
 class GamasController < ApplicationController
   before_action :set_Gama, only: [:show, :edit, :update, :destroy, :join]
 
   # GET /Gamas
-  # GET /Gamas.json
   def index
     @gamas = Gama.all
     user = current_user
   end
 
-  # GET /Gamas/1
-  # GET /Gamas/1.json
+  # GET /Gamas/gama_id
   def show
     @gama = Gama.find(params[:id])
     user = current_user
@@ -29,14 +32,15 @@ class GamasController < ApplicationController
     @gama = Gama.new
   end
 
-  # GET /Gamas/1/edit
+  # GET /Gamas/gama_id/edit
   def edit
   end
 
-  # POST /Gamas
-  # POST /Gamas.json
+  # POST /Gamas/new
   def create
     user = current_user
+
+    # couples a user with a newly created game
     @gama = user.build_gama(gama_params)
     @gama.limit = 2
     @gama.pending = true
@@ -50,6 +54,7 @@ class GamasController < ApplicationController
     end
   end
 
+  # PUT /Gamas/join/gama_id
   def join
     user = current_user
     if !user.gama
@@ -59,9 +64,8 @@ class GamasController < ApplicationController
         else
           @gama.users << user
           @gama.save
-          #@gama.notify(user)
+          @gama.notify(user)
           if @gama.full?
-            p 'HELLO'
             @gama.pending = false
             @gama.save
             @gama.start
@@ -75,6 +79,7 @@ class GamasController < ApplicationController
     end
   end
 
+  # PUT /Gamas/leave/gama_id
   def leave
     user = current_user
     SocketController.leave_game(user) unless user.gama.pending?
@@ -114,7 +119,8 @@ class GamasController < ApplicationController
       @gama = Gama.find(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
+    # Never trust parameters from the scary internet, only allow the white list 
+    # through.
     def gama_params
       params.require(:gama).permit(:name)
     end
