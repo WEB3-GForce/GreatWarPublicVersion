@@ -86,7 +86,7 @@ UIGroup.prototype.initPlayerInfoUI = function() {
  * @param {object} player - player object with information
  * @param {integer} turn - turn number
  */
-UIGroup.prototype.setPlayer = function(gravatar, player, turn) {
+UIGroup.prototype.setPlayer = function(playerId, player, turn) {
     if (player.faction == "red")
 	this.playerInfoGraphics.beginFill(COLORS.RED, 1);
     else

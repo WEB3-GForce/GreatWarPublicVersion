@@ -308,11 +308,11 @@ Unit.prototype.initializeSound = function() {
 	}
     };
 
-    this.sound.add("move", randChoice(UNIT_MAP[type].SOUND.MOVE));
-    this.sound.add("melee-start", randChoice(UNIT_MAP[type].SOUND.MELEE_START));
-    this.sound.add("ranged-start", randChoice(UNIT_MAP[type].SOUND.RANGED_START));
-    this.sound.add("melee-end", randChoice(UNIT_MAP[type].SOUND.MELEE_END));
-    this.sound.add("ranged-end", randChoice(UNIT_MAP[type].SOUND.RANGED_END));
-    this.sound.add("attacked", randChoice(UNIT_MAP[type].SOUND.ATTACKED));
-    this.sound.add("die", randChoice(UNIT_MAP[type].SOUND.DIE));
+    this.sound.add("move", randChoice(UNIT_MAP[this.type].SOUND.MOVE));
+    this.sound.add("melee-start", randChoice(UNIT_MAP[this.type].SOUND.MELEE_START));
+    this.sound.add("ranged-start", randChoice(UNIT_MAP[this.type].SOUND.RANGED_START));
+    this.sound.add("melee-end", randChoice(UNIT_MAP[this.type].SOUND.MELEE_END));
+    this.sound.add("ranged-end", randChoice(UNIT_MAP[this.type].SOUND.RANGED_END));
+    this.sound.add("attacked", randChoice(UNIT_MAP[this.type].SOUND.ATTACKED));
+    this.sound.add("die", randChoice(UNIT_MAP[this.type].SOUND.DIE));
 }

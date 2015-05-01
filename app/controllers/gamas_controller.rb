@@ -73,8 +73,6 @@ class GamasController < ApplicationController
             @gama.save
             @gama.start
           end
-          flash[:success] = "Game successfully joined!"
-          redirect_to "/play"
         end
         flash[:success] = "Game successfully joined!"
         redirect_to "/play"
