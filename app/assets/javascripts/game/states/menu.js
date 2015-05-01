@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * Menu state. Displays users waiting to start the game.
+ * @constructor
+ */
 function Menu() {
 }
 
@@ -7,6 +11,11 @@ Menu.prototype = {
     preload: function() {
 
     },
+
+    /**
+     * Prepares the necessary listeners to start the game.
+     * Displays players' info.
+     */
     create: function() {
 	this.numPlayers = 0;
 

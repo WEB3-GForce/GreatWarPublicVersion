@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * Gameover state. Displays the game outcome.
+ * @constructor
+ */
 function GameOver() {
 }
 

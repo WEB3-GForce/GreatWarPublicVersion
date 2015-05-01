@@ -2,6 +2,7 @@
 
 var game;
 
+// Use turbolinks events because Rails 4
 $(document).on('page:change', function () {
     var constants = {
 	WIDTH: 960,
@@ -11,9 +12,11 @@ $(document).on('page:change', function () {
 	TILE_SIZE: 32
     }
 
+    // Because phaser doesn't actually check the id
     if (document.getElementById('the-great-war') === null)
 	return;
 
+    // Because turbolinks doesn't get rid of javascript variables on page change
     if (game) {
 	game.dispatcher.bind("setChannel", function() {});
 	game.dispatcher.unsubscribe(game.channel.name);

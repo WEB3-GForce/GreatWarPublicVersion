@@ -1,16 +1,24 @@
 'use strict';
 
+/**
+ * Preload state. Loads assets.
+ * @constructor
+ */
 function Preload() {
     this.asset = null;
     this.ready = false;
 }
 
 Preload.prototype = {
+
+    /**
+     * Initialize the websocket dispatcher.
+     * Load all assets.
+     */
     preload: function() {
 	this.game.dispatcher = new WebSocketRails(window.location.host+'/websocket');
 
-	// pre-load bar from Yeoman example, will likely end up getting rid of this
-	this.asset = this.add.sprite(this.width/2,this.height/2, 'preloader');
+	this.asset = this.add.sprite(this.game.width/2,this.game.height/2, 'preloader');
 	this.asset.anchor.setTo(0.5, 0.5);
 	this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
 	this.load.setPreloadSprite(this.asset);
@@ -84,11 +92,16 @@ Preload.prototype = {
     create: function() {
 	this.asset.cropEnabled = false;
     },
+
+    /**
+     * Start the menu state once everything is loaded.
+     */
     update: function() {
 	if(!!this.ready) {
             this.game.state.start('menu'); // toggle between menu and play for testing
 	}
     },
+
     onLoadComplete: function() {
 	this.ready = true;
     }

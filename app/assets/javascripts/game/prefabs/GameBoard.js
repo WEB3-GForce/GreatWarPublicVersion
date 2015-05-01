@@ -1,15 +1,17 @@
 'use strict';
 
+// Index numbers for highlights
 var HIGHLIGHT_TYPES = {
     move: 1152,
     attack: 1153,
     trench: 1154
 };
 
+// Index number for trenches
 var TRENCH_INDEX = 1024;
 
-// none of these hashes should be accessed directly from outside of
-// GameBoard. Use getTerrainName(index) and getTerrainStats(index) instead
+// None of these hashes should be accessed directly from outside of
+// GameBoard. Use getTerrainName(index) and getTerrainStats(index) instead.
 var NAME_TO_INDEX = {};
 var INDEX_TO_NAME = {};
 var NAME_TO_FUNCTIONAL_TYPE = {
@@ -26,7 +28,6 @@ var NAME_TO_FUNCTIONAL_TYPE = {
     Ruins: "trench",
     Road: "flatland"
 };
-
 var FUNCTIONAL_TYPE_TO_STATS = {
     flatland: {defense: 0, movementCost: 0},
     mountain: {defense: 0, movementCost: 0},
@@ -35,6 +36,12 @@ var FUNCTIONAL_TYPE_TO_STATS = {
     river: {defense: 0, movementCost: 0}
 }
 
+/**
+ * Handles game board tiles for terrain and highlighting.
+ * @constructor
+ * @augments Phaser.Tilemap
+ * @param {Phaser.Game} game - Game object
+ */
 var GameBoard = function(game) {
     Phaser.Tilemap.call(this, game, 'tileset');
     this.addTilesetImage('fe', 'fe');
@@ -63,6 +70,10 @@ var GameBoard = function(game) {
 GameBoard.prototype = Object.create(Phaser.Tilemap.prototype);
 GameBoard.prototype.constructor = GameBoard;
 
+/**
+ * Sets up terrain effects
+ * @param {object} effects - maps terrain type to their effects
+ */
 GameBoard.prototype.handleEffects = function(effects) {
     var keys = Object.keys(effects);
     for (var i = 0, key; key = keys[i]; i++) {
@@ -79,6 +90,9 @@ GameBoard.prototype.handleEffects = function(effects) {
     }
 }
 
+/**
+ * Builds terrain effect objects for better performance.
+ */
 GameBoard.prototype.populateTerrainHash = function() {
     NAME_TO_INDEX["Flatland"] = [67, 68, 99];
     NAME_TO_INDEX["Mountain"]  =
@@ -106,9 +120,19 @@ GameBoard.prototype.populateTerrainHash = function() {
         }
     }
 }
+
+/**
+ * Maps terrain indices to terrain names.
+ * @param {integer} index - spritesheet index
+ */
 GameBoard.prototype.getTerrainName = function(index) {
     return  INDEX_TO_NAME[index];
 }
+
+/**
+ * Maps terrain indices to terrain stat effects.
+ * @param {integer} index - spritesheet index
+ */
 GameBoard.prototype.getTerrainStats = function(index) {
     // can avoid some errors this way:
     if (!FUNCTIONAL_TYPE_TO_STATS[NAME_TO_FUNCTIONAL_TYPE[INDEX_TO_NAME[index]]]) {
@@ -117,43 +141,67 @@ GameBoard.prototype.getTerrainStats = function(index) {
     return FUNCTIONAL_TYPE_TO_STATS[NAME_TO_FUNCTIONAL_TYPE[INDEX_TO_NAME[index]]];
 }
 
-
+/**
+ * Adds fog over a given coordinate.
+ * @param {integer} x - x coordinate
+ * @param {integer} y - y coordinate
+ */
 GameBoard.prototype.addFog = function(x, y) {
     var fogIndex = 50; // this is the index into the tilesheet and is a
     // terrible way to do this
     this.putTile(fogIndex, x, y, this.fogLayer);
 }
+
+/**
+ * Reveals fog over a given coordinate.
+ * @param {integer} x - x coordinate
+ * @param {integer} y - y coordinate
+ */
 GameBoard.prototype.revealFog = function(x, y) {
     this.removeTile(x, y, this.fogLayer);
 }
 
+/**
+ * Checks if a tile is highlighted.
+ * @param {integer} x - x coordinate
+ * @param {integer} y - y coordinate
+ */
 GameBoard.prototype.isHighlighted = function(x, y) {
     return this.hasTile(x, y,
 			this.highlightLayer);
 }
+
+/**
+ * Highlights a given coordinate.
+ * @param {integer} x - x coordinate
+ * @param {integer} y - y coordinate
+ * @param {string} type - highlight type
+ */
 GameBoard.prototype.highlight = function(x, y, type) {
     this.putTile(HIGHLIGHT_TYPES[type], x, y, this.highlightLayer);
 }
+
+/**
+ * Unhighlight a given coordinate.
+ * @param {integer} x - x coordinate
+ * @param {integer} y - y coordinate
+ */
 GameBoard.prototype.unhighlight = function(x, y) {
     this.removeTile(x, y, this.highlightLayer);
 }
+
+/**
+ * Unhighlights all coordinates.
+ */
 GameBoard.prototype.unhighlightAll = function() {
     for (var i = 0; i < this.width; i++)
 	for (var j = 0; j < this.height; j++)
 	    this.unhighlight(i, j);
 }
-GameBoard.prototype.highlightRange = function(x, y, type, range) {
-    if (range < 0 ||
-	x < 0 || x >= this.width ||
-	y < 0 || y >= this.height)
-	return;
-    this.highlight(x, y, type);
-    this.highlightRange(x-1, y, type, range-1);
-    this.highlightRange(x+1, y, type, range-1);
-    this.highlightRange(x, y-1, type, range-1);
-    this.highlightRange(x, y+1, type, range-1);
-}
 
+/**
+ * Draws a tile grid.
+ */
 GameBoard.prototype.drawGrid = function() {
     this.grid = this.game.add.graphics();
     this.grid.lineStyle(1, 0x000000, 0.1);
@@ -169,14 +217,30 @@ GameBoard.prototype.drawGrid = function() {
     }
 }
 
+/**
+ * Set the tile of a given coordinate.
+ * @param {integer} x - x coordinate
+ * @param {integer} y - y coordinate
+ * @param {integer} index - spritesheet index
+ */
 GameBoard.prototype.setTile = function(x, y, index) {
     this.putTile(index, x, y, this.terrainLayer);
 }
 
+/**
+ * Get a tile's terrain type.
+ * @param {integer} x - x coordinate
+ * @param {integer} y - y coordinate
+ */
 GameBoard.prototype.terrainType = function(x, y) {
     this.getTile(x, y, this.terrainLayer);
 }
 
+/**
+ * Get a tile's terrain effect.
+ * @param {integer} x - x coordinate
+ * @param {integer} y - y coordinate
+ */
 GameBoard.prototype.terrainEffect = function(x, y) {
     return this.effects[this.terrainType(x, y)];
 }

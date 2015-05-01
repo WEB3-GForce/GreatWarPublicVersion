@@ -9,6 +9,13 @@ var COLORS = {
     RED: 0xFF4040
 }
 
+/**
+ * Handles displaying and updating UI elements.
+ * @constructor
+ * @augments Phaser.Group
+ * @param {Phaser.Game} game - Game object
+ * @param {Phaser.Group} parent - the group to which UIGroup should belong
+ */
 var UIGroup = function(game, parent) {
     Phaser.Group.call(this, game, parent);
 
@@ -26,6 +33,10 @@ var UIGroup = function(game, parent) {
 UIGroup.prototype = Object.create(Phaser.Group.prototype);
 UIGroup.prototype.constructor = UIGroup;
 
+/**
+ * Initialize the player info UI that displays player name,
+ * player image, current day, and keyboard shortcuts.
+ */
 UIGroup.prototype.initPlayerInfoUI = function() {
     this.playerInfo = this.game.add.group();
     this.playerInfo.cameraOffset.x = 8;
@@ -68,7 +79,14 @@ UIGroup.prototype.initPlayerInfoUI = function() {
 					    12,
 					    this.playerInfo);
 }
-UIGroup.prototype.setPlayer = function(playerId, player, turn) {
+
+/**
+ * Set the player image and name as well as the current day in the player UI.
+ * @param {string} playerId - entity id for the player
+ * @param {object} player - player object with information
+ * @param {integer} turn - turn number
+ */
+UIGroup.prototype.setPlayer = function(gravatar, player, turn) {
     if (player.faction == "red")
 	this.playerInfoGraphics.beginFill(COLORS.RED, 1);
     else
@@ -81,8 +99,12 @@ UIGroup.prototype.setPlayer = function(playerId, player, turn) {
     this.turnCount.text = "Day " + turn;
 }
 
-UIGroup.prototype.checkPlayerInfoUIPosition = function(mouse) {
-    if (mouse.x < 320) {
+/**
+ * Ensures that the player info UI does not interfere with user interaction.
+ * Moves the player info UI to the opposite side of the screen.
+ */
+UIGroup.prototype.checkPlayerInfoUIPosition = function() {
+    if (this.game.input.mousePointer.x < 320) {
         if (this.portraitLeft)
 	    this.playerInfo.cameraOffset.x = this.game.constants.CAMERA_WIDTH - 288 - 8;
         this.portraitLeft = false;
@@ -93,6 +115,11 @@ UIGroup.prototype.checkPlayerInfoUIPosition = function(mouse) {
     }
 }
 
+/**
+ * Turns an empty group into a tile info group.
+ * @param {Phaser.Group} group - group to turn into a tile info group
+ * @param {integer} x - x position of the group
+ */
 UIGroup.prototype.initTileInfoHelper = function(group, x) {
     var height = 160;
     var width = 96;
@@ -118,6 +145,9 @@ UIGroup.prototype.initTileInfoHelper = function(group, x) {
 						  12, group);
 }
 
+/**
+ * Creates two tile info UIs (second one for when a unit is selected)
+ */
 UIGroup.prototype.initTileInfoUI = function() {
     this.tileInfoPrimary = this.game.add.group();
     this.tileInfoSecondary = this.game.add.group();
@@ -126,6 +156,11 @@ UIGroup.prototype.initTileInfoUI = function() {
     this.tileInfoSecondary.visible = false;
 }
 
+/**
+ * Sets the tile in a tile info group
+ * @param {Phaser.Group} group - tile info group to update
+ * @param {Phaser.Tile} tile - tile object with needed info
+ */
 UIGroup.prototype.setTile = function(group, tile) {
     if (tile) {
 	group.tile.frame = tile.index - 1;
@@ -145,14 +180,32 @@ UIGroup.prototype.setTile = function(group, tile) {
 	group.visible = false;
     }
 }
+
+/**
+ * Sets the primary tile info UI
+ * @param {Phaser.Tile} tile - tile object with needed info
+ */
 UIGroup.prototype.setPrimaryTile = function(tile) {
     this.setTile(this.tileInfoPrimary, tile);
 }
+
+/**
+ * Sets the secondary tile info UI
+ * @param {Phaser.Tile} tile - tile object with needed info
+ */
 UIGroup.prototype.setSecondaryTile = function(tile) {
     this.setTile(this.tileInfoSecondary, tile);
 
 }
 
+/**
+ * Sets the unit for a unit info group
+ * @param {Phaser.Group} group - unit info group to update
+ * @param {Phaser.Group} tileGroup - tile info group to move
+ * @param {Phaser.Sprite} unit - unit object with needed info
+ * @param {integer} x1 - tile group's initial position
+ * @param {integer} x2 - tiel group's new position
+ */
 UIGroup.prototype.setUnit = function(group, tileGroup, unit, x1, x2) {
     if (unit) {
         group.unitType.text = unit.type[0].toUpperCase() + unit.type.replace('_', ' ').slice(1);
@@ -169,14 +222,30 @@ UIGroup.prototype.setUnit = function(group, tileGroup, unit, x1, x2) {
         tileGroup.cameraOffset.x = x1;
     }
 }
+
+/**
+ * Sets the primary unit info UI
+ * @param {Phaser.Sprite} unit - unit object with needed info
+ */
 UIGroup.prototype.setPrimaryUnit = function(unit) {
     this.setUnit(this.unitInfoPrimary, this.tileInfoPrimary, unit, 8, 200);
 }
+
+/**
+ * Sets the secondary unit info UI
+ * @param {Phaser.Sprite} unit - unit object with needed info
+ */
 UIGroup.prototype.setSecondaryUnit = function(unit) {
     this.setUnit(this.unitInfoSecondary, this.tileInfoSecondary, unit,
-		 this.game.constants.CAMERA_WIDTH - 96 - 8, this.game.constants.CAMERA_WIDTH - 96 - 200);
+		 this.game.constants.CAMERA_WIDTH - 96 - 8,
+		 this.game.constants.CAMERA_WIDTH - 96 - 200);
 }
 
+/**
+ * Turns an empty group into a unit info group.
+ * @param {Phaser.Group} group - unit info group to update
+ * @param {Phaser.Group} x - x position of group
+ */
 UIGroup.prototype.initUnitInfoHelper = function(group, x) {
     var height = 160;
     var width = 192;
@@ -205,6 +274,9 @@ UIGroup.prototype.initUnitInfoHelper = function(group, x) {
     group.visible = false;
 }
 
+/**
+ * Creates the primary and secondary unit info groups.
+ */
 UIGroup.prototype.initUnitInfoUI = function() {
     this.unitInfoPrimary = this.game.add.group();
     this.unitInfoSecondary = this.game.add.group();
@@ -212,6 +284,17 @@ UIGroup.prototype.initUnitInfoUI = function() {
     this.initUnitInfoHelper(this.unitInfoSecondary, this.game.constants.CAMERA_WIDTH - 192 - 8);
 }
 
+/**
+ * Draws an arc.
+ * @param {Phaser.Graphics} graphics - graphics object on which to draw arc
+ * @param {integer} x - x position
+ * @param {integer} y - y position
+ * @param {integer} r - radius
+ * @param {float} start - start angle
+ * @param {float} end - end angle
+ * @param {integer} stroke - stroke width
+ * @param {integer} color - hex value of color
+ */
 UIGroup.prototype.drawArc = function(graphics, x, y, r, start, end, stroke, color) {
     graphics.lineStyle(0);
     graphics.moveTo(x+r*Math.cos(start), y+r*Math.sin(start));
@@ -220,6 +303,19 @@ UIGroup.prototype.drawArc = function(graphics, x, y, r, start, end, stroke, colo
     graphics.lineStyle(0);
 }
 
+/**
+ * Create a tween that animates the drawing of an arc.
+ * @param {Phaser.Graphics} graphics - graphics object on which to draw arc
+ * @param {integer} x - x position
+ * @param {integer} y - y position
+ * @param {integer} r - radius
+ * @param {float} start - start angle
+ * @param {float} end - end angle
+ * @param {integer} stroke - stroke width
+ * @param {integer} color - hex value of color
+ * @param {integer} duration - length of tween
+ * @param {Phaser.Easing} easing - tween easing
+ */
 UIGroup.prototype.arcTween = function(graphics, x, y, r, start, end, stroke, color, duration, easing) {
     var t = this.game.add.tween(graphics).to({}, duration, easing);
     t.onUpdateCallback(function(tween, fraction) {
@@ -231,6 +327,9 @@ UIGroup.prototype.arcTween = function(graphics, x, y, r, start, end, stroke, col
     return t;
 }
 
+/**
+ * Create the action display circle.
+ */
 UIGroup.prototype.initActionMenu = function() {
     this.actionMenu = this.game.add.group();
     this.actions = [];
@@ -243,6 +342,9 @@ UIGroup.prototype.initActionMenu = function() {
     this.actionMenu.visible = false;
 }
 
+/**
+ * Create the health display circle.
+ */
 UIGroup.prototype.initHealthDisplay = function() {
     this.healthCircle = this.game.add.group();
 
@@ -255,6 +357,13 @@ UIGroup.prototype.initHealthDisplay = function() {
     this.healthCircle.visible = false;
 }
 
+/**
+ * Creates a tween that animates a unit's health change.
+ * @param {Phaser.Sprite} unit - unit whose health is changing
+ * @param {integer} newHealth - the new health value
+ * @param {function} callback
+ * @param {object} callbackContext
+ */
 UIGroup.prototype.updateHealth = function(unit, newHealth, callback, callbackContext) {
     unit.getHit();
     // visual representation of remaining energy
@@ -287,6 +396,13 @@ UIGroup.prototype.updateHealth = function(unit, newHealth, callback, callbackCon
     return showTween;
 }
 
+/**
+ * Creates a tween that animates a unit's energy change.
+ * @param {Phaser.Sprite} unit - unit whose energy is changing
+ * @param {integer} newEnergy - the new energy value
+ * @param {function} callback
+ * @param {object} callbackContext
+ */
 UIGroup.prototype.updateEnergy = function(unit, newEnergy, callback, callbackContext) {
     // visual representation of remaining energy
     this.drawArc(this.actionGraphics, 0, 0, 32, -0.5*Math.PI, 1.5*Math.PI, 16, COLORS.ENERGY);
@@ -317,6 +433,11 @@ UIGroup.prototype.updateEnergy = function(unit, newEnergy, callback, callbackCon
     return showTween;
 }
 
+/**
+ * Shows the action menu for a unit
+ * @param {Phaser.Sprite} unit - the unit for which to show the action menu
+ * @param {Array.<string>} actions - the actions for the menu to display
+ */
 UIGroup.prototype.showMenu = function(unit, actions) {
     for (var i = 0; i < actions.length; i++) {
 	// add each button to an array of actions
@@ -347,6 +468,9 @@ UIGroup.prototype.showMenu = function(unit, actions) {
     return this.game.add.tween(this.actionMenu.scale).to({x: 1, y: 1}, 200, Phaser.Easing.Back.Out);
 }
 
+/**
+ * Creates a tween that hides the action menu.
+ */
 UIGroup.prototype.hideMenu = function() {
     var t = this.game.add.tween(this.actionMenu.scale).to({x: 0, y: 0}, 200, Phaser.Easing.Back.In);
     t.onComplete.add(function() {
@@ -359,10 +483,16 @@ UIGroup.prototype.hideMenu = function() {
     return t;
 }
 
+/**
+ * Checks if the action menu is visible.
+ */
 UIGroup.prototype.menuVisible = function() {
     return this.actionMenu.visible;
 }
 
+/**
+ * Creates a banner to display turn changes.
+ */
 UIGroup.prototype.initTurnInfoUI = function() {
     this.turnInfo = this.game.add.group();
     this.turnInfo.alpha = 0;
@@ -382,6 +512,11 @@ UIGroup.prototype.initTurnInfoUI = function() {
 					     this.turnInfo);
     this.turnText.anchor.setTo(0.5, 0.5);
 }
+
+/**
+ * Creates a tween that shows a turn change
+ * @param {object} player - the player whose turn it now is
+ */
 UIGroup.prototype.setTurnInfo = function(player) {
     this.turnText.text = player.name + "'s turn";
     this.turnInfoGraphics.clear();

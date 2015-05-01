@@ -1,7 +1,16 @@
 'use strict';
 
+/**
+ * Coordinates the gameboard, units, and UI.
+ * @constructor
+ * @augments Phaser.Group
+ * @param {Phaser.Game} game - Game object
+ * @param {Phaser.Group} parent - the group to which GameGroup should belong
+ */
 var GameGroup = function(game, parent) {
     Phaser.Group.call(this, game, parent);
+
+    this.animatingAction = false;
 
     this.gameBoard = new GameBoard(this.game);
     this.selected = null;
@@ -51,11 +60,10 @@ var GameGroup = function(game, parent) {
 GameGroup.prototype = Object.create(Phaser.Group.prototype);
 GameGroup.prototype.constructor = GameGroup;
 
-GameGroup.prototype.myTurn = function() {
-    return this.turn === this.game.constants.PLAYER_ID && !this.turnOver;
-}
-
-GameGroup.prototype.update = function(mouse) {
+/**
+ * Handle all updates needed each frame.
+ */
+GameGroup.prototype.update = function() {
     // moving the marker
     this.marker.x = this.gameBoard.highlightLayer.getTileX(this.game.input.activePointer.worldX) * this.game.constants.TILE_SIZE;
     this.marker.y = this.gameBoard.highlightLayer.getTileY(this.game.input.activePointer.worldY) * this.game.constants.TILE_SIZE;
@@ -71,6 +79,7 @@ GameGroup.prototype.update = function(mouse) {
 	this.unit = null;
     }
 
+    // augment the tile object with extra information
     this.tile.name = this.gameBoard.getTerrainName(this.tile.index);
     this.tile.defense = this.gameBoard.getTerrainStats(this.tile.index).defense;
     this.tile.movementCost = this.gameBoard.getTerrainStats(this.tile.index).movementCost;
@@ -85,8 +94,7 @@ GameGroup.prototype.update = function(mouse) {
 	this.ui.setPrimaryUnit(this.unit);
     }
 
-    this.ui.checkPlayerInfoUIPosition({x: this.game.input.mousePointer.x,
-				       y: this.game.input.mousePointer.y});
+    this.ui.checkPlayerInfoUIPosition();
 
     if (this.shakeTimer >= 0) {
 	this.shake();
@@ -94,23 +102,17 @@ GameGroup.prototype.update = function(mouse) {
     }
 }
 
-GameGroup.prototype.eliminatePlayer = function(playerId) {
-    return {
-	start: function() {
-	    this.onComplete();
-	}
-    }
+/**
+ * Checks if it is this client's turn.
+ */
+GameGroup.prototype.myTurn = function() {
+    return this.turn === this.game.constants.PLAYER_ID && !this.turnOver;
 }
 
-GameGroup.prototype.gameOver = function(playerId) {
-    if (this.player == playerId) {
-        this.game.endGameMessage = "You Win!"
-    } else {
-        this.game.endGameMessage = "You Lose!"
-    }
-    this.game.state.start('gameover');
-}
-
+/**
+ * Handles clicking objects.
+ * @param {object} targetObject - the object that was clicked
+ */
 GameGroup.prototype.onClick = function(targetObject) {
     if (targetObject === null) {
 	this.tileClicked();
@@ -121,10 +123,13 @@ GameGroup.prototype.onClick = function(targetObject) {
     }
 }
 
+/**
+ * Handles clicking on a tile.
+ */
 GameGroup.prototype.tileClicked = function() {
     if (!this.myTurn())
 	return;
-    // tile
+
     if (this.selected) {
 	if (this.gameBoard.isHighlighted(this.tile.x, this.tile.y)) {
 	    switch (this.action) {
@@ -159,20 +164,10 @@ GameGroup.prototype.tileClicked = function() {
     }
 }
 
-GameGroup.prototype.makeTrench = function(unitId, square) {
-    var action = {
-	unit: this.unitGroup.find(unitId),
-        gameBoard: this.gameBoard,
-    };
-    action.start = function() {
-	this.unit.digTrench(function() {
-            this.gameBoard.setTile(square.x, square.y, TRENCH_INDEX);
-            this.onComplete();
-	}, this);
-    }
-    return action;
-}
-
+/**
+ * Handles clicking on a unit.
+ * @param {Phaser.Sprite} unit - the unit clicked on
+ */
 GameGroup.prototype.unitClicked = function(unit) {
     if (!this.myTurn())
 	return;
@@ -184,6 +179,10 @@ GameGroup.prototype.unitClicked = function(unit) {
     }
 }
 
+/**
+ * Handles clicking on a unit when another unit is selected.
+ * @param {Phaser.Sprite} unit - the unit clicked on
+ */
 GameGroup.prototype.interact = function(unit) {
     if (this.gameBoard.isHighlighted(this.tile.x, this.tile.y)) {
 	if (unit.isMine()) {
@@ -205,8 +204,12 @@ GameGroup.prototype.interact = function(unit) {
     }
 }
 
+/**
+ * Handles clicking on a unit when no unit has been selected.
+ * @param {Phaser.Sprite} unit - the unit clicked on
+ */
 GameGroup.prototype.select = function(unit) {
-    if (unit.isMine() && !this.game.animatingAction && !unit.disabled) {
+    if (unit.isMine() && !this.animatingAction && !unit.disabled) {
         this.selected = unit;
 	this.ui.setPrimaryUnit(this.selected);
 	this.gameBoard.unhighlightAll();
@@ -215,6 +218,10 @@ GameGroup.prototype.select = function(unit) {
     }
 }
 
+/**
+ * Handles clicking on a button.
+ * @param {Phaser.Button} button - the button clicked on
+ */
 GameGroup.prototype.buttonClicked = function(button) {
     if (button.key.substring(0, "ui-") === "ui-") {
 	var action = button.key.replace('ui-', '');
@@ -246,6 +253,51 @@ GameGroup.prototype.buttonClicked = function(button) {
     }
 }
 
+/**
+ * Starts shaking the game world.
+ */
+GameGroup.prototype.startShake = function() {
+    this.cameraPos = {x: this.game.camera.x, y: this.game.camera.y};
+    this.shakeTimer = this.shakeTimerMax;
+}
+
+/**
+ * Randomly displaces the game world.
+ */
+GameGroup.prototype.shake = function() {
+    if (this.shakeTimer === 0) {
+        this.game.world.setBounds(0, 0, this.game.width, this.game.height);
+    } else {
+	var rand1 = this.game.rnd.integerInRange(-1 * this.shakeAmplitude, this.shakeAmplitude);
+	var rand2 = this.game.rnd.integerInRange(-1 * this.shakeAmplitude, this.shakeAmplitude);
+	this.game.world.setBounds(rand1, rand2, this.game.width + rand1, this.game.height + rand2);
+    }
+}
+
+/**
+ * Resets all units' energy and re-enables them.
+ */
+GameGroup.prototype.resetUnits = function() {
+    var units = this.unitGroup.all();
+    for (var i = 0, unit; unit = units[i]; i++) {
+        unit.stats.energy.current = unit.stats.energy.max;
+        unit.enable();
+    }
+}
+
+//---------------------------//
+//-------- RPC CALLS --------//
+//---------------------------//
+
+/**
+ * Initializes the gameboard, units, and UI.
+ * @param {object} board - gameboard information
+ * @param {Array.<object>} units - array of units and their information
+ * @param {string} turn - entity id of the player who gets the first turn
+ * @param {object} players - players information
+ * @param {string} me - entity id of this client's player
+ * @param {object} effects - terrain effects information
+ */
 GameGroup.prototype.initGame = function(board, units, turn, players, me, effects) {
     var action = {
 	gameGroup: this
@@ -257,8 +309,6 @@ GameGroup.prototype.initGame = function(board, units, turn, players, me, effects
 	for (var i = 0; i < board.width; i++) {
 	    for (var j = 0; j < board.height; j++) {
 		this.gameGroup.gameBoard.setTile(i, j, board.squares[j*board.width+i].index);
-		// if (board.squares[i*board.width+j].fow)
-		// 	this.gameGroup.gameBoard.addFog(i, j);
 	    }
 	}
 
@@ -296,6 +346,10 @@ GameGroup.prototype.initGame = function(board, units, turn, players, me, effects
     return action;
 }
 
+/**
+ * Show all unit actions for the selected unit.
+ * @param {Array.<string>} unitActions - all actions the unit can execute
+ */
 GameGroup.prototype.showUnitActions = function(unitActions) {
     var action = {
     	gameGroup: this
@@ -318,6 +372,10 @@ GameGroup.prototype.showUnitActions = function(unitActions) {
     return action;
 }
 
+/**
+ * Disables a unit.
+ * @param {string} unitId - unit's entity id
+ */
 GameGroup.prototype.disableUnit = function(unitId) {
     var action = {
 	unit: this.unitGroup.find(unitId)
@@ -329,6 +387,11 @@ GameGroup.prototype.disableUnit = function(unitId) {
     return action;
 }
 
+/**
+ * Highlights a set of squares.
+ * @param {string} type - highlight type
+ * @param {array.<object>} squares - array of squares with x and y coordinates
+ */
 GameGroup.prototype.highlightSquares = function(type, squares) {
     var action = {
 	squares: squares,
@@ -345,6 +408,10 @@ GameGroup.prototype.highlightSquares = function(type, squares) {
     return action;
 }
 
+/**
+ * Reveals fog on a set of squares.
+ * @param {array.<object>} squares - array of squares with x and y coordinates
+ */
 GameGroup.prototype.revealFog = function(squares) {
     var action = {
 	squares: squares,
@@ -360,14 +427,11 @@ GameGroup.prototype.revealFog = function(squares) {
     return action;
 }
 
-GameGroup.prototype.resetUnits = function() {
-    var units = this.unitGroup.all();
-    for (var i = 0, unit; unit = units[i]; i++) {
-        unit.stats.energy.current = unit.stats.energy.max;
-        unit.enable();
-    }
-}
-
+/**
+ * Updates a unit's health.
+ * @param {string} unit - unit's entity id
+ * @param {integer} health - new health for that unit
+ */
 GameGroup.prototype.updateUnitHealth = function(unit, health) {
     var action = {
     	ui: this.ui,
@@ -380,19 +444,31 @@ GameGroup.prototype.updateUnitHealth = function(unit, health) {
     return action;
 }
 
-GameGroup.prototype.updateUnitEnergy = function(unitId, energyValue) {
+/**
+ * Updates a unit's energy.
+ * @param {string} unit - unit's entity id
+ * @param {integer} energy - new energy for that unit
+ */
+GameGroup.prototype.updateUnitEnergy = function(unitId, energy) {
     var action = {
 	unit: this.unitGroup.find(unitId),
 	ui: this.ui
     };
 
     action.start = function() {
-	this.tween = this.ui.updateEnergy(action.unit, energyValue, this.onComplete, this);
+	this.tween = this.ui.updateEnergy(action.unit, energy, this.onComplete, this);
     	this.tween.start();
     };
     return action;
 }
 
+/**
+ * Plays the attack animation for a unit.
+ * @param {string} unitId - unit's entity id
+ * @param {object} square - object with x and y coordinates
+ * @param {string} type - attack type
+ * @param {string} unitType - type of unit attacking
+ */
 GameGroup.prototype.attack = function(unitId, square, type, unitType) {
     // check if need to add an animation to the receiving square
     var action = {
@@ -414,6 +490,30 @@ GameGroup.prototype.attack = function(unitId, square, type, unitType) {
     return action;
 }
 
+/**
+ * Plays the trench digging animation for a unit.
+ * @param {string} unitId - unit's entity id
+ * @param {object} square - object with x and y coordinates
+ */
+GameGroup.prototype.makeTrench = function(unitId, square) {
+    var action = {
+	unit: this.unitGroup.find(unitId),
+        gameBoard: this.gameBoard,
+    };
+    action.start = function() {
+	this.unit.digTrench(function() {
+            this.gameBoard.setTile(square.x, square.y, TRENCH_INDEX);
+            this.onComplete();
+	}, this);
+    }
+    return action;
+}
+
+/**
+ * Moves a unit along a path.
+ * @param {string} unitId - unit's entity id
+ * @param {array.<object>} squares - sequence of objects with x and y coordinates that define a path
+ */
 GameGroup.prototype.moveUnit = function(unitId, squares) {
     var action = {};
     action.unit = this.unitGroup.find(unitId);
@@ -433,18 +533,35 @@ GameGroup.prototype.moveUnit = function(unitId, squares) {
     return action;
 }
 
+/**
+ * Reveals a unit that appears out of the fog of war.
+ * @param {string} unit - unit's entity id
+ */
 GameGroup.prototype.revealUnit = function(unit) {
-    var addedUnit = this.unitGroup.addUnit(unit.id,
-					   unit.type,
-					   unit.x,
-					   unit.y,
-					   unit.player,
-					   unit.stats,
-					   this.players[unit.player].faction);
-    addedUnit.alpha = 0;
-    return new TweenAction(this.game.add.tween(addedUnit).to({alpha: 1}, 300));
+    return {
+	unitGroup: this.unitGroup,
+	gameGroup: this,
+	start: function() {
+	    var addedUnit =
+		this.unitGroup.addUnit(unit.id,
+				       unit.type,
+				       unit.x,
+				       unit.y,
+				       unit.player,
+				       unit.stats,
+				       this.gameGroup.players[unit.player].faction);
+	    addedUnit.alpha = 0;
+	    var tween = this.gameGroup.game.add.tween(addedUnit).to({alpha: 1}, 300);
+	    tween.onComplete.add(this.onComplete, this);
+	    this.tween.start();
+	}
+    }
 }
 
+/**
+ * Kills off a set of units all at once.
+ * @param {array.<string>} unitIds - set of entity ids for units to kill
+ */
 GameGroup.prototype.killUnits = function(unitIds) {
     var action = {};
     action.unitGroup = this.unitGroup;
@@ -454,7 +571,9 @@ GameGroup.prototype.killUnits = function(unitIds) {
     action.tweens = unitIds.map(function(unitId, i) {
 	return this.game.add.tween(action.units[i]).to({alpha: 0}, 300);
     }, this);
+
     action.start = function() {   
+	// fade out all units at once
 	this.tweens[0].onComplete.add(function() {
 	    this.onComplete();
 	}, this);
@@ -463,6 +582,7 @@ GameGroup.prototype.killUnits = function(unitIds) {
 		this.unitGroup.removeUnit(this.units[i].id);
 	    }, this);
 	}, this);
+	this.units[0].sound.play("die");
 	this.tweens.map(function(tween, i) {
 	    tween.start();
 	}, this);
@@ -470,6 +590,11 @@ GameGroup.prototype.killUnits = function(unitIds) {
     return action;
 }
 
+/**
+ * Sets the turn to the provided player.
+ * @param {string} playerId - player's entity id
+ * @param {integer} turnCount - new turn count
+ */
 GameGroup.prototype.setTurn = function(playerId, turnCount) {
     return {
 	gameGroup: this,
@@ -487,6 +612,9 @@ GameGroup.prototype.setTurn = function(playerId, turnCount) {
     }
 }
 
+/**
+ * Removes a player. Not implemented yet since only useful if >2 players.
+ */
 GameGroup.prototype.eliminatePlayer = function() {
     return {
 	start: function() {
@@ -495,6 +623,11 @@ GameGroup.prototype.eliminatePlayer = function() {
     }
 }
 
+/**
+ * Sets up the gameover state and then switches to it.
+ * @param {string} id - entity id of the winning player
+ * @param {boolean} forfeit - whether or not the game ended due to forfeit
+ */
 GameGroup.prototype.gameOver = function(id, forfeit) {
     return {
 	gameGroup: this,
@@ -522,25 +655,4 @@ GameGroup.prototype.gameOver = function(id, forfeit) {
 	    this.gameGroup.game.state.start('gameover', true, false, text);
 	}
     };
-
-}
-
-GameGroup.prototype.startShake = function() {
-    this.cameraPos = {x: this.game.camera.x, y: this.game.camera.y};
-    this.shakeTimer = this.shakeTimerMax;
-}
-
-GameGroup.prototype.shake = function() {
-    if (this.shakeTimer === 0) {
-        this.game.world.setBounds(0, 0, this.game.width, this.game.height);
-        //this.game.camera.x = this.cameraPos.x;
-        //this.game.camera.y = this.cameraPos.y;
-    } else {
-	var rand1 = this.game.rnd.integerInRange(-1 * this.shakeAmplitude, this.shakeAmplitude);
-	var rand2 = this.game.rnd.integerInRange(-1 * this.shakeAmplitude, this.shakeAmplitude);
-	this.game.world.setBounds(rand1, rand2, this.game.width + rand1, this.game.height + rand2);
-	//this.game.camera.x = this.cameraPos.x + rand1;
-	//this.game.camera.y = this.cameraPos.y + rand2;
-    }
-
 }

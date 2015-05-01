@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * Boot state. Loads the preloader image.
+ * @constructor
+ */
 function Boot() {
 }
 
