@@ -1,30 +1,30 @@
-<!-- <header class="navbar navbar-fixed-top navbar-inverse"> -->
-<div id="banner">
-  <div id="banner-L">
-    <span class="website-title">
-      <%= link_to "The Great War", root_path, id: "logo" %>
-    </span>
-  </div>
-  <div id="banner-R"></div>
-  <!-- <ul class="nav navbar-nav navbar-right"> -->
-  <div class="clearB"></div>
-  <div id="banner-Hnav">
-    <ul class="nav">
-      <li><%= link_to "Home", root_path %></li>
-      <!-- Display Users and dropdown menu if the user is logged in,
-           otherwise, we display a Log-in option -->
-      <% if logged_in? %>
-      <li><%= link_to "Lobby", lobby_path %></li>
-      <li><%= link_to "All Games", gamas_path %></li>
-      <li><%= link_to "Users", all_path %></li>
-      <li class="dropdown">
-        <a href="#">Account</a>
-        <!-- <ul class="dropdown-menu"> -->
-        <ul>
-          <li><%= link_to "Profile", current_user %></li>
-          <li><%= link_to "Settings", edit_user_path(current_user) %></li>
-          <li>
-            <%= link_to "Log out", logout_path, method: "delete" %>
+  <div id="banner">
+  	<div id="banner-L">
+      <span class="website-title">
+    <%= link_to "The Great War", root_path, id: "logo" %>
+      </span>
+    	</div>
+      <div id="banner-R"></div>
+      <div class="clearB"></div>
+      <div id="banner-Hnav">
+      <ul class="nav">
+        <li><%= link_to "Home", root_path %></li>
+        <!-- Display Users and dropdown menu if the user is logged in,
+        otherwise, we display a Log-in option -->
+        <% if logged_in? %>
+          <li><%= link_to "Lobby", lobby_path %></li>
+          <li><%= link_to "All Games", gamas_path %></li>
+          <li><%= link_to "Users", all_path %></li>
+          <li><%= link_to "Help", help_path %></li>
+          <li class="dropdown">
+            <a href="#">Account</a>
+            <ul>
+              <li><%= link_to "Profile", current_user %></li>
+              <li><%= link_to "Settings", edit_user_path(current_user) %></li>
+              <li>
+                <%= link_to "Log out", logout_path, method: "delete" %>
+              </li>
+            </ul>
           </li>
         </ul>
       </li>

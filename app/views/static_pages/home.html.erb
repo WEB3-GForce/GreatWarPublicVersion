@@ -1,31 +1,29 @@
-<div id="col-M">
-  
+<div id="col-M">    
   <div class="main-box">
     <div class="main-top"></div>
-    <div class="main-filler">
-      
-      <div class="main-info">
+      <div class="main-filler">
         
-        <h1 class="center">The Great War</h1>
-        
-        <p class="center">
-          Welcome to the Great War!          
-        </p>
-        <div class="clearB" style="height:20px"></div>
-        <div class="clearB" style="height:20px"></div>
-        <div class="center">
-          <% if logged_in? %>
-          <%= link_to "Game List", gamas_path, class: "btn btn-lg btn-default" %>
-          <% else %>
-          <%= link_to "Sign up now!", signup_path, class: "btn btn-lg btn-default" %>
-          <% end %>
+        <div class="main-info">
+            
+          <h1 class="center">The Great War</h1>
+            
+          <p class="center">
+            Welcome to the Great War!          
+          </p>
+          <div class="clearB" style="height:20px"></div>
+          <div class="clearB" style="height:20px"></div>
+          <div class="center">
+            <% if logged_in? %>
+              <%= link_to "Game List", gamas_path, class: "btn btn-lg btn-default" %>
+            <% else %>
+              <%= link_to "Sign up now!", signup_path, class: "btn btn-lg btn-default" %>
+            <% end %>
+          </div>
         </div>
+        
       </div>
-      
-    </div>
-    <div class="main-footer"></div>
+      <div class="main-footer"></div>
   </div>
   <div class="clearB" style="height:20px"></div>
-  
 </div>
 

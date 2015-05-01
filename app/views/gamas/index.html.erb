@@ -1,53 +1,62 @@
 <% provide(:title, 'All Games') %>
-<h1 class="log">All Games</h1>
-
+<div class="center">
+<h1>All Games</h1>
+</div>
 <div id="col-M">
   <div class="main-box">
     <div class="main-top"></div>
-    <div class="main-filler">
-      
-      <div class="main-info">
-        <div class="main-table">
-      	  <table class="table table-striped">
-            <div>
+      <div class="main-filler">
+            
+        <div class="main-info">
+          <div class="main-table">
+            <% if @gamas.empty? %>
+              <div>
+              <%= link_to 'Create Game', new_gama_path, class: "btn btn-default create" %>
+              </div>
+            <%else%>
+      	     <table class="table table-striped">
+              <div>
               <%= link_to 'Create Game', new_gama_path, class: "btn btn-default" %>
-            </div>
-      	    <thead>
-              <tr>
-          	<th>Game</th>
-          	<th>Status</th>
-          	<th>Players in Game</th>
-          	<th>join/leave</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% if current_user.gama %>
-              <% @game = @gamas.find(current_user.gama_id) %>
-              <% userGame = @game%>
-              <%= render 'gamas/table' %>
-              
-              <%end%>
-              
-              <% @gamas.order(:pending).reverse.each do |game| %>
-              <% if userGame != nil %>
-              <% next if game.id == userGame.id %>
-              <%end%>
-              <% @game = game %>
-              <%= render 'gamas/table' %>
-              
-              <% end %>
-            </tbody>
-          </table>
-	  
-	  
-	</div>
+              </div>
+      		    <thead>
+          		  <tr>
+          				<th>Game</th>
+          				<th>Status</th>
+          				<th>Players in Game</th>
+          				<th>Action</th>
+          			</tr>
+          		</thead>
+          		<tbody>
+                <% if current_user.gama %>
+                  <% @game = @gamas.find(current_user.gama_id) %>
+                  <% userGame = @game%>
+                  <%= render 'gamas/table' %>
+                                    
+                <%end%>
+          
+                <% @gamas.order(:pending).reverse.each do |game| %>
+                  <% if userGame != nil %>
+                    <% next if game.id == userGame.id %>
+                  <%end%>
+                  <% @game = game %>
+                  <%= render 'gamas/table' %>
+          				
+                <% end %>
+          		</tbody>
+          	</table>
+				
+
+				    <% end %>	    
+			     </div>
+        </div>
       </div>
-    </div>
-    <div class="main-footer"></div>
+			<div class="main-footer"></div>
     
-    
-    <div class="clearB" style="height:20px"></div>
+     
+      <div class="clearB" style="height:20px"></div>
   </div>
+    
+</div>
   
 </div>
 

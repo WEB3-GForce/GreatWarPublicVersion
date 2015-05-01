@@ -1,3 +1,9 @@
+=begin
+  The User model encapsulates the fields of a User. It controls when a game
+  starts and when it ends. It communicates with the Socket Controller to
+  notify when new users join the game and when it itself is done.
+=end
+
 class User < ActiveRecord::Base
   attr_accessor :remember_token
   attr_accessible :name, :email, :logged, :password, :password_confirmation, :game, :host
@@ -44,19 +50,22 @@ class User < ActiveRecord::Base
   end
 
   # We create a new token and store it's hash into the database so that 
-  # a user persists
+  # a user persists even if they close the browser
   def remember
     self.remember_token = User.new_token
     update_attribute(:remember_hash, User.digest(remember_token))
   end
 
-
+  # Checks to see if the rememer_hash stored for this User is the same as the
+  # one stored in the cookies
   def authenticated?(remember_token)
     return false if remember_hash.nil?
     BCrypt::Password.new(remember_hash).is_password?(remember_token)
   end
 
 
+  # This prohibits from the remember_hash to be initialized if the user does not
+  # choose to remember their session
   def forget
     update_attribute(:remember_hash, nil)
   end
@@ -67,6 +76,7 @@ class User < ActiveRecord::Base
     self.save
   end
 
+  # Boolean method to see if this User is the host of the given game.
   def is_host?(gama)
     return self.host && (self.gama_id == gama.id)
   end
